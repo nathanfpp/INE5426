@@ -51,19 +51,20 @@ extern int yydebug;
 # define YYTOKENTYPE
   enum yytokentype
   {
-    T_TYPE_INT = 258,
-    T_VAR = 259,
-    T_FLOAT = 260,
-    T_INT = 261,
-    T_PLUS = 262,
-    T_MINUS = 263,
-    T_TIMES = 264,
-    T_DIV = 265,
-    T_NL = 266,
-    T_OPEN = 267,
-    T_CLOSE = 268,
-    T_EQUAL = 269,
-    T_COMMA = 270
+    T_VAR = 258,
+    T_FLOAT = 259,
+    T_INT = 260,
+    T_PLUS = 261,
+    T_MINUS = 262,
+    T_TIMES = 263,
+    T_DIV = 264,
+    T_NL = 265,
+    T_OPEN = 266,
+    T_CLOSE = 267,
+    T_EQUAL = 268,
+    T_COMMA = 269,
+    T_TYPE_INT = 270,
+    T_TYPE_FLOAT = 271
   };
 #endif
 
@@ -77,7 +78,7 @@ union YYSTYPE
     atributo value;
     char signal;
 
-#line 81 "parser.h" /* yacc.c:1909  */
+#line 82 "parser.h" /* yacc.c:1909  */
 };
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1

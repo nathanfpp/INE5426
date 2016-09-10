@@ -13,18 +13,21 @@ integer   [0-9]+
 floating  {integer}*\.{integer}
 letter    [A-Z]|[a-z]([a-z]|[A-Z]|"_"|[0-9])*
 int       ("int")
+float     ("float")
 
 %%
 
 [ \t]               ; //ignores spaces
-{int}               { yylval.value.type = strdup(yytext);
-                      return T_TYPE_INT ;  }
+{int}               { return T_TYPE_INT ;  }
+{float}             { return T_TYPE_FLOAT ;  }
 {letter}            { yylval.value.var = strdup(yytext);
 		      return T_VAR  ;  }
    
-{integer}           { yylval.value.integer = std::atoi(yytext); 
+{integer}           { yylval.value.type = strdup("int");
+		      yylval.value.integer = std::atoi(yytext); 
                       return T_INT  ; }
-{floating}          { yylval.value.real = std::atof(yytext);
+{floating}          { yylval.value.type = strdup("float");
+		      yylval.value.real = std::atof(yytext);
                       return T_FLOAT; }
 
 ","                 {                                          return T_COMMA ; } 
