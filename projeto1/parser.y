@@ -121,14 +121,18 @@ tipo: T_TYPE_INT variavel   { $2.type = strdup("int"); 	 tabela_simbolos[std::st
 
 variavel: declaracao {$$ = $1;}| declaracao T_COMMA variavel
     ;
-declaracao: T_VAR {$$.var = $1.var;  $$.integer = 0;  $$.real = 0.0;
-		  if(tratador_semantico.avaliarRepeticaoDeclaracao(tabela_simbolos, $1))
-                     tabela_simbolos[std::string($$.var)] = $$; }
+declaracao: T_VAR {if(tratador_semantico.avaliarRepeticaoDeclaracao(tabela_simbolos, $1))
+                     { $$.var = $1.var;  $$.integer = 0;  $$.real = 0.0;
+		       tabela_simbolos[std::string($$.var)] = $$; }
+		  }
   
 
-    | T_VAR T_EQUAL atribuicao_composta {$$.var = $1.var;  $$.integer = $3.integer; $$.real = $3.real; $$.type = $3.type;
-				      if(tratador_semantico.avaliarRepeticaoDeclaracao(tabela_simbolos, $1))
-                   			    tabela_simbolos[std::string($$.var)] = $$; } 
+    | T_VAR T_EQUAL atribuicao_composta {if(tratador_semantico.avaliarRepeticaoDeclaracao(tabela_simbolos, $1)){
+					    $$.var = $1.var;  $$.integer = $3.integer; $$.real = $3.real; $$.type = $3.type;
+                   			    tabela_simbolos[std::string($$.var)] = $$; 
+
+					   } 
+					}
     ;
 
 // Atribuição simples, variável negativa, parênteses e somente algébrica.
@@ -188,7 +192,7 @@ atribuicao_composta: T_VAR  {if(tratador_semantico.avaliarDeclaracao(tabela_simb
                                                              }
 					                 }
 						    }
-    | expr sinal atribuicao_composta {                      
+    | expr sinal atribuicao_composta {               
 							   int iop1 = $1.integer;
 							   int iop2 = $3.integer;
 							   double dop1 = $1.real;
@@ -217,7 +221,7 @@ atribuicao_composta: T_VAR  {if(tratador_semantico.avaliarDeclaracao(tabela_simb
  							      break;
                                                              }
 					                 }
-						   
+						  
 						   
 //Fim.
     ;
