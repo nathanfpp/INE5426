@@ -8,6 +8,7 @@
 class tratadorSemantico {
 public:
     bool   avaliarDeclaracao(std::map<std::string, atributo> tabela_simbolos, atributo value);
+    bool   avaliarRepeticaoDeclaracao(std::map<std::string, atributo> tabela_simbolos, atributo value);
 private:
 
 };

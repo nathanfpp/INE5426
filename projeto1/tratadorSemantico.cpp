@@ -14,4 +14,13 @@ bool tratadorSemantico::avaliarDeclaracao(std::map<std::string, atributo> tabela
          return true;
 }
 
-       
+bool tratadorSemantico::avaliarRepeticaoDeclaracao(std::map<std::string, atributo> tabela_simbolos, atributo value){
+
+ //SE o nome da variável já existe na tabela de simbolos, é porque já foi declarado.
+         if (tabela_simbolos.find(std::string(value.var)) != tabela_simbolos.end()){
+              std::cout<<"semantic error: re-declaration of variable  "<<value.var<<"\n";
+	      return false;					   
+         }
+         return true;
+}
+

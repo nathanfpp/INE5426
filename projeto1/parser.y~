@@ -39,7 +39,7 @@ tratadorSemantico tratador_semantico;
 %token T_NL T_OPEN T_CLOSE T_EQUAL T_COMMA
 
 /* type defines the type of our nonterminal symbols. Types should match the names used in the union. Example: %type<node> expr */
-%type <value> program lines line expr atribuicao atribuicao_composta variaveis declaracao
+%type <value> program lines line expr atribuicao atribuicao_composta variavel declaracao tipo
 %type <signal> sinal
 
 
@@ -63,7 +63,7 @@ lines: line        /*$$ = $1 when nothing is said*/
 
 line: T_NL                                                 
     | atribuicao T_NL  { std::cout << "\n\nEntrada: ";  }  
-    | T_TYPE_INT variaveis {std::cout <<"\n\nEntrada: ";}
+    | tipo T_NL {std::cout <<"\n\nEntrada: ";}
                                             
     ;
 
@@ -100,25 +100,28 @@ expr: T_INT                     {  $$.integer = $1.integer;}     //std::cout << 
 sinal: T_MINUS | T_PLUS | T_TIMES | T_DIV;
 
 // Atribuição
-atribuicao: T_TYPE_INT T_VAR T_EQUAL atribuicao_composta    {$$.var = $2.var;  $$.integer = $4.integer; $$.type = "int";
-							     tabela_simbolos[std::string($$.var)] = $$;
-				                             std::cout << "R: "<< std::string($$.var) << " = " << $$.integer << "\n";}
- 
-    | T_VAR T_EQUAL atribuicao_composta    {if(tratador_semantico.avaliarDeclaracao(tabela_simbolos,$1))
+atribuicao: T_VAR T_EQUAL atribuicao_composta    {if(tratador_semantico.avaliarDeclaracao(tabela_simbolos,$1))
 						{$$.var = $1.var;  $$.integer = $3.integer; $$.type = "int";
  						 tabela_simbolos[std::string($$.var)] = $$;
-						 std::cout << "R: "<< std::string($$.var) << " = " << $$.integer << "\n";
-						}
-                                           }          
+						 std::cout << "R: int: "<< std::string($$.var) << " = "<< $$.integer << "\n";
+						}                                        }          
 //Fim.
     ;
 
 
 //Declaração de variável
-variaveis: declaracao | declaracao T_COMMA variaveis 
+tipo: T_TYPE_INT variavel //| T_TYPE_BOOL variaveis...
     ;
-declaracao: T_VAR {$$.var = $1.var;  $$.integer = 0; $$.type = "int"; tabela_simbolos[std::string($$.var)] = $$; }
-    | T_VAR T_EQUAL atribuicao_composta {$$.var = $1.var;  $$.integer = $3.integer; $$.type = "int"; tabela_simbolos[std::string($$.var)] = $$;}
+variavel: declaracao | declaracao T_COMMA variavel
+    ;
+declaracao: T_VAR {$$.var = $1.var;  $$.integer = 0; $$.type = "int";
+		  if(tratador_semantico.avaliarRepeticaoDeclaracao(tabela_simbolos, $1))
+                     tabela_simbolos[std::string($$.var)] = $$; }
+  
+
+    | T_VAR T_EQUAL atribuicao_composta {$$.var = $1.var;  $$.integer = $3.integer; $$.type = "int";
+				      if(tratador_semantico.avaliarRepeticaoDeclaracao(tabela_simbolos, $1))
+                   			    tabela_simbolos[std::string($$.var)] = $$; } 
     ;
 
 // Atribuição simples, variável negativa, parênteses e somente algébrica.
@@ -133,7 +136,10 @@ atribuicao_composta: T_VAR  {if(tratador_semantico.avaliarDeclaracao(tabela_simb
     | T_OPEN  T_VAR T_CLOSE  { if(tratador_semantico.avaliarDeclaracao(tabela_simbolos,$2))
 				   $$.integer = (tabela_simbolos[std::string($2.var)].integer);                             
                             }
-    | expr                  {$$.integer = $1.integer;}
+
+    | T_OPEN  atribuicao_composta T_CLOSE  { $$.integer = $2.integer;}
+    | expr		                   { $$.integer = $1.integer;}
+
 //Generalizando operações com expressões numéricas e variáveis
     | T_VAR sinal atribuicao_composta { 
                   if(tratador_semantico.avaliarDeclaracao(tabela_simbolos,$1)){ 
