@@ -73,7 +73,8 @@ primitivoNumerico: T_INT | T_FLOAT;
 expr: primitivoNumerico         {  $$.integer = $1.integer; $$.real = $1.real; $$.type = $1.type; }  
 
 // Adição, Subtração, Multiplicação por Escalar, Divisão por Escalar
-    | expr sinal expr           {  $$.type = $1.type; 
+    | expr sinal expr           {  tratador_semantico.avaliarOperacao($1,$3);            
+				   $$.type = $1.type; 
 				   $$.integer = tratador_aritimetico.operarNumeros($1.integer,$3.integer,$2);
                                    $$.real = tratador_aritimetico.operarNumeros($1.real,$3.real,$2);
                                 }
@@ -91,6 +92,7 @@ sinal: T_MINUS | T_PLUS | T_TIMES | T_DIV;
 // Atribuição
 atribuicao: T_VAR T_EQUAL atribuicao_composta  {if(tratador_semantico.avaliarDeclaracao(tabela_simbolos,$1))
 					      	{
+						tratador_semantico.avaliarOperacao(tabela_simbolos[std::string($1.var)],$3);            
                    			      	$$.var = $1.var;  $$.integer = $3.integer; $$.type = $3.type; $$.real = $3.real;
 	 				   	tabela_simbolos[std::string($$.var)] = $$; //atualizo tabela de simbolos
 						if(std::string($$.type) == "int")
@@ -99,32 +101,43 @@ atribuicao: T_VAR T_EQUAL atribuicao_composta  {if(tratador_semantico.avaliarDec
 							std::cout << "R: "<<std::string($$.var)<<" = "<< $$.real << "\n";
 					        }                                       
 					       }          
+   //| T_VAR T_EQUAL atribuicao_composta_bool
+
+
 //Fim.
     ;
 
 
 //Declaração de variável
-tipo: T_TYPE_INT variavel   { if(std::string(tabela_simbolos[std::string($2.var)].type) == "")  	 
+tipo: T_TYPE_INT variavel   { if(tratador_semantico.avaliarTipoDefinido(tabela_simbolos[std::string($2.var)])) 	 
 			            tabela_simbolos[std::string($2.var)].type = strdup("int");
+			      else
+				    tratador_semantico.avaliarOperacao(tabela_simbolos[std::string($1.var)],$2);            
 			    }
 
-    | T_TYPE_FLOAT variavel { if(std::string(tabela_simbolos[std::string($2.var)].type) == "")  	 
+    | T_TYPE_FLOAT variavel { if(tratador_semantico.avaliarTipoDefinido(tabela_simbolos[std::string($2.var)]))  	 
 			            tabela_simbolos[std::string($2.var)].type = strdup("float");
+			      else
+				    tratador_semantico.avaliarOperacao("float",$2);            
 			    }
+
+    //| T_TYPE_BOOL variavelBool 
     ;
 
 variavel: declaracao {$$ = $1;}| declaracao T_COMMA variavel
     ;
 declaracao: T_VAR {if(tratador_semantico.avaliarRepeticaoDeclaracao(tabela_simbolos, $1))
-                     { $$.var = $1.var;  $$.integer = 0;  $$.real = 0.0; $$.type = strdup(""); tabela_simbolos[std::string($$.var)] = $$;}
-									 //evita apontar para nulo
+                     { $$.var = $1.var;  $$.integer = 0;  $$.real = 0.0; tabela_simbolos[std::string($$.var)] = $$;}
+
 		  }
   
 
     | T_VAR T_EQUAL atribuicao_composta {if(tratador_semantico.avaliarRepeticaoDeclaracao(tabela_simbolos, $1)){
-					    $$.var = $1.var;  $$.integer = $3.integer; $$.real = $3.real; $$.type = $3.type;
-					    tabela_simbolos[std::string($$.var)] = $$;
-					   } 
+					     $$.type = $3.type;
+					     $$.var = $1.var;
+					     $$.integer = $3.integer; $$.real = $3.real;
+					     tabela_simbolos[std::string($$.var)] = $$;	
+					    }
 					}
     ;
 
@@ -148,14 +161,16 @@ atribuicao_composta: T_VAR  {if(tratador_semantico.avaliarDeclaracao(tabela_simb
 					     $$.type = tabela_simbolos[std::string($2.var)].type;          
 			                   }
 
-    | expr		                   { $$.integer = $1.integer;
+    | expr		                   { 
+					     $$.integer = $1.integer;
 					     $$.type = $1.type;          
  					   }
 
 //Generalizando operações com expressões numéricas e variáveis
     | T_VAR sinal atribuicao_composta { 
                   			 if(tratador_semantico.avaliarDeclaracao(tabela_simbolos,$1))
-				         { 		 
+				         { 
+					  tratador_semantico.avaliarOperacao(tabela_simbolos[std::string($1.var)],$3);		 
 				          $$.type = $1.type; //tipo mais a esquerda sobe                             
 				          $$.integer = tratador_aritimetico.operarNumeros(tabela_simbolos[std::string($1.var)].integer,$3.integer,$2);
 		                          $$.real = tratador_aritimetico.operarNumeros(tabela_simbolos[std::string($1.var)].real,$3.real,$2);
@@ -164,7 +179,7 @@ atribuicao_composta: T_VAR  {if(tratador_semantico.avaliarDeclaracao(tabela_simb
 				       }
 
 
-    | expr sinal atribuicao_composta   {                
+    | expr sinal atribuicao_composta   {   tratador_semantico.avaliarOperacao($1,$3);            
 					   $$.type = $1.type; //tipo mais a esquerda sobe                             
 					   $$.integer = tratador_aritimetico.operarNumeros($1.integer,$3.integer,$2);
                                            $$.real = tratador_aritimetico.operarNumeros($1.real,$3.real,$2);

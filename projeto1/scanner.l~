@@ -21,6 +21,7 @@ float     ("float")
 {int}               { return T_TYPE_INT ;  }
 {float}             { return T_TYPE_FLOAT ;  }
 {letter}            { yylval.value.var = strdup(yytext);
+		      yylval.value.type = strdup(""); 
 		      return T_VAR  ;  }
    
 {integer}           { yylval.value.type = strdup("int");

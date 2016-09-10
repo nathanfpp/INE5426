@@ -808,79 +808,80 @@ case 4:
 YY_RULE_SETUP
 #line 23 "scanner.l"
 { yylval.value.var = strdup(yytext);
+		      yylval.value.type = strdup(""); 
 		      return T_VAR  ;  }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 26 "scanner.l"
+#line 27 "scanner.l"
 { yylval.value.type = strdup("int");
 		      yylval.value.integer = std::atoi(yytext); 
                       return T_INT  ; }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 29 "scanner.l"
+#line 30 "scanner.l"
 { yylval.value.type = strdup("float");
 		      yylval.value.real = std::atof(yytext);
                       return T_FLOAT; }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 33 "scanner.l"
+#line 34 "scanner.l"
 {                                          return T_COMMA ; } 
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 34 "scanner.l"
+#line 35 "scanner.l"
 { yylval.signal = '+' ;                    return T_PLUS ; } /*special character with " "*/
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 35 "scanner.l"
+#line 36 "scanner.l"
 { yylval.signal = '-' ;                    return T_MINUS;} /*special character with " "*/
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 36 "scanner.l"
+#line 37 "scanner.l"
 { yylval.signal = '*' ;                    return T_TIMES;} /* special character with \ */
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 37 "scanner.l"
+#line 38 "scanner.l"
 { yylval.signal = '/' ;                    return T_DIV;} /*special character with " "*/
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 38 "scanner.l"
+#line 39 "scanner.l"
 {                                          return T_OPEN;}
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 39 "scanner.l"
+#line 40 "scanner.l"
 {                                          return T_CLOSE;}
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 40 "scanner.l"
+#line 41 "scanner.l"
 {                                          return T_EQUAL;}
 	YY_BREAK
 case 15:
 /* rule 15 can match eol */
 YY_RULE_SETUP
-#line 41 "scanner.l"
+#line 42 "scanner.l"
 {                                          return T_NL;}
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 42 "scanner.l"
+#line 43 "scanner.l"
 { yyerror("Unknown token! %c\n", *yytext);} /*complains about every unknown character*/
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 44 "scanner.l"
+#line 45 "scanner.l"
 YY_FATAL_ERROR( "flex scanner jammed" );
 	YY_BREAK
-#line 884 "scanner.cpp"
+#line 885 "scanner.cpp"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1890,7 +1891,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 44 "scanner.l"
+#line 45 "scanner.l"
 
 
 
