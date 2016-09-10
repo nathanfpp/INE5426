@@ -468,9 +468,9 @@ static const yytype_uint8 yytranslate[] =
 static const yytype_uint8 yyrline[] =
 {
        0,    58,    58,    61,    62,    65,    66,    67,    71,    71,
-      73,    76,    81,    83,    88,    88,    88,    88,    91,   106,
-     111,   117,   117,   119,   125,   133,   138,   143,   148,   152,
-     157,   168
+      73,    76,    81,    84,    89,    89,    89,    89,    92,   107,
+     111,   116,   116,   118,   124,   132,   137,   142,   147,   151,
+     156,   167
 };
 #endif
 
@@ -1310,13 +1310,13 @@ yyreduce:
     break;
 
   case 13:
-#line 83 "parser.y" /* yacc.c:1646  */
+#line 84 "parser.y" /* yacc.c:1646  */
     { (yyval.value).integer = -1*((yyvsp[0].value).integer); (yyval.value).real = -1*((yyvsp[0].value).real); (yyval.value).type = (yyvsp[0].value).type; }
 #line 1316 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 18:
-#line 91 "parser.y" /* yacc.c:1646  */
+#line 92 "parser.y" /* yacc.c:1646  */
     {if(tratador_semantico.avaliarDeclaracao(tabela_simbolos,(yyvsp[-2].value)))
 					      	{
                    			      	(yyval.value).var = (yyvsp[-2].value).var;  (yyval.value).integer = (yyvsp[0].value).integer; (yyval.value).type = (yyvsp[0].value).type; (yyval.value).real = (yyvsp[0].value).real;
@@ -1331,93 +1331,91 @@ yyreduce:
     break;
 
   case 19:
-#line 106 "parser.y" /* yacc.c:1646  */
-    { (yyvsp[0].value).type = strdup("int"); 	 
-			      if(tratador_semantico.avaliarRepeticaoDeclaracao(tabela_simbolos, (yyvsp[0].value)))
-				tabela_simbolos[std::string((yyvsp[0].value).var)] = (yyvsp[0].value);
+#line 107 "parser.y" /* yacc.c:1646  */
+    { if(std::string(tabela_simbolos[std::string((yyvsp[0].value).var)].type) == "")  	 
+			            tabela_simbolos[std::string((yyvsp[0].value).var)].type = strdup("int");
 			    }
-#line 1340 "parser.cpp" /* yacc.c:1646  */
+#line 1339 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 20:
 #line 111 "parser.y" /* yacc.c:1646  */
-    { (yyvsp[0].value).type = strdup("float"); 
-			      if(tratador_semantico.avaliarRepeticaoDeclaracao(tabela_simbolos, (yyvsp[0].value)))
-				tabela_simbolos[std::string((yyvsp[0].value).var)] = (yyvsp[0].value);
+    { if(std::string(tabela_simbolos[std::string((yyvsp[0].value).var)].type) == "")  	 
+			            tabela_simbolos[std::string((yyvsp[0].value).var)].type = strdup("float");
 			    }
-#line 1349 "parser.cpp" /* yacc.c:1646  */
+#line 1347 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 21:
-#line 117 "parser.y" /* yacc.c:1646  */
+#line 116 "parser.y" /* yacc.c:1646  */
     {(yyval.value) = (yyvsp[0].value);}
-#line 1355 "parser.cpp" /* yacc.c:1646  */
+#line 1353 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 23:
-#line 119 "parser.y" /* yacc.c:1646  */
+#line 118 "parser.y" /* yacc.c:1646  */
     {if(tratador_semantico.avaliarRepeticaoDeclaracao(tabela_simbolos, (yyvsp[0].value)))
-                     { (yyval.value).var = (yyvsp[0].value).var;  (yyval.value).integer = 0;  (yyval.value).real = 0.0;
-		        }
+                     { (yyval.value).var = (yyvsp[0].value).var;  (yyval.value).integer = 0;  (yyval.value).real = 0.0; (yyval.value).type = strdup(""); tabela_simbolos[std::string((yyval.value).var)] = (yyval.value);}
+									 //evita apontar para nulo
 		  }
-#line 1364 "parser.cpp" /* yacc.c:1646  */
+#line 1362 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 24:
-#line 125 "parser.y" /* yacc.c:1646  */
+#line 124 "parser.y" /* yacc.c:1646  */
     {if(tratador_semantico.avaliarRepeticaoDeclaracao(tabela_simbolos, (yyvsp[-2].value))){
 					    (yyval.value).var = (yyvsp[-2].value).var;  (yyval.value).integer = (yyvsp[0].value).integer; (yyval.value).real = (yyvsp[0].value).real; (yyval.value).type = (yyvsp[0].value).type;
-
+					    tabela_simbolos[std::string((yyval.value).var)] = (yyval.value);
 					   } 
 					}
-#line 1374 "parser.cpp" /* yacc.c:1646  */
+#line 1372 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 25:
-#line 133 "parser.y" /* yacc.c:1646  */
+#line 132 "parser.y" /* yacc.c:1646  */
     {if(tratador_semantico.avaliarDeclaracao(tabela_simbolos,(yyvsp[0].value)))
 				   (yyval.value).integer = tabela_simbolos[std::string((yyvsp[0].value).var)].integer;  
 				   (yyval.value).type    = tabela_simbolos[std::string((yyvsp[0].value).var)].type; 
                             }
-#line 1383 "parser.cpp" /* yacc.c:1646  */
+#line 1381 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 26:
-#line 138 "parser.y" /* yacc.c:1646  */
+#line 137 "parser.y" /* yacc.c:1646  */
     {if(tratador_semantico.avaliarDeclaracao(tabela_simbolos,(yyvsp[0].value)))
 				   (yyval.value).integer = -1*tabela_simbolos[std::string((yyvsp[0].value).var)].integer;
 				   (yyval.value).type    = tabela_simbolos[std::string((yyvsp[0].value).var)].type; 
                             }
-#line 1392 "parser.cpp" /* yacc.c:1646  */
+#line 1390 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 27:
-#line 143 "parser.y" /* yacc.c:1646  */
+#line 142 "parser.y" /* yacc.c:1646  */
     { if(tratador_semantico.avaliarDeclaracao(tabela_simbolos,(yyvsp[-1].value)))
 				   (yyval.value).integer = (tabela_simbolos[std::string((yyvsp[-1].value).var)].integer);     
 				   (yyval.value).type    = tabela_simbolos[std::string((yyvsp[-1].value).var)].type;                         
                             }
-#line 1401 "parser.cpp" /* yacc.c:1646  */
+#line 1399 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 28:
-#line 148 "parser.y" /* yacc.c:1646  */
+#line 147 "parser.y" /* yacc.c:1646  */
     { (yyval.value).integer = ((yyvsp[-1].value).integer); 
 					     (yyval.value).type = tabela_simbolos[std::string((yyvsp[-1].value).var)].type;          
 			                   }
-#line 1409 "parser.cpp" /* yacc.c:1646  */
+#line 1407 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 29:
-#line 152 "parser.y" /* yacc.c:1646  */
+#line 151 "parser.y" /* yacc.c:1646  */
     { (yyval.value).integer = (yyvsp[0].value).integer;
 					     (yyval.value).type = (yyvsp[0].value).type;          
  					   }
-#line 1417 "parser.cpp" /* yacc.c:1646  */
+#line 1415 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 30:
-#line 157 "parser.y" /* yacc.c:1646  */
+#line 156 "parser.y" /* yacc.c:1646  */
     { 
                   			 if(tratador_semantico.avaliarDeclaracao(tabela_simbolos,(yyvsp[-2].value)))
 				         { 		 
@@ -1427,21 +1425,21 @@ yyreduce:
 						    
 					 }
 				       }
-#line 1431 "parser.cpp" /* yacc.c:1646  */
+#line 1429 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 31:
-#line 168 "parser.y" /* yacc.c:1646  */
+#line 167 "parser.y" /* yacc.c:1646  */
     {                
 					   (yyval.value).type = (yyvsp[-2].value).type; //tipo mais a esquerda sobe                             
 					   (yyval.value).integer = tratador_aritimetico.operarNumeros((yyvsp[-2].value).integer,(yyvsp[0].value).integer,(yyvsp[-1].signal));
                                            (yyval.value).real = tratador_aritimetico.operarNumeros((yyvsp[-2].value).real,(yyvsp[0].value).real,(yyvsp[-1].signal));
 				       }
-#line 1441 "parser.cpp" /* yacc.c:1646  */
+#line 1439 "parser.cpp" /* yacc.c:1646  */
     break;
 
 
-#line 1445 "parser.cpp" /* yacc.c:1646  */
+#line 1443 "parser.cpp" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1669,6 +1667,6 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 178 "parser.y" /* yacc.c:1906  */
+#line 177 "parser.y" /* yacc.c:1906  */
 
 

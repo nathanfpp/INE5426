@@ -104,28 +104,26 @@ atribuicao: T_VAR T_EQUAL atribuicao_composta  {if(tratador_semantico.avaliarDec
 
 
 //Declaração de variável
-tipo: T_TYPE_INT variavel   { $2.type = strdup("int"); 	 
-			      if(tratador_semantico.avaliarRepeticaoDeclaracao(tabela_simbolos, $2))
-				tabela_simbolos[std::string($2.var)] = $2;
+tipo: T_TYPE_INT variavel   { if(std::string(tabela_simbolos[std::string($2.var)].type) == "")  	 
+			            tabela_simbolos[std::string($2.var)].type = strdup("int");
 			    }
 
-    | T_TYPE_FLOAT variavel { $2.type = strdup("float"); 
-			      if(tratador_semantico.avaliarRepeticaoDeclaracao(tabela_simbolos, $2))
-				tabela_simbolos[std::string($2.var)] = $2;
+    | T_TYPE_FLOAT variavel { if(std::string(tabela_simbolos[std::string($2.var)].type) == "")  	 
+			            tabela_simbolos[std::string($2.var)].type = strdup("float");
 			    }
     ;
 
 variavel: declaracao {$$ = $1;}| declaracao T_COMMA variavel
     ;
 declaracao: T_VAR {if(tratador_semantico.avaliarRepeticaoDeclaracao(tabela_simbolos, $1))
-                     { $$.var = $1.var;  $$.integer = 0;  $$.real = 0.0;
-		        }
+                     { $$.var = $1.var;  $$.integer = 0;  $$.real = 0.0; $$.type = strdup(""); tabela_simbolos[std::string($$.var)] = $$;}
+									 //evita apontar para nulo
 		  }
   
 
     | T_VAR T_EQUAL atribuicao_composta {if(tratador_semantico.avaliarRepeticaoDeclaracao(tabela_simbolos, $1)){
 					    $$.var = $1.var;  $$.integer = $3.integer; $$.real = $3.real; $$.type = $3.type;
-
+					    tabela_simbolos[std::string($$.var)] = $$;
 					   } 
 					}
     ;
