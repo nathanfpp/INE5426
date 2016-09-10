@@ -6,6 +6,7 @@
 #include <cstdio>
 #include "estruturas.h"
 #include "tratadorSemantico.h"
+#include "tratadorAritimetico.h"
 
 extern int yylex();
 extern void yyerror(const char* s, ...);
@@ -20,6 +21,7 @@ extern void yyerror(const char* s, ...);
 
 std::map<std::string, atributo> tabela_simbolos;
 tratadorSemantico tratador_semantico;
+tratadorAritimetico tratador_aritimetico;
 }
 
 
@@ -67,33 +69,20 @@ line: T_NL
     ;
 
 primitivoNumerico: T_INT | T_FLOAT;
-expr: primitivoNumerico                     {  $$.integer = $1.integer; $$.real = $1.real; 							   $$.type = $1.type;                             }     //std::cout << $$.integer << "\n"; 
-//
-// Adição
-    | expr T_PLUS expr           {  $$.integer = $1.integer + $3.integer; $$.real = $1.real + $3.real; $$.type = $1.type;  
-                                    //std::cout << "( " << $1.integer << " + " << $3.integer << " )";
-                                 }
-// Subtração
-    | expr T_MINUS expr          { $$.integer = $1.integer-$3.integer;  $$.real = $1.real - $3.real; $$.type = $1.type;  
-                                    //std::cout << "( "<< $1.integer << " - " << $3.integer << " )" << "\n";    
-				 }
-// Multiplicação por Escalar
-    | expr T_TIMES expr        {   $$.integer = $1.integer*$3.integer; $$.real = $1.real * $3.real; $$.type = $1.type;  
-                                   //std::cout << $1.integer << " * " << $3.integer  << "\n"; 
-                                 }
 
-// Divisão por Escalar
-    | expr T_DIV expr          {   $$.integer = $1.integer/$3.integer; $$.real = $1.real / $3.real; $$.type = $1.type;  
-                                   //std::cout << "( "<<$1.integer << " ) / " << $3.integer << "\n";
-                                 }
+expr: primitivoNumerico         {  $$.integer = $1.integer; $$.real = $1.real; $$.type = $1.type; }  
+
+// Adição, Subtração, Multiplicação por Escalar, Divisão por Escalar
+    | expr sinal expr           {  $$.type = $1.type; 
+				   $$.integer = tratador_aritimetico.operarNumeros($1.integer,$3.integer,$2);
+                                   $$.real = tratador_aritimetico.operarNumeros($1.real,$3.real,$2);
+                                }
 // Parênteses
-    | T_OPEN expr T_CLOSE        { $$.integer = ($2.integer);  $$.real = ($2.real); $$.type = $2.type;  
-                                   //std::cout << "( " << $2.integer << " )\n";
-                                 }
+    | T_OPEN expr T_CLOSE       { $$.integer = ($2.integer);  $$.real = ($2.real); $$.type = $2.type; }
+
 // Número negativo
-    | T_MINUS expr                 { $$.integer = -1*($2.integer); $$.real = -1*($2.real); $$.type = $2.type;  
-                                   //std::cout << "-( " << $2.integer << " )\n";
-                                   }                                   
+    | T_MINUS expr              { $$.integer = -1*($2.integer); $$.real = -1*($2.real); $$.type = $2.type; }
+
 // Fim.
     ;
 
@@ -101,35 +90,41 @@ sinal: T_MINUS | T_PLUS | T_TIMES | T_DIV;
 
 // Atribuição
 atribuicao: T_VAR T_EQUAL atribuicao_composta  {if(tratador_semantico.avaliarDeclaracao(tabela_simbolos,$1))
-					      {
+					      	{
                    			      	$$.var = $1.var;  $$.integer = $3.integer; $$.type = $3.type; $$.real = $3.real;
 	 				   	tabela_simbolos[std::string($$.var)] = $$; //atualizo tabela de simbolos
 						if(std::string($$.type) == "int")
 							std::cout << "R: "<<std::string($$.var)<<" = "<< $$.integer << "\n";
 						else if(std::string($$.type) == "float")
 							std::cout << "R: "<<std::string($$.var)<<" = "<< $$.real << "\n";
-					      }                                       
+					        }                                       
 					       }          
 //Fim.
     ;
 
 
 //Declaração de variável
-tipo: T_TYPE_INT variavel   { $2.type = strdup("int"); 	 tabela_simbolos[std::string($2.var)] = $2;}
-    | T_TYPE_FLOAT variavel { $2.type = strdup("float"); tabela_simbolos[std::string($2.var)] = $2;}
+tipo: T_TYPE_INT variavel   { $2.type = strdup("int"); 	 
+			      if(tratador_semantico.avaliarRepeticaoDeclaracao(tabela_simbolos, $2))
+				tabela_simbolos[std::string($2.var)] = $2;
+			    }
+
+    | T_TYPE_FLOAT variavel { $2.type = strdup("float"); 
+			      if(tratador_semantico.avaliarRepeticaoDeclaracao(tabela_simbolos, $2))
+				tabela_simbolos[std::string($2.var)] = $2;
+			    }
     ;
 
 variavel: declaracao {$$ = $1;}| declaracao T_COMMA variavel
     ;
 declaracao: T_VAR {if(tratador_semantico.avaliarRepeticaoDeclaracao(tabela_simbolos, $1))
                      { $$.var = $1.var;  $$.integer = 0;  $$.real = 0.0;
-		       tabela_simbolos[std::string($$.var)] = $$; }
+		        }
 		  }
   
 
     | T_VAR T_EQUAL atribuicao_composta {if(tratador_semantico.avaliarRepeticaoDeclaracao(tabela_simbolos, $1)){
 					    $$.var = $1.var;  $$.integer = $3.integer; $$.real = $3.real; $$.type = $3.type;
-                   			    tabela_simbolos[std::string($$.var)] = $$; 
 
 					   } 
 					}
@@ -161,66 +156,21 @@ atribuicao_composta: T_VAR  {if(tratador_semantico.avaliarDeclaracao(tabela_simb
 
 //Generalizando operações com expressões numéricas e variáveis
     | T_VAR sinal atribuicao_composta { 
-                  if(tratador_semantico.avaliarDeclaracao(tabela_simbolos,$1)){ 
+                  			 if(tratador_semantico.avaliarDeclaracao(tabela_simbolos,$1))
+				         { 		 
+				          $$.type = $1.type; //tipo mais a esquerda sobe                             
+				          $$.integer = tratador_aritimetico.operarNumeros(tabela_simbolos[std::string($1.var)].integer,$3.integer,$2);
+		                          $$.real = tratador_aritimetico.operarNumeros(tabela_simbolos[std::string($1.var)].real,$3.real,$2);
+						    
+					 }
+				       }
 
-							   int iop1 = tabela_simbolos[std::string($1.var)].integer;
-							   int iop2 = $3.integer;
-							   double dop1 = tabela_simbolos[std::string($1.var)].real;
-							   double dop2 = $3.real;
-							   $$.type = $1.type; //tipo mais a esquerda sobe                             
-							     switch($2)
-                                                             {
-                                                              case '+': 
-                                                              $$.integer = iop1 + iop2;
-                                                              $$.real = dop1 + dop2;
- 							      break;
 
-							      case '-': 
-                                                              $$.integer = iop1 - iop2;
-                                                              $$.real = dop1 + dop2;
- 							      break;
-
- 							      case '*': 
-                                                              $$.integer = iop1 * iop2; 
-                                                              $$.real = dop1 + dop2;
- 							      break;
-
-							      case '/': 
-                                                              $$.integer = iop1 / iop2; 
-                                                              $$.real = dop1 + dop2;
- 							      break;
-                                                             }
-					                 }
-						    }
-    | expr sinal atribuicao_composta {               
-							   int iop1 = $1.integer;
-							   int iop2 = $3.integer;
-							   double dop1 = $1.real;
-							   double dop2 = $3.real;  
-							   $$.type = $1.type; //tipo mais a esquerda sobe                             
-							     switch($2)
-                                                             {
-                                                              case '+': 
-                                                              $$.integer = iop1 + iop2;
-                                                              $$.real = dop1 + dop2;
- 							      break;
-
-							      case '-': 
-                                                              $$.integer = iop1 - iop2;
-                                                              $$.real = dop1 + dop2;
- 							      break;
-
- 							      case '*': 
-                                                              $$.integer = iop1 * iop2; 
-                                                              $$.real = dop1 + dop2;
- 							      break;
-
-							      case '/': 
-                                                              $$.integer = iop1 / iop2; 
-                                                              $$.real = dop1 + dop2;
- 							      break;
-                                                             }
-					                 }
+    | expr sinal atribuicao_composta   {                
+					   $$.type = $1.type; //tipo mais a esquerda sobe                             
+					   $$.integer = tratador_aritimetico.operarNumeros($1.integer,$3.integer,$2);
+                                           $$.real = tratador_aritimetico.operarNumeros($1.real,$3.real,$2);
+				       }
 						  
 						   
 //Fim.

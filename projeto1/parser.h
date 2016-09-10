@@ -40,7 +40,7 @@
 extern int yydebug;
 #endif
 /* "%code requires" blocks.  */
-#line 14 "parser.y" /* yacc.c:1909  */
+#line 15 "parser.y" /* yacc.c:1909  */
 //estrutura complementar ao union
 
 
@@ -73,7 +73,7 @@ extern int yydebug;
 typedef union YYSTYPE YYSTYPE;
 union YYSTYPE
 {
-#line 29 "parser.y" /* yacc.c:1909  */
+#line 31 "parser.y" /* yacc.c:1909  */
 
     atributo value;
     char signal;

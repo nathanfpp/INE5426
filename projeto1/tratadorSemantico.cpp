@@ -24,15 +24,17 @@ bool tratadorSemantico::avaliarRepeticaoDeclaracao(std::map<std::string, atribut
          return true;
 }
 
-bool tratadorSemantico::avaliarTipo(atributo a1, atributo a2){
+bool tratadorSemantico::avaliarTipo(atributo value_1, atributo value_2){
 
  //SE o tipo da variável mais a esquerda for diferente do operando a direita, temos erro semântico.
-         if (std::string(a1.type) != std::string(a2.type)){
-              std::cout <<"semantic error: attribution operation expected " <<std::string(a1.type)<< "but received " <<std::string(a2.type) <<"\n";       
+         if (std::string(value_1.type) != std::string(value_2.type)){
+              std::cout <<"semantic error: attribution operation expected " <<std::string(value_1.type)<< "but received " <<std::string(value_2.type) <<"\n";       
 	      exit(0);
 	      return false;					   
          }
          return true;
 }
+
+
 
 
