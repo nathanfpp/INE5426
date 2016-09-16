@@ -7,6 +7,9 @@
 
 #include <iostream>
 #include <vector>
+#include <iostream>
+#include <string>
+#include <map>
 
 extern void yyerror(const char *s, ...);
 
@@ -26,31 +29,14 @@ class Nodo {
         virtual int computar(){return 0;}
 };
 
+/* Variáveis */
+
 class Variavel : public Nodo {
      public:
          std::string id;
-         Nodo *proximo;
-         Variavel(std::string id, Nodo *proximo) : id(id), proximo(proximo) { }
+         Variavel(std::string id) : id(id) { }
          void imprimir();
          //int computar();
-};
-
-class Atribuicao : public Nodo {
-     public:
-         Nodo *esquerda;
-         Nodo *proximo;
-         Atribuicao(Nodo *esquerda, Nodo *proximo) : esquerda(esquerda), proximo(proximo) { }
-         void imprimir();
-         //int computar();
-};
-
-class Declaracao : public Nodo {
-    public:
-        TipoDeVariavel tipo;
-        Nodo *direita;
-        Declaracao(TipoDeVariavel tipo, Nodo *direita) : tipo(tipo), direita(direita) { }
-        void imprimir();
-        //int computar();
 };
 
 class Inteiro : public Nodo {
@@ -80,24 +66,55 @@ class Boolean : public Nodo {
         //int computar();
 };
 
+
+/* Definição de Variáveis */
+
+class Atribuicao : public Nodo {
+     public:
+         Variavel *esquerda;
+         Nodo *direita;
+         Atribuicao *proximo;
+         Atribuicao(Variavel *esq, Nodo *dir, Atribuicao *prox) : esquerda(esq), direita(dir), proximo(prox) { }
+         void imprimir();
+         void acrescentarSimbolos(std::map<std::string, Variavel*> &tabela_simbolos);
+         void verificarSimbolos(std::map<std::string, Variavel*> &tabela_simbolos);
+         //int computar();
+};
+
+class Declaracao : public Nodo {
+    public:
+        TipoDeVariavel tipo;
+        Nodo *direita;
+        Declaracao(TipoDeVariavel tipo, Nodo *direita) : tipo(tipo), direita(direita) { }
+        void acrescentarSimbolos(std::map<std::string, Variavel*> &tabela_simbolos);
+        void imprimir();
+        //int computar();
+};
+
+
+/* Operações */
+
 class OperacaoBinaria : public Nodo {
     public:
         Nodo *esquerda;        
-        Operacao op;
+        Operacao operacao;
         Nodo *direita;
-        OperacaoBinaria(Nodo *esquerda, Operacao op, Nodo *direita) : esquerda(esquerda), op(op), direita(direita) { }
+        OperacaoBinaria(Nodo *esq, Operacao op, Nodo *dir) : esquerda(esq), operacao(op), direita(dir) { }
         void imprimir();
         //int computar();
 };
 
 class OperacaoUnaria : public Nodo {
     public:
-        Operacao op;
+        Operacao operacao;
         Nodo *direita;
-        OperacaoUnaria(Operacao op, Nodo *direita) : op(op), direita(direita) { }
+        OperacaoUnaria(Operacao op, Nodo *dir) : operacao(op), direita(dir) { }
         void imprimir();
         //int computar();
 };
+
+
+/* Bloco ou Linha */
 
 class Bloco : public Nodo {
     public:

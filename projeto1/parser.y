@@ -15,18 +15,18 @@ extern void yyerror(const char* s, ...);
 
 // Estrutura complementar ao Union
 %code requires {
-#include "arvoreSintatica.h"
-
+    #include "estruturas.h"
+    #include "tratadorSemantico.h"
+    #include "tratadorAritmetico.h"
+    #include "arvoreSintatica.h"
+    #include "arvoreSintatica.h"
 }
 
 // Declaração de Variáveis Globais
 %code {
     AST::Bloco *arvoreSintatica;
     AST::TipoDeVariavel ultimoTipo;
-    std::map<std::string, atributo> tabela_simbolos;
-
-    std::vector<atributo> list_values;
-    //std::vector<atributo>::iterator it;
+    std::map<std::string, AST::Variavel*> tabela_simbolos;
     tratadorSemantico tratador_semantico;
     tratadorAritmetico tratador_aritmetico;
 }
@@ -36,27 +36,27 @@ extern void yyerror(const char* s, ...);
 // yylval == %union
 // A union informa os diferentes modos de armazenar dados, utilizado para definir os tipos de Símbolos Terminais e Não-Terminais
 %union {
-
     const char *valor;
     AST::Nodo *nodo;
     AST::Bloco *bloco;
     AST::TipoDeVariavel tipo;
     AST::Variavel *nodo_var;
+    AST::Atribuicao *nodo_atrib;
 }
 
 // %token
 // Símbolos Terminais (tokens)
 %token <valor> T_FLOAT T_INT T_BOOL T_VAR
-%token <nodo> T_PLUS T_MINUS T_TIMES T_DIV T_NOT T_AND T_OR T_DIF T_HIGHER T_HIGH T_LOWER T_LOW
+//%token <nodo> T_PLUS T_MINUS T_TIMES T_DIV T_NOT T_AND T_OR T_DIF T_HIGHER T_HIGH T_LOWER T_LOW
 %token <tipo> T_TYPE_INT T_TYPE_FLOAT T_TYPE_BOOL
-%token T_NL T_OPEN T_CLOSE T_EQUAL T_COMMA
-
+%token T_NL T_OPEN T_CLOSE T_EQUAL T_COMMA T_PLUS T_MINUS T_TIMES T_DIV T_NOT T_AND T_OR T_DIF T_HIGHER T_HIGH T_LOWER T_LOW
 
 // %type
 // Define o tipo de Símbolos Não-Terminais
-%type <nodo> linha atribuicao expressao declaracao primitiva var variavel
+%type <nodo> linha expressao declaracao primitiva
 %type <bloco> programa linhas
-//%type <nodo_var> variavel
+%type <nodo_var> var
+%type <nodo_atrib> atribuicao variavel
 %type <tipo> tipo
 
 // %left, %right, %nonassoc
@@ -71,17 +71,24 @@ extern void yyerror(const char* s, ...);
 %%
 
 // $$ = $1 por padrão
-programa: linhas { arvoreSintatica = $1; }
-       ;
+programa: linhas { arvoreSintatica = $1; } 
+        ;
 
 linhas: 
-       linha         {  $$ = new AST::Bloco();  if($1 != NULL) $$->novaLinha($1); }
-     | linhas linha  {                          if($2 != NULL) $1->novaLinha($2); }
-     ;
+        linha         {  $$ = new AST::Bloco();  if($1 != NULL) $$->novaLinha($1); }
+      | linhas linha  {                          if($2 != NULL) $1->novaLinha($2); }
+      ;
 
 linha: 
-       atribuicao T_NL  { $$ = $1;  std::cout << "\nEntrada: "; }
-     | declaracao T_NL  { $$ = $1; $$->imprimir(); std::cout << "\nEntrada: "; }
+       atribuicao T_NL  { $$ = $1;
+                          ((AST::Atribuicao*) $1)->verificarSimbolos(tabela_simbolos);   
+                          $$->imprimir();  
+                          std::cout << "\nEntrada: "; }
+
+     | declaracao T_NL  { $$ = $1;  
+                          ((AST::Declaracao*) $1)->acrescentarSimbolos(tabela_simbolos);  
+                          $$->imprimir();  
+                          std::cout << "\nEntrada: "; }
      ;
 
 declaracao:
@@ -94,20 +101,14 @@ tipo:
      | T_TYPE_BOOL   { $$ = $1;  ultimoTipo = $1; }
      ;
 
-variavel: // Listar variáveis para declaração
-         atribuicao                   { //tabela_simbolos.add($1)
-                                         $$ = new AST::Atribuicao($1, NULL ); 
-                                        }
-        | variavel T_COMMA variavel  { $$ = new AST::Atribuicao($1, $3); 
-                                        }
-        | var                          { //tabela_simbolos.add($1)    
-					
-                                        }
+variavel:
+         atribuicao                  { $$ = $1;                                }
+        | variavel T_COMMA variavel  { $$ = $1;  $1->proximo = $3;             }
+        | var                        { $$ = new AST::Atribuicao($1,NULL,NULL); }
         ;
 
-atribuicao: // Possivelmente criar lista de variáveis
-            var T_EQUAL expressao  { //tabela_simbolos.add($1) 
-                                      $$ = new AST::OperacaoBinaria( $1, AST::Operacao::atribuicao, $3   ); }                     
+atribuicao:
+            var T_EQUAL expressao  {  $$ = new AST::Atribuicao( $1, $3, NULL);  }                     
           ;
 
 expressao:
@@ -131,6 +132,6 @@ primitiva:
          ;
 
 var:
-    T_VAR { $$ = new AST::Variavel ( $1, NULL ); } 
+    T_VAR { $$ = new AST::Variavel ( $1 ); } 
 
 %%
