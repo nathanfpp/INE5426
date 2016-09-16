@@ -1,4 +1,5 @@
 #include <iostream>
+#include "arvoreSintatica.h"
 
 extern int yyparse();
 //extern int yydebug;

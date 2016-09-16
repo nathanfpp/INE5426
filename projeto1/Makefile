@@ -3,7 +3,7 @@ FLEX=flex
 BISON=bison
 CC=clang++
 PARAM=-std=c++11 -fcxx-exceptions -Wno-deprecated-register -Wall
-OUTPUT=lukacompiler
+OUTPUT=lukecompiler
 
 $(OUTPUT): parser.h scanner.cpp main.cpp
 	${CC} -o ${OUTPUT} *.cpp ${PARAM}

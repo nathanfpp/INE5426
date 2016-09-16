@@ -1,193 +1,136 @@
 %{
 #include <iostream>
 #include <map>
+#include <vector>
 #include <string.h>
 #include <string>
 #include <cstdio>
 #include "estruturas.h"
 #include "tratadorSemantico.h"
-#include "tratadorAritimetico.h"
-
+#include "tratadorAritmetico.h"
+#include "arvoreSintatica.h"
 extern int yylex();
 extern void yyerror(const char* s, ...);
 %}
 
-%code requires{//estrutura complementar ao union
+// Estrutura complementar ao Union
+%code requires {
+#include "arvoreSintatica.h"
 
 }
 
+// Declaração de Variáveis Globais
+%code {
+    AST::Bloco *arvoreSintatica;
+    AST::TipoDeVariavel ultimoTipo;
+    std::map<std::string, atributo> tabela_simbolos;
 
-%code{//declaração de variaveis globais
-
-std::map<std::string, atributo> tabela_simbolos;
-tratadorSemantico tratador_semantico;
-tratadorAritimetico tratador_aritimetico;
+    std::vector<atributo> list_values;
+    //std::vector<atributo>::iterator it;
+    tratadorSemantico tratador_semantico;
+    tratadorAritmetico tratador_aritmetico;
 }
-
 
 %define parse.trace
 
-/* yylval == %union. union informs the different ways we can store data */
+// yylval == %union
+// A union informa os diferentes modos de armazenar dados, utilizado para definir os tipos de Símbolos Terminais e Não-Terminais
 %union {
-    atributo value;
-    char signal;
+
+    const char *valor;
+    AST::Nodo *nodo;
+    AST::Bloco *bloco;
+    AST::TipoDeVariavel tipo;
+    AST::Variavel *nodo_var;
 }
 
-/* token defines our terminal symbols (tokens). */
-%token <value>  T_VAR
-%token <value>  T_FLOAT T_INT
-%token <signal> T_PLUS T_MINUS T_TIMES T_DIV 
-%token T_NL T_OPEN T_CLOSE T_EQUAL T_COMMA T_TYPE_INT T_TYPE_FLOAT
-
-/* type defines the type of our nonterminal symbols. Types should match the names used in the union. Example: %type<node> expr */
-%type <value> program lines line expr atribuicao atribuicao_composta variavel declaracao tipo primitivoNumerico
-%type <signal> sinal
+// %token
+// Símbolos Terminais (tokens)
+%token <valor> T_FLOAT T_INT T_BOOL T_VAR
+%token <nodo> T_PLUS T_MINUS T_TIMES T_DIV T_NOT T_AND T_OR T_DIF T_HIGHER T_HIGH T_LOWER T_LOW
+%token <tipo> T_TYPE_INT T_TYPE_FLOAT T_TYPE_BOOL
+%token T_NL T_OPEN T_CLOSE T_EQUAL T_COMMA
 
 
-/* Operator precedence for mathematical operators.The latest it is listed, the highest the precedence. left, right, nonassoc */
+// %type
+// Define o tipo de Símbolos Não-Terminais
+%type <nodo> linha atribuicao expressao declaracao primitiva var
+%type <bloco> programa linhas
+//%type <nodo_var> variavel
+%type <tipo> tipo
 
+// %left, %right, %nonassoc
+// Precedência de operadores matemáticos, os últimos listados possuem maior procedência.
 %left T_PLUS 
 %left T_TIMES T_DIV
 %left T_OPEN T_CLOSE
 
-/* Starting rule */
-%start program
-
+// %start
+// Regra Inicial da Gramática
+%start programa
 %%
 
-program: lines  /*$$ = $1 when nothing is said*/
+// $$ = $1 por padrão
+programa: linhas { arvoreSintatica = $1; }
        ;
 
-lines: line        /*$$ = $1 when nothing is said*/
-     | lines line
+linhas: 
+       linha         {  $$ = new AST::Bloco();  if($1 != NULL) $$->novaLinha($1); }
+     | linhas linha  {                          if($2 != NULL) $1->novaLinha($2); }
      ;
 
-line: T_NL                                                 
-    | atribuicao T_NL  { std::cout << "\n\nEntrada: ";  }  
-    | tipo T_NL {std::cout <<"\n\nEntrada: ";}
-                                            
-    ;
+linha: 
+       atribuicao T_NL  { $$ = $1;  std::cout << "\nEntrada: "; }
+     | declaracao T_NL  { $$ = $1; $$->imprimir(); std::cout << "\nEntrada: "; }
+     ;
 
-primitivoNumerico: T_INT | T_FLOAT;
+declaracao:
+            tipo variavel  { $$ = new AST::Declaracao ($1, $2 ); }
+          ;
 
-expr: primitivoNumerico         {  $$.integer = $1.integer; $$.real = $1.real; $$.type = $1.type; }  
+tipo:
+       T_TYPE_INT    { $$ = $1;  ultimoTipo = $1; }
+     | T_TYPE_FLOAT  { $$ = $1;  ultimoTipo = $1; }
+     | T_TYPE_BOOL   { $$ = $1;  ultimoTipo = $1; }
+     ;
 
-// Adição, Subtração, Multiplicação por Escalar, Divisão por Escalar
-    | expr sinal expr           {  tratador_semantico.avaliarOperacao($1,$3);            
-				   $$.type = $1.type; 
-				   $$.integer = tratador_aritimetico.operarNumeros($1.integer,$3.integer,$2);
-                                   $$.real = tratador_aritimetico.operarNumeros($1.real,$3.real,$2);
-                                }
-// Parênteses
-    | T_OPEN expr T_CLOSE       { $$.integer = ($2.integer);  $$.real = ($2.real); $$.type = $2.type; }
+variavel: // Listar variáveis para declaração
+         atribuicao                   { //tabela_simbolos.add($1)
+                                         $$ = new AST::Atribuicao($1, NULL ); 
+                                        }
+        | variavel T_COMMA variavel  { $$ = new AST::Atribuicao($1, $3); 
+                                        }
+        | var                          { //tabela_simbolos.add($1)    
+					
+                                        }
+        ;
 
-// Número negativo
-    | T_MINUS expr              { $$.integer = -1*($2.integer); $$.real = -1*($2.real); $$.type = $2.type; }
+atribuicao: // Possivelmente criar lista de variáveis
+            var T_EQUAL expressao  { //tabela_simbolos.add($1) 
+                                      $$ = new AST::OperacaoBinaria( $1, AST::Operacao::atribuicao, $3   ); }                     
+          ;
 
-// Fim.
-    ;
+expressao:
+           primitiva
+         | expressao T_PLUS    expressao  { $$ = new AST::OperacaoBinaria( $1, AST::Operacao::adicao,        $3 ); }
+         | expressao T_MINUS   expressao  { $$ = new AST::OperacaoBinaria( $1, AST::Operacao::subtracao,     $3 ); }
+         | expressao T_TIMES   expressao  { $$ = new AST::OperacaoBinaria( $1, AST::Operacao::multiplicacao, $3 ); }
+         | expressao T_DIV     expressao  { $$ = new AST::OperacaoBinaria( $1, AST::Operacao::divisao,       $3 ); }
+         | expressao T_AND     expressao  { $$ = new AST::OperacaoBinaria( $1, AST::Operacao::e,             $3 ); }
+         | expressao T_OR      expressao  { $$ = new AST::OperacaoBinaria( $1, AST::Operacao::ou,            $3 ); }
+         |           T_MINUS   expressao  { $$ = new AST::OperacaoUnaria (     AST::Operacao::negacao,       $2 ); }
+         |           T_NOT     expressao  { $$ = new AST::OperacaoUnaria (     AST::Operacao::inversao,      $2 ); }
+         | T_OPEN    expressao T_CLOSE    { $$ = new AST::OperacaoUnaria (     AST::Operacao::parenteses,    $2 ); }
+         ;
 
-sinal: T_MINUS | T_PLUS | T_TIMES | T_DIV;
+primitiva:
+           var
+         | T_BOOL   { $$ = new AST::Boolean  ( $1       ); }
+         | T_INT    { $$ = new AST::Inteiro  ( $1       ); }
+         | T_FLOAT  { $$ = new AST::Real     ( $1       ); }
+         ;
 
-// Atribuição
-atribuicao: T_VAR T_EQUAL atribuicao_composta  {if(tratador_semantico.avaliarDeclaracao(tabela_simbolos,$1))
-					      	{
-						tratador_semantico.avaliarOperacao(tabela_simbolos[std::string($1.var)],$3);            
-                   			      	$$.var = $1.var;  $$.integer = $3.integer; $$.type = $3.type; $$.real = $3.real;
-	 				   	tabela_simbolos[std::string($$.var)] = $$; //atualizo tabela de simbolos
-						if(std::string($$.type) == "int")
-							std::cout << "R: "<<std::string($$.var)<<" = "<< $$.integer << "\n";
-						else if(std::string($$.type) == "float")
-							std::cout << "R: "<<std::string($$.var)<<" = "<< $$.real << "\n";
-					        }                                       
-					       }          
-   //| T_VAR T_EQUAL atribuicao_composta_bool
-
-
-//Fim.
-    ;
-
-
-//Declaração de variável
-tipo: T_TYPE_INT variavel   { if(tratador_semantico.avaliarTipoDefinido(tabela_simbolos[std::string($2.var)])) 	 
-			            tabela_simbolos[std::string($2.var)].type = strdup("int");
-			      else
-				    tratador_semantico.avaliarOperacao(tabela_simbolos[std::string($1.var)],$2);            
-			    }
-
-    | T_TYPE_FLOAT variavel { if(tratador_semantico.avaliarTipoDefinido(tabela_simbolos[std::string($2.var)]))  	 
-			            tabela_simbolos[std::string($2.var)].type = strdup("float");
-			      else
-				    tratador_semantico.avaliarOperacao("float",$2);            
-			    }
-
-    //| T_TYPE_BOOL variavelBool 
-    ;
-
-variavel: declaracao {$$ = $1;}| declaracao T_COMMA variavel
-    ;
-declaracao: T_VAR {if(tratador_semantico.avaliarRepeticaoDeclaracao(tabela_simbolos, $1))
-                     { $$.var = $1.var;  $$.integer = 0;  $$.real = 0.0; tabela_simbolos[std::string($$.var)] = $$;}
-
-		  }
-  
-
-    | T_VAR T_EQUAL atribuicao_composta {if(tratador_semantico.avaliarRepeticaoDeclaracao(tabela_simbolos, $1)){
-					     $$.type = $3.type;
-					     $$.var = $1.var;
-					     $$.integer = $3.integer; $$.real = $3.real;
-					     tabela_simbolos[std::string($$.var)] = $$;	
-					    }
-					}
-    ;
-
-// Atribuição simples, variável negativa, parênteses e somente algébrica.
-atribuicao_composta: T_VAR  {if(tratador_semantico.avaliarDeclaracao(tabela_simbolos,$1))
-				   $$.integer = tabela_simbolos[std::string($1.var)].integer;  
-				   $$.type    = tabela_simbolos[std::string($1.var)].type; 
-                            }
-
-    | T_MINUS T_VAR         {if(tratador_semantico.avaliarDeclaracao(tabela_simbolos,$2))
-				   $$.integer = -1*tabela_simbolos[std::string($2.var)].integer;
-				   $$.type    = tabela_simbolos[std::string($2.var)].type; 
-                            }
-
-    | T_OPEN  T_VAR T_CLOSE  { if(tratador_semantico.avaliarDeclaracao(tabela_simbolos,$2))
-				   $$.integer = (tabela_simbolos[std::string($2.var)].integer);     
-				   $$.type    = tabela_simbolos[std::string($2.var)].type;                         
-                            }
-
-    | T_OPEN  atribuicao_composta T_CLOSE  { $$.integer = ($2.integer); 
-					     $$.type = tabela_simbolos[std::string($2.var)].type;          
-			                   }
-
-    | expr		                   { 
-					     $$.integer = $1.integer;
-					     $$.type = $1.type;          
- 					   }
-
-//Generalizando operações com expressões numéricas e variáveis
-    | T_VAR sinal atribuicao_composta { 
-                  			 if(tratador_semantico.avaliarDeclaracao(tabela_simbolos,$1))
-				         { 
-					  tratador_semantico.avaliarOperacao(tabela_simbolos[std::string($1.var)],$3);		 
-				          $$.type = $1.type; //tipo mais a esquerda sobe                             
-				          $$.integer = tratador_aritimetico.operarNumeros(tabela_simbolos[std::string($1.var)].integer,$3.integer,$2);
-		                          $$.real = tratador_aritimetico.operarNumeros(tabela_simbolos[std::string($1.var)].real,$3.real,$2);
-						    
-					 }
-				       }
-
-
-    | expr sinal atribuicao_composta   {   tratador_semantico.avaliarOperacao($1,$3);            
-					   $$.type = $1.type; //tipo mais a esquerda sobe                             
-					   $$.integer = tratador_aritimetico.operarNumeros($1.integer,$3.integer,$2);
-                                           $$.real = tratador_aritimetico.operarNumeros($1.real,$3.real,$2);
-				       }
-						  
-						   
-//Fim.
-    ;
+var:
+    T_VAR { $$ = new AST::Variavel ( $1, NULL ); } 
 
 %%
-

@@ -11,6 +11,7 @@ bool tratadorSemantico::avaliarDeclaracao(std::map<std::string, atributo> tabela
               exit(0);
 	      return false;					   
          }
+         //std::cout<<"semantic ok: declared variable  " << value.var<<"\n";
          return true;
 }
 
@@ -36,26 +37,58 @@ bool tratadorSemantico::avaliarTipoDefinido(atributo value){
 }
 
 
-bool tratadorSemantico::avaliarOperacao(atributo value_1, atributo value_2){
+bool tratadorSemantico::avaliarOperacao(atributo value_1, atributo value_2, char sinal) {
 
  //SE o tipo da variável mais a esquerda for diferente do operando a direita, temos erro semântico.
-         if (std::string(value_1.type) != std::string(value_2.type)){
-              std::cout <<"semantic error: attribution operation expected " <<std::string(value_1.type)<< " but received " <<std::string(value_2.type) <<"\n";       
+         if (std::string(value_1.type) != std::string(value_2.type)) {
+              std::cout <<"semantic error: " << nomeDaOperacaoBinaria(sinal) << " operation expected " <<std::string(value_1.type)<< " but received " <<std::string(value_2.type) <<"\n";       
+	      exit(0);
+	      return false;					   
+         }
+         //std::cout <<"semantic ok: " << nomeDaOperacaoBinaria(sinal) << " operation expected " <<std::string(value_1.type)<< " and received " <<std::string(value_2.type) <<"\n";
+         return true;
+}
+
+
+bool tratadorSemantico::avaliarOperacao(std::string tipo, atributo value_2, char sinal) {
+
+ //SE o tipo da variável mais a esquerda for diferente do operando a direita, temos erro semântico.
+         if (tipo != std::string(value_2.type)) {
+              std::cout <<"semantic error: a: " << nomeDaOperacaoBinaria(sinal) << " operation expected " <<tipo<< " but received " << std::string(value_2.type) <<"\n";       
 	      exit(0);
 	      return false;					   
          }
          return true;
 }
 
-
-bool tratadorSemantico::avaliarOperacao(std::string tipo, atributo value_2){
-
- //SE o tipo da variável mais a esquerda for diferente do operando a direita, temos erro semântico.
-         if (tipo != std::string(value_2.type)){
-              std::cout <<"semantic error: attribution operation expected " <<tipo<< " but received " <<std::string(value_2.type) <<"\n";       
-	      exit(0);
-	      return false;					   
-         }
-         return true;
+std::string tratadorSemantico::nomeDaOperacaoBinaria(char operacao) {
+    switch(operacao) {
+            case 'a':
+                return "attribution";
+            case '+':
+                return "addition";
+            case '-':
+                return "subtraction";
+            case '*':
+                return "multiplication";
+            case '/':
+                return "division";
+            case '&':
+                return "and";
+            case '|':
+                return "or";
+            case 'e': // ==
+                return "equal";
+            case 'd': // !=
+                return "different";
+            case 'm': // >
+                return "greater then";
+            case 'h': // >=
+                return "greater or equal then";
+            case 'r': // <
+                return "less then";
+            case 'l': // <=
+                return "less or equal then";
+	}
+        return "not found";
 }
-
