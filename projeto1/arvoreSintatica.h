@@ -7,104 +7,103 @@
 
 #include <iostream>
 #include <vector>
+#include <iostream>
+#include <string>
+#include <map>
 
 extern void yyerror(const char *s, ...);
 
 namespace AST {
 
-enum TipoDeVariavel { inteiro, real, boolean };
-enum Operacao       { atribuicao, adicao, subtracao, multiplicacao, divisao, e, ou, negacao, inversao, parenteses };
+enum ClasseDeNodo   { declaracao, atribuicao, operacaoBinaria, operacaoUnaria, parenteses };
+enum TipoDeNodo     { inteiro, real, boolean, atomica, adicao, subtracao, multiplicacao, divisao, e, ou, negacao, inversao, x };
 
-class Nodo;
+class NodoBase;
+class Variavel;
 
-typedef std::vector<Nodo*> listaDeNodos;
+typedef std::vector<NodoBase*> listaDeNodos;
 
-class Nodo {
+class NodoBase {
     public:
-        virtual ~Nodo() {}
-        virtual void imprimir(){}
-        virtual int computar(){return 0;}
+        virtual ~NodoBase() {}
+        virtual void imprimir() {}
+        virtual void verificarSimbolos(std::map<std::string, AST::Variavel*> &tabela_simbolos) {}
+        virtual void acrescentarSimbolos(std::map<std::string, AST::Variavel*> &tabela_simbolos) {}
 };
 
-class Variavel : public Nodo {
+/* Variáveis */
+
+class Variavel : public NodoBase {
      public:
          std::string id;
-         Nodo *proximo;
-         Variavel(std::string id, Nodo *proximo) : id(id), proximo(proximo) { }
+         Variavel(std::string id) : id(id) { }
          void imprimir();
+         void verificarSimbolos(std::map<std::string, AST::Variavel*> &tabela_simbolos);
+         void acrescentarSimbolos(std::map<std::string, AST::Variavel*> &tabela_simbolos);
          //int computar();
 };
 
-class Atribuicao : public Nodo {
-     public:
-         Nodo *esquerda;
-         Nodo *proximo;
-         Atribuicao(Nodo *esquerda, Nodo *proximo) : esquerda(esquerda), proximo(proximo) { }
-         void imprimir();
-         //int computar();
-};
-
-class Declaracao : public Nodo {
-    public:
-        TipoDeVariavel tipo;
-        Nodo *direita;
-        Declaracao(TipoDeVariavel tipo, Nodo *direita) : tipo(tipo), direita(direita) { }
-        void imprimir();
-        //int computar();
-};
-
-class Inteiro : public Nodo {
+class Inteiro : public NodoBase {
     public:
         const char *valor;
         //int valor;        
         Inteiro(const char *valor) : valor(valor) {  }
         void imprimir();
+        void verificarSimbolos(std::map<std::string, AST::Variavel*> &tabela_simbolos) {}
+        void acrescentarSimbolos(std::map<std::string, AST::Variavel*> &tabela_simbolos) {}
         //int computeTree();
 };
 
-class Real : public Nodo {
+class Real : public NodoBase {
     public:
         const char *valor;
         //float valor;
         Real(const char *valor) : valor(valor) {  }
         void imprimir();
+        void verificarSimbolos(std::map<std::string, AST::Variavel*> &tabela_simbolos) {}
+        void acrescentarSimbolos(std::map<std::string, AST::Variavel*> &tabela_simbolos) {}
         //int computar();
 };
 
-class Boolean : public Nodo {
+class Boolean : public NodoBase {
     public:
         const char *valor;
         //bool valor;
         Boolean(const char *valor) : valor(valor) {  }
         void imprimir();
+        void verificarSimbolos(std::map<std::string, AST::Variavel*> &tabela_simbolos) {}
+        void acrescentarSimbolos(std::map<std::string, AST::Variavel*> &tabela_simbolos) {}
         //int computar();
 };
 
-class OperacaoBinaria : public Nodo {
+
+class Nodo : public NodoBase {
     public:
-        Nodo *esquerda;        
-        Operacao op;
-        Nodo *direita;
-        OperacaoBinaria(Nodo *esquerda, Operacao op, Nodo *direita) : esquerda(esquerda), op(op), direita(direita) { }
+        NodoBase *esquerda;
+        NodoBase *direita;
+        NodoBase *proximo;
+        ClasseDeNodo classe;
+        TipoDeNodo tipo;
+        Nodo(NodoBase *e,NodoBase *d,NodoBase *p, ClasseDeNodo c, TipoDeNodo t) : esquerda(e), direita(d), proximo(p), classe(c), tipo(t) { }
         void imprimir();
-        //int computar();
+        void imprimirDireita();
+        void imprimirEsquerda();
+        void imprimirProximo();
+        void verificarSimbolos(std::map<std::string, Variavel*> &tabela_simbolos);
+        void acrescentarSimbolos(std::map<std::string, Variavel*> &tabela_simbolos);
 };
 
-class OperacaoUnaria : public Nodo {
-    public:
-        Operacao op;
-        Nodo *direita;
-        OperacaoUnaria(Operacao op, Nodo *direita) : op(op), direita(direita) { }
-        void imprimir();
-        //int computar();
-};
 
-class Bloco : public Nodo {
+// Bloco ou Linha
+
+class Bloco : public NodoBase {
     public:
         listaDeNodos linhas;
         Bloco() { }
         void imprimir();
-        void novaLinha(Nodo *linha);
+        void novaLinha(NodoBase *linha);
+        void verificarSimbolos(std::map<std::string, Variavel*> &tabela_simbolos) {}
+        void acrescentarSimbolos(std::map<std::string, Variavel*> &tabela_simbolos) {}
         //int computar();
 };
 

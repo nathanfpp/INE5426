@@ -42,10 +42,13 @@ extern int yydebug;
 /* "%code requires" blocks.  */
 #line 17 "parser.y" /* yacc.c:1909  */
 
-#include "arvoreSintatica.h"
+    #include "estruturas.h"
+    #include "tratadorSemantico.h"
+    #include "tratadorAritmetico.h"
+    #include "arvoreSintatica.h"
+    #include "arvoreSintatica.h"
 
-
-#line 49 "parser.h" /* yacc.c:1909  */
+#line 52 "parser.h" /* yacc.c:1909  */
 
 /* Token type.  */
 #ifndef YYTOKENTYPE
@@ -56,26 +59,26 @@ extern int yydebug;
     T_INT = 259,
     T_BOOL = 260,
     T_VAR = 261,
-    T_PLUS = 262,
-    T_MINUS = 263,
-    T_TIMES = 264,
-    T_DIV = 265,
-    T_NOT = 266,
-    T_AND = 267,
-    T_OR = 268,
-    T_DIF = 269,
-    T_HIGHER = 270,
-    T_HIGH = 271,
-    T_LOWER = 272,
-    T_LOW = 273,
-    T_TYPE_INT = 274,
-    T_TYPE_FLOAT = 275,
-    T_TYPE_BOOL = 276,
-    T_NL = 277,
-    T_OPEN = 278,
-    T_CLOSE = 279,
-    T_EQUAL = 280,
-    T_COMMA = 281
+    T_TYPE_INT = 262,
+    T_TYPE_FLOAT = 263,
+    T_TYPE_BOOL = 264,
+    T_NL = 265,
+    T_OPEN = 266,
+    T_CLOSE = 267,
+    T_EQUAL = 268,
+    T_COMMA = 269,
+    T_PLUS = 270,
+    T_MINUS = 271,
+    T_TIMES = 272,
+    T_DIV = 273,
+    T_NOT = 274,
+    T_AND = 275,
+    T_OR = 276,
+    T_DIF = 277,
+    T_HIGHER = 278,
+    T_HIGH = 279,
+    T_LOWER = 280,
+    T_LOW = 281
   };
 #endif
 
@@ -86,14 +89,14 @@ union YYSTYPE
 {
 #line 38 "parser.y" /* yacc.c:1909  */
 
-
     const char *valor;
+    AST::NodoBase *nodobase;
     AST::Nodo *nodo;
     AST::Bloco *bloco;
-    AST::TipoDeVariavel tipo;
-    AST::Variavel *nodo_var;
+    AST::Variavel *nodovar;
+    AST::TipoDeNodo tipo;
 
-#line 97 "parser.h" /* yacc.c:1909  */
+#line 100 "parser.h" /* yacc.c:1909  */
 };
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1

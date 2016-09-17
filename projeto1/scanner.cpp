@@ -815,17 +815,17 @@ YY_RULE_SETUP
 case 2:
 YY_RULE_SETUP
 #line 26 "scanner.l"
-{ yylval.tipo = AST::TipoDeVariavel::inteiro;  return T_TYPE_INT;   } // 
+{ yylval.tipo = AST::TipoDeNodo::inteiro;  return T_TYPE_INT;   } // 
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
 #line 27 "scanner.l"
-{ yylval.tipo = AST::TipoDeVariavel::real;     return T_TYPE_FLOAT; } // Tipos de Variáveis
+{ yylval.tipo = AST::TipoDeNodo::real;     return T_TYPE_FLOAT; } // Tipos de Variáveis
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
 #line 28 "scanner.l"
-{ yylval.tipo = AST::TipoDeVariavel::boolean;  return T_TYPE_BOOL;  } // 
+{ yylval.tipo = AST::TipoDeNodo::boolean;  return T_TYPE_BOOL;  } // 
 	YY_BREAK
 case 5:
 YY_RULE_SETUP

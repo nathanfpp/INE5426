@@ -23,9 +23,9 @@ letter       [A-Z]|[a-z]([a-z]|[A-Z]|"_"|[0-9])*
 
 [ \t]               ; // Ignora espaços entre tokens
 
-{tipo_int}          { yylval.tipo = AST::TipoDeVariavel::inteiro;  return T_TYPE_INT;   } // 
-{tipo_float}        { yylval.tipo = AST::TipoDeVariavel::real;     return T_TYPE_FLOAT; } // Tipos de Variáveis
-{tipo_bool}         { yylval.tipo = AST::TipoDeVariavel::boolean;  return T_TYPE_BOOL;  } // 
+{tipo_int}          { yylval.tipo = AST::TipoDeNodo::inteiro;  return T_TYPE_INT;   } // 
+{tipo_float}        { yylval.tipo = AST::TipoDeNodo::real;     return T_TYPE_FLOAT; } // Tipos de Variáveis
+{tipo_bool}         { yylval.tipo = AST::TipoDeNodo::boolean;  return T_TYPE_BOOL;  } // 
 
 {valor_int}         { yylval.valor = strdup(yytext);  return T_INT;   } // Valores de
 {valor_float}       { yylval.valor = strdup(yytext);  return T_FLOAT; } //  Variáveis
