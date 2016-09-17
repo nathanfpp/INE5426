@@ -33,7 +33,11 @@ class NodoBase {
 
 /* Variáveis */
 
+<<<<<<< HEAD
 class Variavel : public NodoBase {
+=======
+class Variavel : public Nodo {
+>>>>>>> 87ade1c4dda2f74821bf776e4bc02de0b2ef19af
      public:
          std::string id;
          Variavel(std::string id) : id(id) { }
@@ -43,7 +47,11 @@ class Variavel : public NodoBase {
          //int computar();
 };
 
+<<<<<<< HEAD
 class Inteiro : public NodoBase {
+=======
+class Inteiro : public Nodo {
+>>>>>>> 87ade1c4dda2f74821bf776e4bc02de0b2ef19af
     public:
         const char *valor;
         //int valor;        
@@ -76,15 +84,61 @@ class Boolean : public NodoBase {
         //int computar();
 };
 
+<<<<<<< HEAD
+=======
+
+/* Definição de Variáveis */
+
+class Atribuicao : public Nodo {
+     public:
+         Variavel *esquerda;
+         Nodo *direita;
+         Atribuicao *proximo;
+         Atribuicao(Variavel *esq, Nodo *dir, Atribuicao *prox) : esquerda(esq), direita(dir), proximo(prox) { }
+         void imprimir();
+         void acrescentarSimbolos(std::map<std::string, Variavel*> &tabela_simbolos);
+         void verificarSimbolos(std::map<std::string, Variavel*> &tabela_simbolos);
+         //int computar();
+};
+
+class Declaracao : public Nodo {
+    public:
+        TipoDeVariavel tipo;
+        Nodo *direita;
+        Declaracao(TipoDeVariavel tipo, Nodo *direita) : tipo(tipo), direita(direita) { }
+        void acrescentarSimbolos(std::map<std::string, Variavel*> &tabela_simbolos);
+        void imprimir();
+        //int computar();
+};
+
+
+/* Operações */
+
+class OperacaoBinaria : public Nodo {
+    public:
+        Nodo *esquerda;        
+        Operacao operacao;
+        Nodo *direita;
+        OperacaoBinaria(Nodo *esq, Operacao op, Nodo *dir) : esquerda(esq), operacao(op), direita(dir) { }
+        void imprimir();
+        //int computar();
+};
+>>>>>>> 87ade1c4dda2f74821bf776e4bc02de0b2ef19af
 
 class Nodo : public NodoBase {
     public:
+<<<<<<< HEAD
         NodoBase *esquerda;
         NodoBase *direita;
         NodoBase *proximo;
         ClasseDeNodo classe;
         TipoDeNodo tipo;
         Nodo(NodoBase *e,NodoBase *d,NodoBase *p, ClasseDeNodo c, TipoDeNodo t) : esquerda(e), direita(d), proximo(p), classe(c), tipo(t) { }
+=======
+        Operacao operacao;
+        Nodo *direita;
+        OperacaoUnaria(Operacao op, Nodo *dir) : operacao(op), direita(dir) { }
+>>>>>>> 87ade1c4dda2f74821bf776e4bc02de0b2ef19af
         void imprimir();
         void imprimirDireita();
         void imprimirEsquerda();
@@ -94,9 +148,15 @@ class Nodo : public NodoBase {
 };
 
 
+<<<<<<< HEAD
 // Bloco ou Linha
 
 class Bloco : public NodoBase {
+=======
+/* Bloco ou Linha */
+
+class Bloco : public Nodo {
+>>>>>>> 87ade1c4dda2f74821bf776e4bc02de0b2ef19af
     public:
         listaDeNodos linhas;
         Bloco() { }

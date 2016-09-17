@@ -93,8 +93,14 @@ union YYSTYPE
     AST::NodoBase *nodobase;
     AST::Nodo *nodo;
     AST::Bloco *bloco;
+<<<<<<< HEAD
     AST::Variavel *nodovar;
     AST::TipoDeNodo tipo;
+=======
+    AST::TipoDeVariavel tipo;
+    AST::Variavel *nodo_var;
+    AST::Atribuicao *nodo_atrib;
+>>>>>>> 87ade1c4dda2f74821bf776e4bc02de0b2ef19af
 
 #line 100 "parser.h" /* yacc.c:1909  */
 };

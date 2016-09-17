@@ -25,7 +25,11 @@ extern void yyerror(const char* s, ...);
 // Declaração de Variáveis Globais
 %code {
     AST::Bloco *arvoreSintatica;
+<<<<<<< HEAD
     AST::TipoDeNodo ultimoTipo;
+=======
+    AST::TipoDeVariavel ultimoTipo;
+>>>>>>> 87ade1c4dda2f74821bf776e4bc02de0b2ef19af
     std::map<std::string, AST::Variavel*> tabela_simbolos;
     tratadorSemantico tratador_semantico;
     tratadorAritmetico tratador_aritmetico;
@@ -40,8 +44,14 @@ extern void yyerror(const char* s, ...);
     AST::NodoBase *nodobase;
     AST::Nodo *nodo;
     AST::Bloco *bloco;
+<<<<<<< HEAD
     AST::Variavel *nodovar;
     AST::TipoDeNodo tipo;
+=======
+    AST::TipoDeVariavel tipo;
+    AST::Variavel *nodo_var;
+    AST::Atribuicao *nodo_atrib;
+>>>>>>> 87ade1c4dda2f74821bf776e4bc02de0b2ef19af
 }
 
 // %token
@@ -53,10 +63,17 @@ extern void yyerror(const char* s, ...);
 
 // %type
 // Define o tipo de Símbolos Não-Terminais
+<<<<<<< HEAD
 %type <nodobase> linha expressao declaracao primitiva
 %type <bloco> programa linhas
 %type <nodovar> var
 %type <nodo> atribuicao variavel
+=======
+%type <nodo> linha expressao declaracao primitiva
+%type <bloco> programa linhas
+%type <nodo_var> var
+%type <nodo_atrib> atribuicao variavel
+>>>>>>> 87ade1c4dda2f74821bf776e4bc02de0b2ef19af
 %type <tipo> tipo
 
 // %left, %right, %nonassoc
@@ -81,12 +98,20 @@ linhas:
 
 linha: 
        atribuicao T_NL  { $$ = $1;
+<<<<<<< HEAD
                           $1->verificarSimbolos(tabela_simbolos);   
+=======
+                          ((AST::Atribuicao*) $1)->verificarSimbolos(tabela_simbolos);   
+>>>>>>> 87ade1c4dda2f74821bf776e4bc02de0b2ef19af
                           $$->imprimir();  
                           std::cout << "\nEntrada: "; }
 
      | declaracao T_NL  { $$ = $1;  
+<<<<<<< HEAD
                           $1->acrescentarSimbolos(tabela_simbolos);  
+=======
+                          ((AST::Declaracao*) $1)->acrescentarSimbolos(tabela_simbolos);  
+>>>>>>> 87ade1c4dda2f74821bf776e4bc02de0b2ef19af
                           $$->imprimir();  
                           std::cout << "\nEntrada: "; }
      ;
@@ -102,6 +127,7 @@ tipo:
      ;
 
 variavel:
+<<<<<<< HEAD
          atribuicao                  { $1->direita->verificarSimbolos(tabela_simbolos);   $$ = $1;                                   }
         | variavel T_COMMA variavel  { $$ = $1;  $1->proximo = $3;                                                          }
         | var                        { $$ = new AST::Nodo( $1, NULL, NULL, AST::ClasseDeNodo::atribuicao, AST::TipoDeNodo::atomica ); }
@@ -109,6 +135,15 @@ variavel:
 
 atribuicao:
             var T_EQUAL expressao  {  $$ = new AST::Nodo( $1, $3, NULL, AST::ClasseDeNodo::atribuicao, AST::TipoDeNodo::x ); }                  
+=======
+         atribuicao                  { $$ = $1;                                }
+        | variavel T_COMMA variavel  { $$ = $1;  $1->proximo = $3;             }
+        | var                        { $$ = new AST::Atribuicao($1,NULL,NULL); }
+        ;
+
+atribuicao:
+            var T_EQUAL expressao  {  $$ = new AST::Atribuicao( $1, $3, NULL);  }                     
+>>>>>>> 87ade1c4dda2f74821bf776e4bc02de0b2ef19af
           ;
 
 expressao:
