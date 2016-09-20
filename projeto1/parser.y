@@ -5,9 +5,6 @@
 #include <string.h>
 #include <string>
 #include <cstdio>
-#include "estruturas.h"
-#include "tratadorSemantico.h"
-#include "tratadorAritmetico.h"
 #include "arvoreSintatica.h"
 extern int yylex();
 extern void yyerror(const char* s, ...);
@@ -15,9 +12,6 @@ extern void yyerror(const char* s, ...);
 
 // Estrutura complementar ao Union
 %code requires {
-    #include "estruturas.h"
-    #include "tratadorSemantico.h"
-    #include "tratadorAritmetico.h"
     #include "arvoreSintatica.h"
     #include "arvoreSintatica.h"
 }
@@ -27,8 +21,6 @@ extern void yyerror(const char* s, ...);
     AST::Bloco *arvoreSintatica;
     AST::TipoDeNodo ultimoTipo;
     std::map<std::string, AST::Variavel*> tabela_simbolos;
-    tratadorSemantico tratador_semantico;
-    tratadorAritmetico tratador_aritmetico;
 }
 
 %define parse.trace
@@ -49,7 +41,8 @@ extern void yyerror(const char* s, ...);
 %token <valor> T_FLOAT T_INT T_BOOL T_VAR
 //%token <nodo> T_PLUS T_MINUS T_TIMES T_DIV T_NOT T_AND T_OR T_DIF T_HIGHER T_HIGH T_LOWER T_LOW
 %token <tipo> T_TYPE_INT T_TYPE_FLOAT T_TYPE_BOOL
-%token T_NL T_OPEN T_CLOSE T_EQUAL T_COMMA T_PLUS T_MINUS T_TIMES T_DIV T_NOT T_AND T_OR T_DIF T_HIGHER T_HIGH T_LOWER T_LOW
+%token T_NL T_OPEN T_CLOSE T_EQUAL T_COMMA T_PLUS T_MINUS T_TIMES T_DIV T_NOT T_AND T_OR 
+%token T_EQUAL2 T_DIF T_HIGHER T_HIGH T_LOWER T_LOW
 
 // %type
 // Define o tipo de Símbolos Não-Terminais
@@ -82,7 +75,8 @@ linhas:
 linha: 
        atribuicao T_NL  { $$ = $1;
                           $1->verificarSimbolos(tabela_simbolos); //verifica se variável a esq e dir na atribuição já foi declarada  
-			  ((AST::Nodo*)$1->direita)->verificarTipo(tabela_simbolos[std::string(((AST::Variavel*)$1->esquerda)->id)]->tipo, AST::TipoDeNodo::x); //verifica se o tipo da variável e da atribuição são equivalentes
+			  //((AST::Nodo*)$1->direita)->verificarTipo(tabela_simbolos[std::string(((AST::Variavel*)$1->esquerda)->id)]->tipo, AST::TipoDeNodo::x); //verifica se o tipo da variável e da atribuição são equivalentes
+                          $1->verificarTipoRaiz(tabela_simbolos[std::string(((AST::Variavel*)$1->esquerda)->id)]->tipo,((AST::Nodo*)($1->direita))->verificarTipo(AST::TipoDeNodo::x, AST::TipoDeNodo::x));
                           $$->imprimir();  
                           std::cout << "\nEntrada: "; }
 
@@ -103,7 +97,9 @@ tipo:
      ;
 
 variavel:
-         atribuicao                  { $1->direita->verificarSimbolos(tabela_simbolos); $1->direita->verificarTipo(ultimoTipo, AST::TipoDeNodo::x);  $$ = $1; } //verifica se variavel(veis) a direita ja foi(foram) declarada(s)                                 
+         atribuicao                  { $1->direita->verificarSimbolos(tabela_simbolos); // Variáveis a direita foram declaradas?
+                                       $1->verificarTipoRaiz(ultimoTipo,$1->direita->verificarTipo(AST::TipoDeNodo::x, AST::TipoDeNodo::x));   //
+                                       $$ = $1;                                                    }                                 
         | variavel T_COMMA variavel  { $$ = $1;  $1->proximo = $3;                                                          }
         | var                        { $$ = new AST::Nodo( $1, NULL, NULL, AST::ClasseDeNodo::atribuicao, AST::TipoDeNodo::atomica ); }
         ;
@@ -120,6 +116,12 @@ expressao:
          | expressao T_DIV     expressao  { $$ = new AST::Nodo( $1,  $3, NULL, AST::ClasseDeNodo::operacaoBinaria, AST::TipoDeNodo::divisao       ); }
          | expressao T_AND     expressao  { $$ = new AST::Nodo( $1,  $3, NULL, AST::ClasseDeNodo::operacaoBinaria, AST::TipoDeNodo::e             ); }
          | expressao T_OR      expressao  { $$ = new AST::Nodo( $1,  $3, NULL, AST::ClasseDeNodo::operacaoBinaria, AST::TipoDeNodo::ou            ); }
+         | expressao T_EQUAL2  expressao  { $$ = new AST::Nodo( $1,  $3, NULL, AST::ClasseDeNodo::operacaoBinaria, AST::TipoDeNodo::igual         );}
+         | expressao T_DIF     expressao  { $$ = new AST::Nodo( $1,  $3, NULL, AST::ClasseDeNodo::operacaoBinaria, AST::TipoDeNodo::diferente     );}
+         | expressao T_HIGHER  expressao  { $$ = new AST::Nodo( $1,  $3, NULL, AST::ClasseDeNodo::operacaoBinaria, AST::TipoDeNodo::maior         );}
+         | expressao T_HIGH    expressao  { $$ = new AST::Nodo( $1,  $3, NULL, AST::ClasseDeNodo::operacaoBinaria, AST::TipoDeNodo::maior_igual   );}
+         | expressao T_LOWER   expressao  { $$ = new AST::Nodo( $1,  $3, NULL, AST::ClasseDeNodo::operacaoBinaria, AST::TipoDeNodo::menor         );}
+         | expressao T_LOW     expressao  { $$ = new AST::Nodo( $1,  $3, NULL, AST::ClasseDeNodo::operacaoBinaria, AST::TipoDeNodo::menor_igual   );}
          |           T_MINUS   expressao  { $$ = new AST::Nodo(NULL, $2, NULL, AST::ClasseDeNodo::operacaoUnaria,  AST::TipoDeNodo::negacao       ); }
          |           T_NOT     expressao  { $$ = new AST::Nodo(NULL, $2, NULL, AST::ClasseDeNodo::operacaoUnaria,  AST::TipoDeNodo::inversao      ); }
          | T_OPEN    expressao T_CLOSE    { $$ = new AST::Nodo(NULL, $2, NULL, AST::ClasseDeNodo::parenteses,      AST::TipoDeNodo::x             ); }
@@ -129,7 +131,7 @@ primitiva:
            var
          | T_BOOL   { $$ = new AST::Boolean  ( $1, AST::TipoDeNodo::boolean); }
          | T_INT    { $$ = new AST::Inteiro  ( $1, AST::TipoDeNodo::inteiro); }
-         | T_FLOAT  { $$ = new AST::Real     ( $1, AST::TipoDeNodo::real); }
+         | T_FLOAT  { $$ = new AST::Real     ( $1, AST::TipoDeNodo::real   ); }
          ;
 
 var:
