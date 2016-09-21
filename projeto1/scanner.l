@@ -10,21 +10,22 @@ void yyerror(const char* s, ...);
 
 %option noyywrap nodefault yylineno
 
-tipo_int     ("int")
-tipo_float   ("float")
-tipo_bool    ("bool")
-valor_int    [0-9]+
-valor_float  {valor_int}*\.{valor_int}
-valor_bool   ("true"|"false")
-letter       [A-Z]|[a-z]([a-z]|[A-Z]|"_"|[0-9])*
+valor_int       [0-9]+
+valor_float     {valor_int}*\.{valor_int}
+valor_bool      ("true"|"false")
+letter          [A-Z]|[a-z]([a-z]|[A-Z]|"_"|[0-9])*
 
 %%
 
 [ \t]               ; // Ignora espaços entre tokens
 
-{tipo_int}          { yylval.tipo = AST::TipoDeNodo::inteiro;  return T_TYPE_INT;   } // 
-{tipo_float}        { yylval.tipo = AST::TipoDeNodo::real;     return T_TYPE_FLOAT; } // Tipos de Variáveis
-{tipo_bool}         { yylval.tipo = AST::TipoDeNodo::boolean;  return T_TYPE_BOOL;  } // 
+"int"               { yylval.tipo = AST::TipoDeNodo::inteiro;  return T_TYPE_INT;   } // 
+"float"             { yylval.tipo = AST::TipoDeNodo::real;     return T_TYPE_FLOAT; } // Tipos de Variáveis
+"bool"              { yylval.tipo = AST::TipoDeNodo::boolean;  return T_TYPE_BOOL;  } // 
+
+"[int]"             { return T_CAST_INT;   } //
+"[float]"           { return T_CAST_FLOAT; } // Conversores de Tipo
+"[bool]"            { return T_CAST_BOOL;  } //
 
 {valor_int}         { yylval.valor = strdup(yytext);  return T_INT;   } // Valores de
 {valor_float}       { yylval.valor = strdup(yytext);  return T_FLOAT; } //  Variáveis

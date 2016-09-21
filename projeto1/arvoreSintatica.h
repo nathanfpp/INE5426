@@ -15,8 +15,10 @@ extern void yyerror(const char *s, ...);
 
 namespace AST {
 
-enum ClasseDeNodo   { declaracao, atribuicao, operacaoBinaria, operacaoUnaria, parenteses };
-enum TipoDeNodo     { inteiro, real, boolean, atomica, adicao, subtracao, multiplicacao, divisao, e, ou, negacao, inversao, igual, diferente, maior, maior_igual, menor, menor_igual, x, semTipo };
+enum ClasseDeNodo   { declaracao, atribuicao, operacaoBinaria, operacaoUnaria };
+enum TipoDeNodo     { inteiro, real, boolean, atomica, adicao, subtracao, multiplicacao, divisao, e, ou, negacao, inversao, 
+                      igual, diferente, maior, maior_igual, menor, menor_igual, parenteses, 
+                      conversao_int, conversao_float, conversao_bool, x, semTipo };
 
 class NodoBase;
 class Variavel;

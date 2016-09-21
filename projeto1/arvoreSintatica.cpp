@@ -86,19 +86,19 @@ void Nodo::imprimir() {
       // Operações Unárias imprimem direita
         case ClasseDeNodo::operacaoUnaria:
             switch(tipo){
-                case TipoDeNodo::negacao:   std::cout << "- ";  break;
-                case TipoDeNodo::inversao:  std::cout << "! ";  break;
-                default:                         std::cout << "? ";   break;
+                case TipoDeNodo::negacao:          std::cout << "- ";        break;
+                case TipoDeNodo::inversao:         std::cout << "! ";        break;
+                case TipoDeNodo::parenteses:       std::cout << "( ";        break;
+                case TipoDeNodo::conversao_int:    std::cout << "[int] ";    break;
+                case TipoDeNodo::conversao_float:  std::cout << "[float] ";  break;
+                case TipoDeNodo::conversao_bool:   std::cout << "[bool] ";   break;
+                default:                           std::cout << "? ";        break;
            }
            imprimirDireita();
+           if(tipo == TipoDeNodo::parenteses) {
+               std::cout << ")";
+           }
            break;
-
-      // Parênteses imprimem "(", direita e ")"
-        case ClasseDeNodo::parenteses:
-            std::cout << "( ";
-            direita->imprimir();
-            std::cout << ") ";
-            return;
     }
     return;
 }
@@ -154,6 +154,10 @@ TipoDeNodo Boolean::verificarTipo(TipoDeNodo t, TipoDeNodo operador) {
 
 TipoDeNodo Nodo::verificarTipo(TipoDeNodo t, TipoDeNodo operador) {
 
+    std::cout << "-> ";
+    imprimirTipo(tipo);
+    std::cout << "\n";
+  
   // Caso exista um próxima, verifica-o antes:
     if(proximo != NULL)   proximo->verificarTipo(t, tipo);
 
@@ -161,7 +165,7 @@ TipoDeNodo Nodo::verificarTipo(TipoDeNodo t, TipoDeNodo operador) {
     if(esquerda != NULL) {
 
   // Captura 
-    TipoDeNodo e = esquerda->verificarTipo(t, tipo); TipoDeNodo d = direita->verificarTipo(t, tipo);
+    TipoDeNodo e = esquerda->verificarTipo(t, tipo);  TipoDeNodo d = direita->verificarTipo(t, tipo);
 
   // Big switch for all cases
     switch(tipo) {
@@ -173,22 +177,23 @@ TipoDeNodo Nodo::verificarTipo(TipoDeNodo t, TipoDeNodo operador) {
         case TipoDeNodo::divisao:
 
          // O tipo da esquerda é inválido?
-            if(e == TipoDeNodo::boolean || e != tipo) {
+            if(e == TipoDeNodo::boolean) {
                 std::cout << "operation ";     imprimirTipo(tipo);
                 std::cout << "expected ";      imprimirTipo(t);
                 std::cout << "but received ";  imprimirTipo(e);
                 std::cout << "\n";             exit(0);
 
           // O tipo da direita é inválido?
-            } else if (d == TipoDeNodo::boolean || e != d) {
+            } else if (d == TipoDeNodo::boolean) {
                 std::cout << "operation ";     imprimirTipo(tipo);
                 std::cout << "expected ";      imprimirTipo(e);
                 std::cout << "but received ";  imprimirTipo(d);
                 std::cout << "\n";             exit(0);
             }
-
-          // Retorna o tipo da esquerda, que deve ser igual ao da direita
-            return e;
+            if (e == TipoDeNodo::real || d == TipoDeNodo::real){
+               return TipoDeNodo::real;
+            }
+            return TipoDeNodo::inteiro;
 
        // Operações Lógicas recebem "bool" e devolvem "bool"
          case TipoDeNodo::e:
@@ -237,7 +242,7 @@ TipoDeNodo Nodo::verificarTipo(TipoDeNodo t, TipoDeNodo operador) {
 
           // Retorna o tipo boolean
             return TipoDeNodo::boolean;
-       
+
         default: return TipoDeNodo::x;               
       }
 
@@ -261,14 +266,34 @@ TipoDeNodo Nodo::verificarTipo(TipoDeNodo t, TipoDeNodo operador) {
             return d;
 
        // Operação "Inversão", ou Negação Lógica recebe "bool" e devolve "bool"
-         case TipoDeNodo::inversao:
-            if( d != TipoDeNodo::boolean) {
-              std::cout << "operation ";     imprimirTipo(tipo);
-              std::cout << "expected ";      imprimirTipo(t);
-              std::cout << "but received ";  imprimirTipo(d);
-              std::cout << "\n";             exit(0);
-            }              
+            case TipoDeNodo::inversao:
+                if( d != TipoDeNodo::boolean) {
+                    std::cout << "operation ";     imprimirTipo(tipo);
+                    std::cout << "expected ";      imprimirTipo(t);
+                    std::cout << "but received ";  imprimirTipo(d);
+                    std::cout << "\n";             exit(0);
+                }              
             return TipoDeNodo::boolean;
+
+      // Conversao de float ou bool para int
+        case TipoDeNodo::conversao_int:
+            return TipoDeNodo::inteiro;
+            break;
+
+      // Conversao de int ou float para int
+        case TipoDeNodo::conversao_float:
+            return TipoDeNodo::real;
+            break;
+
+      // Conversao de int ou float para bool
+        case TipoDeNodo::conversao_bool:
+            return TipoDeNodo::boolean;
+            break;
+
+      // Parênteses apenas retornam o tipo contido
+            case TipoDeNodo::parenteses:
+                std::cout << "(parenteses)\n";
+                return d;
 
         default: return TipoDeNodo::x;
       }
@@ -349,25 +374,38 @@ void Bloco::novaLinha(NodoBase *linha) {
 void NodoBase::imprimirTipo(TipoDeNodo t){
   // One switch to rule them all
     switch(t) {
-     case TipoDeNodo::inteiro:        std::cout << "integer ";  break;
-        case TipoDeNodo::real:           std::cout << "float ";    break;
-        case TipoDeNodo::boolean:        std::cout << "bool ";     break;
-        case TipoDeNodo::adicao:         std::cout << " ";         break;
-        case TipoDeNodo::subtracao:      std::cout << "- ";        break;
-        case TipoDeNodo::multiplicacao:  std::cout << "* ";        break;
-        case TipoDeNodo::divisao:        std::cout << "/ ";        break;
-        case TipoDeNodo::e:              std::cout << "& ";        break;
-        case TipoDeNodo::ou:             std::cout << "| ";        break;
-        case TipoDeNodo::negacao:        std::cout << "- ";        break;
-        case TipoDeNodo::inversao:       std::cout << "! ";        break;
-        case TipoDeNodo::igual:          std::cout << "== ";       break;
-        case TipoDeNodo::diferente:      std::cout << "!= ";       break;
-        case TipoDeNodo::maior:          std::cout << "> ";        break;
-        case TipoDeNodo::maior_igual:    std::cout << ">= ";       break;
-        case TipoDeNodo::menor:          std::cout << "< ";        break;
-        case TipoDeNodo::menor_igual:    std::cout << "<= ";       break;
+        case TipoDeNodo::inteiro:          std::cout << "integer ";  break;
+        case TipoDeNodo::real:             std::cout << "float ";    break;
+        case TipoDeNodo::boolean:          std::cout << "bool ";     break;
+        case TipoDeNodo::adicao:           std::cout << " ";         break;
+        case TipoDeNodo::subtracao:        std::cout << "- ";        break;
+        case TipoDeNodo::multiplicacao:    std::cout << "* ";        break;
+        case TipoDeNodo::divisao:          std::cout << "/ ";        break;
+        case TipoDeNodo::e:                std::cout << "& ";        break;
+        case TipoDeNodo::ou:               std::cout << "| ";        break;
+        case TipoDeNodo::negacao:          std::cout << "- ";        break;
+        case TipoDeNodo::inversao:         std::cout << "! ";        break;
+        case TipoDeNodo::igual:            std::cout << "== ";       break;
+        case TipoDeNodo::diferente:        std::cout << "!= ";       break;
+        case TipoDeNodo::maior:            std::cout << "> ";        break;
+        case TipoDeNodo::maior_igual:      std::cout << ">= ";       break;
+        case TipoDeNodo::menor:            std::cout << "< ";        break;
+        case TipoDeNodo::menor_igual:      std::cout << "<= ";       break;
+        case TipoDeNodo::conversao_int:    std::cout << "[int] ";    break;
+        case TipoDeNodo::conversao_float:  std::cout << "[float] ";  break;
+        case TipoDeNodo::conversao_bool:   std::cout << "[bool] ";   break;
+
+        case TipoDeNodo::atomica:    std::cout << " "; break;
+        case TipoDeNodo::parenteses: std::cout << "() "; break;
+
         default:                          std::cout << "? ";       break;
+
     }
 }
 
+/*
 
+inteiro, real, boolean, atomica, adicao, subtracao, multiplicacao, divisao, e, ou, negacao, inversao, 
+                      igual, diferente, maior, maior_igual, menor, menor_igual, parenteses, 
+                      conversao_int, conversao_float, conversao_bool, x, semTipo
+*/

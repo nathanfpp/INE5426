@@ -43,6 +43,7 @@ extern void yyerror(const char* s, ...);
 %token <tipo> T_TYPE_INT T_TYPE_FLOAT T_TYPE_BOOL
 %token T_NL T_OPEN T_CLOSE T_EQUAL T_COMMA T_PLUS T_MINUS T_TIMES T_DIV T_NOT T_AND T_OR 
 %token T_EQUAL2 T_DIF T_HIGHER T_HIGH T_LOWER T_LOW
+%token T_CAST_INT T_CAST_FLOAT T_CAST_BOOL
 
 // %type
 // Define o tipo de Símbolos Não-Terminais
@@ -57,6 +58,7 @@ extern void yyerror(const char* s, ...);
 %left T_PLUS 
 %left T_TIMES T_DIV
 %left T_OPEN T_CLOSE
+%left T_CAST INT T_CAST_FLOAT T_CAST_BOOL
 
 // %start
 // Regra Inicial da Gramática
@@ -110,21 +112,24 @@ atribuicao:
 
 expressao:
            primitiva	               
-         | expressao T_PLUS    expressao  { $$ = new AST::Nodo( $1,  $3, NULL, AST::ClasseDeNodo::operacaoBinaria, AST::TipoDeNodo::adicao        ); }
-         | expressao T_MINUS   expressao  { $$ = new AST::Nodo( $1,  $3, NULL, AST::ClasseDeNodo::operacaoBinaria, AST::TipoDeNodo::subtracao     ); }
-         | expressao T_TIMES   expressao  { $$ = new AST::Nodo( $1,  $3, NULL, AST::ClasseDeNodo::operacaoBinaria, AST::TipoDeNodo::multiplicacao ); }
-         | expressao T_DIV     expressao  { $$ = new AST::Nodo( $1,  $3, NULL, AST::ClasseDeNodo::operacaoBinaria, AST::TipoDeNodo::divisao       ); }
-         | expressao T_AND     expressao  { $$ = new AST::Nodo( $1,  $3, NULL, AST::ClasseDeNodo::operacaoBinaria, AST::TipoDeNodo::e             ); }
-         | expressao T_OR      expressao  { $$ = new AST::Nodo( $1,  $3, NULL, AST::ClasseDeNodo::operacaoBinaria, AST::TipoDeNodo::ou            ); }
-         | expressao T_EQUAL2  expressao  { $$ = new AST::Nodo( $1,  $3, NULL, AST::ClasseDeNodo::operacaoBinaria, AST::TipoDeNodo::igual         );}
-         | expressao T_DIF     expressao  { $$ = new AST::Nodo( $1,  $3, NULL, AST::ClasseDeNodo::operacaoBinaria, AST::TipoDeNodo::diferente     );}
-         | expressao T_HIGHER  expressao  { $$ = new AST::Nodo( $1,  $3, NULL, AST::ClasseDeNodo::operacaoBinaria, AST::TipoDeNodo::maior         );}
-         | expressao T_HIGH    expressao  { $$ = new AST::Nodo( $1,  $3, NULL, AST::ClasseDeNodo::operacaoBinaria, AST::TipoDeNodo::maior_igual   );}
-         | expressao T_LOWER   expressao  { $$ = new AST::Nodo( $1,  $3, NULL, AST::ClasseDeNodo::operacaoBinaria, AST::TipoDeNodo::menor         );}
-         | expressao T_LOW     expressao  { $$ = new AST::Nodo( $1,  $3, NULL, AST::ClasseDeNodo::operacaoBinaria, AST::TipoDeNodo::menor_igual   );}
-         |           T_MINUS   expressao  { $$ = new AST::Nodo(NULL, $2, NULL, AST::ClasseDeNodo::operacaoUnaria,  AST::TipoDeNodo::negacao       ); }
-         |           T_NOT     expressao  { $$ = new AST::Nodo(NULL, $2, NULL, AST::ClasseDeNodo::operacaoUnaria,  AST::TipoDeNodo::inversao      ); }
-         | T_OPEN    expressao T_CLOSE    { $$ = new AST::Nodo(NULL, $2, NULL, AST::ClasseDeNodo::parenteses,      AST::TipoDeNodo::x             ); }
+         | expressao T_PLUS       expressao  { $$ = new AST::Nodo( $1,  $3, NULL, AST::ClasseDeNodo::operacaoBinaria, AST::TipoDeNodo::adicao          ); }
+         | expressao T_MINUS      expressao  { $$ = new AST::Nodo( $1,  $3, NULL, AST::ClasseDeNodo::operacaoBinaria, AST::TipoDeNodo::subtracao       ); }
+         | expressao T_TIMES      expressao  { $$ = new AST::Nodo( $1,  $3, NULL, AST::ClasseDeNodo::operacaoBinaria, AST::TipoDeNodo::multiplicacao   ); }
+         | expressao T_DIV        expressao  { $$ = new AST::Nodo( $1,  $3, NULL, AST::ClasseDeNodo::operacaoBinaria, AST::TipoDeNodo::divisao         ); }
+         | expressao T_AND        expressao  { $$ = new AST::Nodo( $1,  $3, NULL, AST::ClasseDeNodo::operacaoBinaria, AST::TipoDeNodo::e               ); }
+         | expressao T_OR         expressao  { $$ = new AST::Nodo( $1,  $3, NULL, AST::ClasseDeNodo::operacaoBinaria, AST::TipoDeNodo::ou              ); }
+         | expressao T_EQUAL2     expressao  { $$ = new AST::Nodo( $1,  $3, NULL, AST::ClasseDeNodo::operacaoBinaria, AST::TipoDeNodo::igual           ); }
+         | expressao T_DIF        expressao  { $$ = new AST::Nodo( $1,  $3, NULL, AST::ClasseDeNodo::operacaoBinaria, AST::TipoDeNodo::diferente       ); }
+         | expressao T_HIGHER     expressao  { $$ = new AST::Nodo( $1,  $3, NULL, AST::ClasseDeNodo::operacaoBinaria, AST::TipoDeNodo::maior           ); }
+         | expressao T_HIGH       expressao  { $$ = new AST::Nodo( $1,  $3, NULL, AST::ClasseDeNodo::operacaoBinaria, AST::TipoDeNodo::maior_igual     ); }
+         | expressao T_LOWER      expressao  { $$ = new AST::Nodo( $1,  $3, NULL, AST::ClasseDeNodo::operacaoBinaria, AST::TipoDeNodo::menor           ); }
+         | expressao T_LOW        expressao  { $$ = new AST::Nodo( $1,  $3, NULL, AST::ClasseDeNodo::operacaoBinaria, AST::TipoDeNodo::menor_igual     ); }
+         |           T_MINUS      expressao  { $$ = new AST::Nodo(NULL, $2, NULL, AST::ClasseDeNodo::operacaoUnaria,  AST::TipoDeNodo::negacao         ); }
+         |           T_NOT        expressao  { $$ = new AST::Nodo(NULL, $2, NULL, AST::ClasseDeNodo::operacaoUnaria,  AST::TipoDeNodo::inversao        ); }
+         |           T_CAST_INT   expressao  { $$ = new AST::Nodo(NULL, $2, NULL, AST::ClasseDeNodo::operacaoUnaria,  AST::TipoDeNodo::conversao_int   ); }
+         |           T_CAST_FLOAT expressao  { $$ = new AST::Nodo(NULL, $2, NULL, AST::ClasseDeNodo::operacaoUnaria,  AST::TipoDeNodo::conversao_float ); }
+         |           T_CAST_BOOL  expressao  { $$ = new AST::Nodo(NULL, $2, NULL, AST::ClasseDeNodo::operacaoUnaria,  AST::TipoDeNodo::conversao_bool  ); }
+         | T_OPEN    expressao    T_CLOSE    { $$ = new AST::Nodo(NULL, $2, NULL, AST::ClasseDeNodo::operacaoUnaria,  AST::TipoDeNodo::parenteses      ); }
          ;
 
 primitiva:

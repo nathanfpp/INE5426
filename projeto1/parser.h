@@ -40,15 +40,12 @@
 extern int yydebug;
 #endif
 /* "%code requires" blocks.  */
-#line 17 "parser.y" /* yacc.c:1909  */
+#line 14 "parser.y" /* yacc.c:1909  */
 
-    #include "estruturas.h"
-    #include "tratadorSemantico.h"
-    #include "tratadorAritmetico.h"
     #include "arvoreSintatica.h"
     #include "arvoreSintatica.h"
 
-#line 52 "parser.h" /* yacc.c:1909  */
+#line 49 "parser.h" /* yacc.c:1909  */
 
 /* Token type.  */
 #ifndef YYTOKENTYPE
@@ -74,11 +71,17 @@ extern int yydebug;
     T_NOT = 274,
     T_AND = 275,
     T_OR = 276,
-    T_DIF = 277,
-    T_HIGHER = 278,
-    T_HIGH = 279,
-    T_LOWER = 280,
-    T_LOW = 281
+    T_EQUAL2 = 277,
+    T_DIF = 278,
+    T_HIGHER = 279,
+    T_HIGH = 280,
+    T_LOWER = 281,
+    T_LOW = 282,
+    T_CAST_INT = 283,
+    T_CAST_FLOAT = 284,
+    T_CAST_BOOL = 285,
+    T_CAST = 286,
+    INT = 287
   };
 #endif
 
@@ -87,7 +90,7 @@ extern int yydebug;
 typedef union YYSTYPE YYSTYPE;
 union YYSTYPE
 {
-#line 38 "parser.y" /* yacc.c:1909  */
+#line 30 "parser.y" /* yacc.c:1909  */
 
     const char *valor;
     AST::NodoBase *nodobase;
@@ -96,7 +99,7 @@ union YYSTYPE
     AST::Variavel *nodovar;
     AST::TipoDeNodo tipo;
 
-#line 100 "parser.h" /* yacc.c:1909  */
+#line 103 "parser.h" /* yacc.c:1909  */
 };
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1
