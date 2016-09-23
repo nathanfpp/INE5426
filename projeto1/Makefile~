@@ -5,6 +5,8 @@ CC=clang++
 PARAM=-std=c++11 -fcxx-exceptions -Wno-deprecated-register -Wall
 OUTPUT=lukacompiler
 
+all: $(OUTPUT) scanner.cpp parser.h test compare
+
 $(OUTPUT): parser.h scanner.cpp main.cpp
 	${CC} -o ${OUTPUT} *.cpp ${PARAM}
 
@@ -21,6 +23,8 @@ test:
 	./${OUTPUT} < tests/v0.1/input/1.in > tests/v0.1/output/1.out
 	./${OUTPUT} < tests/v0.1/input/2.in > tests/v0.1/output/2.out
 	./${OUTPUT} < tests/v0.1/input/3.in > tests/v0.1/output/3.out
-	diff  tests/v0.1/expected/1.ex tests/v0.1/output/1.out
-	diff  tests/v0.1/expected/2.ex tests/v0.1/output/2.out
-	diff  tests/v0.1/expected/3.ex tests/v0.1/output/3.out
+
+compare:
+	diff tests/v0.1/expected/1.ex tests/v0.1/output/1.out
+	diff tests/v0.1/expected/1.ex tests/v0.1/output/1.out
+	diff tests/v0.1/expected/1.ex tests/v0.1/output/1.out

@@ -90,7 +90,7 @@ extern void yyerror(const char* s, ...);
 programa: linhas { arvoreSintatica = $1; 
                    //$$->verificarTipo(AST::Tipo::nulo, AST::Tipo::nulo); 
                    $$->imprimir();
-		   std::cout <<"\n";} //sem esse cout dá erro nos testes
+		   std::cout <<"\n";}
         ;
 
 linhas: 
