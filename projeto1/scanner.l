@@ -11,17 +11,22 @@ void yyerror(const char* s, ...);
 %option noyywrap nodefault yylineno
 
 valor_int       [0-9]+
-valor_float     {valor_int}*\.{valor_int}
+valor_float     ({valor_int}\.{valor_int})|(\.{valor_int})|({valor_int}\.)
 valor_bool      ("true"|"false")
-letter          [A-Z]|[a-z]([a-z]|[A-Z]|"_"|[0-9])*
+letter          ([a-z]|[A-Z])([a-z]|[A-Z]|"_"|[0-9])*
 
 %%
 
 [ \t]               ; // Ignora espaços entre tokens
 
-"int"               { yylval.tipo = AST::TipoDeNodo::inteiro;  return T_TYPE_INT;   } // 
-"float"             { yylval.tipo = AST::TipoDeNodo::real;     return T_TYPE_FLOAT; } // Tipos de Variáveis
-"bool"              { yylval.tipo = AST::TipoDeNodo::boolean;  return T_TYPE_BOOL;  } // 
+"int"               { yylval.tipo = AST::Tipo::inteiro;  return T_TYPE_INT;   } // 
+"float"             { yylval.tipo = AST::Tipo::real;     return T_TYPE_FLOAT; } // Tipos de Variáveis
+"bool"              { yylval.tipo = AST::Tipo::boolean;  return T_TYPE_BOOL;  } // 
+
+"if"                { return T_IF;   }
+"then"              { return T_THEN; }
+"else"              { return T_ELSE; }
+"for"               { return T_FOR;  }
 
 "[int]"             { return T_CAST_INT;   } //
 "[float]"           { return T_CAST_FLOAT; } // Conversores de Tipo
@@ -48,10 +53,12 @@ letter          [A-Z]|[a-z]([a-z]|[A-Z]|"_"|[0-9])*
 "<"                 { return T_LOWER;  } //
 "<="                { return T_LOW;    } //
 
-"("                 { return T_OPEN;  }
-")"                 { return T_CLOSE; }
-"="                 { return T_EQUAL; }
-","                 { return T_COMMA; }
+"("                 { return T_OPEN;      }
+")"                 { return T_CLOSE;     }
+"{"                 { return T_OPEN_KEY;  }
+"}"                 { return T_CLOSE_KEY; }
+"="                 { return T_EQUAL;     }
+","                 { return T_COMMA;     }
 
 \n                  { return T_NL; }
 

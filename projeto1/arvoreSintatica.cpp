@@ -14,294 +14,321 @@ using namespace AST;
 // imprimir() //
 
 void Variavel::imprimir() {
-    std::cout << id << " ";
+    std::cout << id << "";
     return;
 }
 
 void Inteiro::imprimir() {
-    std::cout << valor << " ";
+    std::cout << valor << "";
     return;
 }
 
 void Real::imprimir() {
-    std::cout << valor << " ";
+    std::cout << valor << "";
     return;
 }
 
 void Boolean::imprimir() {
-    std::cout << std::boolalpha << valor << " ";
+    std::cout << std::boolalpha << valor << "";
     return;
 }
 
-void Nodo::imprimir() {
+void Declaracao::imprimir() {
+    imprimirTipo(tipo);
+    std::cout << " var: ";
+    if(variaveis != NULL)  variaveis->imprimir();    
+}
 
-  // Switcheption
-    switch(classe) {
-
-      // Declarações imprimem tipo e à direita
-        case ClasseDeNodo::declaracao:
-            switch(tipo) {
-                case TipoDeNodo::inteiro:  std::cout << "int ";    break;
-                case TipoDeNodo::real:     std::cout << "float ";  break;
-                case TipoDeNodo::boolean:  std::cout << "bool ";   break;          
-                default:                   std::cout << "? ";      break;      
-            }
-            imprimirDireita();
-            break;
-
-      // Atribuições imprimem esquerda, "= " e direita, se não forem atômicas ("int a;")
-        case ClasseDeNodo::atribuicao:
-            imprimirEsquerda();
-            if(tipo != TipoDeNodo::atomica){
-                std::cout << "= ";
-                imprimirDireita();
-            }
-            if(proximo != NULL) {
-                std::cout << ", ";
-                imprimirProximo();
-            }
-            break;
-
-      // Operações Binárias imprimem direita e esquerda
-        case ClasseDeNodo::operacaoBinaria:
-            imprimirEsquerda();
-            switch(tipo) {
-                case TipoDeNodo::adicao:         std::cout << "+ ";   break;
-                case TipoDeNodo::subtracao:      std::cout << "- ";   break;
-                case TipoDeNodo::multiplicacao:  std::cout << "* ";   break;
-                case TipoDeNodo::divisao:        std::cout << "/ ";   break; 
-                case TipoDeNodo::igual:          std::cout << "== ";  break;
-                case TipoDeNodo::e:              std::cout << "& ";   break; 
-                case TipoDeNodo::ou:             std::cout << "| ";   break;
-                case TipoDeNodo::diferente:      std::cout << "!= ";  break;
-                case TipoDeNodo::maior:          std::cout << "> ";   break;
-                case TipoDeNodo::maior_igual:    std::cout << ">= ";  break;
-                case TipoDeNodo::menor:          std::cout << "< ";   break;                 
-                case TipoDeNodo::menor_igual:    std::cout << "<= ";  break;                 
-                default:                         std::cout << "? ";   break;  
-            }
-            imprimirDireita();
-            break;
-
-      // Operações Unárias imprimem direita
-        case ClasseDeNodo::operacaoUnaria:
-            switch(tipo){
-                case TipoDeNodo::negacao:          std::cout << "- ";        break;
-                case TipoDeNodo::inversao:         std::cout << "! ";        break;
-                case TipoDeNodo::parenteses:       std::cout << "( ";        break;
-                case TipoDeNodo::conversao_int:    std::cout << "[int] ";    break;
-                case TipoDeNodo::conversao_float:  std::cout << "[float] ";  break;
-                case TipoDeNodo::conversao_bool:   std::cout << "[bool] ";   break;
-                default:                           std::cout << "? ";        break;
-           }
-           imprimirDireita();
-           if(tipo == TipoDeNodo::parenteses) {
-               std::cout << ")";
-           }
-           break;
+void Definicao::imprimir() {
+    if(variavel != NULL)  variavel->imprimir();
+    if(valor != NULL) {
+        std::cout << " = ";
+        valor->imprimir();
     }
-    return;
+    if(proxima != NULL) {
+        std::cout << ", ";
+        proxima->imprimir();
+    }
+}
+
+void OperacaoUnaria::imprimir() {
+    imprimirTipo(tipo);
+    if(filho != NULL)  filho->imprimir();
+}
+
+void OperacaoBinaria::imprimir() {
+    imprimirTipo(tipo);
+    std::cout << " ";
+    if(esquerda != NULL)  esquerda->imprimir();
+    std::cout << " ";
+    if(direita  != NULL)  direita->imprimir();
+}
+
+void Condicao::imprimir() {
+    std::cout << "if: ";
+    teste->imprimir();
+    std::cout << " then { ";
+    se->imprimir();
+    std::cout << "}";
+    if(senao != NULL) {
+        std::cout << " else { ";
+        senao->imprimir();
+        std::cout << " }";
+    }
+}
+
+void Laco::imprimir() {
+    std::cout << "for: ";
+    if(inicializacao != NULL) inicializacao->imprimir();
+    std::cout << ", ";
+    if(teste != NULL) teste->imprimir();
+    std::cout << ", ";
+    if(iteracao != NULL) iteracao->imprimir();
+    std::cout << " {\n";
+    if(laco != NULL) laco->imprimir();
+    std::cout << "}";
 }
 
 void Bloco::imprimir(){
     for (NodoBase* linha: linhas) {
         linha->imprimir();
-        std::cout << std::endl;
+        std::cout << "\n";    
     }
 }
+
 
 //////////////////////
-// adicionarTipo() //
+// verificarTipo() //
+////////////////////
 
-void Variavel::adicionarTipo(TipoDeNodo t) {
-    if(tipo == semTipo) {
-        tipo = t;
+
+Tipo Declaracao::verificarTipo(Tipo t, Tipo operador) {
+
+  // A Declaração passa seu tipo adiante, para que verificar os tipos das variáveis declaradas
+    if(variaveis != NULL) verificarTipo(tipo, operador);
+
+  // A Declaração não possui um Tipo a ser retornado
+    return Tipo::nulo;
+}
+
+
+Tipo Definicao::verificarTipo(Tipo t, Tipo operador) {
+
+  // Captura-se o tipo do valor atribuido à variável
+    Tipo esperado = valor->verificarTipo(t, operador);
+
+  // Coerção na declaração de tipo int para float... Necessário ?
+    if(esperado == Tipo::inteiro && t == Tipo::real) {
+        OperacaoUnaria *coercao = new OperacaoUnaria(Tipo::conversao_float, valor);
+        valor = coercao;
     }
-    //else: nesse caso se o tipo já tiver sido atribuído cairá no erro de declaração duplicada preservando a variável original.
-    return;  
+
+  // Caso não possa haver coerção e os tipos forem diferentes, erro
+    else if(esperado != t) {
+      imprimirErroDeOperacao(Tipo::atribuicao,t,esperado);
+    }
+
+  // Atribui tipo à Variável
+    variavel->tipo = t;
+
+  // A Definição não possui um Tipo a ser retornado
+    return Tipo::nulo;
 }
 
-//Verificar Tipo Raiz: compara variável a esquerda com nodo raiz.
 
-void Nodo::verificarTipoRaiz(TipoDeNodo esquerda, TipoDeNodo direita){
+Tipo OperacaoUnaria::verificarTipo(Tipo t, Tipo operador) {
+  // Captura-se o tipo do único filho
+    Tipo d = filho->verificarTipo(t, operador);
 
-    if(esquerda != direita){
-        std::cout << "expected ";      imprimirTipo(esquerda);
-        std::cout << "but received ";  imprimirTipo(direita);
-        std::cout << "\n";             exit(0);
-
-	}
-}		
-
-
-// Verificar Tipo //
-
-TipoDeNodo Variavel::verificarTipo(TipoDeNodo t, TipoDeNodo operador) {
-    return tipo;   
-}
-
-TipoDeNodo Inteiro::verificarTipo(TipoDeNodo t, TipoDeNodo operador) {
-    return tipo;
-}
-
-TipoDeNodo Real::verificarTipo(TipoDeNodo t, TipoDeNodo operador) {
-    return tipo;
-}
-
-TipoDeNodo Boolean::verificarTipo(TipoDeNodo t, TipoDeNodo operador) {
-    return tipo;
-}
-
-TipoDeNodo Nodo::verificarTipo(TipoDeNodo t, TipoDeNodo operador) {
-
-    std::cout << "-> ";
-    imprimirTipo(tipo);
-    std::cout << "\n";
-  
-  // Caso exista um próxima, verifica-o antes:
-    if(proximo != NULL)   proximo->verificarTipo(t, tipo);
-
-  // Se filho da esquerda != NULL, trata-se de uma Operação Binária 
-    if(esquerda != NULL) {
-
-  // Captura 
-    TipoDeNodo e = esquerda->verificarTipo(t, tipo);  TipoDeNodo d = direita->verificarTipo(t, tipo);
-
-  // Big switch for all cases
+  // Operações Unárias possuem tratamento diferenciado
     switch(tipo) {
-
-      // Operaçãos Aritméticas recebem "int" ou "float" e devolvem "int" ou "float"
-        case TipoDeNodo::adicao:
-        case TipoDeNodo::subtracao:
-        case TipoDeNodo::multiplicacao:
-        case TipoDeNodo::divisao:
-
-         // O tipo da esquerda é inválido?
-            if(e == TipoDeNodo::boolean) {
-                std::cout << "operation ";     imprimirTipo(tipo);
-                std::cout << "expected ";      imprimirTipo(t);
-                std::cout << "but received ";  imprimirTipo(e);
-                std::cout << "\n";             exit(0);
-
-          // O tipo da direita é inválido?
-            } else if (d == TipoDeNodo::boolean) {
-                std::cout << "operation ";     imprimirTipo(tipo);
-                std::cout << "expected ";      imprimirTipo(e);
-                std::cout << "but received ";  imprimirTipo(d);
-                std::cout << "\n";             exit(0);
+      // Operação de Negação recebe um "int" ou "float" e devolve "int" ou "float"
+        case Tipo::negacao:
+            if(d == Tipo::boolean) {
+                imprimirErroDeOperacao(tipo,t,d);
             }
-            if (e == TipoDeNodo::real || d == TipoDeNodo::real){
-               return TipoDeNodo::real;
-            }
-            return TipoDeNodo::inteiro;
-
-       // Operações Lógicas recebem "bool" e devolvem "bool"
-         case TipoDeNodo::e:
-         case TipoDeNodo::ou:
-
-          // O tipo da esquerda é válido?
-            if(e != TipoDeNodo::boolean) {
-                std::cout << "operation ";     imprimirTipo(tipo);
-                std::cout << "expected "       << "bool ";
-                std::cout << "but received ";  imprimirTipo(e);
-                std::cout << "\n";             exit(0);
-
-          // O tipo da direita é inválido?
-            } else if (d != TipoDeNodo::boolean) {
-              std::cout << "operation ";     imprimirTipo(tipo);
-              std::cout << "expected "       << "bool ";
-              std::cout << "but received ";  imprimirTipo(d);
-              std::cout << "\n";             exit(0);
-            }
-
-          // Retorna o tipo boolean
-           return TipoDeNodo::boolean;
-
-       // Comparadores recebem "int" ou "float" e devolvem "bool"
-         case TipoDeNodo::igual:
-         case TipoDeNodo::diferente:
-         case TipoDeNodo::maior:
-         case TipoDeNodo::maior_igual:
-         case TipoDeNodo::menor:
-         case TipoDeNodo::menor_igual:
-
-           // O tipo da esquerda é válido?
-            if(e == TipoDeNodo::boolean) {
-                std::cout << "operation ";     imprimirTipo(tipo);
-                std::cout << "expected ";      imprimirTipo(t);
-                std::cout << "but received ";  imprimirTipo(e);
-                std::cout << "\n";             exit(0);
-
-          // O tipo da direita é válido?
-            } else if (d == TipoDeNodo::boolean) {
-                std::cout << "operation ";     imprimirTipo(tipo);
-                std::cout << "expected ";      imprimirTipo(e);
-                std::cout << "but received ";  imprimirTipo(d);
-                std::cout << "\n";             exit(0);
-            }
-
-          // Retorna o tipo boolean
-            return TipoDeNodo::boolean;
-
-        default: return TipoDeNodo::x;               
-      }
-
-  // Caso não haja filho da esquerda, trata-se de uma Operação Unária
-    } else {
-
-      // Captura tipo do único filho
-        TipoDeNodo d = direita->verificarTipo(t, tipo);
-
-      //
-        switch(tipo) {
-
-         // Operação de Negação recebe um "int" ou "float" e devolve "int" ou "float"
-            case TipoDeNodo::negacao:
-                if(d == TipoDeNodo::boolean) {
-                    std::cout << "operation ";     imprimirTipo(tipo);
-                    std::cout << "expected ";      imprimirTipo(t);
-                    std::cout << "but received ";  imprimirTipo(d);
-                    std::cout << "\n";             exit(0);
-                }
             return d;
 
-       // Operação "Inversão", ou Negação Lógica recebe "bool" e devolve "bool"
-            case TipoDeNodo::inversao:
-                if( d != TipoDeNodo::boolean) {
-                    std::cout << "operation ";     imprimirTipo(tipo);
-                    std::cout << "expected ";      imprimirTipo(t);
-                    std::cout << "but received ";  imprimirTipo(d);
-                    std::cout << "\n";             exit(0);
-                }              
-            return TipoDeNodo::boolean;
+      // Operação "Inversão", ou Negação Lógica recebe "bool" e devolve "bool"
+        case Tipo::inversao:
+            if( d != Tipo::boolean) {
+                imprimirErroDeOperacao(tipo,t,d);
+            }              
+            return Tipo::boolean;
 
       // Conversao de float ou bool para int
-        case TipoDeNodo::conversao_int:
-            return TipoDeNodo::inteiro;
-            break;
+        case Tipo::conversao_int: 
+            return Tipo::inteiro;
 
       // Conversao de int ou float para int
-        case TipoDeNodo::conversao_float:
-            return TipoDeNodo::real;
-            break;
+        case Tipo::conversao_float:
+            return Tipo::real;
 
       // Conversao de int ou float para bool
-        case TipoDeNodo::conversao_bool:
-            return TipoDeNodo::boolean;
-            break;
+        case Tipo::conversao_bool:
+            return Tipo::boolean;      
 
       // Parênteses apenas retornam o tipo contido
-            case TipoDeNodo::parenteses:
-                std::cout << "(parenteses)\n";
-                return d;
+        case Tipo::parenteses:
+            return d;
 
-        default: return TipoDeNodo::x;
-      }
+        default: return Tipo::nulo;
     }
 }
+
+
+Tipo OperacaoBinaria::verificarTipo(Tipo t, Tipo operador) {
+
+  // Coleta-se os Tipos dos filhos esquerda e direita
+    Tipo e = esquerda->verificarTipo(t , operador);  Tipo d = direita->verificarTipo(t, operador);
+
+  // Operações Binárias possuem comportamentos diferentes
+    switch(tipo) {
+
+  // Operaçãos Aritméticas recebem "int" ou "float" e devolvem "int" ou "float"
+        case Tipo::adicao:
+        case Tipo::subtracao:
+        case Tipo::multiplicacao:
+        case Tipo::divisao:
+
+         // O tipo da esquerda é inválido?
+            if(e == Tipo::boolean) {
+                imprimirErroDeOperacao(tipo,t,e);
+
+          // O tipo da direita é inválido?
+            } else if (d == Tipo::boolean) {
+                imprimirErroDeOperacao(tipo,e,d);
+            }
+   
+          // A coerção de tipos é necessária?
+            if(coercaoIntParaFloat(e,d)) {
+
+              // Se a coerção ocorre, é garantido que a operação binária retorna um tipo float
+                return Tipo::real;
+            } 
+
+          // Caso não ocorra coerção, os tipos da esquerda e direita são iguais
+            else {
+                return e;
+            }
+
+  // Operações Lógicas recebem "bool" e devolvem "bool"
+         case Tipo::e:
+         case Tipo::ou:
+
+          // O tipo da esquerda é válido?
+            if(e != Tipo::boolean) {
+                imprimirErroDeOperacao(tipo,Tipo::boolean,e);
+
+          // O tipo da direita é inválido?
+            } else if (d != Tipo::boolean) {
+              imprimirErroDeOperacao(tipo,Tipo::boolean,d);
+            }
+
+          // Retorna o tipo boolean
+           return Tipo::boolean;
+
+  // Comparadores recebem "int" ou "float" e devolvem "bool"
+         case Tipo::igual:
+         case Tipo::diferente:
+         case Tipo::maior:
+         case Tipo::maior_igual:
+         case Tipo::menor:
+         case Tipo::menor_igual:
+
+           // O tipo da esquerda é válido?
+            if(e == Tipo::boolean) {
+                imprimirErroDeOperacao(tipo,t,e);
+
+          // O tipo da direita é válido?
+            } else if (d == Tipo::boolean) {
+                imprimirErroDeOperacao(tipo,e,d);
+            }
+
+          // Realiza-se coerção, se necessário
+            coercaoIntParaFloat(e,d);
+
+          // Independente do retorno da coerção, retorna-se um valor booleano
+            return Tipo::boolean;
+
+        default: return Tipo::nulo;               
+      }
+}
+
+
+bool OperacaoBinaria::coercaoIntParaFloat(Tipo e, Tipo d) {
+// Segundo a descrição da versão 0.3, apenas tipo int pode sofrer coerção para float, logo:
+
+  // Se o tipo da esquerda for int e o da direita float, o da esquerda sofre coerção e retorna-se Tipo::real
+    if (e == Tipo::inteiro && d == Tipo::real) {
+
+      // Acrescenta-se um nodo com a operação de coerção entre o filho da esquerda e a operação binária
+        OperacaoUnaria *coercao = new OperacaoUnaria(Tipo::conversao_float, esquerda);
+        esquerda = coercao;
+        return true;
+    }
+
+  // Se o tipo da esquerda for float e o da direita int, o da direita sofre coerção e retorna-se Tipo::real
+    else if (e == Tipo::real && d == Tipo::inteiro) {
+               
+      // Acrescenta-se um nodo com a operação de coerção entre o filho da esquerda e a operação binária
+        OperacaoUnaria *coercao = new OperacaoUnaria(Tipo::conversao_float, direita);
+        direita = coercao;
+        return true;
+    }
+
+  // Se não ocorreu coerção, retorna-se false
+    return false;  
+}
+
+
+Tipo Condicao::verificarTipo(Tipo t, Tipo operador) {
+  // O teste de uma Condição deve ser Booleano
+    Tipo esperado = teste->verificarTipo(t, operador);
+    if(esperado != Tipo::boolean) {
+        imprimirErroDeOperacao(Tipo::teste, Tipo::boolean, esperado);
+    }
+
+  // Se o conteúdo do "se" ou "senão" não forem vazios, também devem ser verificados
+    if(se != NULL)     se->verificarTipo(t, operador);
+    if(senao != NULL)  senao->verificarTipo(t, operador);
+
+  // A Condição não possui um Tipo a ser retornado
+    return Tipo::nulo;
+}
+
+
+Tipo Laco::verificarTipo(Tipo t, Tipo operador) {
+
+  // O teste de um Laço deve ser Booleano
+    Tipo esperado = teste->verificarTipo(t, operador);
+    if(esperado != Tipo::boolean) {
+        imprimirErroDeOperacao(Tipo::teste, Tipo::boolean, esperado);
+    }
+
+  // Se o conteúdo do laço não for vazio, também deve ser verificado
+    if(laco != NULL) laco->verificarTipo(t, operador);
+
+  // A Condição não possui um Tipo a ser retornado
+    return Tipo::nulo;
+}
+
+
+Tipo Bloco::verificarTipo(Tipo t, Tipo operador) {
+std::cout << ". ";
+  // Verificar os Tipos de todas as linhas do Bloco
+    for (NodoBase* linha: linhas) {
+        linha->verificarTipo(t, operador);    
+    }
+
+  // O Bloco não possui um Tipo a ser retornado
+    return Tipo::nulo;
+}
+
 
 //////////////////////////
 // verificarSimbolos() //
+////////////////////////
 
 void Variavel::verificarSimbolos(std::map<std::string, AST::Variavel*> &tabela_simbolos) {
     std::map<std::string, AST::Variavel*>::iterator it;
@@ -317,90 +344,198 @@ void Variavel::verificarSimbolos(std::map<std::string, AST::Variavel*> &tabela_s
     return;
 }
 
-void Nodo::verificarSimbolos(std::map<std::string, AST::Variavel*> &tabela_simbolos) {
-    if(esquerda != NULL)  esquerda->verificarSimbolos(tabela_simbolos);
-    if(direita != NULL)   direita->verificarSimbolos(tabela_simbolos);  
-    if(proximo != NULL)   proximo->verificarSimbolos(tabela_simbolos);
-    return;    
+void Declaracao::verificarSimbolos(std::map<std::string, AST::Variavel*> &tabela_simbolos) {
+   if(variaveis != NULL)  variaveis->verificarSimbolos(tabela_simbolos);
+}
+
+void Definicao::verificarSimbolos(std::map<std::string, AST::Variavel*> &tabela_simbolos) {
+   if(variavel != NULL)  variavel->verificarSimbolos(tabela_simbolos);
+   if(valor    != NULL)  valor->verificarSimbolos(tabela_simbolos);
+   if(proxima  != NULL)  proxima->verificarSimbolos(tabela_simbolos);
+}
+
+void OperacaoUnaria::verificarSimbolos(std::map<std::string, AST::Variavel*> &tabela_simbolos) {
+   if(filho != NULL)  filho->verificarSimbolos(tabela_simbolos);
+}
+
+void OperacaoBinaria::verificarSimbolos(std::map<std::string, AST::Variavel*> &tabela_simbolos) {
+   if(esquerda != NULL)  esquerda->verificarSimbolos(tabela_simbolos);
+   if(direita  != NULL)  direita->verificarSimbolos(tabela_simbolos);
+}
+
+void Condicao::verificarSimbolos(std::map<std::string, AST::Variavel*> &tabela_simbolos) {
+    if(teste != NULL)  teste->verificarSimbolos(tabela_simbolos);
+    if(se != NULL)     se->verificarSimbolos(tabela_simbolos);  
+    if(senao != NULL)  senao->verificarSimbolos(tabela_simbolos);
+}
+
+void Laco::verificarSimbolos(std::map<std::string, AST::Variavel*> &tabela_simbolos) {
+    if(inicializacao != NULL)  inicializacao->verificarSimbolos(tabela_simbolos);
+    if(teste != NULL)          teste->verificarSimbolos(tabela_simbolos);
+    if(iteracao != NULL)       iteracao->verificarSimbolos(tabela_simbolos);
+    if(laco != NULL)           laco->verificarSimbolos(tabela_simbolos);
+}
+
+void Bloco::verificarSimbolos(std::map<std::string, AST::Variavel*> &tabela_simbolos) { 
+
+  // Verificar os Símbolos de todas as linhas do Bloco
+    for (NodoBase* linha: linhas) {
+        linha->verificarSimbolos(tabela_simbolos);    
+    }
 }
 
 ////////////////////////////
 // acrescentarSimbolos() //
+//////////////////////////
 
-void Variavel::acrescentarSimbolos(std::map<std::string, AST::Variavel*> &tabela_simbolos,  AST::TipoDeNodo ultimoTipo) {
+void Variavel::acrescentarSimbolos(std::map<std::string, AST::Variavel*> &tabela_simbolos,  AST::Tipo ultimoTipo) {
     std::map<std::string, AST::Variavel*>::iterator it;
     it = tabela_simbolos.find(id);
     if (it != tabela_simbolos.end()) {
         std::cout << "semantic error: re-declaration of variable " << id << "\n";
     } else {
         //std::cout << "semantic ok: declaration of variable " << id << "\n";
-	adicionarTipo(ultimoTipo);
+	tipo = ultimoTipo;
         tabela_simbolos[std::string(id)] = this;
     }
 }
 
-void Nodo::acrescentarSimbolos(std::map<std::string, AST::Variavel*> &tabela_simbolos, AST::TipoDeNodo ultimoTipo) {
-    if(esquerda != NULL)  esquerda->acrescentarSimbolos(tabela_simbolos,ultimoTipo);
-    if(direita != NULL)   direita->acrescentarSimbolos(tabela_simbolos, ultimoTipo);  
-    if(proximo != NULL)   proximo->acrescentarSimbolos(tabela_simbolos, ultimoTipo);
-    return;
+
+void Declaracao::acrescentarSimbolos(std::map<std::string, AST::Variavel*> &tabela_simbolos,  AST::Tipo ultimoTipo) {
+   if(variaveis != NULL)  variaveis->acrescentarSimbolos(tabela_simbolos, ultimoTipo); 
+}
+
+
+void Definicao::acrescentarSimbolos(std::map<std::string, AST::Variavel*> &tabela_simbolos,  AST::Tipo ultimoTipo) {
+   if(variavel != NULL)  variavel->acrescentarSimbolos(tabela_simbolos, ultimoTipo); 
+   if(valor    != NULL)  valor->acrescentarSimbolos(tabela_simbolos, ultimoTipo); 
+   if(proxima  != NULL)  proxima->acrescentarSimbolos(tabela_simbolos, ultimoTipo); 
+}
+
+
+void OperacaoUnaria::acrescentarSimbolos(std::map<std::string, AST::Variavel*> &tabela_simbolos,  AST::Tipo ultimoTipo) {
+   if(filho != NULL)  filho->acrescentarSimbolos(tabela_simbolos, ultimoTipo); 
+}
+
+
+void OperacaoBinaria::acrescentarSimbolos(std::map<std::string, AST::Variavel*> &tabela_simbolos,  AST::Tipo ultimoTipo) {
+   if(esquerda != NULL)  esquerda->acrescentarSimbolos(tabela_simbolos, ultimoTipo); 
+   if(direita  != NULL)  direita->acrescentarSimbolos(tabela_simbolos, ultimoTipo); 
+}
+
+
+void Condicao::acrescentarSimbolos(std::map<std::string, AST::Variavel*> &tabela_simbolos,  AST::Tipo ultimoTipo) {
+    if(teste != NULL)  teste->acrescentarSimbolos(tabela_simbolos, ultimoTipo); 
+    if(se != NULL)     se->acrescentarSimbolos(tabela_simbolos, ultimoTipo); 
+    if(senao != NULL)  senao->acrescentarSimbolos(tabela_simbolos, ultimoTipo); 
+}
+
+
+void Laco::acrescentarSimbolos(std::map<std::string, AST::Variavel*> &tabela_simbolos,  AST::Tipo ultimoTipo) {
+    if(inicializacao != NULL)  inicializacao->acrescentarSimbolos(tabela_simbolos, ultimoTipo); 
+    if(teste != NULL)          teste->acrescentarSimbolos(tabela_simbolos, ultimoTipo); 
+    if(iteracao != NULL)       iteracao->acrescentarSimbolos(tabela_simbolos, ultimoTipo); 
+    if(laco != NULL)           laco->acrescentarSimbolos(tabela_simbolos, ultimoTipo); 
+}
+
+
+void Bloco::acrescentarSimbolos(std::map<std::string, AST::Variavel*> &tabela_simbolos,  AST::Tipo ultimoTipo) {
+
+  // Verificar os Símbolos de todas as linhas do Bloco
+    for (NodoBase* linha: linhas) {
+        linha->acrescentarSimbolos(tabela_simbolos, ultimoTipo); 
+    }
 }
 
 //////////
 // etc //
 
-void Nodo::imprimirEsquerda() {
-    if(esquerda != NULL) {
-        esquerda->imprimir();
-    }
-}
-
-void Nodo::imprimirDireita() {
-    if(direita != NULL) {
-        direita->imprimir();
-    }
-}
-
-void Nodo::imprimirProximo() {
-    if(proximo != NULL) {
-        proximo->imprimir();
-    }
-}
-
 void Bloco::novaLinha(NodoBase *linha) {
     linhas.push_back(linha);
 }
 
-void NodoBase::imprimirTipo(TipoDeNodo t){
+void Definicao::ajustarProxima(Definicao *p) {
+    if(proxima != NULL) {
+        proxima->ajustarProxima(p);
+    } else {
+      proxima = p;
+    }
+}
+
+void NodoBase::imprimirComEspaco(char* texto, int espaco) {
+    for(int i = 0; i < espaco; i++) {
+        std::cout << " "; 
+    }
+    std::cout << texto;
+}
+
+void NodoBase::imprimirTipo(Tipo t) {
   // One switch to rule them all
     switch(t) {
-        case TipoDeNodo::inteiro:          std::cout << "integer ";  break;
-        case TipoDeNodo::real:             std::cout << "float ";    break;
-        case TipoDeNodo::boolean:          std::cout << "bool ";     break;
-        case TipoDeNodo::adicao:           std::cout << " ";         break;
-        case TipoDeNodo::subtracao:        std::cout << "- ";        break;
-        case TipoDeNodo::multiplicacao:    std::cout << "* ";        break;
-        case TipoDeNodo::divisao:          std::cout << "/ ";        break;
-        case TipoDeNodo::e:                std::cout << "& ";        break;
-        case TipoDeNodo::ou:               std::cout << "| ";        break;
-        case TipoDeNodo::negacao:          std::cout << "- ";        break;
-        case TipoDeNodo::inversao:         std::cout << "! ";        break;
-        case TipoDeNodo::igual:            std::cout << "== ";       break;
-        case TipoDeNodo::diferente:        std::cout << "!= ";       break;
-        case TipoDeNodo::maior:            std::cout << "> ";        break;
-        case TipoDeNodo::maior_igual:      std::cout << ">= ";       break;
-        case TipoDeNodo::menor:            std::cout << "< ";        break;
-        case TipoDeNodo::menor_igual:      std::cout << "<= ";       break;
-        case TipoDeNodo::conversao_int:    std::cout << "[int] ";    break;
-        case TipoDeNodo::conversao_float:  std::cout << "[float] ";  break;
-        case TipoDeNodo::conversao_bool:   std::cout << "[bool] ";   break;
+        case Tipo::inteiro:          std::cout << "int";      break;
+        case Tipo::real:             std::cout << "float";    break;
+        case Tipo::boolean:          std::cout << "bool";     break;
 
-        case TipoDeNodo::atomica:    std::cout << " "; break;
-        case TipoDeNodo::parenteses: std::cout << "() "; break;
+        case Tipo::atribuicao:       std::cout << "=";        break;
+        case Tipo::adicao:           std::cout << "+";        break;
+        case Tipo::subtracao:        std::cout << "-";        break;
+        case Tipo::multiplicacao:    std::cout << "*";        break;
+        case Tipo::divisao:          std::cout << "/";        break;
+        case Tipo::e:                std::cout << "&";        break;
+        case Tipo::ou:               std::cout << "|";        break;
 
-        default:                          std::cout << "? ";       break;
+        case Tipo::igual:            std::cout << "==";       break;
+        case Tipo::diferente:        std::cout << "!=";       break;
+        case Tipo::maior:            std::cout << ">";        break;
+        case Tipo::maior_igual:      std::cout << ">=";       break;
+        case Tipo::menor:            std::cout << "<";        break;
+        case Tipo::menor_igual:      std::cout << "<=";       break;
 
+        case Tipo::negacao:          std::cout << "-u ";       break;
+        case Tipo::inversao:         std::cout << "! ";        break;
+        case Tipo::conversao_int:    std::cout << "[int] ";    break;
+        case Tipo::conversao_float:  std::cout << "[float] ";  break;
+        case Tipo::conversao_bool:   std::cout << "[bool] ";   break;
+
+        case Tipo::parenteses:       std::cout << "";       break;
+        default:                     std::cout << "";        break;
     }
+}
+
+void NodoBase::imprimirTipoPorExtenso(Tipo t) {
+  // One switch to rule them all
+    switch(t) {
+        case Tipo::inteiro:          std::cout << "integer";         break;
+        case Tipo::real:             std::cout << "float";           break;
+        case Tipo::boolean:          std::cout << "bool";            break;
+        case Tipo::atribuicao:       std::cout << "attribution";     break;
+        case Tipo::adicao:           std::cout << "addition";        break;
+        case Tipo::subtracao:        std::cout << "subtraction";     break;
+        case Tipo::multiplicacao:    std::cout << "multiplication";  break;
+        case Tipo::divisao:          std::cout << "division";        break;
+        case Tipo::e:                std::cout << "and";             break;
+        case Tipo::ou:               std::cout << "or";              break;
+        case Tipo::negacao:          std::cout << "- ";        break;
+        case Tipo::inversao:         std::cout << "! ";        break;
+        case Tipo::igual:            std::cout << "==";       break;
+        case Tipo::diferente:        std::cout << "!= ";       break;
+        case Tipo::maior:            std::cout << "> ";        break;
+        case Tipo::maior_igual:      std::cout << ">= ";       break;
+        case Tipo::menor:            std::cout << "< ";        break;
+        case Tipo::menor_igual:      std::cout << "<= ";       break;
+        case Tipo::conversao_int:    std::cout << "[int] ";    break;
+        case Tipo::conversao_float:  std::cout << "[float] ";  break;
+        case Tipo::conversao_bool:   std::cout << "[bool] ";   break;
+        case Tipo::parenteses:       std::cout << "()";      break;
+        default:                     std::cout << "? ";       break;
+    }
+}
+
+void NodoBase::imprimirErroDeOperacao(Tipo operacao, Tipo esperava, Tipo recebeu) {
+    std::cout << "operation ";      imprimirTipoPorExtenso(operacao);
+    std::cout << " expected ";      imprimirTipoPorExtenso(esperava);
+    std::cout << " but received ";  imprimirTipoPorExtenso(recebeu);
+    std::cout << "\n";              exit(0);
 }
 
 /*

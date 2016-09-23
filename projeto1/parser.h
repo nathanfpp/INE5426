@@ -62,26 +62,32 @@ extern int yydebug;
     T_NL = 265,
     T_OPEN = 266,
     T_CLOSE = 267,
-    T_EQUAL = 268,
-    T_COMMA = 269,
-    T_PLUS = 270,
-    T_MINUS = 271,
-    T_TIMES = 272,
-    T_DIV = 273,
-    T_NOT = 274,
-    T_AND = 275,
-    T_OR = 276,
-    T_EQUAL2 = 277,
-    T_DIF = 278,
-    T_HIGHER = 279,
-    T_HIGH = 280,
-    T_LOWER = 281,
-    T_LOW = 282,
-    T_CAST_INT = 283,
-    T_CAST_FLOAT = 284,
-    T_CAST_BOOL = 285,
-    T_CAST = 286,
-    INT = 287
+    T_OPEN_KEY = 268,
+    T_CLOSE_KEY = 269,
+    T_EQUAL = 270,
+    T_COMMA = 271,
+    T_PLUS = 272,
+    T_MINUS = 273,
+    T_TIMES = 274,
+    T_DIV = 275,
+    T_NOT = 276,
+    T_AND = 277,
+    T_OR = 278,
+    T_EQUAL2 = 279,
+    T_DIF = 280,
+    T_HIGHER = 281,
+    T_HIGH = 282,
+    T_LOWER = 283,
+    T_LOW = 284,
+    T_CAST_INT = 285,
+    T_CAST_FLOAT = 286,
+    T_CAST_BOOL = 287,
+    T_IF = 288,
+    T_THEN = 289,
+    T_ELSE = 290,
+    T_FOR = 291,
+    T_CAST = 292,
+    INT = 293
   };
 #endif
 
@@ -92,14 +98,22 @@ union YYSTYPE
 {
 #line 30 "parser.y" /* yacc.c:1909  */
 
-    const char *valor;
+    const char* valor;
     AST::NodoBase *nodobase;
-    AST::Nodo *nodo;
+    AST::Variavel *variavel;
+    //AST::Inteiro *inteiro;
+    //AST::Real *real;
+    //AST::Boolean *boolean;
+    AST::Declaracao *declaracao;
+    AST::Definicao *definicao;
+    AST::OperacaoUnaria *opUnaria;
+    AST::OperacaoBinaria *opBinaria;
+    AST::Condicao *condicao;
+    AST::Laco *laco;
     AST::Bloco *bloco;
-    AST::Variavel *nodovar;
-    AST::TipoDeNodo tipo;
+    AST::Tipo tipo;
 
-#line 103 "parser.h" /* yacc.c:1909  */
+#line 117 "parser.h" /* yacc.c:1909  */
 };
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1
