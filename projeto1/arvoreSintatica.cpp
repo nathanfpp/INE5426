@@ -13,87 +13,105 @@ using namespace AST;
 /////////////////
 // imprimir() //
 
-void Variavel::imprimir() {
+void Variavel::imprimir(int espaco, bool linha) {
     std::cout << id << "";
     return;
 }
 
-void Inteiro::imprimir() {
+void Inteiro::imprimir(int espaco, bool linha) {
     std::cout << valor << "";
     return;
 }
 
-void Real::imprimir() {
+void Real::imprimir(int espaco, bool linha) {
     std::cout << valor << "";
     return;
 }
 
-void Boolean::imprimir() {
+void Boolean::imprimir(int espaco, bool linha) {
     std::cout << std::boolalpha << valor << "";
     return;
 }
 
-void Declaracao::imprimir() {
+void Declaracao::imprimir(int espaco, bool linha) {
+    imprimirEspaco(espaco);
     imprimirTipo(tipo);
     std::cout << " var: ";
-    if(variaveis != NULL)  variaveis->imprimir();    
+    if(variaveis != NULL)  variaveis->imprimir(espaco, false);
+    std::cout << "\n";
 }
 
-void Definicao::imprimir() {
-    if(variavel != NULL)  variavel->imprimir();
+void Definicao::imprimir(int espaco, bool linha) {
+    variavel->imprimir(espaco, false);
     if(valor != NULL) {
         std::cout << " = ";
-        valor->imprimir();
+        valor->imprimir(0, false);
     }
     if(proxima != NULL) {
         std::cout << ", ";
-        proxima->imprimir();
+        proxima->imprimir(0, false);
     }
+    if(linha) std::cout << "\n";
 }
 
-void OperacaoUnaria::imprimir() {
+void OperacaoUnaria::imprimir(int espaco, bool linha) {
     imprimirTipo(tipo);
-    if(filho != NULL)  filho->imprimir();
+    if(filho != NULL)  filho->imprimir(0, false);
 }
 
-void OperacaoBinaria::imprimir() {
+void OperacaoBinaria::imprimir(int espaco, bool linha) {    
+    imprimirEspaco(espaco);
     imprimirTipo(tipo);
     std::cout << " ";
-    if(esquerda != NULL)  esquerda->imprimir();
+    if(esquerda != NULL)  esquerda->imprimir(0, false);
     std::cout << " ";
-    if(direita  != NULL)  direita->imprimir();
+    if(direita  != NULL)  direita->imprimir(0, false);
+    if(linha) std::cout << "\n";
 }
 
-void Condicao::imprimir() {
+void Condicao::imprimir(int espaco, bool linha) {
+// if ...
+    imprimirEspaco(espaco);
     std::cout << "if: ";
-    teste->imprimir();
-    std::cout << " then { ";
-    se->imprimir();
-    std::cout << "}";
+    teste->imprimir(0, false);
+// then:    
+    if(se != NULL) {
+        std::cout << "\n";
+        imprimirEspaco(espaco);
+        std::cout << "then:\n";
+        se->imprimir(espaco+2, false);
+    }
+// else:
     if(senao != NULL) {
-        std::cout << " else { ";
-        senao->imprimir();
-        std::cout << " }";
+        if(se == NULL) std::cout << "\n";
+        imprimirEspaco(espaco);
+        std::cout << "else:\n";
+        senao->imprimir(espaco+2, false);        
     }
+    if(se == NULL && senao == NULL) std::cout << "\n";
 }
 
-void Laco::imprimir() {
+void Laco::imprimir(int espaco, bool linha) {
+    imprimirEspaco(espaco);
     std::cout << "for: ";
-    if(inicializacao != NULL) inicializacao->imprimir();
+    if(inicializacao != NULL) inicializacao->imprimir(espaco, false);
     std::cout << ", ";
-    if(teste != NULL) teste->imprimir();
+    if(teste != NULL) teste->imprimir(espaco, false);
     std::cout << ", ";
-    if(iteracao != NULL) iteracao->imprimir();
-    std::cout << " {\n";
-    if(laco != NULL) laco->imprimir();
-    std::cout << "}";
+    if(iteracao != NULL) iteracao->imprimir(espaco, false);
+    std::cout << "\ndo:";
+    if(laco != NULL) {
+        std::cout << "\n";
+        laco->imprimir(espaco+2, true);
+    } else std::cout << "\n";
 }
 
-void Bloco::imprimir(){
+void Bloco::imprimir(int espaco, bool linha) {
     for (NodoBase* linha: linhas) {
-        linha->imprimir();
-        std::cout << "\n";    
-    }
+        if(linha != NULL) {
+          linha->imprimir(espaco, true);
+        }
+    }    
 }
 
 
@@ -117,14 +135,8 @@ Tipo Definicao::verificarTipo(Tipo t, Tipo operador) {
   // Captura-se o tipo do valor atribuido à variável
     Tipo esperado = valor->verificarTipo(t, operador);
 
-  // Coerção na declaração de tipo int para float... Necessário ?
-    if(esperado == Tipo::inteiro && t == Tipo::real) {
-        OperacaoUnaria *coercao = new OperacaoUnaria(Tipo::conversao_float, valor);
-        valor = coercao;
-    }
-
-  // Caso não possa haver coerção e os tipos forem diferentes, erro
-    else if(esperado != t) {
+  // Caso os tipos sejam diferentes, erro
+    if(esperado != t) {
       imprimirErroDeOperacao(Tipo::atribuicao,t,esperado);
     }
 
@@ -186,6 +198,8 @@ Tipo OperacaoBinaria::verificarTipo(Tipo t, Tipo operador) {
     switch(tipo) {
 
   // Operaçãos Aritméticas recebem "int" ou "float" e devolvem "int" ou "float"
+        case Tipo::atribuicao:
+            if(e == Tipo::nulo) e = t;
         case Tipo::adicao:
         case Tipo::subtracao:
         case Tipo::multiplicacao:
@@ -462,11 +476,10 @@ void Definicao::ajustarProxima(Definicao *p) {
     }
 }
 
-void NodoBase::imprimirComEspaco(char* texto, int espaco) {
+void NodoBase::imprimirEspaco(int espaco) {
     for(int i = 0; i < espaco; i++) {
         std::cout << " "; 
     }
-    std::cout << texto;
 }
 
 void NodoBase::imprimirTipo(Tipo t) {

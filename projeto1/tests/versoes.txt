@@ -1,0 +1,43 @@
+* testes adicionais
+
+v1.0
+ 1 : ok
+ 2 : ok
+ 3 : precedência incorreta de operações
+
+v2.0
+ 1 : precedência incorreta de operações
+ 2 : precedência incorreta de operações
+ 3 : ok
+
+v3.0
+ 1 : ok
+ 2 : coerção de tipo não realizada
+ 3*:
+
+v4.0
+ 1 : ok
+ 2 : incoerência entre descrição do trabalho e resultado esperado
+
+v5.0
+ 1 : ok
+ 2 : ok
+
+v6.0
+ 1 : .
+ 2 : .
+
+v7.0
+ 1 : .
+ 2 : .
+
+v8.0
+ 1 : .
+ 2 : . 
+
+v1.0
+ 1 : 
+ 2 :
+
+
+

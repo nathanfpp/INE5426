@@ -22,6 +22,7 @@ enum Tipo { inteiro, real, boolean ,
 
 class NodoBase;
 class Variavel;
+class Bloco;
 
 
 typedef std::vector<NodoBase*> listaDeNodos;
@@ -29,13 +30,13 @@ typedef std::vector<NodoBase*> listaDeNodos;
 class NodoBase {
     public:
         virtual ~NodoBase() {}
-        virtual void imprimir() {}
+        virtual void imprimir(int espaco, bool linha) {}
         virtual Tipo verificarTipo(Tipo t, Tipo operador) { return Tipo::nulo; }
         virtual void verificarSimbolos(std::map<std::string, AST::Variavel*> &tabela_simbolos) {}
         virtual void acrescentarSimbolos(std::map<std::string, AST::Variavel*> &tabela_simbolos, AST::Tipo ultimoTipo) {}
+                void imprimirEspaco(int espaco);
                 void imprimirTipo(Tipo t);
                 void imprimirTipoPorExtenso(Tipo t);
-                void imprimirComEspaco(char* texto, int espaco);
                 void imprimirErroDeOperacao(Tipo operacao, Tipo esperava, Tipo recebeu);
 	//virtual void verificarTipoRaiz(TipoDeNodo esquerda, TipoDeNodo direita){}		
 };
@@ -48,7 +49,7 @@ class Variavel : public NodoBase {
          std::string id;                 
      //
          Variavel(Tipo t, std::string id) : tipo(t), id(id) { };
-         void imprimir();
+         void imprimir(int espaco, bool linha);
          Tipo verificarTipo(Tipo t, Tipo operador) { return tipo; }
          void verificarSimbolos(std::map<std::string, AST::Variavel*> &tabela_simbolos);
          void acrescentarSimbolos(std::map<std::string, AST::Variavel*> &tabela_simbolos, AST::Tipo ultimoTipo);
@@ -62,7 +63,7 @@ class Inteiro : public NodoBase {
         const char *valor;
     //
         Inteiro(Tipo t, const char *valor) : tipo(t), valor(valor) { };
-        void imprimir();
+        void imprimir(int espaco, bool linha);
 	Tipo verificarTipo(Tipo t, Tipo operador) { return tipo; }
         void verificarSimbolos(std::map<std::string, AST::Variavel*> &tabela_simbolos) {}
         void acrescentarSimbolos(std::map<std::string, AST::Variavel*> &tabela_simbolos, AST::Tipo ultimoTipo) {}
@@ -76,7 +77,7 @@ class Real : public NodoBase {
         const char *valor;
     //
         Real(Tipo t, const char *valor) : tipo(t), valor(valor) { };
-        void imprimir();
+        void imprimir(int espaco, bool inha);
         Tipo verificarTipo(Tipo t, Tipo operador) { return tipo; }
         void verificarSimbolos(std::map<std::string, AST::Variavel*> &tabela_simbolos) {}
         void acrescentarSimbolos(std::map<std::string, AST::Variavel*> &tabela_simbolos, AST::Tipo ultimoTipo) {}
@@ -90,7 +91,7 @@ class Boolean : public NodoBase {
         const char *valor;
     //
         Boolean(Tipo t, const char *valor) : tipo(t), valor(valor) { };
-        void imprimir();
+        void imprimir(int espaco, bool linha);
 	Tipo verificarTipo(Tipo t, Tipo operador) { return tipo; }
         void verificarSimbolos(std::map<std::string, AST::Variavel*> &tabela_simbolos) {}
         void acrescentarSimbolos(std::map<std::string, AST::Variavel*> &tabela_simbolos, AST::Tipo ultimoTipo) {}
@@ -104,7 +105,7 @@ class Declaracao : public NodoBase {
         NodoBase *variaveis;
     //
         Declaracao(Tipo t, NodoBase *d) : tipo(t), variaveis(d) { };
-        void imprimir();
+        void imprimir(int espaco, bool linha);
         Tipo verificarTipo(Tipo t, Tipo operador);
         void verificarSimbolos(std::map<std::string, AST::Variavel*> &tabela_simbolos);
         void acrescentarSimbolos(std::map<std::string, Variavel*> &tabela_simbolos, AST::Tipo ultimoTipo);
@@ -117,7 +118,7 @@ class Definicao : public NodoBase {
         Definicao *proxima;
     //
         Definicao(Variavel *v, NodoBase *c, Definicao *p) : variavel(v), valor(c), proxima(p) { };
-        void imprimir();
+        void imprimir(int espaco, bool linha);
         void ajustarProxima(Definicao *p);
         Tipo verificarTipo(Tipo t, Tipo operador);
         void verificarSimbolos(std::map<std::string, AST::Variavel*> &tabela_simbolos);
@@ -130,7 +131,7 @@ class OperacaoUnaria : public NodoBase {
         NodoBase *filho;
     //
         OperacaoUnaria(Tipo t, NodoBase *f) : tipo(t), filho(f) { };
-        void imprimir();
+        void imprimir(int espaco, bool linha);
 	Tipo verificarTipo(Tipo t, Tipo operador);
         void verificarSimbolos(std::map<std::string, Variavel*> &tabela_simbolos);
         void acrescentarSimbolos(std::map<std::string, Variavel*> &tabela_simbolos, AST::Tipo ultimoTipo);
@@ -145,7 +146,7 @@ class OperacaoBinaria : public NodoBase {
         NodoBase *direita;
     //
         OperacaoBinaria(Tipo t, NodoBase *e, NodoBase *d) : tipo(t), esquerda(e), direita(d) { };
-        void imprimir();
+        void imprimir(int espaco, bool linha);
 	Tipo verificarTipo(Tipo t, Tipo operador);
         bool coercaoIntParaFloat(Tipo e, Tipo d);
         void verificarSimbolos(std::map<std::string, Variavel*> &tabela_simbolos);
@@ -157,11 +158,11 @@ class OperacaoBinaria : public NodoBase {
 class Condicao : public NodoBase {
     public:
         NodoBase *teste;
-        NodoBase *se;
-        NodoBase *senao;
+        Bloco *se;
+        Bloco *senao;
     //
-        Condicao(NodoBase *a,  NodoBase *b,  NodoBase *c) : teste(a), se(b), senao(c) { };
-        void imprimir();
+        Condicao(NodoBase *a,  Bloco *b,  Bloco *c) : teste(a), se(b), senao(c) { };
+        void imprimir(int espaco, bool linha);
 	Tipo verificarTipo(Tipo t, Tipo operador);
         void verificarSimbolos(std::map<std::string, Variavel*> &tabela_simbolos);
         void acrescentarSimbolos(std::map<std::string, Variavel*> &tabela_simbolos, AST::Tipo ultimoTipo);
@@ -173,10 +174,10 @@ class Laco : public NodoBase {
         NodoBase *inicializacao;
         NodoBase *teste;
         NodoBase *iteracao;
-        NodoBase *laco;
+        Bloco *laco;
     //
-        Laco(NodoBase *a, NodoBase *b, NodoBase *c, NodoBase *d) : inicializacao(a), teste(b), iteracao(c), laco(d) { };
-        void imprimir();
+        Laco(NodoBase *a, NodoBase *b, NodoBase *c, Bloco *d) : inicializacao(a), teste(b), iteracao(c), laco(d) { };
+        void imprimir(int espaco, bool linha);
 	Tipo verificarTipo(Tipo t, Tipo operador);
         void verificarSimbolos(std::map<std::string, Variavel*> &tabela_simbolos);
         void acrescentarSimbolos(std::map<std::string, Variavel*> &tabela_simbolos, AST::Tipo ultimoTipo);
@@ -189,7 +190,7 @@ class Bloco : public NodoBase {
         listaDeNodos linhas;
         Bloco() { }
     //
-        void imprimir();
+        void imprimir(int espaco, bool linha);
         void novaLinha(NodoBase *linha);
 	Tipo verificarTipo(Tipo t, Tipo operador);
         void verificarSimbolos(std::map<std::string, Variavel*> &tabela_simbolos);
@@ -197,6 +198,7 @@ class Bloco : public NodoBase {
 	//void adicionarTipo(TipoDeNodo t) {}
 	//void verificarTipoRaiz(TipoDeNodo esquerda, TipoDeNodo direita){}		
 };
+
 
 }
 

@@ -89,7 +89,7 @@ extern void yyerror(const char* s, ...);
 // $$ = $1 por padrão
 programa: linhas { arvoreSintatica = $1; 
                    //$$->verificarTipo(AST::Tipo::nulo, AST::Tipo::nulo); 
-                   $$->imprimir();
+                   $$->imprimir(0, true);
 		   std::cout <<"\n";} //sem esse cout dá erro nos testes
         ;
 
@@ -119,53 +119,56 @@ linha:
      ;
 
 laco :
-       T_FOR T_COMMA expressao T_COMMA T_OPEN_KEY T_NL 
-       T_CLOSE_KEY    { $$ = new AST::Laco(NULL,$3,NULL,NULL); }
-
-     | T_FOR T_COMMA expressao T_COMMA atribuicao T_OPEN_KEY T_NL 
-       T_CLOSE_KEY    { $$ = new AST::Laco(NULL,$3,$5,NULL); }
-
-     | T_FOR atribuicao T_COMMA expressao T_COMMA T_OPEN_KEY T_NL 
-       T_CLOSE_KEY    { $$ = new AST::Laco($2,$4,NULL,NULL); }
-
-     | T_FOR atribuicao T_COMMA expressao T_COMMA atribuicao T_OPEN_KEY T_NL 
-       T_CLOSE_KEY    { $$ = new AST::Laco($2,$4,$6,NULL); }
-  
-     | T_FOR T_COMMA expressao T_COMMA T_OPEN_KEY T_NL 
-       linhas
-       T_CLOSE_KEY    { $$ = new AST::Laco(NULL,$3,NULL,$7); }
-
-     | T_FOR T_COMMA expressao T_COMMA atribuicao T_OPEN_KEY T_NL 
-       linhas
-       T_CLOSE_KEY    { $$ = new AST::Laco($3,$5,NULL,$8); }
-
-     | T_FOR atribuicao T_COMMA expressao T_COMMA T_OPEN_KEY T_NL 
-       linhas
-       T_CLOSE_KEY    { $$ = new AST::Laco($2,$4,NULL,$8); }
-
-     | T_FOR atribuicao T_COMMA expressao T_COMMA atribuicao T_OPEN_KEY T_NL 
-       linhas 
-       T_CLOSE_KEY    { $$ = new AST::Laco($2,$4,$9,NULL); }
+// for , ... , { }
+       T_FOR T_COMMA expressao T_COMMA T_OPEN_KEY T_NL T_CLOSE_KEY 
+       { $$ = new AST::Laco( NULL , $3 , NULL , NULL ); }
+// for , ... , ... { }
+     | T_FOR T_COMMA expressao T_COMMA atribuicao T_OPEN_KEY T_NL T_CLOSE_KEY
+       { $$ = new AST::Laco( NULL , $3 , $5 , NULL ); }
+// for ... , ... , { }
+     | T_FOR atribuicao T_COMMA expressao T_COMMA T_OPEN_KEY T_NL T_CLOSE_KEY
+       { $$ = new AST::Laco( $2 , $4 , NULL , NULL ); }
+// for ... , ... , ... { }
+     | T_FOR atribuicao T_COMMA expressao T_COMMA atribuicao T_OPEN_KEY T_NL T_CLOSE_KEY
+       { $$ = new AST::Laco( $2 , $4 , $6 , NULL ); }
+// for , ... , { ... }
+     | T_FOR T_COMMA expressao T_COMMA T_OPEN_KEY T_NL linhas T_CLOSE_KEY
+       { $$ = new AST::Laco( NULL , $3 , NULL , $7 ); }
+// for , ... , ... { ... }
+     | T_FOR T_COMMA expressao T_COMMA atribuicao T_OPEN_KEY T_NL linhas T_CLOSE_KEY
+       { $$ = new AST::Laco( NULL , $3 , $5 , $8 ); }
+// for ... , ... , { ... }
+     | T_FOR atribuicao T_COMMA expressao T_COMMA T_OPEN_KEY T_NL linhas T_CLOSE_KEY
+       { $$ = new AST::Laco( $2 , $4 , NULL , $8 ); }
+// for ... , ... , ... { ... }
+     | T_FOR atribuicao T_COMMA expressao T_COMMA atribuicao T_OPEN_KEY T_NL linhas T_CLOSE_KEY
+       { $$ = new AST::Laco( $2 , $4 , $6 , $9 ); }
      ;
 
 condicao:         
 // if ... then { }
-          T_IF expressao T_NL T_THEN T_OPEN_KEY T_NL T_CLOSE_KEY  { $$ = new AST::Condicao($2, NULL, NULL); }
+          T_IF expressao T_NL T_THEN T_OPEN_KEY T_NL T_CLOSE_KEY  
+          { $$ = new AST::Condicao($2, NULL, NULL); }
 
 // if ... then { ... }
-        |  T_IF expressao T_NL T_THEN T_OPEN_KEY T_NL linhas T_CLOSE_KEY  { $$ = new AST::Condicao($2, $7, NULL ); }
+        |  T_IF expressao T_NL T_THEN T_OPEN_KEY T_NL linhas T_CLOSE_KEY  
+           { $$ = new AST::Condicao($2, $7, NULL ); }
 
 // if ... then {  } else { } 
-        | T_IF expressao T_NL T_THEN T_OPEN_KEY T_NL T_CLOSE_KEY T_ELSE T_OPEN_KEY T_NL T_CLOSE_KEY  { $$ = new AST::Condicao($2, NULL, NULL ); }
+        | T_IF expressao T_NL T_THEN T_OPEN_KEY T_NL T_CLOSE_KEY T_ELSE T_OPEN_KEY T_NL T_CLOSE_KEY  
+          { $$ = new AST::Condicao($2, NULL, NULL ); }
 
 // if ... then { } else {  ... } 
-        | T_IF expressao T_NL T_THEN T_OPEN_KEY T_NL T_CLOSE_KEY T_ELSE T_OPEN_KEY T_NL linhas T_CLOSE_KEY  { $$ = new AST::Condicao($2, NULL, $11 ); }
+        | T_IF expressao T_NL T_THEN T_OPEN_KEY T_NL T_CLOSE_KEY T_ELSE T_OPEN_KEY T_NL linhas T_CLOSE_KEY  
+          { $$ = new AST::Condicao($2, NULL, $11 ); }
 
 // if ... then { ... } else { }
-        | T_IF expressao T_NL T_THEN T_OPEN_KEY T_NL linhas T_CLOSE_KEY T_ELSE T_OPEN_KEY T_NL T_CLOSE_KEY  { $$ = new AST::Condicao($2, $7, NULL ); }
+        | T_IF expressao T_NL T_THEN T_OPEN_KEY T_NL linhas T_CLOSE_KEY T_ELSE T_OPEN_KEY T_NL T_CLOSE_KEY  
+          { $$ = new AST::Condicao($2, $7, NULL ); }
 
 // if ... then { ... } else { ... }
-        | T_IF expressao T_NL T_THEN T_OPEN_KEY T_NL linhas T_CLOSE_KEY T_ELSE T_OPEN_KEY T_NL linhas T_CLOSE_KEY  { $$ = new AST::Condicao($2, $7, $12 ); }
+        | T_IF expressao T_NL T_THEN T_OPEN_KEY T_NL linhas T_CLOSE_KEY T_ELSE T_OPEN_KEY T_NL linhas T_CLOSE_KEY  
+          { $$ = new AST::Condicao($2, $7, $12 ); }
         ;
 
 declaracao:

@@ -18,6 +18,7 @@ letter          ([a-z]|[A-Z])([a-z]|[A-Z]|"_"|[0-9])*
 %%
 
 [ \t]               ; // Ignora espaços entre tokens
+" "                 ;
 
 "int"               { yylval.tipo = AST::Tipo::inteiro;  return T_TYPE_INT;   } // 
 "float"             { yylval.tipo = AST::Tipo::real;     return T_TYPE_FLOAT; } // Tipos de Variáveis
