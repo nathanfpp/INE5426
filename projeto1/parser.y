@@ -52,7 +52,7 @@ extern void yyerror(const char* s, ...);
 %token T_NL T_OPEN T_CLOSE  T_OPEN_KEY T_CLOSE_KEY T_EQUAL T_COMMA T_PLUS T_MINUS T_TIMES T_DIV T_NOT T_AND T_OR 
 %token T_EQUAL2 T_DIF T_HIGHER T_HIGH T_LOWER T_LOW
 %token T_CAST_INT T_CAST_FLOAT T_CAST_BOOL
-%token T_IF T_THEN T_ELSE T_FOR
+%token T_IF T_THEN T_ELSE T_FOR T_FUN T_RET
 
 // %type
 // Define o tipo de Símbolos Não-Terminais
@@ -68,10 +68,12 @@ extern void yyerror(const char* s, ...);
 
 // %left, %right, %nonassoc
 // Precedência de operadores matemáticos, os últimos listados possuem maior procedência.
-%left T_PLUS T_MINUS
+%left T_EQUALS2 T_DIF T_HIGHER T_HIGH T_LOWER T_LOW
+%left T_PLUS T_MINUS T_AND T_OR
+%left T_DIV
 %left T_TIMES
-%left T_DIV 
 %left T_OPEN T_CLOSE
+%left T_NOT UMINUS // UMINUS: http://www.gnu.org/software/bison/manual/html_node/Contextual-Precedence.html
 %left T_CAST INT T_CAST_FLOAT T_CAST_BOOL
 /* 
    !!! : Reconhercer Operações Unárias antes das Operações Binárias divisão/multiplicação :
@@ -117,7 +119,21 @@ linha:
                          }
      | T_NL             {  $$ = NULL;  }
      ;
+/*
+dec_funcao :
+             tipo T_FUN T_VAR T_OPEN parametros T_CLOSE  { $$ = Funcao( $1 , $5 , NULL ); }
+           ;
 
+def_funcao :
+             tipo T_FUN T_VAR T_OPEN parametros T_CLOSE T_OPEN_KEY linhas T_RET tipo T_CLOSE_KEY  
+             { $$ = Funcao( $1 , $5 , $7 ); }
+           ;
+
+parametros :
+             tipo T_VAR                     { $$ = NULL; }
+           | parametros T_COMMA tipo T_VAR  { $$ = NULL; }
+           ;
+*/
 laco :
 // for , ... , { }
        T_FOR T_COMMA expressao T_COMMA T_OPEN_KEY T_NL T_CLOSE_KEY 
@@ -198,25 +214,25 @@ atribuicao:
           ;
 
 expressao:
-                                  primitiva  { $$ = $1; }
-         |           T_MINUS      expressao  { $$ = new AST::OperacaoUnaria( AST::Tipo::negacao         , $2 ); }
-         |           T_NOT        expressao  { $$ = new AST::OperacaoUnaria( AST::Tipo::inversao        , $2 ); }
-         |           T_CAST_INT   expressao  { $$ = new AST::OperacaoUnaria( AST::Tipo::conversao_int   , $2 ); }
-         |           T_CAST_FLOAT expressao  { $$ = new AST::OperacaoUnaria( AST::Tipo::conversao_float , $2 ); }
-         |           T_CAST_BOOL  expressao  { $$ = new AST::OperacaoUnaria( AST::Tipo::conversao_bool  , $2 ); }
-         | T_OPEN    expressao    T_CLOSE    { $$ = new AST::OperacaoUnaria( AST::Tipo::parenteses      , $2 ); }
-         |  expressao T_PLUS      expressao  { $$ = new AST::OperacaoBinaria( AST::Tipo::adicao         , $1,  $3 ); }
-         | expressao T_MINUS      expressao  { $$ = new AST::OperacaoBinaria( AST::Tipo::subtracao      , $1,  $3 ); }
-         | expressao T_TIMES      expressao  { $$ = new AST::OperacaoBinaria( AST::Tipo::multiplicacao  , $1,  $3 ); }
-         | expressao T_DIV        expressao  { $$ = new AST::OperacaoBinaria( AST::Tipo::divisao        , $1,  $3 ); }
-         | expressao T_AND        expressao  { $$ = new AST::OperacaoBinaria( AST::Tipo::e              , $1,  $3 ); }
-         | expressao T_OR         expressao  { $$ = new AST::OperacaoBinaria( AST::Tipo::ou             , $1,  $3 ); }
-         | expressao T_EQUAL2     expressao  { $$ = new AST::OperacaoBinaria( AST::Tipo::igual          , $1,  $3 ); }
-         | expressao T_DIF        expressao  { $$ = new AST::OperacaoBinaria( AST::Tipo::diferente      , $1,  $3 ); }
-         | expressao T_HIGHER     expressao  { $$ = new AST::OperacaoBinaria( AST::Tipo::maior          , $1 , $3 ); }
-         | expressao T_HIGH       expressao  { $$ = new AST::OperacaoBinaria( AST::Tipo::maior_igual    , $1,  $3 ); }
-         | expressao T_LOWER      expressao  { $$ = new AST::OperacaoBinaria( AST::Tipo::menor          , $1,  $3 ); }
-         | expressao T_LOW        expressao  { $$ = new AST::OperacaoBinaria( AST::Tipo::menor_igual    , $1,  $3 ); }
+                                  primitiva              { $$ = $1; }
+         |           T_MINUS      expressao %prec UMINUS { $$ = new AST::OperacaoUnaria( AST::Tipo::negacao         , $2 ); }
+         |           T_NOT        expressao              { $$ = new AST::OperacaoUnaria( AST::Tipo::inversao        , $2 ); }
+         |           T_CAST_INT   expressao              { $$ = new AST::OperacaoUnaria( AST::Tipo::conversao_int   , $2 ); }
+         |           T_CAST_FLOAT expressao              { $$ = new AST::OperacaoUnaria( AST::Tipo::conversao_float , $2 ); }
+         |           T_CAST_BOOL  expressao              { $$ = new AST::OperacaoUnaria( AST::Tipo::conversao_bool  , $2 ); }
+         | T_OPEN    expressao    T_CLOSE                { $$ = new AST::OperacaoUnaria( AST::Tipo::parenteses      , $2 ); }
+         |  expressao T_PLUS      expressao              { $$ = new AST::OperacaoBinaria( AST::Tipo::adicao         , $1,  $3 ); }
+         | expressao T_MINUS      expressao              { $$ = new AST::OperacaoBinaria( AST::Tipo::subtracao      , $1,  $3 ); }
+         | expressao T_TIMES      expressao              { $$ = new AST::OperacaoBinaria( AST::Tipo::multiplicacao  , $1,  $3 ); }
+         | expressao T_DIV        expressao              { $$ = new AST::OperacaoBinaria( AST::Tipo::divisao        , $1,  $3 ); }
+         | expressao T_AND        expressao              { $$ = new AST::OperacaoBinaria( AST::Tipo::e              , $1,  $3 ); }
+         | expressao T_OR         expressao              { $$ = new AST::OperacaoBinaria( AST::Tipo::ou             , $1,  $3 ); }
+         | expressao T_EQUAL2     expressao              { $$ = new AST::OperacaoBinaria( AST::Tipo::igual          , $1,  $3 ); }
+         | expressao T_DIF        expressao              { $$ = new AST::OperacaoBinaria( AST::Tipo::diferente      , $1,  $3 ); }
+         | expressao T_HIGHER     expressao              { $$ = new AST::OperacaoBinaria( AST::Tipo::maior          , $1 , $3 ); }
+         | expressao T_HIGH       expressao              { $$ = new AST::OperacaoBinaria( AST::Tipo::maior_igual    , $1,  $3 ); }
+         | expressao T_LOWER      expressao              { $$ = new AST::OperacaoBinaria( AST::Tipo::menor          , $1,  $3 ); }
+         | expressao T_LOW        expressao              { $$ = new AST::OperacaoBinaria( AST::Tipo::menor_igual    , $1,  $3 ); }
          ; 
 
 primitiva:

@@ -28,6 +28,8 @@ letter          ([a-z]|[A-Z])([a-z]|[A-Z]|"_"|[0-9])*
 "then"              { return T_THEN; }
 "else"              { return T_ELSE; }
 "for"               { return T_FOR;  }
+"fun"               { return T_FUN;  }
+"ret"               { return T_RET;  }
 
 "[int]"             { return T_CAST_INT;   } //
 "[float]"           { return T_CAST_FLOAT; } // Conversores de Tipo

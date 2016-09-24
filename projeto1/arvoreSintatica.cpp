@@ -197,14 +197,30 @@ Tipo OperacaoBinaria::verificarTipo(Tipo t, Tipo operador) {
   // Operações Binárias possuem comportamentos diferentes
     switch(tipo) {
 
-  // Operaçãos Aritméticas recebem "int" ou "float" e devolvem "int" ou "float"
+  // A Atribuição recebe
         case Tipo::atribuicao:
-            if(e == Tipo::nulo) e = t;
+            
+         // O tipo da esquerda é inválido?
+            if(t != d) {
+                imprimirErroDeOperacao(tipo,t,d);
+            }
+          // A coerção de tipos é necessária?
+            if(coercaoIntParaFloat(e,d)) {
+
+              // Se a coerção ocorre, é garantido que a operação binária retorna um tipo float
+                return Tipo::real;
+            } 
+
+          // Caso não ocorra coerção, os tipos da esquerda e direita são iguais
+            else {
+                return e;
+            }
+
+  // Operaçãos Aritméticas recebem "int" ou "float" e devolvem "int" ou "float"
         case Tipo::adicao:
         case Tipo::subtracao:
         case Tipo::multiplicacao:
         case Tipo::divisao:
-
          // O tipo da esquerda é inválido?
             if(e == Tipo::boolean) {
                 imprimirErroDeOperacao(tipo,t,e);

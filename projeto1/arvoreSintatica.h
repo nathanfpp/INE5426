@@ -184,6 +184,19 @@ class Laco : public NodoBase {
 	//void adicionarTipo(TipoDeNodo t) {}		
 };
 
+class Funcao : public NodoBase {
+    public:
+        Tipo retorno;
+        NodoBase *parametros;
+        Bloco *corpo;
+    //
+        Funcao(Tipo r, NodoBase *p, Bloco *c) : retorno(r), parametros(p), corpo(c) { };
+        void imprimir(int espaco, bool linha);
+        Tipo verificarTipo(Tipo t, Tipo operador);
+        void verificarSimbolos(std::map<std::string, Variavel*> &tabela_simbolos);
+        void acrescentarSimbolos(std::map<std::string, Variavel*> &tabela_simbolos, AST::Tipo ultimoTipo);
+};
+
 // Bloco ou Linha
 class Bloco : public NodoBase {
     public:
