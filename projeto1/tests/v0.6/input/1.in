@@ -1,5 +1,5 @@
 int i
-if true 
+if true
 then {
   float i = 0.0
 }
@@ -7,4 +7,3 @@ for i = 0, i < 2, i = i + 2 {
   int a
 }
 bool a = true
-

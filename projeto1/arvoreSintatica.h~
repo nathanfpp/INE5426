@@ -26,6 +26,7 @@ class Variavel;
 class Bloco;
 class TabelaDeSimbolos;
 class Definicao;
+class OperacaoBinaria;
 
 typedef std::vector<Nodo*> listaDeNodos;
 

@@ -1,17 +1,17 @@
 * testes adicionais
 # modificados
 
-v1.0
+v0.1
  1 : precedência incorreta de operações
  2 : ok
  3 : ok
 
-v2.0
- 1 : ok
+v0.2
+ 1 : \n sobrando
  2 : ok
  3 : ok
 
-v3.0
+v0.3
  1 : ok
  2 : ok
 
@@ -22,11 +22,11 @@ v4.0
 v5.0
  1 : ok
  2 : ok
- 3*:
+ 3*: ok
 
 v6.0
- 1#: 
- 2 : 
+ 1#: ok
+ 2 : ok
 
 v7.0
  1 : 
