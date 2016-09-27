@@ -1,39 +1,40 @@
 * testes adicionais
+# modificados
 
 v1.0
- 1 : ok
+ 1 : precedência incorreta de operações
  2 : ok
- 3 : precedência incorreta de operações
+ 3 : ok
 
 v2.0
- 1 : precedência incorreta de operações
- 2 : precedência incorreta de operações
+ 1 : ok
+ 2 : ok
  3 : ok
 
 v3.0
  1 : ok
  2 : ok
- 3*:
 
 v4.0
  1 : ok
- 2 : incoerência entre descrição do trabalho e resultado esperado
+ 2 : ok
 
 v5.0
  1 : ok
  2 : ok
+ 3*:
 
 v6.0
- 1 : .
- 2 : .
+ 1#: ok
+ 2 : ok
 
 v7.0
- 1 : .
- 2 : .
+ 1 : 
+ 2 : 
 
 v8.0
- 1 : .
- 2 : . 
+ 1 : 
+ 2 :  
 
 v1.0
  1 : 

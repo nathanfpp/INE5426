@@ -1,0 +1,12 @@
+int i, j
+float a = 5
+if true
+then{
+ int i
+  if true
+  then {
+    for i = 0, i < 10, i = i+3 {
+	int j
+    }
+  }
+}

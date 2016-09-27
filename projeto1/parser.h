@@ -40,12 +40,11 @@
 extern int yydebug;
 #endif
 /* "%code requires" blocks.  */
-#line 14 "parser.y" /* yacc.c:1909  */
+#line 16 "parser.y" /* yacc.c:1909  */
 
     #include "arvoreSintatica.h"
-    #include "arvoreSintatica.h"
 
-#line 49 "parser.h" /* yacc.c:1909  */
+#line 48 "parser.h" /* yacc.c:1909  */
 
 /* Token type.  */
 #ifndef YYTOKENTYPE
@@ -100,10 +99,10 @@ extern int yydebug;
 typedef union YYSTYPE YYSTYPE;
 union YYSTYPE
 {
-#line 30 "parser.y" /* yacc.c:1909  */
+#line 33 "parser.y" /* yacc.c:1909  */
 
     const char* valor;
-    AST::NodoBase *nodobase;
+    AST::Nodo *nodo;
     AST::Variavel *variavel;
     //AST::Inteiro *inteiro;
     //AST::Real *real;
@@ -114,6 +113,7 @@ union YYSTYPE
     AST::OperacaoBinaria *opBinaria;
     AST::Condicao *condicao;
     AST::Laco *laco;
+    AST::Funcao *funcao;
     AST::Bloco *bloco;
     AST::Tipo tipo;
 

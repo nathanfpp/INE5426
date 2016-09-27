@@ -1,6 +1,5 @@
 int i
-if true 
-then {
+if true then {
   float i = 0.0
 }
 for i = 0, i < 2, i = i + 2 {

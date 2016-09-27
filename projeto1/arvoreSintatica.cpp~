@@ -562,6 +562,7 @@ Variavel* TabelaDeSimbolos::recuperarVariavel(std::string id, int linha) {
 
   // Variável não encontrada em nenhum escopo
     else {
+        std::cout << "###";
         std::ofstream arquivoDeErros("tests/erros.txt", std::ios::app); 
         arquivoDeErros << "[Line " << linha << "] semantic error: undeclared variable " << id << "\n"; 
         arquivoDeErros.close();       

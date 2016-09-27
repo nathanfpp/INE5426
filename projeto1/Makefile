@@ -33,8 +33,8 @@ test:
 	./${OUTPUT} < tests/v0.5/input/1.in > tests/v0.5/output/1.out
 	./${OUTPUT} < tests/v0.5/input/2.in > tests/v0.5/output/2.out
 	./${OUTPUT} < tests/v0.5/input/3.in > tests/v0.5/output/3.out
-#	./${OUTPUT} < tests/v0.6/input/1.in > tests/v0.6/output/1.out
-#	./${OUTPUT} < tests/v0.6/input/2.in > tests/v0.6/output/2.out
+	./${OUTPUT} < tests/v0.6/input/1.in > tests/v0.6/output/1.out
+	./${OUTPUT} < tests/v0.6/input/2.in > tests/v0.6/output/2.out
 #	./${OUTPUT} < tests/v0.7/input/1.in > tests/v0.7/output/1.out
 #	./${OUTPUT} < tests/v0.7/input/2.in > tests/v0.7/output/2.out
 #	./${OUTPUT} < tests/v0.8/input/1.in > tests/v0.8/output/1.out
@@ -57,8 +57,8 @@ compare:
 	diff tests/v0.5/expected/1.ex tests/v0.5/output/1.out
 	diff tests/v0.5/expected/2.ex tests/v0.5/output/2.out
 	diff tests/v0.5/expected/3.ex tests/v0.5/output/3.out
-#	diff tests/v0.6/expected/1.ex tests/v0.6/output/1.out
-#	diff tests/v0.6/expected/2.ex tests/v0.6/output/2.out
+	diff tests/v0.6/expected/1.ex tests/v0.6/output/1.out
+	diff tests/v0.6/expected/2.ex tests/v0.6/output/2.out
 #	diff tests/v0.7/expected/1.ex tests/v0.7/output/1.out
 #	diff tests/v0.7/expected/2.ex tests/v0.7/output/2.out
 #	diff tests/v0.8/expected/1.ex tests/v0.8/output/1.out
