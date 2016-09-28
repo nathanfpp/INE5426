@@ -46,9 +46,9 @@ test:
 test_errors: 
 
 	./${OUTPUT} < error_tests/v0.1/input/1.in > error_tests/v0.1/output/1.out 2> error_tests/v0.1/output/1.out_err
-	./${OUTPUT} < error_tests/v0.1/input/2.in > error_tests/v0.1/output/2.out 2> error_tests/v0.1/output/2.out_err
-	./${OUTPUT} < error_tests/v0.1/input/3.in > error_tests/v0.1/output/3.out 2> error_tests/v0.1/output/3.out_err
-	./${OUTPUT} < error_tests/v0.1/input/4.in > error_tests/v0.1/output/4.out 2> error_tests/v0.1/output/4.out_err
+	./${OUTPUT} < error_tests/v0.1/input/2.in > error_tests/v0.1/output/1.out 2> error_tests/v0.1/output/1.out_err
+	./${OUTPUT} < error_tests/v0.1/input/3.in > error_tests/v0.1/output/1.out 2> error_tests/v0.1/output/1.out_err
+	./${OUTPUT} < error_tests/v0.1/input/4.in > error_tests/v0.1/output/1.out 2> error_tests/v0.1/output/1.out_err
 
 
 compare:
