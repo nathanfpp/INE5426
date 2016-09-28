@@ -14,6 +14,7 @@ valor_int       [0-9]+
 valor_float     ({valor_int}\.{valor_int})|(\.{valor_int})|({valor_int}\.)
 valor_bool      ("true"|"false")
 letter          ([a-z]|[A-Z])([a-z]|[A-Z]|"_"|[0-9])*
+rejeite         [^(valor_int|valor_float|valor_int|letter|"="|"<"|">"|"\*"|"/"|"\+"|"\-"|"!"|"&"|"|")]+ 
 
 %%
 
@@ -65,7 +66,7 @@ letter          ([a-z]|[A-Z])([a-z]|[A-Z]|"_"|[0-9])*
 
 \n                  { return T_NL; }
 
-.                   { yyerror("Unknown token! %c\n", *yytext);} 
+{rejeite}                   { yyerror("Unknown token! %s\n", strdup(yytext));} 
 
 %%
 
