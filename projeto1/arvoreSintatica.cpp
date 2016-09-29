@@ -11,189 +11,514 @@
 
 using namespace AST;
 
+
+//////////////
+// Variavel//
+
+Tipo Variavel::analisar(AST::TabelaDeSimbolos *tabelaSimbolos, int linha) {
+
+  // Busca a variável na tabela de símbolos e retorna o tipo da variável, caso ele seja encontrado
+    Variavel *v = tabelaSimbolos->recuperarVariavel(id, linha);
+    if(v != NULL) {
+        return v->tipo;
+    }
+
+  // Caso contrário retorna o tipo do Nodo::Variável
+    return tipo;
+}
+
+
 /////////////////
-// imprimir() //
+// Declaracao //
 
-void Variavel::imprimir(AST::TabelaDeSimbolos *tabelaSimbolos, int espaco, int linha, bool atribuicao) {
-   // if(atribuicao) { tabelaSimbolos->variavelDeclarada(id, linha); }
-    std::cout << id << ""; 
+Tipo Declaracao::analisar(AST::TabelaDeSimbolos *tabelaSimbolos, int linha) {
+
+  // Atribui o tipoDeVariavel da Declaração à primeira variável da declaração
+    variaveis->tipoDeVariavel = tipoDeVariavel;
+
+  // Inicia a análise das variáveis declaradas
+    variaveis->analisar(tabelaSimbolos, linha);
+
+    return tipo;
 }
 
-void Inteiro::imprimir(AST::TabelaDeSimbolos *tabelaSimbolos, int espaco, int linha, bool novaLinha) {
-    std::cout << valor << "";
-    return;
-}
-
-void Real::imprimir(AST::TabelaDeSimbolos *tabelaSimbolos, int espaco, int linha, bool novaLinha) {
-    std::cout << valor << "";
-    return;
-}
-
-void Boolean::imprimir(AST::TabelaDeSimbolos *tabelaSimbolos, int espaco, int linha, bool novaLinha) {
-    std::cout << std::boolalpha << valor << "";
-    return;
-}
-
-void Declaracao::imprimir(AST::TabelaDeSimbolos *tabelaSimbolos, int espaco, int linha, bool novaLinha) {
+void Declaracao::imprimir(int espaco, bool novaLinha) {
     imprimirEspaco(espaco);
     imprimirTipo(tipoDeVariavel);
     std::cout << " var: ";
-    if(variaveis != NULL)  variaveis->imprimir(tabelaSimbolos, espaco, linha, false);
+    if(variaveis != NULL) {
+        variaveis->imprimir(0, false);
+    }
     std::cout << "\n";
 }
 
-void Definicao::imprimir(AST::TabelaDeSimbolos *tabelaSimbolos, int espaco, int linha, bool novaLinha) {
-    variavel->imprimir(tabelaSimbolos, espaco, linha, false);
+
+////////////////
+// Definicao //
+
+Tipo Definicao::analisar(AST::TabelaDeSimbolos *tabelaSimbolos, int linha) {
+
+  // Atribui tipoDeVariavel, recebido da Declaração, à Variável
+    variavel->tipo = tipoDeVariavel;
+
+  // Salva a Variável na Tabela de Símbolos
+    tabelaSimbolos->adicionarVariavel(variavel, linha);
+
+  // Verifica se a Variável foi realmente adiciona à Tabela de Símbolos
+   // variavel->analisar(tabelaSimbolos, linha);
+
+  // Caso a Definição atribua um valor à Variável, realizando coerção se necessário
+    if(valor != NULL) {
+        valor->analisar(tabelaSimbolos, linha); // anteriormente após a coerção
+        coercaoDaDefinicao(this, tipoDeVariavel, valor->tipo, linha);        
+    }
+
+  // Se outra Variável foi declarada, atribui o tipo da Declaração e inicia sua análise 
+    if(proxima != NULL) {
+        proxima->tipoDeVariavel = tipoDeVariavel;
+        proxima->analisar(tabelaSimbolos, linha);
+    }
+
+   return tipo;
+}
+
+
+void Definicao::imprimir(int espaco, bool novaLinha) {
+    variavel->imprimir(0, false);
+
     if(valor != NULL) {
         std::cout << " = ";
-        valor->imprimir(tabelaSimbolos, 0, linha, false);
+        valor->imprimir(0, false);
     }
+
     if(proxima != NULL) {
-        std::cout << ", ";
-        proxima->imprimir(tabelaSimbolos, 0, linha, false);
+        std::cout << ", ";        
+        proxima->imprimir(0, false);
     }
+
     if(novaLinha) std::cout << "\n";
 }
 
-void OperacaoUnaria::imprimir(AST::TabelaDeSimbolos *tabelaSimbolos, int espaco, int linha, bool novaLinha) {
-    imprimirTipo(operacao);
-    filho->imprimir(tabelaSimbolos, 0, linha, false);
+void Definicao::ajustarProxima(Definicao *p) {
+    if(proxima != NULL) {
+        proxima->ajustarProxima(p);
+    } else {
+      proxima = p;
+    }
 }
 
-void OperacaoBinaria::imprimir(AST::TabelaDeSimbolos *tabelaSimbolos, int espaco, int linha, bool novaLinha) {  
+
+/////////////////////
+// OperacaoUnaria //
+
+Tipo OperacaoUnaria::analisar(AST::TabelaDeSimbolos *tabelaSimbolos, int linha) {
+ 
+  // Captura o tipo do filho
+    Tipo d = filho->analisar(tabelaSimbolos, linha);
+
+  // Operações Unárias possuem tratamento diferenciado
+    switch(operacao) {
+
+      // Operação de Negação recebe um "int" ou "float" e devolve "int" ou "float"
+        case Tipo::negacao:
+            if(d == Tipo::boolean) {
+                imprimirErroDeOperacao(tipo, Tipo::inteiro, d, linha);
+            }
+            return d;
+
+      // Operação Inversão (Negação Lógica) recebe "bool" e devolve "bool"
+        case Tipo::inversao:
+            if( d != Tipo::boolean) {
+                imprimirErroDeOperacao(tipo, Tipo::boolean, d, linha);
+            }              
+            return Tipo::boolean;
+
+      // Conversões retornam o tipo convertido, independente da entrada
+        case Tipo::conversao_int:    return Tipo::inteiro;
+        case Tipo::conversao_float:  return Tipo::real;   
+        case Tipo::conversao_bool:   return Tipo::boolean;
+
+      // Parênteses apenas retornam o tipo contido
+        case Tipo::parenteses:  return d;
+
+        default:  return Tipo::nulo;
+    }
+}
+
+void OperacaoUnaria::imprimir(int espaco, bool novaLinha) {
+    imprimirTipo(operacao);
+    filho->imprimir(0, false);
+}
+
+
+//////////////////////
+// OperacaoBinaria //
+
+Tipo OperacaoBinaria::analisar(AST::TabelaDeSimbolos *tabelaSimbolos, int linha) {  
+
+  // Captura os tipos dos filhos esquerda e direita
+    Tipo e = esquerda->analisar(tabelaSimbolos, linha);
+    Tipo d = direita->analisar(tabelaSimbolos, linha);
+
+  // Operações Binárias possuem comportamentos diferentes
+    switch(operacao) {
+
+  // A Atribuição recebe "int","float" ou "bool" e retorna "int", "float" ou "bool"
+        case Tipo::atribuicao: 
+            coercao(this, e, d, linha);
+            return e;
+
+  // Operaçãos Aritméticas recebem "int" ou "float" e devolvem "int" ou "float"
+        case Tipo::adicao:
+        case Tipo::subtracao:
+        case Tipo::multiplicacao:
+        case Tipo::divisao:
+            
+         // O tipo da esquerda é inválido?
+            if(e == Tipo::boolean) {
+                imprimirErroDeOperacao(operacao, Tipo::inteiro, e, linha);
+            }
+          // O tipo da direita é inválido?
+            else if (d == Tipo::boolean) {
+                imprimirErroDeOperacao(operacao, e, d, linha);
+            }
+   
+          // A coerção de tipos é necessária?
+            if(coercao(this, e, d, linha)) {
+
+              // Se a coerção ocorre, é garantido que a operação binária retorna um tipo float
+                return Tipo::real;
+            } 
+
+          // Caso não ocorra coerção, os tipos da esquerda e direita são iguais
+            return e;
+            
+
+  // Operações Lógicas recebem "bool" e devolvem "bool"
+         case Tipo::e:
+         case Tipo::ou:
+          // O tipo da esquerda é válido?
+            if(e != Tipo::boolean) { std::cout<<" ("<<e<<") ";
+                imprimirErroDeOperacao(operacao, Tipo::boolean, e, linha);
+            }
+
+          // O tipo da direita é válido?
+             else if (d != Tipo::boolean) { std::cout<<" (d) ";
+              imprimirErroDeOperacao(operacao, Tipo::boolean, d, linha);
+            }
+
+          // Retorna o tipo boolean
+           return Tipo::boolean;
+           break;
+
+  // Comparadores recebem "int" ou "float" e devolvem "bool"
+         case Tipo::igual:
+         case Tipo::diferente:
+         case Tipo::maior:
+         case Tipo::maior_igual:
+         case Tipo::menor:
+         case Tipo::menor_igual:
+
+           // O tipo da esquerda é válido?
+            if(e == Tipo::boolean) {
+                imprimirErroDeOperacao(operacao, Tipo::inteiro, e, linha);
+            }
+
+            // O tipo da direita é válido?
+            else if (d == Tipo::boolean) {
+                imprimirErroDeOperacao(operacao, e, d, linha);
+            }
+
+          // Realiza-se coerção, se necessário
+            coercao(this, e, d, linha);
+
+          // Independente do retorno da coerção, retorna-se um valor booleano
+            return Tipo::boolean;
+            break;
+
+        default:
+            return Tipo::nulo;
+            break;               
+      }
+}
+
+void OperacaoBinaria::imprimir(int espaco, bool novaLinha) {  
     imprimirEspaco(espaco);
     imprimirTipo(operacao);
     std::cout << " ";
-    esquerda->imprimir(tabelaSimbolos, 0, linha, false);
+    esquerda->imprimir(0, false);
     std::cout << " ";
-    direita->imprimir(tabelaSimbolos, 0, linha, false);
+    direita->imprimir(0, false);
     if(novaLinha) std::cout << "\n";
 }
 
-void Condicao::imprimir(AST::TabelaDeSimbolos *tabelaSimbolos, int espaco, int linha, bool novaLinha) {
-// if ...
+
+///////////////
+// Condicao //
+
+Tipo Condicao::analisar(AST::TabelaDeSimbolos *tabelaSimbolos, int linha) {
+
+  // O teste de uma Condição deve ser Booleano
+    Tipo esperado = teste->analisar(tabelaSimbolos, linha);
+    if(esperado != Tipo::boolean) {
+        imprimirErroDeOperacao(Tipo::teste, Tipo::boolean, esperado, linha);
+    }
+
+  // Se o conteúdo do "se" ou "senão" não forem vazios, também devem ser verificados
+    if(se != NULL) {
+        se->analisar(tabelaSimbolos, linha);
+    }
+
+    if(senao != NULL) {
+        senao->analisar(tabelaSimbolos, linha);
+    }
+
+    return Tipo::nulo;
+}
+
+void Condicao::imprimir(int espaco, bool novaLinha) {
+
     imprimirEspaco(espaco);
     std::cout << "if: ";
-    teste->imprimir(tabelaSimbolos, 0, linha, false);
-// then:    
+  // O teste de uma Condição deve ser Booleano
+    teste->imprimir(0, false);
+
+  // Se o conteúdo do "se" ou "senão" não forem vazios, também devem ser verificados
     if(se != NULL) {
         std::cout << "\n";
         imprimirEspaco(espaco);
         std::cout << "then:\n";
-        se->imprimir(tabelaSimbolos, espaco+2, linha, false);
+        se->imprimir(espaco+2, false);
     }
-// else:
-    if(senao != NULL) {
-        if(se == NULL) std::cout << "\n";
+
+    if(senao != NULL) {        
         imprimirEspaco(espaco);
         std::cout << "else:\n";
-        senao->imprimir(tabelaSimbolos, espaco+2, linha, false);        
+        senao->imprimir(espaco+2, false);
     }
+
+  // A Condição não possui um Tipo a ser retornado
     if(se == NULL && senao == NULL) std::cout << "\n";
 }
 
-void Laco::imprimir(AST::TabelaDeSimbolos *tabelaSimbolos, int espaco, int linha, bool novaLinha) {
+
+///////////
+// Laco //
+
+Tipo Laco::analisar(AST::TabelaDeSimbolos *tabelaSimbolos, int linha) {
+
+  // Analisa-se a inicialização do Laço, caso ela exista
+    if(inicializacao != NULL) {
+        inicializacao->analisar(tabelaSimbolos, linha);
+    }
+
+  // O teste de um Laço deve ser Booleano
+    Tipo esperado = teste->analisar(tabelaSimbolos, linha);
+    if(esperado != Tipo::boolean) {
+        imprimirErroDeOperacao(Tipo::teste, Tipo::boolean, esperado, linha);
+    }
+    if(iteracao != NULL) {
+        iteracao->analisar(tabelaSimbolos, linha);
+    }
+
+  // Se o conteúdo do laço não for vazio, também deve ser verificado
+    if(laco != NULL) {
+        laco->analisar(tabelaSimbolos, linha);
+    }
+
+  // A Condição não possui um Tipo a ser retornado
+    return tipo;
+}
+
+void Laco::imprimir(int espaco, bool novaLinha) {
     imprimirEspaco(espaco);
     std::cout << "for: ";
-    if(inicializacao != NULL) inicializacao->imprimir(tabelaSimbolos, 0, linha, false);
+    if(inicializacao != NULL) {
+        inicializacao->imprimir(0, false);
+    }
+    std::cout << ", ";   
+    teste->imprimir(0, false);
     std::cout << ", ";
-    teste->imprimir(tabelaSimbolos, 0, linha, false);
-    std::cout << ", ";
-    if(iteracao != NULL) iteracao->imprimir(tabelaSimbolos, 0, linha, false);
+    if(iteracao != NULL) {
+        iteracao->imprimir(0, false);
+    }
     std::cout << "\n";
     imprimirEspaco(espaco);
     std::cout << "do:";
     if(laco != NULL) {
         std::cout << "\n";
-        laco->imprimir(tabelaSimbolos, espaco+2, linha, true);
-    } else std::cout << "\n";
+        laco->imprimir(espaco+2, true);
+    } else {
+        std::cout << "\n";
+    }
+}
+
+
+/////////////
+// Funcao //
+
+Tipo Funcao::analisar(AST::TabelaDeSimbolos *tabelaSimbolos, int linha) {
+
+ // Declaração de Nova Função
+    if(tipo == Tipo::funcao_dec) {
+
+      // Define a quantidade de parâmetros: se não houver parâmetros a quantidade é 0
+        if(parametros == NULL) {
+             quantidadeDeParametros = 0;
+        } else {
+             quantidadeDeParametros = parametros->contar(); 
+        }
+      // Adiciona-se a função à tabela de funções
+        tabelaSimbolos->declararFuncao(this, linha);
+    } 
+
+ // Definição ou Chamada de Função
+    else {
+
+      // Recupera a Função, caso contrário um erro semântico é lançado pela Tabela de Símbolos
+        Funcao *f = tabelaSimbolos->recuperarFuncao(id, linha);
+        if(f != NULL) {
+
+          // Compara os parâmetros
+            ;
+        }
+
+      // Definições de Função sobrescrevem a Tabela de Símbolos
+        if(tipo == Tipo::funcao_def){
+            tabelaSimbolos->definirFuncao(this, linha);
+        }
+    }
+    return tipo;
+}
+
+void Funcao::imprimir(int espaco, bool novaLinha) {
+/*
+    imprimirTipo(retorno);
+    std::cout << " fun: " << id << " (params: ";
+    parametros->imprimir(tabelaSimbolos, 0, linha, false);
+    std::cout << ")\n";
+    corpo->imprimir(tabelaSimbolos, espaco+2, linha, true);
+*/
+}
+
+
+////////////////
+// Parametro //
+
+void Parametro::imprimir(int espaco, bool novaLinha) {
+    imprimirEspaco(espaco);
+    imprimirTipo(tipo);
+    std::cout << " " << id;
+    if(proximo != NULL) {
+       std::cout << ", ";
+       proximo->imprimir(espaco, novaLinha);
+    }
+}
+
+bool Parametro::comparar(Parametro *comparado) {
+
+  // Se o parâmetro comparado for nulo, os Parâmetros são diferentes
+    if(comparado != NULL) {
+
+      // Se o Parâmetro atual for diferente do Parâmetro comparado, os Parâmetros são diferentes 
+        if(tipo == comparado->tipo) {
+
+          // Se os parâmetros atuais forem igual e os próximos forem nulos, então todos os Parâmetro são iguais
+            if(proximo == NULL && comparado->proximo == NULL) {
+                return true;
+            }             
+        }
+    }
+    return false; 
+}
+
+int Parametro::contar() {
+    if(proximo == NULL) {
+        return 1;
+    } else {
+        return (proximo->contar() + 1);
+    }    
+}
+
+
+//////////////
+// Arranjo //
+
+Tipo Arranjo::analisar(AST::TabelaDeSimbolos *tabelaSimbolos, int linha) {
+    if(false){
+        std::cout << " array: " << id << " (size: ";
+        tamanho->analisar(tabelaSimbolos, linha);
+        std::cout << ")";
+    } else {
+        std::cout << "[index] "<< id;
+    }
+
+// O tipo usado como índice é válido?
+    Tipo indice = tamanho->analisar(tabelaSimbolos, linha);
+    if(indice != Tipo::inteiro) {
+        std::cerr << "[Line " << linha << "] semantic error: index operator expects integer but received " << indice << "\n"; 
+    }
+
+  // Atribui tipo à Variável
+   
+  // Adiciona o arranjo à tabela de símbolos
+    //tabelaSimbolos->adicionarVariavel(this, linha);
+  
+   return Tipo::arranjo;
+}
+
+void Arranjo::imprimir(int espaco, bool novaLinha) {
+    
 }
 
 
 ////////////
 // Bloco //
-//////////
 
-void Bloco::imprimir(AST::TabelaDeSimbolos *tabelaSimbolos, int espaco, int linha, bool novaLinha) {
-    for (Nodo* l: linhas) {
-        if(l != NULL) {
-            linha++;
-            l->imprimir(escopo, espaco, linha, true);
-        }
-    }    
-}
-
-Tipo Bloco::verificarTipo(AST::TabelaDeSimbolos *tabelaSimbolos, Tipo t, Tipo operador, int linha) {
+Tipo Bloco::analisar(AST::TabelaDeSimbolos *tabelaSimbolos, int linha) {
 
 // Se a tabela de símbolos recebida for a principal, o Bloco é o principal
   if(linha == 0) {
       escopo = tabelaSimbolos;
   } else {
-      escopo = tabelaSimbolos->novoEscopo();        
+      escopo = new TabelaDeSimbolos(tabelaSimbolos->count); 
+      escopo->anterior = tabelaSimbolos;
   }
 
   // Verificar os Tipos de todas as linhas do Bloco   
     for (Nodo* l: linhas) {
         if(l != NULL) {
             linha++;
-            l->verificarTipo(escopo, t, operador, linha);
+            l->analisar(escopo, linha);
         }
     }
 
   // Desempilha-se este escopo, removendo seu endereçamento da tabela de símbolos ...
   // ... sendo o ponteiro para o escopo guardado apenas no Nodo::Bloco
-    tabelaSimbolos->retornarEscopo();
+    escopo->retornarEscopo();
 
   // O Bloco não possui um Tipo a ser retornado
     return Tipo::nulo;
 }
 
-
-//////////////////////
-// verificarTipo() //
-////////////////////
-
-Tipo Variavel::verificarTipo(AST::TabelaDeSimbolos *tabelaSimbolos, Tipo t, Tipo operador, int linha) {
-    Variavel *v = tabelaSimbolos->recuperarVariavel(id, linha);
-    if(v != NULL) {
-        return v->tipo;
+void Bloco::imprimir(int espaco, bool novaLinha) {
+    for (Nodo* l: linhas) {
+        if(l != NULL) {
+            l->imprimir(espaco, true);
+        }
     }
-    return tipo;
 }
 
-Tipo Declaracao::verificarTipo(AST::TabelaDeSimbolos *tabelaSimbolos, Tipo t, Tipo operador, int linha) {
-
-  // A Declaração passa seu tipo adiante, para que seja possível verificar os tipos das variáveis declaradas
-    if(variaveis != NULL) variaveis->verificarTipo(tabelaSimbolos, tipoDeVariavel, operador, linha);
-
-  // A Declaração não possui um Tipo a ser retornado
-    return Tipo::nulo;
+void Bloco::novaLinha(Nodo *linha) {
+    linhas.push_back(linha);
 }
 
 
-Tipo Definicao::verificarTipo(AST::TabelaDeSimbolos *tabelaSimbolos, Tipo tipoDaDeclaracao, Tipo operador, int linha) {
-
-  // Caso a declaração possua um valor atribuído
-    if(valor != NULL) {
-      // Caso o valor atribuído a variável seja de um tipo diferente do declarado, coerção ou erro
-        coercaoDaDefinicao(this, tipoDaDeclaracao, valor->tipo, linha);
-    }
-
-  // Atribui tipo à Variável
-    variavel->tipo = tipoDaDeclaracao;
-
-  // Salva a variável na tabela de símbolos
-    tabelaSimbolos->adicionarVariavel(variavel, linha);
-
-  // Se houver mais de uma definição para a atribuição, ela acontece
-    if(proxima != NULL) proxima->verificarTipo(tabelaSimbolos, tipoDaDeclaracao, operador, linha);
-
-  // Definição não possui um Tipo a ser retornado
-    return Tipo::nulo;
-}
-
+///////////
+// Nodo //
 
 bool Nodo::coercaoDaDefinicao(Definicao *coagido, Tipo esperado, Tipo recebido, int linha) {
+
  // Se o tipo esperado e o recebido forem diferentes, ocorreu um erro...
     if(esperado != recebido) {
       // ... a não ser que possa ocorrer coerção de int para float
@@ -212,191 +537,7 @@ bool Nodo::coercaoDaDefinicao(Definicao *coagido, Tipo esperado, Tipo recebido, 
     return true;
 }
 
-
-Tipo OperacaoUnaria::verificarTipo(AST::TabelaDeSimbolos *tabelaSimbolos, Tipo t, Tipo operador, int linha) {
-
-  // Captura-se o tipo do único filho
-    Tipo d = filho->verificarTipo(tabelaSimbolos, t, operador, linha);
-
-  // Operações Unárias possuem tratamento diferenciado
-    switch(operacao) {
-      // Operação de Negação recebe um "int" ou "float" e devolve "int" ou "float"
-        case Tipo::negacao:
-            if(d == Tipo::boolean) {
-                imprimirErroDeOperacao(tipo, t, d, linha);
-            }
-            retorno = d;
-            break;
-
-      // Operação "Inversão", ou Negação Lógica recebe "bool" e devolve "bool"
-        case Tipo::inversao:
-            if( d != Tipo::boolean) {
-                imprimirErroDeOperacao(tipo, t, d, linha);
-            }              
-            retorno = Tipo::boolean;
-            break;
-
-      // Conversões retornam o tipo convertido, independente da entrada
-        case Tipo::conversao_int:    retorno = Tipo::inteiro;  break;
-        case Tipo::conversao_float:  retorno = Tipo::real;     break;
-        case Tipo::conversao_bool:   retorno = Tipo::boolean;  break;      
-
-      // Parênteses apenas retornam o tipo contido
-        case Tipo::parenteses:  retorno = d;  break;
-
-        default:  retorno = Tipo::nulo;  break;
-    }
-
-    return retorno;
-}
-
-
-Tipo OperacaoBinaria::verificarTipo(AST::TabelaDeSimbolos *tabelaSimbolos, Tipo t, Tipo operador, int linha) {
-  
-  // Coleta-se os Tipos dos filhos esquerda e direita
-    Tipo e = esquerda->verificarTipo(tabelaSimbolos, t , operador, linha);
-
-    Tipo d = direita->verificarTipo(tabelaSimbolos, t, operador, linha);
-
-  // Operações Binárias possuem comportamentos diferentes
-    switch(operacao) {
-
-  // A Atribuição recebe
-        case Tipo::atribuicao:
-            coercao(this, e, d, linha);
-            retorno = e;
-            break;
-
-  // Operaçãos Aritméticas recebem "int" ou "float" e devolvem "int" ou "float"
-        case Tipo::adicao:
-        case Tipo::subtracao:
-        case Tipo::multiplicacao:
-        case Tipo::divisao:
-            
-         // O tipo da esquerda é inválido?
-            if(e == Tipo::boolean) {
-                imprimirErroDeOperacao(tipo, t, e, linha);
-
-          // O tipo da direita é inválido?
-            } else if (d == Tipo::boolean) {
-                imprimirErroDeOperacao(tipo, e, d, linha);
-            }
-   
-          // A coerção de tipos é necessária?
-            if(coercao(this, e, d, linha)) {
-
-              // Se a coerção ocorre, é garantido que a operação binária retorna um tipo float
-                retorno = Tipo::real;
-                break;
-            } 
-
-          // Caso não ocorra coerção, os tipos da esquerda e direita são iguais
-            else {
-                retorno = e;
-                break;
-            }
-            break;
-
-  // Operações Lógicas recebem "bool" e devolvem "bool"
-         case Tipo::e:
-         case Tipo::ou:
-
-          // O tipo da esquerda é válido?
-            if(e != Tipo::boolean) {
-                imprimirErroDeOperacao(tipo, Tipo::boolean, e, linha);
-
-          // O tipo da direita é válido?
-            } else if (d != Tipo::boolean) {
-              imprimirErroDeOperacao(tipo, Tipo::boolean, d, linha);
-            }
-
-          // Retorna o tipo boolean
-           retorno = Tipo::boolean;
-           break;
-
-  // Comparadores recebem "int" ou "float" e devolvem "bool"
-         case Tipo::igual:
-         case Tipo::diferente:
-         case Tipo::maior:
-         case Tipo::maior_igual:
-         case Tipo::menor:
-         case Tipo::menor_igual:
-
-           // O tipo da esquerda é válido?
-            if(e == Tipo::boolean) {
-                imprimirErroDeOperacao(tipo, t, e, linha);
-
-          // O tipo da direita é válido?
-            } else if (d == Tipo::boolean) {
-                imprimirErroDeOperacao(tipo, e, d, linha);
-            }
-
-          // Realiza-se coerção, se necessário
-            coercao(this, e, d, linha);
-
-          // Independente do retorno da coerção, retorna-se um valor booleano
-            retorno = Tipo::boolean;
-            break;
-
-        default:
-            retorno = Tipo::nulo;
-            break;               
-      }
-
-    return retorno;
-}
-
-
-Tipo Condicao::verificarTipo(AST::TabelaDeSimbolos *tabelaSimbolos, Tipo t, Tipo operador, int linha) {
-  // O teste de uma Condição deve ser Booleano
-    Tipo esperado = teste->verificarTipo(tabelaSimbolos, t, operador, linha);
-    if(esperado != Tipo::boolean) {
-        imprimirErroDeOperacao(Tipo::teste, Tipo::boolean, esperado, linha);
-    }
-
-  // Se o conteúdo do "se" ou "senão" não forem vazios, também devem ser verificados
-    if(se != NULL)     se->verificarTipo(tabelaSimbolos, t, operador, linha);
-    if(senao != NULL)  senao->verificarTipo(tabelaSimbolos, t, operador, linha);
-
-  // A Condição não possui um Tipo a ser retornado
-    return Tipo::nulo;
-}
-
-
-Tipo Laco::verificarTipo(AST::TabelaDeSimbolos *tabelaSimbolos, Tipo t, Tipo operador, int linha) {
-
-  // O teste de um Laço deve ser Booleano
-    Tipo esperado = teste->verificarTipo(tabelaSimbolos, t, operador, linha);
-    if(esperado != Tipo::boolean) {
-        imprimirErroDeOperacao(Tipo::teste, Tipo::boolean, esperado, linha);
-    }
-
-  // Se o conteúdo do laço não for vazio, também deve ser verificado
-    if(laco != NULL) laco->verificarTipo(tabelaSimbolos, t, operador, linha);
-
-  // A Condição não possui um Tipo a ser retornado
-    return Tipo::nulo;
-}
-
-
-//
-//////////
-// etc //
-
-void Bloco::novaLinha(Nodo *linha) {
-    linhas.push_back(linha);
-}
-
-void Definicao::ajustarProxima(Definicao *p) {
-    if(proxima != NULL) {
-        proxima->ajustarProxima(p);
-    } else {
-      proxima = p;
-    }
-}
-
 bool Nodo::coercao(OperacaoBinaria *coagido, Tipo e, Tipo d, int linha) {
-
 // Segundo a descrição da versão 0.3, apenas tipo int pode sofrer coerção para float, logo:
 
   // Se o tipo da esquerda for int e o da direita float, o da esquerda sofre coerção e retorna-se Tipo::real
@@ -490,30 +631,22 @@ std::string Nodo::imprimirTipoPorExtenso(Tipo t) {
 
 void Nodo::imprimirErroDeOperacao(Tipo operacao, Tipo esperava, Tipo recebeu, int linha) {
 
-  // Imprime num arquivo de erros. Temporário.
-    std::ofstream arquivoDeErros("tests/erros.txt", std::ios::app); 
-    arquivoDeErros << "[Line " << linha << "] semantic error:";
-    arquivoDeErros << " operation " << imprimirTipoPorExtenso(operacao);
-    arquivoDeErros << " expected " << imprimirTipoPorExtenso(esperava);
-    arquivoDeErros << " but received " <<  imprimirTipoPorExtenso(recebeu);
-    arquivoDeErros << "\n";              //exit(0);
-    arquivoDeErros.close();
-    
+    std::cerr << "[Line " << linha << "] semantic error:";
+    std::cerr << " operation " << imprimirTipoPorExtenso(operacao);
+    std::cerr << " expected " << imprimirTipoPorExtenso(esperava);
+    std::cerr << " but received " <<  imprimirTipoPorExtenso(recebeu);
+    std::cerr << "\n";
+
 }
 
+///////////////////////
+// TabelaDeSimbolos //
 
-///////////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////////////////
-
-TabelaDeSimbolos* TabelaDeSimbolos::novoEscopo() {
-
-    TabelaDeSimbolos *novoEscopo = new TabelaDeSimbolos(); 
+TabelaDeSimbolos* TabelaDeSimbolos::novoEscopo(int c) {
+    TabelaDeSimbolos *novoEscopo = new TabelaDeSimbolos(c); 
     novoEscopo->anterior = this;
-    novoEscopo->principal = false;
     return novoEscopo;
 }
-
 
 bool TabelaDeSimbolos::retornarEscopo() {
 
@@ -531,7 +664,6 @@ bool TabelaDeSimbolos::retornarEscopo() {
     }    
 }
 
-
 void TabelaDeSimbolos::adicionarVariavel(AST::Variavel *v, int linha) {
   // Se a variável não foi declarada, ela é adicionada ao map
     std::map<std::string, AST::Variavel*>::const_iterator it;
@@ -540,9 +672,7 @@ void TabelaDeSimbolos::adicionarVariavel(AST::Variavel *v, int linha) {
         variaveis.insert ( std::pair< std::string, AST::Variavel*> (v->id,v) );
   // Caso a variável já tenha sido declarada, ocorre um erro semântico
     } else {
-        std::ofstream arquivoDeErros("tests/erros.txt", std::ios::app); 
-        arquivoDeErros << "[Line " << linha << "] semantic error: re-declaration of variable " << v->id << "\n"; 
-        arquivoDeErros.close(); 
+        std::cerr << "[Line " << linha << "] semantic error: re-declaration of variable " << v->id << "\n"; 
     }
 }
 
@@ -562,14 +692,75 @@ Variavel* TabelaDeSimbolos::recuperarVariavel(std::string id, int linha) {
 
   // Variável não encontrada em nenhum escopo
     else {
-        std::ofstream arquivoDeErros("tests/erros.txt", std::ios::app); 
-        arquivoDeErros << "[Line " << linha << "] semantic error: undeclared variable " << id << "\n"; 
-        arquivoDeErros.close();       
+        std::cerr << "[Line " << linha << "] semantic error: undeclared variable " << id << "\n";
         return NULL;
     }
 }
 
+void TabelaDeSimbolos::declararFuncao(AST::Funcao *f, int linha) {
+
+  // Se a Função não foi declarada, ela é adicionada ao map
+    std::map<std::string, AST::Funcao*>::const_iterator it;
+    it = funcoes.find(f->id);
+    if (it == funcoes.end()) {
+        funcoes.insert ( std::pair< std::string, AST::Funcao*> (f->id,f) );
+    }
+
+  // Caso a Função já tenha sido declarada, ocorre um erro semântico
+    else {
+        std::cerr << "[Line " << linha << "] semantic error: re-declaration of function " << f->id << "\n"; 
+    }
+}
 
 
+bool TabelaDeSimbolos::definirFuncao(AST::Funcao *f, int linha) {
 
+  // Prepara o iterator para a busca
+    std::map<std::string, AST::Funcao*>::const_iterator it;
+    it = funcoes.find(f->id);
+
+  // Se a função não for encontrada na tabela de símbolos atual...
+    if (it == funcoes.end()) {
+
+      // Procura-se em tabelas anteriores, se elas existirem
+        if(anterior != NULL) {
+            anterior->definirFuncao(f,linha);
+        }
+
+      // Caso contrário, a função não foi declarada 
+        else {
+            std::cerr << "[Line " << linha << "] semantic error: undeclared function " << f->id << "\n";
+        }
+    }
+
+  // Caso a Função já tenha sido declarada, verifica-se se já foi definida
+    else {
+        std::cerr << "[Line " << linha << "] semantic error: re-declaration of function " << f->id << "\n"; 
+    }
+
+    return true;
+}
+
+
+Funcao* TabelaDeSimbolos::recuperarFuncao(std::string id, int linha) {
+
+  // Variável encontrada no escopo atual
+    std::map<std::string, AST::Funcao*>::const_iterator it;
+    it = funcoes.find(id);
+
+    if (it != funcoes.end()) {
+        return it->second;
+    }
+
+  // Variavel não encontrada, procurar no escopo anterior
+    else if (anterior != NULL) {
+        return anterior->recuperarFuncao(id, linha);
+    }
+
+  // Variável não encontrada em nenhum escopo
+    else {
+        std::cerr << "[Line " << linha << "] semantic error: undeclared function " << id << "\n";
+        return NULL;
+    }
+}
 

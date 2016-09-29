@@ -1,0 +1,4 @@
+bool fun f ()
+bool fun f () {
+ret false
+}

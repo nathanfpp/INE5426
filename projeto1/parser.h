@@ -114,10 +114,11 @@ union YYSTYPE
     AST::Condicao *condicao;
     AST::Laco *laco;
     AST::Funcao *funcao;
+    AST::Parametro *parametro;
     AST::Bloco *bloco;
     AST::Tipo tipo;
 
-#line 121 "parser.h" /* yacc.c:1909  */
+#line 122 "parser.h" /* yacc.c:1909  */
 };
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1

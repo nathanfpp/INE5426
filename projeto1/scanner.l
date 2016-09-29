@@ -66,14 +66,13 @@ rejeite         [^0-9a-zA-Z\(\)\,\{\}\_\+\=\/\>\<\*\-\!\&\|\t" "\n]+
 
 \n                  { return T_NL; }
 
-{rejeite}                   { yyerror("Unknown token! %s\n", strdup(yytext));} 
+{rejeite}           { yyerror("unknown symbol %s\n", strdup(yytext));} 
 
 %%
 
 void yyerror(const char *s, ...){
     va_list ap;
     va_start(ap, s);
-    std::fprintf(stderr, "Line %d: error: ", yylineno);
+    std::fprintf(stderr, "[Line %d] lexical error: ", yylineno);
     std::vfprintf(stderr, s, ap);
 }
-

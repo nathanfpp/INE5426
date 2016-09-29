@@ -1022,7 +1022,7 @@ YY_RULE_SETUP
 case 39:
 YY_RULE_SETUP
 #line 69 "scanner.l"
-{ yyerror("Unknown token! %s\n", strdup(yytext));} 
+{ yyerror("unknown symbol %s\n", strdup(yytext));} 
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
@@ -2046,8 +2046,7 @@ void yyfree (void * ptr )
 void yyerror(const char *s, ...){
     va_list ap;
     va_start(ap, s);
-    std::fprintf(stderr, "Line %d: error: ", yylineno);
+    std::fprintf(stderr, "[Line %d] lexical error: ", yylineno);
     std::vfprintf(stderr, s, ap);
 }
-
 

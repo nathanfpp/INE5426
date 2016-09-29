@@ -16,7 +16,8 @@ extern void yyerror(const char *s, ...);
 
 namespace AST {
 
-enum Tipo { inteiro, real, boolean, variavel, declaracao, definicao, opUnaria, opBinaria, condicao, laco, funcao, bloco,
+enum Tipo { inteiro, real, boolean, variavel, declaracao, definicao, opUnaria, opBinaria, condicao, laco, 
+            funcao_dec, funcao_def, funcao_cha, bloco, arranjo, 
             negacao, inversao, conversao_int, conversao_float, conversao_bool, parenteses,
             atribuicao, adicao, subtracao, multiplicacao, divisao, e, ou, igual, diferente, maior, maior_igual, menor, menor_igual,
             teste, nulo };
@@ -27,15 +28,17 @@ class Bloco;
 class TabelaDeSimbolos;
 class Definicao;
 class OperacaoBinaria;
+class Funcao;
+class Parametro;
 
 typedef std::vector<Nodo*> listaDeNodos;
 
 class Nodo {
     public:
         Tipo tipo;
-        virtual ~Nodo() {}
-        virtual void imprimir(AST::TabelaDeSimbolos *tabelaSimbolos, int espaco, int linha, bool novaLinha) {}
-        virtual Tipo verificarTipo(AST::TabelaDeSimbolos *tabelaSimbolos, Tipo t, Tipo operador, int linha) { return Tipo::nulo; }
+        virtual ~Nodo() {};
+        virtual Tipo analisar(AST::TabelaDeSimbolos *tabelaSimbolos, int linha) { return Tipo::nulo; };
+        virtual void imprimir(int espaco, bool novaLinha) { };
                 bool coercaoDaDefinicao(Definicao *coagido, Tipo esperado, Tipo recebido, int linha);
                 bool coercao(OperacaoBinaria *coeagido, Tipo e, Tipo d, int linha);
                 void imprimirEspaco(int espaco);
@@ -53,8 +56,8 @@ class Variavel : public Nodo {
          std::string id;                 
      //
          Variavel(Tipo t, std::string id) : tipo(t), id(id) { };
-         void imprimir(AST::TabelaDeSimbolos *tabelaSimbolos, int espaco, int linha, bool atribuicao);
-         Tipo verificarTipo(AST::TabelaDeSimbolos *tabelaSimbolos, Tipo t, Tipo operador, int linha);
+         Tipo analisar(AST::TabelaDeSimbolos *tabelaSimbolos, int linha);
+         void imprimir(int espaco, bool novaLinha)                             { std::cout << id << "";    };
 };
 
 class Inteiro : public Nodo {
@@ -62,9 +65,9 @@ class Inteiro : public Nodo {
         Tipo tipo;
         const char *valor;
     //
-        Inteiro(const char *valor) : valor(valor) { tipo = Tipo::inteiro; };
-        void imprimir(AST::TabelaDeSimbolos *tabelaSimbolos, int espaco, int linha, bool novaLinha);
-	Tipo verificarTipo(AST::TabelaDeSimbolos *tabelaSimbolos, Tipo t, Tipo operador, int linha) { return Tipo::inteiro; }
+        Inteiro(const char *valor) : valor(valor) { tipo = Tipo::inteiro; }; 
+        Tipo analisar(AST::TabelaDeSimbolos *tabelaSimbolos, int linha)        { return Tipo::inteiro;     };
+        void imprimir(int espaco, bool novaLinha)                              { std::cout << valor << ""; };
 };
 
 class Real : public Nodo {
@@ -73,8 +76,8 @@ class Real : public Nodo {
         const char *valor;
     //
         Real(const char *valor) : valor(valor) { tipo = Tipo::real; };
-        void imprimir(AST::TabelaDeSimbolos *tabelaSimbolos, int espaco, int linha, bool novaLinha);
-        Tipo verificarTipo(AST::TabelaDeSimbolos *tabelaSimbolos, Tipo t, Tipo operador, int linha) { return Tipo::real; }
+        Tipo analisar(AST::TabelaDeSimbolos *tabelaSimbolos, int linha)        { return Tipo::real;        }
+        void imprimir(int espaco, bool novaLinha)                              { std::cout << valor << ""; };
 };
 
 class Boolean : public Nodo {
@@ -83,32 +86,33 @@ class Boolean : public Nodo {
         const char *valor;
     //
         Boolean(const char *valor) : valor(valor) { tipo = Tipo::boolean; };
-        void imprimir(AST::TabelaDeSimbolos *tabelaSimbolos, int espaco, int linha, bool novaLinha);
-	Tipo verificarTipo(AST::TabelaDeSimbolos *tabelaSimbolos, Tipo t, Tipo operador, int linha) { return Tipo::boolean; }
+        Tipo analisar(AST::TabelaDeSimbolos *tabelaSimbolos, int linha)        { return Tipo::boolean;                       };  
+        void imprimir(int espaco, bool novaLinha)                              { std::cout << std::boolalpha << valor << ""; };
 };
 
 class Declaracao : public Nodo {
     public:
         Tipo tipo;
         Tipo tipoDeVariavel;
-        Nodo *variaveis;
+        Definicao *variaveis;
     //
-        Declaracao(Tipo t, Tipo v, Nodo *d) : tipo(t), tipoDeVariavel(v), variaveis(d) { };
-        void imprimir(AST::TabelaDeSimbolos *tabelaSimbolos, int espaco, int linha, bool novaLinha);
-        Tipo verificarTipo(AST::TabelaDeSimbolos *tabelaSimbolos, Tipo t, Tipo operador, int linha);
+        Declaracao(Tipo t, Tipo v, Definicao *d) : tipo(t), tipoDeVariavel(v), variaveis(d) { };
+        Tipo analisar(AST::TabelaDeSimbolos *tabelaSimbolos, int linha);
+        void imprimir(int espaco, bool novaLinha);
 };
 
 class Definicao : public Nodo {
     public:
         Tipo tipo;
+        Tipo tipoDeVariavel;
         Variavel *variavel;
         Nodo *valor;
         Definicao *proxima;
     //
-        Definicao(Tipo t, Variavel *v, Nodo *c, Definicao *p) : tipo(t), variavel(v), valor(c), proxima(p) { };
-        void imprimir(AST::TabelaDeSimbolos *tabelaSimbolos, int espaco, int linha, bool novaLinha);
+        Definicao(Tipo t, Variavel *v, Nodo *c, Definicao *p) : tipo(t), variavel(v), valor(c), proxima(p) { tipoDeVariavel = Tipo::nulo; };
+        Tipo analisar(AST::TabelaDeSimbolos *tabelaSimbolos, int linha);
+        void imprimir(int espaco, bool novaLinha);
         void ajustarProxima(Definicao *p);
-        Tipo verificarTipo(AST::TabelaDeSimbolos *tabelaSimbolos, Tipo t, Tipo operador, int linha);
 };
 
 class OperacaoUnaria : public Nodo {
@@ -119,8 +123,8 @@ class OperacaoUnaria : public Nodo {
         Nodo *filho;
     //
         OperacaoUnaria(Tipo t, Tipo o, Nodo *f) : tipo(t), operacao(o), retorno(Tipo::nulo), filho(f) { };
-        void imprimir(AST::TabelaDeSimbolos *tabelaSimbolos, int espaco, int linha, bool novaLinha);
-	Tipo verificarTipo(AST::TabelaDeSimbolos *tabelaSimbolos, Tipo t, Tipo operador, int linha);
+        Tipo analisar(AST::TabelaDeSimbolos *tabelaSimbolos, int linha);
+        void imprimir(int espaco, bool novaLinha);
 };
 
 class OperacaoBinaria : public Nodo {
@@ -132,8 +136,8 @@ class OperacaoBinaria : public Nodo {
         Nodo *direita;
     //
         OperacaoBinaria(Tipo t, Tipo o, Nodo *e, Nodo *d) : tipo(t), operacao(o), retorno(Tipo::nulo), esquerda(e), direita(d) { };
-        void imprimir(AST::TabelaDeSimbolos *tabelaSimbolos, int espaco, int linha, bool novaLinha);
-	Tipo verificarTipo(AST::TabelaDeSimbolos *tabelaSimbolos, Tipo t, Tipo operador, int linha);
+        Tipo analisar(AST::TabelaDeSimbolos *tabelaSimbolos, int linha);
+        void imprimir(int espaco, bool novaLinha);
 };
 
 class Condicao : public Nodo {
@@ -144,8 +148,8 @@ class Condicao : public Nodo {
         Bloco *senao;
     //
         Condicao(Tipo t, Nodo *a,  Bloco *b,  Bloco *c) : tipo(t), teste(a), se(b), senao(c) {  };
-        void imprimir(AST::TabelaDeSimbolos *tabelaSimbolos, int espaco, int linha, bool novaLinha);
-	Tipo verificarTipo(AST::TabelaDeSimbolos *tabelaSimbolos, Tipo t, Tipo operador, int linha);
+        Tipo analisar(AST::TabelaDeSimbolos *tabelaSimbolos, int linha);
+        void imprimir(int espaco, bool novaLinha);
 };
 
 class Laco : public Nodo {
@@ -157,21 +161,49 @@ class Laco : public Nodo {
         Bloco *laco;
     //
         Laco(Tipo t, Nodo *a, Nodo *b, Nodo *c, Bloco *d) : tipo(t), inicializacao(a), teste(b), iteracao(c), laco(d) { };
-        void imprimir(AST::TabelaDeSimbolos *tabelaSimbolos, int espaco, int linha, bool novaLinha);
-	Tipo verificarTipo(AST::TabelaDeSimbolos *tabelaSimbolos, Tipo t, Tipo operador, int linha);
+        Tipo analisar(AST::TabelaDeSimbolos *tabelaSimbolos, int linha);
+        void imprimir(int espaco, bool novaLinha);
 };
 
 class Funcao : public Nodo {
     public:
         Tipo tipo;
-        Tipo retorno;
+        Tipo tipoDoRetorno;
         std::string id;
-        Nodo *parametros;
+        Parametro *parametros;
         Bloco *corpo;
+        Nodo *retorno;
+        int quantidadeDeParametros;
     //
-        Funcao(Tipo t, Tipo r, std::string i, Nodo *p, Bloco *c) : tipo(t), retorno(r), id(i), parametros(p), corpo(c) { };
-        void imprimir(AST::TabelaDeSimbolos *tabelaSimbolos, int espaco, int linha, bool novaLinha);
-        Tipo verificarTipo(AST::TabelaDeSimbolos *tabelaSimbolos, Tipo t, Tipo operador, int linha);
+        Funcao(Tipo t, Tipo d, std::string i, Parametro *p, Bloco *c, Nodo *r) : 
+            tipo(t), tipoDoRetorno(d), id(i), parametros(p), corpo(c), retorno(r) { };
+        Tipo analisar(AST::TabelaDeSimbolos *tabelaSimbolos, int linha);
+        void imprimir(int espaco, bool novaLinha);
+};
+
+class Parametro : public Nodo {
+    public:
+        Tipo tipo;
+        std::string id;
+        Parametro* proximo;
+    //
+      Parametro(Tipo t, std::string i, Parametro *p) : tipo(t), id(i), proximo(p) { };
+      Tipo analisar(AST::TabelaDeSimbolos *tabelaSimbolos, int linha) { return Tipo::nulo; }
+      void imprimir(int espaco, bool novaLinha);
+      bool comparar(Parametro *comparado);
+      int contar();
+};
+
+class Arranjo : public Nodo {
+    public:
+        Tipo tipo;
+        Tipo tipoDeVariavel;
+        std::string id;
+        Nodo *tamanho;
+    //
+        Arranjo(Tipo t, Tipo v, std::string i, Nodo *p) : tipo(t), tipoDeVariavel(v), id(i), tamanho(p) { };
+        Tipo analisar(AST::TabelaDeSimbolos *tabelaSimbolos, int linha);
+        void imprimir(int espaco, bool novaLinha);
 };
 
 // Bloco ou Linha
@@ -183,29 +215,28 @@ class Bloco : public Nodo {
     //
         Bloco(Tipo t) : tipo(t) {} ; // Construtor para um Bloco de linhas comum
         Bloco(Tipo t, TabelaDeSimbolos *s) : tipo(t), escopo(s) { }; // Construtor para o Bloco principal, a Árvore Sintática
-        void imprimir(AST::TabelaDeSimbolos *tabelaSimbolos, int espaco, int linha, bool novaLinha);
+        Tipo analisar(AST::TabelaDeSimbolos *tabelaSimbolos, int linha);
+        void imprimir(int espaco, bool novaLinha);
         void novaLinha(Nodo *linha);
-	Tipo verificarTipo(AST::TabelaDeSimbolos *tabelaSimbolos, Tipo t, Tipo operador, int linha);
 };
 
 class TabelaDeSimbolos {
     public:
-        bool principal;
         std::map<std::string, AST::Variavel*> variaveis;    
-        //std::map<std::string, AST::Funcao*> funcoes;    
+        std::map<std::string, AST::Funcao*> funcoes;    
         TabelaDeSimbolos *anterior;
+        int count;
     //
-        TabelaDeSimbolos() { principal = true; }
+        TabelaDeSimbolos(int c) { count = c+1;}
         ~TabelaDeSimbolos() { }
-        TabelaDeSimbolos* novoEscopo();
+        TabelaDeSimbolos* novoEscopo(int c);
         bool retornarEscopo();
         void adicionarVariavel(AST::Variavel *v, int linha);
         Variavel* recuperarVariavel(std::string id, int linha);
-        //void novaFuncao(Funcao *f);
-        //bool funcaoDeclarada(std::string id);
+        void declararFuncao(AST::Funcao *f, int linha);
+        bool definirFuncao(AST::Funcao *f, int linha);
+        Funcao* recuperarFuncao(std::string id, int linha);
 };
 
-
 }
-
 #endif 

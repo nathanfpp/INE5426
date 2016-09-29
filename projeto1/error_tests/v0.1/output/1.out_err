@@ -1,2 +1,2 @@
-Line 1: error: Unknown token! %$#
-Line 1: error: Unknown token! $%
+[Line 1] lexical error: unknown symbol %$#
+[Line 1] lexical error: unknown symbol $%

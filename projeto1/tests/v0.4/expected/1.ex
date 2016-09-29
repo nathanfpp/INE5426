@@ -7,7 +7,6 @@ then:
     = c 10
 if: teste_falso
 then:
-  = d 0
 else:
   = d 20
 

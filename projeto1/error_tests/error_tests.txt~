@@ -1,0 +1,10 @@
+/error_tests
+
+  v0.1
+    1 : ok
+    2 : 
+    3 : int var: a é imprimido triplicadamente no .out, mas reconhece por duas vezes o erro de re-declaração .err, ou seja está passando.
+    4 : ok
+
+  v0.2
+    1: erro
