@@ -1,0 +1,6 @@
+bool fun f ()
+bool fun f () {
+ret false
+}
+bool a = f(true)
+

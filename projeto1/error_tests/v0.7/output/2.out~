@@ -1,0 +1,6 @@
+bool fun: f (params: )
+  int var: a = 9
+  ret false
+bool fun: f (params: )
+  ret false
+
