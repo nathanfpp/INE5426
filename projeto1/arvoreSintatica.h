@@ -53,7 +53,7 @@ class Nodo {
 class Variavel : public Nodo {
      public:
          Tipo tipo;
-         std::string id;                 
+         std::string id;      
      //
          Variavel(Tipo t, std::string id) : tipo(t), id(id) { };
          Tipo analisar(AST::TabelaDeSimbolos *tabelaSimbolos, int linha);
@@ -179,18 +179,19 @@ class Funcao : public Nodo {
             tipo(t), tipoDoRetorno(d), id(i), parametros(p), corpo(c), retorno(r) { };
         Tipo analisar(AST::TabelaDeSimbolos *tabelaSimbolos, int linha);
         void imprimir(int espaco, bool novaLinha);
+        int contarParametros();
 };
 
 class Parametro : public Nodo {
     public:
-        Tipo tipo;
-        std::string id;
+        Tipo tipoDoParametro;
+        Nodo *parametro;
         Parametro* proximo;
     //
-      Parametro(Tipo t, std::string i, Parametro *p) : tipo(t), id(i), proximo(p) { };
-      Tipo analisar(AST::TabelaDeSimbolos *tabelaSimbolos, int linha) { return Tipo::nulo; }
-      void imprimir(int espaco, bool novaLinha);
-      bool comparar(Parametro *comparado);
+      Parametro(Tipo t, Nodo *p, Parametro *r) : tipoDoParametro(t), parametro(p), proximo(r) { };
+      Tipo analisar(AST::TabelaDeSimbolos *tabelaSimbolos, int linha);
+      void imprimir(int espaco, bool naoArgumento);
+      bool comparar(TabelaDeSimbolos *tabelaSimbolos, Parametro *comparado, int linha);
       int contar();
 };
 
@@ -227,14 +228,13 @@ class TabelaDeSimbolos {
         TabelaDeSimbolos *anterior;
         int count;
     //
-        TabelaDeSimbolos(int c) { count = c+1;}
+        TabelaDeSimbolos() {}
         ~TabelaDeSimbolos() { }
-        TabelaDeSimbolos* novoEscopo(int c);
+        TabelaDeSimbolos* novoEscopo(TabelaDeSimbolos *a);
         bool retornarEscopo();
-        void adicionarVariavel(AST::Variavel *v, int linha);
+        bool adicionarVariavel(AST::Variavel *v, int linha);
         Variavel* recuperarVariavel(std::string id, int linha);
-        void declararFuncao(AST::Funcao *f, int linha);
-        bool definirFuncao(AST::Funcao *f, int linha);
+        bool declararFuncao(AST::Funcao *f, int linha);
         Funcao* recuperarFuncao(std::string id, int linha);
 };
 

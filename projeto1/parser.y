@@ -22,7 +22,7 @@ extern void yyerror(const char* s, ...);
 %code {
     AST::Bloco *arvoreSintatica;
     AST::Tipo ultimoTipo;
-    AST::TabelaDeSimbolos *escopoPrincipal = new AST::TabelaDeSimbolos(-1);
+    AST::TabelaDeSimbolos *escopoPrincipal = new AST::TabelaDeSimbolos();
 }
 
 
@@ -71,7 +71,7 @@ extern void yyerror(const char* s, ...);
 %type <condicao> condicao
 %type <laco> laco
 %type <funcao> dec_funcao def_funcao cha_funcao
-%type <parametro> parametros
+%type <parametro> parametros parametro argumentos argumento
 %type <bloco> programa linhas
 %type <tipo> tipo
 
@@ -124,34 +124,47 @@ dec_funcao :
            ;
 
 def_funcao :
-             tipo T_FUN T_VAR T_OPEN T_CLOSE T_OPEN_KEY T_RET tipo retorno T_CLOSE_KEY 
+            tipo T_FUN T_VAR T_OPEN T_CLOSE T_OPEN_KEY T_NL T_RET retorno T_NL T_CLOSE_KEY 
              { $$ = new AST::Funcao( AST::Tipo::funcao_def, $1 , $3 , NULL , NULL , $9  ); }
 
-           | tipo T_FUN T_VAR T_OPEN T_CLOSE T_OPEN_KEY linhas T_RET tipo retorno T_CLOSE_KEY  
-             { $$ = new AST::Funcao( AST::Tipo::funcao_def, $1 , $3 , NULL , $7   , $10 ); }
+           | tipo T_FUN T_VAR T_OPEN T_CLOSE T_OPEN_KEY T_NL linhas T_RET retorno T_NL T_CLOSE_KEY  
+             { $$ = new AST::Funcao( AST::Tipo::funcao_def, $1 , $3 , NULL , $8   , $10 ); }
 
-           | tipo T_FUN T_VAR T_OPEN parametros T_CLOSE T_OPEN_KEY T_RET tipo retorno T_CLOSE_KEY  
+           | tipo T_FUN T_VAR T_OPEN parametros T_CLOSE T_OPEN_KEY T_NL T_RET retorno T_NL T_CLOSE_KEY  
              { $$ = new AST::Funcao( AST::Tipo::funcao_def, $1 , $3 , $5   , NULL , $10 ); }
 
-           | tipo T_FUN T_VAR T_OPEN parametros T_CLOSE T_OPEN_KEY linhas T_RET tipo retorno T_CLOSE_KEY  
-             { $$ = new AST::Funcao( AST::Tipo::funcao_def, $1 , $3 , $5   , $8   , $11 ); }
+           | tipo T_FUN T_VAR T_OPEN parametros T_CLOSE T_OPEN_KEY T_NL linhas T_RET retorno T_NL T_CLOSE_KEY  
+             { $$ = new AST::Funcao( AST::Tipo::funcao_def, $1 , $3 , $5   , $9   , $11 ); }
            ;
 
 cha_funcao :
-             T_VAR T_OPEN T_CLOSE  
+             T_VAR T_OPEN T_CLOSE
              { $$ = new AST::Funcao( AST::Tipo::funcao_cha, AST::Tipo::nulo , $1 , NULL , NULL , NULL ); }
-           | T_VAR T_OPEN parametros T_CLOSE  
+           | T_VAR T_OPEN argumentos T_CLOSE  
              { $$ = new AST::Funcao( AST::Tipo::funcao_cha, AST::Tipo::nulo , $1 , $3   , NULL , NULL ); }
            ; 
 
 parametros :
-             tipo T_VAR                     { $$ = NULL; }
-           | parametros T_COMMA tipo T_VAR  { $$ = NULL; }
+             parametro                     { $$ = $1; }
+           | parametros T_COMMA parametro  { $$ = $1; $$->proximo = $3; }
            ;
 
+parametro :
+            tipo var  { $$ = new AST::Parametro( $1, $2, NULL );  }
+          ;
+
+argumentos :
+             argumento                     { $$ = $1;                   }
+           | argumentos T_COMMA argumento  { $$ = $1; $$->proximo = $3; }
+           ;
+
+argumento :
+            expressao  { $$ = new AST::Parametro( AST::Tipo::nulo, $1, NULL );  }
+          ;
+
 retorno :
-          primitiva { $$ = NULL; }
-        | T_VAR     { $$ = NULL; }
+          primitiva { $$ = $1; }
+        | var       { $$ = $1; }
         ;
 
 laco :
@@ -232,6 +245,7 @@ arranjo:
 
 expressao:         
                                   primitiva              { $$ = $1; }
+         |                        cha_funcao             { $$ = $1; }
          |                        arranjo                { $$ = $1; }
          |           T_MINUS      expressao %prec UMINUS { $$ = new AST::OperacaoUnaria( AST::Tipo::opUnaria , AST::Tipo::negacao         , $2 ); }
          |           T_NOT        expressao              { $$ = new AST::OperacaoUnaria( AST::Tipo::opUnaria , AST::Tipo::inversao        , $2 ); }
@@ -261,6 +275,6 @@ primitiva:
          ;
 
 var:
-    T_VAR { $$ = new AST::Variavel ( AST::Tipo::variavel , $1 );}  
+    T_VAR { $$ = new AST::Variavel ( AST::Tipo::variavel , $1 ); }  
 
 %%

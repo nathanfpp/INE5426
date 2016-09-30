@@ -2,9 +2,11 @@
 
   v0.1
     1 : ok
-    2 : reconhece o erro sintático no .err, mas não imprime nada no .out
-    3 : int var: a é imprimido triplicadamente no .out, mas reconhece por duas vezes o erro de re-declaração .err, ou seja está passando.
+    2 : erro de sintaxe aborta o resto do programa
+    3 : ok
+    3b: ok
     4 : ok
 
+
   v0.2
-    1: erro
+    1:  ok

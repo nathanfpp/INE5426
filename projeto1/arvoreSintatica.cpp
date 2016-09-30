@@ -37,19 +37,26 @@ Tipo Declaracao::analisar(AST::TabelaDeSimbolos *tabelaSimbolos, int linha) {
     variaveis->tipoDeVariavel = tipoDeVariavel;
 
   // Inicia a análise das variáveis declaradas
-    variaveis->analisar(tabelaSimbolos, linha);
+    Tipo valida = variaveis->analisar(tabelaSimbolos, linha);
+
+    if(valida == Tipo::nulo) {
+        tipo = Tipo::nulo;
+    }
 
     return tipo;
 }
 
 void Declaracao::imprimir(int espaco, bool novaLinha) {
-    imprimirEspaco(espaco);
-    imprimirTipo(tipoDeVariavel);
-    std::cout << " var: ";
-    if(variaveis != NULL) {
-        variaveis->imprimir(0, false);
+  // Imprime apenas se a declaração for válida
+    if(tipo == Tipo::declaracao) {
+        imprimirEspaco(espaco);
+        imprimirTipo(tipoDeVariavel);
+        std::cout << " var: ";
+        if(variaveis != NULL) {
+            variaveis->imprimir(0, false);
+        }
+        std::cout << "\n";
     }
-    std::cout << "\n";
 }
 
 
@@ -61,41 +68,57 @@ Tipo Definicao::analisar(AST::TabelaDeSimbolos *tabelaSimbolos, int linha) {
   // Atribui tipoDeVariavel, recebido da Declaração, à Variável
     variavel->tipo = tipoDeVariavel;
 
-  // Salva a Variável na Tabela de Símbolos
-    tabelaSimbolos->adicionarVariavel(variavel, linha);
+  // O tipo da próxima Definição que caso não exista será Tipo::nulo
+    Tipo tipoDoProximo = Tipo::nulo;
 
-  // Verifica se a Variável foi realmente adiciona à Tabela de Símbolos
-   // variavel->analisar(tabelaSimbolos, linha);
+  // Salva a Variável na Tabela de Símbolos
+    if(!tabelaSimbolos->adicionarVariavel(variavel, linha)) {
+
+      // Porém, caso a variável já tenha sido declarada, além da impressão do erro, a definição é marcada
+        tipo = Tipo::nulo;
+    }
 
   // Caso a Definição atribua um valor à Variável, realizando coerção se necessário
     if(valor != NULL) {
-        valor->analisar(tabelaSimbolos, linha); // anteriormente após a coerção
-        coercaoDaDefinicao(this, tipoDeVariavel, valor->tipo, linha);        
+        Tipo tipoDoValor = valor->analisar(tabelaSimbolos, linha); // anteriormente após a coerção
+        coercaoDaDefinicao(this, tipoDeVariavel, tipoDoValor, linha);        
     }
 
   // Se outra Variável foi declarada, atribui o tipo da Declaração e inicia sua análise 
     if(proxima != NULL) {
         proxima->tipoDeVariavel = tipoDeVariavel;
         proxima->analisar(tabelaSimbolos, linha);
+
+      // E também registra-se seu Tipo de Nodo
+        tipoDoProximo = proxima->tipo;
     }
 
-   return tipo;
+
+  // Caso o tipo desta Definição seja nulo, assim como o da próxima Definição...
+    if(tipo == Tipo::nulo && tipoDoProximo == Tipo::nulo) {
+
+      // ... isto significa que ambas as Variáveis já foram declaradas anteriormente
+        return Tipo::nulo;
+    }
+
+  // Retorna o tipo do Nodo
+    return Tipo::declaracao;
 }
 
 
 void Definicao::imprimir(int espaco, bool novaLinha) {
-    variavel->imprimir(0, false);
-
-    if(valor != NULL) {
-        std::cout << " = ";
-        valor->imprimir(0, false);
+  // Imprime apenas se a definição não for repetida
+    if(tipo == Tipo::definicao) {
+        variavel->imprimir(0, false);
+        if(valor != NULL) {
+            std::cout << " = ";
+            valor->imprimir(0, false);
+        }        
+        if(proxima != NULL) std::cout << ", ";  
     }
-
-    if(proxima != NULL) {
-        std::cout << ", ";        
+    if(proxima != NULL) {              
         proxima->imprimir(0, false);
     }
-
     if(novaLinha) std::cout << "\n";
 }
 
@@ -164,7 +187,7 @@ Tipo OperacaoBinaria::analisar(AST::TabelaDeSimbolos *tabelaSimbolos, int linha)
     switch(operacao) {
 
   // A Atribuição recebe "int","float" ou "bool" e retorna "int", "float" ou "bool"
-        case Tipo::atribuicao: 
+        case Tipo::atribuicao:
             coercao(this, e, d, linha);
             return e;
 
@@ -262,15 +285,19 @@ Tipo Condicao::analisar(AST::TabelaDeSimbolos *tabelaSimbolos, int linha) {
     Tipo esperado = teste->analisar(tabelaSimbolos, linha);
     if(esperado != Tipo::boolean) {
         imprimirErroDeOperacao(Tipo::teste, Tipo::boolean, esperado, linha);
-    }
+    }   
 
   // Se o conteúdo do "se" ou "senão" não forem vazios, também devem ser verificados
     if(se != NULL) {
-        se->analisar(tabelaSimbolos, linha);
-    }
+        TabelaDeSimbolos *novoEscopo = tabelaSimbolos->novoEscopo(tabelaSimbolos);
+        se->analisar(novoEscopo, linha);
+        novoEscopo->retornarEscopo();
+    }    
 
     if(senao != NULL) {
-        senao->analisar(tabelaSimbolos, linha);
+        TabelaDeSimbolos *novoEscopo = tabelaSimbolos->novoEscopo(tabelaSimbolos);
+        senao->analisar(novoEscopo, linha);
+        novoEscopo->retornarEscopo();  
     }
 
     return Tipo::nulo;
@@ -322,8 +349,13 @@ Tipo Laco::analisar(AST::TabelaDeSimbolos *tabelaSimbolos, int linha) {
     }
 
   // Se o conteúdo do laço não for vazio, também deve ser verificado
+
+    TabelaDeSimbolos *novoEscopo;
+
     if(laco != NULL) {
-        laco->analisar(tabelaSimbolos, linha);
+        novoEscopo = tabelaSimbolos->novoEscopo(tabelaSimbolos);
+        laco->analisar(novoEscopo, linha);
+        novoEscopo->retornarEscopo();
     }
 
   // A Condição não possui um Tipo a ser retornado
@@ -359,76 +391,152 @@ void Laco::imprimir(int espaco, bool novaLinha) {
 
 Tipo Funcao::analisar(AST::TabelaDeSimbolos *tabelaSimbolos, int linha) {
 
- // Declaração de Nova Função
-    if(tipo == Tipo::funcao_dec) {
+// Conta a quantidade de parâmetros: se não houver parâmetros a quantidade é 0
+    contarParametros();
 
-      // Define a quantidade de parâmetros: se não houver parâmetros a quantidade é 0
-        if(parametros == NULL) {
-             quantidadeDeParametros = 0;
-        } else {
-             quantidadeDeParametros = parametros->contar(); 
-        }
+// Declaração de Nova Função
+    if(tipo == Tipo::funcao_dec) {      
+
       // Adiciona-se a função à tabela de funções
         tabelaSimbolos->declararFuncao(this, linha);
+
+        return tipo;
     } 
 
  // Definição ou Chamada de Função
     else {
 
+        TabelaDeSimbolos *novoEscopo;
+        novoEscopo = tabelaSimbolos->novoEscopo(tabelaSimbolos);
+
       // Recupera a Função, caso contrário um erro semântico é lançado pela Tabela de Símbolos
         Funcao *f = tabelaSimbolos->recuperarFuncao(id, linha);
         if(f != NULL) {
+          
+          // Obtém a quantidade de parâmetros da Função encontrada na Tabela de Símbolos
+            int quantidadeEsperada = f->contarParametros();
 
-          // Compara os parâmetros
-            ;
-        }
+          // Se a quantidade de parâmetros for diferente, ocorre um erro semântico
+            if(quantidadeDeParametros != quantidadeEsperada) {
+                std::cerr << "[Line " << linha << "] semantic error: function " << id;
+                std::cerr << " expects " << quantidadeEsperada << " parameters";
+                std::cerr << " but received " << quantidadeDeParametros << "\n";
+            }
 
-      // Definições de Função sobrescrevem a Tabela de Símbolos
-        if(tipo == Tipo::funcao_def){
-            tabelaSimbolos->definirFuncao(this, linha);
+          // Se os parâmetros não foram nulos, eles podem ser comparados
+            else if(parametros != NULL) {                
+                f->parametros->comparar(novoEscopo, parametros, linha);
+            }
+
+ // Definições de Função acrescentam à Declaração na Tabela de Símbolos
+            if(tipo == Tipo::funcao_def) {
+
+              // Se o corpo da Função não for nulo, ele deve ser analisado
+                if(corpo != NULL) {                    
+                    corpo->analisar(novoEscopo, linha);                    
+                    f->corpo = corpo;
+                }
+
+              // Atribui os parâmetros
+                //f->retorno = retorno;
+                //parametros = f->parametros;               
+            }            
+            
+            tipoDoRetorno = f->tipoDoRetorno;
         }
+        novoEscopo->retornarEscopo();    
     }
-    return tipo;
+    return tipoDoRetorno;
 }
 
 void Funcao::imprimir(int espaco, bool novaLinha) {
-/*
-    imprimirTipo(retorno);
-    std::cout << " fun: " << id << " (params: ";
-    parametros->imprimir(tabelaSimbolos, 0, linha, false);
-    std::cout << ")\n";
-    corpo->imprimir(tabelaSimbolos, espaco+2, linha, true);
-*/
+    if(tipo == Tipo::funcao_def) {
+        imprimirEspaco(espaco);
+        imprimirTipo(tipoDoRetorno);
+        std::cout << " fun: " << id << " (params: ";
+        if(parametros != NULL) {
+            parametros->imprimir(0, true);
+        }
+        std::cout << ")\n";
+        if(corpo != NULL) {
+            corpo->imprimir(espaco+2, true);
+        }
+        imprimirEspaco(espaco);        
+        std::cout << "  ret ";
+        retorno->imprimir(espaco+2, false);
+        std::cout << "\n";
+    } else if (tipo == Tipo::funcao_cha) {
+        std::cout << id << "["<< quantidadeDeParametros << " params]";
+        if(parametros != NULL) {
+            parametros->imprimir(0, false);
+        }
+    }
 }
 
+int Funcao::contarParametros() {
+    if(parametros == NULL) {
+        quantidadeDeParametros = 0;
+    } else {
+        quantidadeDeParametros = parametros->contar();
+    }
+    return quantidadeDeParametros;
+}
 
 ////////////////
 // Parametro //
 
-void Parametro::imprimir(int espaco, bool novaLinha) {
-    imprimirEspaco(espaco);
-    imprimirTipo(tipo);
-    std::cout << " " << id;
+Tipo Parametro::analisar(TabelaDeSimbolos *tabelaSimbolos, int linha) {
+    if(parametro != NULL) {
+        //tipoDoParametro = parametro->analisar(tabelaSimbolos, linha);
+        tabelaSimbolos->adicionarVariavel((Variavel*) parametro, linha);
+    }
     if(proximo != NULL) {
-       std::cout << ", ";
-       proximo->imprimir(espaco, novaLinha);
+        proximo->analisar(tabelaSimbolos, linha);
+    }
+    return tipo;
+}
+
+void Parametro::imprimir(int espaco, bool naoArgumento) {
+    imprimirEspaco(espaco);
+    if(naoArgumento) {
+        imprimirTipo(tipoDoParametro);
+    }
+    std::cout << " ";
+    parametro->imprimir(0,false);
+    if(proximo != NULL) {
+       if(naoArgumento) {
+           std::cout << ", ";
+       }
+       proximo->imprimir(espaco, naoArgumento);
     }
 }
 
-bool Parametro::comparar(Parametro *comparado) {
+bool Parametro::comparar(TabelaDeSimbolos *tabelaSimbolos, Parametro *comparado, int linha) {
 
-  // Se o parâmetro comparado for nulo, os Parâmetros são diferentes
-    if(comparado != NULL) {
+      // ...        
+        tabelaSimbolos->adicionarVariavel((Variavel*)parametro,linha);
 
-      // Se o Parâmetro atual for diferente do Parâmetro comparado, os Parâmetros são diferentes 
-        if(tipo == comparado->tipo) {
+      // Coleta os tipos dos parâmetros
+        Tipo tipoComparado = comparado->parametro->analisar(tabelaSimbolos, linha);
+
+      // Se os parâmetros forem do mesmo tipo
+        if(tipoDoParametro == tipoComparado) {
 
           // Se os parâmetros atuais forem igual e os próximos forem nulos, então todos os Parâmetro são iguais
             if(proximo == NULL && comparado->proximo == NULL) {
                 return true;
-            }             
+            } else if (proximo != NULL) {
+                return proximo->comparar(tabelaSimbolos, comparado->proximo, linha);
+            }
         }
-    }
+
+      // Se o Parâmetro atual for diferente do Parâmetro comparado, erro 
+        if(comparado == NULL) {
+            std::string id = ((Variavel*) parametro)->id;
+            std::cerr << "[Line " << linha << "] semantic error: parameter " << id;
+            std::cerr << " expected " << imprimirTipoPorExtenso(tipoDoParametro);
+            std::cerr << " but received " << imprimirTipoPorExtenso(tipoComparado) << "\n"; 
+        }    
     return false; 
 }
 
@@ -477,13 +585,8 @@ void Arranjo::imprimir(int espaco, bool novaLinha) {
 
 Tipo Bloco::analisar(AST::TabelaDeSimbolos *tabelaSimbolos, int linha) {
 
-// Se a tabela de símbolos recebida for a principal, o Bloco é o principal
-  if(linha == 0) {
-      escopo = tabelaSimbolos;
-  } else {
-      escopo = new TabelaDeSimbolos(tabelaSimbolos->count); 
-      escopo->anterior = tabelaSimbolos;
-  }
+// Associa o escopo ao Bloco
+  escopo = tabelaSimbolos;  
 
   // Verificar os Tipos de todas as linhas do Bloco   
     for (Nodo* l: linhas) {
@@ -538,23 +641,25 @@ bool Nodo::coercaoDaDefinicao(Definicao *coagido, Tipo esperado, Tipo recebido, 
 }
 
 bool Nodo::coercao(OperacaoBinaria *coagido, Tipo e, Tipo d, int linha) {
+
 // Segundo a descrição da versão 0.3, apenas tipo int pode sofrer coerção para float, logo:
 
+  // Se o tipo da esquerda for float e o da direita int, o da direita sofre coerção e retorna-se Tipo::real
+    if (e == Tipo::real && d == Tipo::inteiro) {       
+      // Acrescenta-se um nodo com a operação de coerção entre o filho da esquerda e a operação binária
+        OperacaoUnaria *coercao = new OperacaoUnaria(Tipo::opUnaria, Tipo::conversao_float, coagido->direita);
+        coagido->direita = ((Nodo*) coercao);
+        return true;
+    }
+
   // Se o tipo da esquerda for int e o da direita float, o da esquerda sofre coerção e retorna-se Tipo::real
-    if (e == Tipo::inteiro && d == Tipo::real) {
+    else if (e == Tipo::inteiro && d == Tipo::real) {
       // Acrescenta-se um nodo com a operação de coerção entre o filho da esquerda e a operação binária
         OperacaoUnaria *coercao = new OperacaoUnaria(Tipo::opUnaria, Tipo::conversao_float, coagido->esquerda);
         coagido->esquerda = ((Nodo*) coercao);
         return true;
     }
 
-  // Se o tipo da esquerda for float e o da direita int, o da direita sofre coerção e retorna-se Tipo::real
-    else if (e == Tipo::real && d == Tipo::inteiro) {       
-      // Acrescenta-se um nodo com a operação de coerção entre o filho da esquerda e a operação binária
-        OperacaoUnaria *coercao = new OperacaoUnaria(Tipo::opUnaria, Tipo::conversao_float, coagido->direita);
-        coagido->direita = ((Nodo*) coercao);
-        return true;
-    }
 
   // Se não ocorreu coerção, retorna-se false
     return false;  
@@ -642,9 +747,9 @@ void Nodo::imprimirErroDeOperacao(Tipo operacao, Tipo esperava, Tipo recebeu, in
 ///////////////////////
 // TabelaDeSimbolos //
 
-TabelaDeSimbolos* TabelaDeSimbolos::novoEscopo(int c) {
-    TabelaDeSimbolos *novoEscopo = new TabelaDeSimbolos(c); 
-    novoEscopo->anterior = this;
+TabelaDeSimbolos* TabelaDeSimbolos::novoEscopo(TabelaDeSimbolos *a) {
+    TabelaDeSimbolos *novoEscopo = new TabelaDeSimbolos(); 
+    novoEscopo->anterior = a;
     return novoEscopo;
 }
 
@@ -657,27 +762,29 @@ bool TabelaDeSimbolos::retornarEscopo() {
 
   // Senão, ele pode remover o último escopo, caso ele retorne <true>
     else {
-
       // Isto só é viável pois cada Nodo::Bloco possui uma referência para a TabelDeSimbolos de seu escopo
+   variaveis.clear();
+   funcoes.clear();
         anterior = NULL;
         return true;
     }    
 }
 
-void TabelaDeSimbolos::adicionarVariavel(AST::Variavel *v, int linha) {
+bool TabelaDeSimbolos::adicionarVariavel(AST::Variavel *v, int linha) {
   // Se a variável não foi declarada, ela é adicionada ao map
     std::map<std::string, AST::Variavel*>::const_iterator it;
     it = variaveis.find(v->id);
     if (it == variaveis.end()) {
         variaveis.insert ( std::pair< std::string, AST::Variavel*> (v->id,v) );
+        return true;
   // Caso a variável já tenha sido declarada, ocorre um erro semântico
     } else {
         std::cerr << "[Line " << linha << "] semantic error: re-declaration of variable " << v->id << "\n"; 
+        return false;
     }
 }
 
 Variavel* TabelaDeSimbolos::recuperarVariavel(std::string id, int linha) {
-
   // Variável encontrada no escopo atual
     std::map<std::string, AST::Variavel*>::const_iterator it;
     it = variaveis.find(id);
@@ -697,67 +804,40 @@ Variavel* TabelaDeSimbolos::recuperarVariavel(std::string id, int linha) {
     }
 }
 
-void TabelaDeSimbolos::declararFuncao(AST::Funcao *f, int linha) {
+bool TabelaDeSimbolos::declararFuncao(AST::Funcao *f, int linha) {
 
   // Se a Função não foi declarada, ela é adicionada ao map
     std::map<std::string, AST::Funcao*>::const_iterator it;
     it = funcoes.find(f->id);
     if (it == funcoes.end()) {
         funcoes.insert ( std::pair< std::string, AST::Funcao*> (f->id,f) );
+        return true;
     }
 
   // Caso a Função já tenha sido declarada, ocorre um erro semântico
     else {
         std::cerr << "[Line " << linha << "] semantic error: re-declaration of function " << f->id << "\n"; 
+        return false;
     }
 }
-
-
-bool TabelaDeSimbolos::definirFuncao(AST::Funcao *f, int linha) {
-
-  // Prepara o iterator para a busca
-    std::map<std::string, AST::Funcao*>::const_iterator it;
-    it = funcoes.find(f->id);
-
-  // Se a função não for encontrada na tabela de símbolos atual...
-    if (it == funcoes.end()) {
-
-      // Procura-se em tabelas anteriores, se elas existirem
-        if(anterior != NULL) {
-            anterior->definirFuncao(f,linha);
-        }
-
-      // Caso contrário, a função não foi declarada 
-        else {
-            std::cerr << "[Line " << linha << "] semantic error: undeclared function " << f->id << "\n";
-        }
-    }
-
-  // Caso a Função já tenha sido declarada, verifica-se se já foi definida
-    else {
-        std::cerr << "[Line " << linha << "] semantic error: re-declaration of function " << f->id << "\n"; 
-    }
-
-    return true;
-}
-
 
 Funcao* TabelaDeSimbolos::recuperarFuncao(std::string id, int linha) {
 
-  // Variável encontrada no escopo atual
+  // Procura pela Função no escopo atual
     std::map<std::string, AST::Funcao*>::const_iterator it;
     it = funcoes.find(id);
 
+   // Caso a função já tenha sido definida, ela é retornada
     if (it != funcoes.end()) {
         return it->second;
-    }
-
-  // Variavel não encontrada, procurar no escopo anterior
+    } 
+  
+  // Caso a função não esteja definida neste escopo, ela é buscada em escopos anteriores
     else if (anterior != NULL) {
         return anterior->recuperarFuncao(id, linha);
     }
 
-  // Variável não encontrada em nenhum escopo
+  // Função não encontrada em nenhum escopo, logo não definida 
     else {
         std::cerr << "[Line " << linha << "] semantic error: undeclared function " << id << "\n";
         return NULL;
