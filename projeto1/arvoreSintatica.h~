@@ -62,7 +62,7 @@ class Variavel : public Nodo {
      //
          Variavel(Tipo t, Tipo v, std::string i, bool p) : Nodo(t,i), tipoDeVariavel(v), ponteiro(p) { };
          Tipo analisar(AST::TabelaDeSimbolos *tabelaSimbolos, int linha);
-         void imprimir(int espaco, bool novaLinha)                             { std::cout << id << "";};
+         void imprimir(int espaco, bool novaLinha)                             { std::cout << id << ""};
 };
 
 class Inteiro : public Nodo {

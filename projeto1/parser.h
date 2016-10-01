@@ -81,16 +81,18 @@ extern int yydebug;
     T_CAST_INT = 285,
     T_CAST_FLOAT = 286,
     T_CAST_BOOL = 287,
-    T_IF = 288,
-    T_THEN = 289,
-    T_ELSE = 290,
-    T_FOR = 291,
-    T_FUN = 292,
-    T_RET = 293,
-    T_EQUALS2 = 294,
-    UMINUS = 295,
-    T_CAST = 296,
-    INT = 297
+    T_REF = 288,
+    T_ADDR = 289,
+    T_IF = 290,
+    T_THEN = 291,
+    T_ELSE = 292,
+    T_FOR = 293,
+    T_FUN = 294,
+    T_RET = 295,
+    T_EQUALS2 = 296,
+    UMINUS = 297,
+    T_CAST = 298,
+    INT = 299
   };
 #endif
 
@@ -119,7 +121,7 @@ union YYSTYPE
     AST::Bloco *bloco;
     AST::Tipo tipo;
 
-#line 123 "parser.h" /* yacc.c:1909  */
+#line 125 "parser.h" /* yacc.c:1909  */
 };
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1

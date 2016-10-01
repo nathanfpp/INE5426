@@ -41,7 +41,7 @@ test:
 #	./${OUTPUT} < tests/v0.8/input/1.in > tests/v0.8/output/1.out
 	./${OUTPUT} < tests/v0.8/input/3.in > tests/v0.8/output/3.out
 	./${OUTPUT} < tests/v0.8/input/2.in > tests/v0.8/output/2.out
-	./${OUTPUT} < tests/v1.0/input/3.in > tests/v1.0/output/1.out
+	./${OUTPUT} < tests/v1.0/input/1.in > tests/v1.0/output/1.out
 #	./${OUTPUT} < tests/v1.0/input/2.in > tests/v1.0/output/2.out
 
 ##Errors Tests
