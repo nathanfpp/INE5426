@@ -39,6 +39,7 @@ extern void yyerror(const char* s, ...);
     //AST::Boolean *boolean;
     AST::Declaracao *declaracao;
     AST::Definicao *definicao;
+    AST::DefinicaoArranjo *definicaoArranjo;
     AST::OperacaoUnaria *opUnaria;
     AST::OperacaoBinaria *opBinaria;
     AST::Condicao *condicao;
@@ -63,10 +64,10 @@ extern void yyerror(const char* s, ...);
 
 // %type
 // Define o tipo de Símbolos Não-Terminais
-%type <nodo> expressao linha primitiva var arranjo retorno
-//%type <variavel> 
+%type <nodo> expressao linha primitiva var retorno arranjo var_arranjo 
+%type <variavel> dec_arranjo 
 %type <declaracao> declaracao
-%type <definicao> variaveis variavel
+%type <definicao> variaveis variavel def_arranjo
 %type <opBinaria> atribuicao
 %type <condicao> condicao
 %type <laco> laco
@@ -74,7 +75,10 @@ extern void yyerror(const char* s, ...);
 %type <parametro> parametros parametro argumentos argumento
 %type <bloco> programa linhas
 %type <tipo> tipo
-
+%type <nodo> funcao_arranjo
+/*
+Tipo criado devido a problemas no reconhecimento entre chamada de funçãoe e uso de arranjo. 
+A regra "arranjo" antes derivava o equivalente à funcao_arranjo, porém mostrou-se desnecessária. */
 
 // %left, %right, %nonassoc
 // Precedência de operadores matemáticos, os últimos listados possuem maior procedência.
@@ -101,70 +105,90 @@ programa: linhas { arvoreSintatica = $1;
         ;
 
 linhas: 
-        linha         {  $$ = new AST::Bloco( AST::Tipo::bloco );  $$->novaLinha($1); }
-      | linhas linha  {  $$ = $1;                                  $1->novaLinha($2); }
+        linha         { $$ = new AST::Bloco( AST::Tipo::bloco );  $$->novaLinha($1); }
+      | linhas linha  { $$ = $1;                                  $1->novaLinha($2); }
       ;
 
 linha: 
-       atribuicao T_NL  { $$ = $1;   }
+       atribuicao T_NL  { $$ = $1; }
      | declaracao T_NL  { $$ = $1;   }
      | condicao T_NL    { $$ = $1;   }
      | laco T_NL        { $$ = $1;   }
-     | dec_funcao       { $$ = $1;   }
-     | def_funcao       { $$ = $1;   }
-     | cha_funcao       { $$ = $1;   }
+     | dec_funcao T_NL  { $$ = $1;   }
+     | def_funcao T_NL  { $$ = $1;   }
+     | cha_funcao T_NL  { $$ = $1;   }
      | T_NL             { $$ = NULL; }
      ;
 
-dec_funcao :
-             tipo T_FUN T_VAR T_OPEN T_CLOSE
-             { $$ = new AST::Funcao( AST::Tipo::funcao_dec, $1 , $3 , NULL , NULL , NULL); }
-           | tipo T_FUN T_VAR T_OPEN parametros T_CLOSE
-             { $$ = new AST::Funcao( AST::Tipo::funcao_dec, $1 , $3 , $5   , NULL , NULL); }
+atribuicao:
+            var_arranjo T_EQUAL expressao  { $$ = new AST::OperacaoBinaria( AST::Tipo::opBinaria , AST::Tipo::atribuicao, $1, $3 ); }
+          ;
+
+var_arranjo:
+             var      { $$ = $1; }
+           | arranjo  { $$ = $1; }
            ;
 
-def_funcao :
-            tipo T_FUN T_VAR T_OPEN T_CLOSE T_OPEN_KEY T_NL T_RET retorno T_NL T_CLOSE_KEY 
-             { $$ = new AST::Funcao( AST::Tipo::funcao_def, $1 , $3 , NULL , NULL , $9  ); }
+declaracao:
+            tipo variaveis  { $$ = new AST::Declaracao( AST::Tipo::declaracao , $1, $2 ); }
+          ;
 
-           | tipo T_FUN T_VAR T_OPEN T_CLOSE T_OPEN_KEY T_NL linhas T_RET retorno T_NL T_CLOSE_KEY  
-             { $$ = new AST::Funcao( AST::Tipo::funcao_def, $1 , $3 , NULL , $8   , $10 ); }
+variaveis: 
+           variavel                        { $$ = $1; }
+         | variaveis T_COMMA variavel      { $$ = $1;  $1->ajustarProxima($3); } 
+         | def_arranjo                     { $$ = $1; }
+         | variaveis T_COMMA def_arranjo   { $$ = $1;  $1->ajustarProxima($3); } 
+         ;
 
-           | tipo T_FUN T_VAR T_OPEN parametros T_CLOSE T_OPEN_KEY T_NL T_RET retorno T_NL T_CLOSE_KEY  
-             { $$ = new AST::Funcao( AST::Tipo::funcao_def, $1 , $3 , $5   , NULL , $10 ); }
+variavel:
+          atribuicao  { $$ = new AST::Definicao( AST::Tipo::definicao   , ((AST::Variavel*)$1->esquerda) , $1->direita , NULL ); }
+        | var         { $$ = new AST::Definicao( AST::Tipo::definicao   , ((AST::Variavel*)$1)           , NULL        , NULL ); }
+        ;
 
-           | tipo T_FUN T_VAR T_OPEN parametros T_CLOSE T_OPEN_KEY T_NL linhas T_RET retorno T_NL T_CLOSE_KEY  
-             { $$ = new AST::Funcao( AST::Tipo::funcao_def, $1 , $3 , $5   , $9   , $11 ); }
+def_arranjo: 
+             dec_arranjo {$$ = new AST::DefinicaoArranjo( AST::Tipo::definicao_arranjo, $1, NULL , NULL ); }
+           ;
+
+dec_arranjo:
+             T_VAR T_OPEN primitiva T_CLOSE  { $$ = new AST::Arranjo( AST::Tipo::arranjo, AST::Tipo::nulo , $1, $3 ); }
+           ;
+
+arranjo:
+             T_VAR T_OPEN expressao T_CLOSE  { $$ = new AST::Arranjo( AST::Tipo::arranjo, AST::Tipo::nulo , $1, $3 ); }
            ;
 
 cha_funcao :
              T_VAR T_OPEN T_CLOSE
              { $$ = new AST::Funcao( AST::Tipo::funcao_cha, AST::Tipo::nulo , $1 , NULL , NULL , NULL ); }
+
            | T_VAR T_OPEN argumentos T_CLOSE  
-             { $$ = new AST::Funcao( AST::Tipo::funcao_cha, AST::Tipo::nulo , $1 , $3   , NULL , NULL ); }
+             { $$ = new AST::Funcao( AST::Tipo::funcao_cha, AST::Tipo::nulo , $1 , $3 , NULL , NULL ); }
            ; 
 
-parametros :
-             parametro                     { $$ = $1; }
-           | parametros T_COMMA parametro  { $$ = $1; $$->proximo = $3; }
-           ;
+funcao_arranjo :
+          T_VAR T_OPEN expressao T_CLOSE 
+        { $$ = new AST::ChamadaOuArranjo( AST::Tipo::nulo, AST::Tipo::nulo , $1 , new AST::Parametro( AST::Tipo::parametro, AST::Tipo::nulo, $3, NULL ) , NULL , NULL ); }
+        ;
 
-parametro :
-            tipo var  { $$ = new AST::Parametro( $1, $2, NULL );  }
-          ;
-
-argumentos :
-             argumento                     { $$ = $1;                   }
-           | argumentos T_COMMA argumento  { $$ = $1; $$->proximo = $3; }
-           ;
-
-argumento :
-            expressao  { $$ = new AST::Parametro( AST::Tipo::nulo, $1, NULL );  }
-          ;
-
-retorno :
-          primitiva { $$ = $1; }
-        | var       { $$ = $1; }
+condicao:       
+// if ... then { }
+          T_IF expressao T_NL T_THEN T_OPEN_KEY T_NL T_CLOSE_KEY  
+          { $$ = new AST::Condicao( AST::Tipo::condicao , $2, NULL, NULL); }
+// if ... then { ... }
+        |  T_IF expressao T_NL T_THEN T_OPEN_KEY T_NL linhas T_CLOSE_KEY  
+           { $$ = new AST::Condicao( AST::Tipo::condicao , $2, $7, NULL ); }
+// if ... then {  } else { } 
+        | T_IF expressao T_NL T_THEN T_OPEN_KEY T_NL T_CLOSE_KEY T_ELSE T_OPEN_KEY T_NL T_CLOSE_KEY  
+          { $$ = new AST::Condicao( AST::Tipo::condicao , $2, NULL, NULL ); }
+// if ... then { } else {  ... } 
+        | T_IF expressao T_NL T_THEN T_OPEN_KEY T_NL T_CLOSE_KEY T_ELSE T_OPEN_KEY T_NL linhas T_CLOSE_KEY  
+          { $$ = new AST::Condicao( AST::Tipo::condicao , $2, NULL, $11 ); }
+// if ... then { ... } else { }
+        | T_IF expressao T_NL T_THEN T_OPEN_KEY T_NL linhas T_CLOSE_KEY T_ELSE T_OPEN_KEY T_NL T_CLOSE_KEY  
+          { $$ = new AST::Condicao( AST::Tipo::condicao , $2, $7, NULL ); }
+// if ... then { ... } else { ... }
+        | T_IF expressao T_NL T_THEN T_OPEN_KEY T_NL linhas T_CLOSE_KEY T_ELSE T_OPEN_KEY T_NL linhas T_CLOSE_KEY  
+          { $$ = new AST::Condicao( AST::Tipo::condicao , $2, $7, $12 ); }
         ;
 
 laco :
@@ -194,59 +218,63 @@ laco :
        { $$ = new AST::Laco( AST::Tipo::laco , $2 , $4 , $6 , $9 ); }
      ;
 
-condicao:         
-// if ... then { }
-          T_IF expressao T_NL T_THEN T_OPEN_KEY T_NL T_CLOSE_KEY  
-          { $$ = new AST::Condicao( AST::Tipo::condicao , $2, NULL, NULL); }
-// if ... then { ... }
-        |  T_IF expressao T_NL T_THEN T_OPEN_KEY T_NL linhas T_CLOSE_KEY  
-           { $$ = new AST::Condicao( AST::Tipo::condicao , $2, $7, NULL ); }
-// if ... then {  } else { } 
-        | T_IF expressao T_NL T_THEN T_OPEN_KEY T_NL T_CLOSE_KEY T_ELSE T_OPEN_KEY T_NL T_CLOSE_KEY  
-          { $$ = new AST::Condicao( AST::Tipo::condicao , $2, NULL, NULL ); }
-// if ... then { } else {  ... } 
-        | T_IF expressao T_NL T_THEN T_OPEN_KEY T_NL T_CLOSE_KEY T_ELSE T_OPEN_KEY T_NL linhas T_CLOSE_KEY  
-          { $$ = new AST::Condicao( AST::Tipo::condicao , $2, NULL, $11 ); }
-// if ... then { ... } else { }
-        | T_IF expressao T_NL T_THEN T_OPEN_KEY T_NL linhas T_CLOSE_KEY T_ELSE T_OPEN_KEY T_NL T_CLOSE_KEY  
-          { $$ = new AST::Condicao( AST::Tipo::condicao , $2, $7, NULL ); }
-// if ... then { ... } else { ... }
-        | T_IF expressao T_NL T_THEN T_OPEN_KEY T_NL linhas T_CLOSE_KEY T_ELSE T_OPEN_KEY T_NL linhas T_CLOSE_KEY  
-          { $$ = new AST::Condicao( AST::Tipo::condicao , $2, $7, $12 ); }
-        ;
+dec_funcao :
+             tipo T_FUN T_VAR T_OPEN T_CLOSE
+             { $$ = new AST::Funcao( AST::Tipo::funcao_dec, $1 , $3 , NULL , NULL , NULL); }
 
-declaracao:
-            tipo variaveis  { $$ = new AST::Declaracao( AST::Tipo::declaracao , $1, $2 ); }
+           | tipo T_FUN T_VAR T_OPEN parametros T_CLOSE
+             { $$ = new AST::Funcao( AST::Tipo::funcao_dec, $1 , $3 , $5   , NULL , NULL); }
+           ;
+
+def_funcao :
+            tipo T_FUN T_VAR T_OPEN T_CLOSE T_OPEN_KEY T_NL T_RET retorno T_NL T_CLOSE_KEY 
+             { $$ = new AST::Funcao( AST::Tipo::funcao_def, $1 , $3 , NULL , NULL , $9  ); }
+
+           | tipo T_FUN T_VAR T_OPEN T_CLOSE T_OPEN_KEY T_NL linhas T_RET retorno T_NL T_CLOSE_KEY  
+             { $$ = new AST::Funcao( AST::Tipo::funcao_def, $1 , $3 , NULL , $8   , $10 ); }
+
+           | tipo T_FUN T_VAR T_OPEN parametros T_CLOSE T_OPEN_KEY T_NL T_RET retorno T_NL T_CLOSE_KEY  
+             { $$ = new AST::Funcao( AST::Tipo::funcao_def, $1 , $3 , $5   , NULL , $10 ); }
+
+           | tipo T_FUN T_VAR T_OPEN parametros T_CLOSE T_OPEN_KEY T_NL linhas T_RET retorno T_NL T_CLOSE_KEY  
+             { $$ = new AST::Funcao( AST::Tipo::funcao_def, $1 , $3 , $5   , $9   , $11 ); }
+           ;
+
+parametros :
+             parametro                     { $$ = $1; }
+           | parametros T_COMMA parametro  { $$ = $1; $$->proximo = $3; }
+           ;
+
+parametro :
+            tipo var  { $$ = new AST::Parametro( AST::Tipo::parametro, $1, $2, NULL );  }
           ;
 
-tipo:
-       T_TYPE_INT    { $$ = AST::Tipo::inteiro;  ultimoTipo = $1; }
-     | T_TYPE_FLOAT  { $$ = AST::Tipo::real;     ultimoTipo = $1; }
-     | T_TYPE_BOOL   { $$ = AST::Tipo::boolean;  ultimoTipo = $1; }
-     ;
+cha_funcao :
+             T_VAR T_OPEN T_CLOSE
+             { $$ = new AST::Funcao( AST::Tipo::funcao_cha, AST::Tipo::nulo , $1 , NULL , NULL , NULL ); }
 
-variaveis: 
-           variavel                    { $$ = $1; }
-         | variaveis T_COMMA variavel  { $$ = $1;  $1->ajustarProxima($3); } 
-         ;
+           | T_VAR T_OPEN argumentos T_CLOSE  
+             { $$ = new AST::Funcao( AST::Tipo::funcao_cha, AST::Tipo::nulo , $1 , $3   , NULL , NULL ); }
+           ; 
 
-variavel:
-          atribuicao  { $$ = new AST::Definicao( AST::Tipo::definicao   , ((AST::Variavel*)$1->esquerda) , $1->direita , NULL ); }
-        | var         { $$ = new AST::Definicao( AST::Tipo::definicao   , ((AST::Variavel*)$1)           , NULL        , NULL ); }
-        ;
+argumentos :
+             argumento                     { $$ = $1;                   }
+           | argumentos T_COMMA argumento  { $$ = $1; $$->proximo = $3; }
+           ;
 
-atribuicao:
-            var T_EQUAL expressao  { $$ = new AST::OperacaoBinaria( AST::Tipo::opBinaria , AST::Tipo::atribuicao, $1, $3 ); }
+argumento :
+            expressao  { $$ = new AST::Parametro( AST::Tipo::parametro, AST::Tipo::nulo, $1, NULL );  }
           ;
 
-arranjo:
-         T_VAR T_OPEN T_INT T_CLOSE  { $$ = new AST::Arranjo( AST::Tipo::arranjo , AST::Tipo::nulo , $1, NULL ); }
-       ;
+retorno :
+          primitiva { $$ = $1; }
+        | var       { $$ = $1; }
+        ;
 
 expressao:         
                                   primitiva              { $$ = $1; }
          |                        cha_funcao             { $$ = $1; }
-         |                        arranjo                { $$ = $1; }
+         |                        funcao_arranjo         { $$ = $1; }
          |           T_MINUS      expressao %prec UMINUS { $$ = new AST::OperacaoUnaria( AST::Tipo::opUnaria , AST::Tipo::negacao         , $2 ); }
          |           T_NOT        expressao              { $$ = new AST::OperacaoUnaria( AST::Tipo::opUnaria , AST::Tipo::inversao        , $2 ); }
          |           T_CAST_INT   expressao              { $$ = new AST::OperacaoUnaria( AST::Tipo::opUnaria , AST::Tipo::conversao_int   , $2 ); }
@@ -267,6 +295,12 @@ expressao:
          | expressao T_LOW        expressao              { $$ = new AST::OperacaoBinaria( AST::Tipo::opBinaria , AST::Tipo::menor_igual    , $1,  $3 ); }
          ; 
 
+tipo:
+       T_TYPE_INT    { $$ = AST::Tipo::inteiro;  ultimoTipo = $1; }
+     | T_TYPE_FLOAT  { $$ = AST::Tipo::real;     ultimoTipo = $1; }
+     | T_TYPE_BOOL   { $$ = AST::Tipo::boolean;  ultimoTipo = $1; }
+     ;
+
 primitiva:
            var
          | T_BOOL   { $$ = new AST::Boolean  ( $1 ); $$->tipo = AST::Tipo::boolean; }
@@ -275,6 +309,6 @@ primitiva:
          ;
 
 var:
-    T_VAR { $$ = new AST::Variavel ( AST::Tipo::variavel , $1 ); }  
+    T_VAR { $$ = new AST::Variavel( AST::Tipo::variavel, AST::Tipo::nulo , $1 ); }  
 
 %%

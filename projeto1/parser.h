@@ -109,6 +109,7 @@ union YYSTYPE
     //AST::Boolean *boolean;
     AST::Declaracao *declaracao;
     AST::Definicao *definicao;
+    AST::DefinicaoArranjo *definicaoArranjo;
     AST::OperacaoUnaria *opUnaria;
     AST::OperacaoBinaria *opBinaria;
     AST::Condicao *condicao;
@@ -118,7 +119,7 @@ union YYSTYPE
     AST::Bloco *bloco;
     AST::Tipo tipo;
 
-#line 122 "parser.h" /* yacc.c:1909  */
+#line 123 "parser.h" /* yacc.c:1909  */
 };
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1

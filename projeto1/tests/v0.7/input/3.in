@@ -1,4 +1,5 @@
-bool fun f ()
-bool fun f () {
-ret false
+int fun teste(int x)
+int fun teste(int x) {
+ret 0
 }
+int b = teste(0)

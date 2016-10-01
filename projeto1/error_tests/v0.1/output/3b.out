@@ -1,3 +1,4 @@
 int var: a, b
-int var: c, d
+int var: a
+int var: c, b, c, d
 

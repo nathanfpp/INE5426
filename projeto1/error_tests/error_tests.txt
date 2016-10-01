@@ -32,3 +32,7 @@ de acordo com um exemplo especificado no PDF do projeto.
     5: a ser trabalhado
     6: ok
     7: ok
+
+  v0.8:
+    1: ok
+    2: ok

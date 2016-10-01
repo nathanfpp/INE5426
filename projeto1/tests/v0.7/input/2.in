@@ -1,5 +1,4 @@
 int fun fibo ( int x, bool b )
-
 int fun fibo ( int x, bool b ) {
 	int ans
 	if x < 2

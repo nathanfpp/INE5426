@@ -1,4 +1,4 @@
 int a = 0
-if a
+if (a)
 then {
 }
