@@ -1,2 +1,2 @@
-int array: a (size: 10)
+float array: values (size: 100), vars (size: 10)
 

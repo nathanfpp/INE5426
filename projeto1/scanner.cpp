@@ -870,7 +870,7 @@ YY_RULE_SETUP
 case 7:
 YY_RULE_SETUP
 #line 28 "scanner.l"
-{ return T_REF;   }
+{ yylval.num_ref = 1;  return T_REF;   }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP

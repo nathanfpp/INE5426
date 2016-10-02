@@ -48,19 +48,19 @@ extern void yyerror(const char* s, ...);
     AST::Parametro *parametro;
     AST::Bloco *bloco;
     AST::Tipo tipo;
+    int num_ref;
 }
 
 
 // %token
 // Símbolos Terminais (tokens)
 %token <valor> T_FLOAT T_INT T_BOOL T_VAR
-//%token <nodo> T_PLUS T_MINUS T_TIMES T_DIV T_NOT T_AND T_OR T_DIF T_HIGHER T_HIGH T_LOWER T_LOW
 %token <tipo> T_TYPE_INT T_TYPE_FLOAT T_TYPE_BOOL
 %token T_NL T_OPEN T_CLOSE  T_OPEN_KEY T_CLOSE_KEY T_EQUAL T_COMMA T_PLUS T_MINUS T_TIMES T_DIV T_NOT T_AND T_OR 
 %token T_EQUAL2 T_DIF T_HIGHER T_HIGH T_LOWER T_LOW
-%token T_CAST_INT T_CAST_FLOAT T_CAST_BOOL T_REF T_ADDR
+%token T_CAST_INT T_CAST_FLOAT T_CAST_BOOL T_ADDR
 %token T_IF T_THEN T_ELSE T_FOR T_FUN T_RET
-
+%token <num_ref> T_REF
 
 // %type
 // Define o tipo de Símbolos Não-Terminais
@@ -76,6 +76,7 @@ extern void yyerror(const char* s, ...);
 %type <bloco> programa linhas
 %type <tipo> tipo
 %type <nodo> funcao_arranjo
+%type <num_ref> referencia
 /*
 Tipo criado devido a problemas no reconhecimento entre chamada de funçãoe e uso de arranjo. 
 A regra "arranjo" antes derivava o equivalente à funcao_arranjo, porém mostrou-se desnecessária. */
@@ -89,7 +90,7 @@ A regra "arranjo" antes derivava o equivalente à funcao_arranjo, porém mostrou
 %left T_TIMES
 %left T_OPEN T_CLOSE
 %left T_NOT UMINUS // UMINUS: http://www.gnu.org/software/bison/manual/html_node/Contextual-Precedence.html
-%left T_CAST INT T_CAST_FLOAT T_CAST_BOOL
+%left T_CAST INT T_CAST_FLOAT T_CAST_BOOL T_REF T_ADDR
 
 
 // %start
@@ -150,11 +151,12 @@ def_arranjo:
            ;
 
 dec_arranjo:
-             T_VAR T_OPEN primitiva T_CLOSE  { $$ = new AST::Arranjo( AST::Tipo::arranjo, AST::Tipo::nulo , $1, $3 ); }
+             T_VAR T_OPEN primitiva T_CLOSE  { $$ = new AST::Arranjo( AST::Tipo::arranjo, AST::Tipo::nulo ,$1, $3,0 ); }
+           | referencia T_VAR T_OPEN primitiva T_CLOSE  { $$ = new AST::Arranjo( AST::Tipo::arranjo, AST::Tipo::nulo ,$2, $4, $1 ); }
            ;
 
 arranjo:
-             T_VAR T_OPEN expressao T_CLOSE  { $$ = new AST::Arranjo( AST::Tipo::arranjo, AST::Tipo::nulo , $1, $3 ); }
+             T_VAR T_OPEN expressao T_CLOSE  { $$ = new AST::Arranjo( AST::Tipo::arranjo, AST::Tipo::nulo , $1, $3,0 ); }
            ;
 
 cha_funcao :
@@ -167,7 +169,7 @@ cha_funcao :
 
 funcao_arranjo :
           T_VAR T_OPEN expressao T_CLOSE 
-        { $$ = new AST::ChamadaOuArranjo( AST::Tipo::nulo, AST::Tipo::nulo , $1 , new AST::Parametro( AST::Tipo::parametro, AST::Tipo::nulo, $3, NULL ) , NULL , NULL ); }
+        { $$ = new AST::ChamadaOuArranjo( AST::Tipo::nulo, AST::Tipo::nulo , $1 , new AST::Parametro( AST::Tipo::parametro, AST::Tipo::nulo, $3, NULL ) , NULL , NULL, $3 ); }
         ;
 
 condicao:       
@@ -281,6 +283,9 @@ expressao:
          |           T_CAST_FLOAT expressao              { $$ = new AST::OperacaoUnaria( AST::Tipo::opUnaria , AST::Tipo::conversao_float , $2 ); }
          |           T_CAST_BOOL  expressao              { $$ = new AST::OperacaoUnaria( AST::Tipo::opUnaria , AST::Tipo::conversao_bool  , $2 ); }
          | T_OPEN    expressao    T_CLOSE                { $$ = new AST::OperacaoUnaria( AST::Tipo::opUnaria , AST::Tipo::parenteses      , $2 ); }
+         |           T_REF        expressao              { $$ = new AST::OperacaoUnaria( AST::Tipo::opUnaria , AST::Tipo::referencia      , $2 ); }
+         |           T_ADDR       expressao              { $$ = new AST::OperacaoUnaria( AST::Tipo::opUnaria , AST::Tipo::endereco        , $2 ); }
+
          | expressao T_PLUS       expressao              { $$ = new AST::OperacaoBinaria( AST::Tipo::opBinaria , AST::Tipo::adicao         , $1,  $3 ); }
          | expressao T_MINUS      expressao              { $$ = new AST::OperacaoBinaria( AST::Tipo::opBinaria , AST::Tipo::subtracao      , $1,  $3 ); }
          | expressao T_TIMES      expressao              { $$ = new AST::OperacaoBinaria( AST::Tipo::opBinaria , AST::Tipo::multiplicacao  , $1,  $3 ); }
@@ -309,7 +314,12 @@ primitiva:
          ;
 
 var:
-    T_VAR { $$ = new AST::Variavel( AST::Tipo::variavel, AST::Tipo::nulo , $1, false );}  
-  | T_REF T_VAR { $$ = new AST::Variavel( AST::Tipo::variavel, AST::Tipo::nulo, $2, true );}  
+    T_VAR { $$ = new AST::Variavel( AST::Tipo::variavel, AST::Tipo::nulo , $1, 0 );}  
+  | referencia T_VAR { $$ = new AST::Variavel( AST::Tipo::variavel, AST::Tipo::nulo, $2, $1 );}  
+;
+
+referencia: 
+	   T_REF | referencia T_REF {$$ = $$ + 1;}
+
 ;
 %%

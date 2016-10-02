@@ -1,8 +1,2 @@
-int fun c(int x)
-int fun c(int x){
-ret 0
-}
-int a(5)
-int d = c(6)
-a(3) = c(5)
+float values(100), vars(10)
 

@@ -1,0 +1,9 @@
+int fun: c (params: )
+  ret 3
+int array: a (size: 10)
+int var: i = 0
+int ref var: mypointer = 0, aa
+= aa + c[0 params] 2
+int var: w
+int ref ref ref var: b
+

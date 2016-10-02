@@ -1,3 +1,10 @@
+int fun c()
+int fun c(){
+ret 3
+}
 int a(10)
 int i = 0
 int ref mypointer = 0, aa
+aa = c() + 2
+int w 
+int ref ref ref b

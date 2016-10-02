@@ -19,7 +19,7 @@ namespace AST {
 
 enum Tipo { inteiro, real, boolean, variavel, declaracao, definicao, definicao_arranjo, opUnaria, opBinaria, condicao, laco, 
             funcao_dec, funcao_def, funcao_cha, bloco, arranjo, parametro,
-            negacao, inversao, conversao_int, conversao_float, conversao_bool, parenteses,
+            negacao, inversao, conversao_int, conversao_float, conversao_bool, parenteses, referencia, endereco,
             atribuicao, adicao, subtracao, multiplicacao, divisao, e, ou, igual, diferente, maior, maior_igual, menor, menor_igual,
             teste, nulo };
 
@@ -58,9 +58,9 @@ class Nodo {
 class Variavel : public Nodo {
      public:
          Tipo tipoDeVariavel;
-	 bool ponteiro;
+	 int ponteiros;
      //
-         Variavel(Tipo t, Tipo v, std::string i, bool p) : Nodo(t,i), tipoDeVariavel(v), ponteiro(p) { };
+         Variavel(Tipo t, Tipo v, std::string i, int p) : Nodo(t,i), tipoDeVariavel(v), ponteiros(p) {};
          Tipo analisar(AST::TabelaDeSimbolos *tabelaSimbolos, int linha);
          void imprimir(int espaco, bool novaLinha)                             { std::cout << id << "";};
 };
@@ -194,11 +194,12 @@ class ChamadaOuArranjo : public Variavel {
         Nodo *parametros;
         Bloco *corpo;
         Nodo *retorno;
+	Nodo *tamanho;
         int quantidadeDeParametros;
         bool definida;
 //
-        ChamadaOuArranjo(Tipo t, Tipo d, std::string i, Nodo *p, Bloco *c, Nodo *r) : 
-            Variavel(t,d,i,false), parametros(p), corpo(c), retorno(r) { definida = false; };
+        ChamadaOuArranjo(Tipo t, Tipo d, std::string i, Nodo *p, Bloco *c, Nodo *r, Nodo *size) : 
+            Variavel(t,d,i,0), parametros(p), corpo(c), retorno(r), tamanho(size) { definida = false; };
         Tipo analisar(AST::TabelaDeSimbolos *tabelaSimbolos, int linha);
         void imprimir(int espaco, bool novaLinha);
         int contarParametros();
@@ -209,7 +210,7 @@ class Arranjo : public Variavel {
     public:
         Nodo *tamanho;
     //
-        Arranjo(Tipo t, Tipo v, std::string i, Nodo *p) : Variavel(t, v, i,false), tamanho(p) {};
+        Arranjo(Tipo t, Tipo v, std::string i, Nodo *p, int ponteiros) : Variavel(t, v, i,ponteiros), tamanho(p) {};
         Tipo analisar(AST::TabelaDeSimbolos *tabelaSimbolos, int linha);
         void imprimir(int espaco, bool novaLinha);
 };

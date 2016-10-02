@@ -25,7 +25,7 @@ rejeite         [^0-9a-zA-Z\(\)\,\{\}\_\+\=\/\>\<\*\-\!\&\|\t" "\n]+
 "float"             { yylval.tipo = AST::Tipo::real;     return T_TYPE_FLOAT; } // Tipos de Variáveis
 "bool"              { yylval.tipo = AST::Tipo::boolean;  return T_TYPE_BOOL;  } // 
 "addr"		    { return T_ADDR;   }
-"ref"		    { return T_REF;   }
+"ref"		    { yylval.num_ref = 1;  return T_REF;   }
 "if"                { return T_IF;   }
 "then"              { return T_THEN; }
 "else"              { return T_ELSE; }

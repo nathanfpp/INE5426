@@ -118,11 +118,13 @@ Tipo Definicao::analisar(AST::TabelaDeSimbolos *tabelaSimbolos, int linha) {
 void Definicao::imprimir(int espaco, bool imprimirVar) {
 
   // Caso esta seja a primeira definição após a declaração, ela imprime "var:"
-    if(imprimirVar && variavel->ponteiro == false) {
+    if(imprimirVar && variavel->ponteiros == 0) {
         std::cout << " var: ";
     }
-    if(imprimirVar && variavel->ponteiro == true) {
-        std::cout << " ref var: ";
+    if(imprimirVar && variavel->ponteiros > 0) {
+	for(int i = 0; i < variavel->ponteiros; i++)
+	   std::cout << " ref";
+        std::cout << " var: ";
     }
 
   // Imprime a definição apenas se ela for válida
@@ -196,9 +198,17 @@ Tipo DefinicaoArranjo::analisar(AST::TabelaDeSimbolos *tabelaSimbolos, int linha
 void DefinicaoArranjo::imprimir(int espaco, bool imprimirArray) {
 
   // A primeira definição após a declaraçãp imprime "array:"
-    if(imprimirArray) {
+    if(imprimirArray && variavel->ponteiros == 0) {
         std::cout << " array: ";
     }
+
+    else if(imprimirArray && variavel->ponteiros > 0) {
+	for(int i = 0; i < variavel->ponteiros; i++)
+      	  std::cout << " ref";
+        std::cout << " array: ";
+    }
+
+
     variavel->imprimir(0, true);
     if(proxima != NULL) {
         std::cout << ", ";        
@@ -294,6 +304,12 @@ Tipo OperacaoUnaria::analisar(AST::TabelaDeSimbolos *tabelaSimbolos, int linha) 
 
       // Parênteses apenas retornam o tipo contido
         case Tipo::parenteses:  return d;
+
+      // Endereco de variavel retorna um tipo inteiro
+        case Tipo::endereco:    return Tipo::inteiro;
+
+      // Referencia de variavel retorna o tipo dela
+        case Tipo::referencia:  return d;
 
       // Por padrão, retorna o tipo do nodo
         default:  return Tipo::nulo;
@@ -848,6 +864,8 @@ void Nodo::imprimirTipo(Tipo t) {
         case Tipo::conversao_float:  std::cout << "[float] ";  break;
         case Tipo::conversao_bool:   std::cout << "[bool] ";   break;
         case Tipo::parenteses:       std::cout << "";          break; //
+        case Tipo::endereco:         std::cout << "[addr] ";   break;
+        case Tipo::referencia:       std::cout << "[ref] ";    break;
         default:                     std::cout << "";          break;
     }
 }
@@ -880,6 +898,8 @@ std::string Nodo::imprimirTipoPorExtenso(Tipo t) {
         case Tipo::parenteses:       return "()";
         case Tipo::teste:            return "test";    
         case Tipo::nulo:             return "null";          
+        case Tipo::endereco:         return "address";
+        case Tipo::referencia:       return "reference";
         default:                     return " ";            
     }
 }
@@ -1093,7 +1113,7 @@ Tipo ChamadaOuArranjo::analisar(AST::TabelaDeSimbolos *tabelaSimbolos, int linha
 //              std::cerr << "@@@ retorno=tamanho : " << parametros->id << "\n";
 
               // O tipo usado como índice é válido? parametros = tamanho
-                Tipo indice = parametros->analisar(tabelaSimbolos, linha);
+                Tipo indice = tamanho->analisar(tabelaSimbolos, linha);
                 if(indice != Tipo::inteiro) {
                     std::cerr << "[Line " << linha << "] semantic error: index operator expects integer but received ";
                 }
@@ -1113,6 +1133,7 @@ void ChamadaOuArranjo::imprimir(int espaco, bool declaracao) {
         std::cout << id << "["<< quantidadeDeParametros << " params]";        
     } else {
         std::cout << "[index] " << id << "";        
+//      ((Arranjo*) this)->imprimir(0,false);  
     }
     if(parametros != NULL) {
         parametros->imprimir(0, false);
