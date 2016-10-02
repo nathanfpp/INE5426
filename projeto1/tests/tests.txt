@@ -34,6 +34,6 @@ v0.8
   2 : ok
 
 v1.0
-  1 : nope
-  2 : nope
+  1 : ok
+  2 : ok
 

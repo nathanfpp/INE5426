@@ -58,11 +58,12 @@ class Nodo {
 class Variavel : public Nodo {
      public:
          Tipo tipoDeVariavel;
-	 int ponteiros;
+	 int ponteiros;  //0 nao eh referenciado, > 1 n referencias
+	 bool ponteiroEsqAtribuicao;
      //
          Variavel(Tipo t, Tipo v, std::string i, int p) : Nodo(t,i), tipoDeVariavel(v), ponteiros(p) {};
          Tipo analisar(AST::TabelaDeSimbolos *tabelaSimbolos, int linha);
-         void imprimir(int espaco, bool novaLinha)                             { std::cout << id << "";};
+         void imprimir(int espaco, bool novaLinha);
 };
 
 class Inteiro : public Nodo {

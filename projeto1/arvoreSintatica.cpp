@@ -27,7 +27,13 @@ Tipo Variavel::analisar(AST::TabelaDeSimbolos *tabelaSimbolos, int linha) {
     return tipoDeVariavel;
 }
 
+void Variavel::imprimir(int espaco, bool novaLinha) {
 
+   if(ponteiroEsqAtribuicao == true && ponteiros > 0)
+     std::cout << "[ref] "; 
+     std::cout << id << "";
+
+}
 
 /////////////////
 // Declaracao //
