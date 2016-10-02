@@ -1600,7 +1600,7 @@ yyreduce:
 
   case 13:
 #line 125 "parser.y" /* yacc.c:1646  */
-    {((AST::Variavel*)(yyvsp[-2].nodo))->ponteiroEsqAtribuicao = true;  (yyval.opBinaria) = new AST::OperacaoBinaria( AST::Tipo::opBinaria , AST::Tipo::atribuicao, (yyvsp[-2].nodo), (yyvsp[0].nodo) ); }
+    {if(((AST::Variavel*)(yyvsp[-2].nodo))->ponteiros > 0) ((AST::Variavel*)(yyvsp[-2].nodo))->ponteiroEsqAtribuicao = true;  (yyval.opBinaria) = new AST::OperacaoBinaria( AST::Tipo::opBinaria , AST::Tipo::atribuicao, (yyvsp[-2].nodo), (yyvsp[0].nodo) ); }
 #line 1605 "parser.cpp" /* yacc.c:1646  */
     break;
 

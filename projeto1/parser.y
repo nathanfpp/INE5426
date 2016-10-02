@@ -122,7 +122,7 @@ linha:
      ;
 
 atribuicao:
-            var_arranjo T_EQUAL expressao  {((AST::Variavel*)$1)->ponteiroEsqAtribuicao = true;  $$ = new AST::OperacaoBinaria( AST::Tipo::opBinaria , AST::Tipo::atribuicao, $1, $3 ); }
+            var_arranjo T_EQUAL expressao  {if(((AST::Variavel*)$1)->ponteiros > 0) ((AST::Variavel*)$1)->ponteiroEsqAtribuicao = true;  $$ = new AST::OperacaoBinaria( AST::Tipo::opBinaria , AST::Tipo::atribuicao, $1, $3 ); }
           ;
 
 var_arranjo:

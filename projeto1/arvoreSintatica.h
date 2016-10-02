@@ -50,7 +50,7 @@ class Nodo {
                 void imprimirTipo(Tipo t);
                 std::string imprimirTipoPorExtenso(Tipo t);
                 void imprimirErroDeOperacao(Tipo operacao, Tipo esperava, Tipo recebeu, int linha);
-	//virtual void verificarTipoRaiz(TipoDeNodo esquerda, TipoDeNodo direita){}		
+
 };
 	
 /* Variáveis */
@@ -59,7 +59,7 @@ class Variavel : public Nodo {
      public:
          Tipo tipoDeVariavel;
 	 int ponteiros;  //0 nao eh referenciado, > 1 n referencias
-	 bool ponteiroEsqAtribuicao;
+	 bool ponteiroEsqAtribuicao = false;
      //
          Variavel(Tipo t, Tipo v, std::string i, int p) : Nodo(t,i), tipoDeVariavel(v), ponteiros(p) {};
          Tipo analisar(AST::TabelaDeSimbolos *tabelaSimbolos, int linha);

@@ -979,9 +979,9 @@ bool TabelaDeSimbolos::retornarEscopo(int linha) {
 bool TabelaDeSimbolos::adicionar(AST::Nodo *v, int linha, bool variavel) {
 
   // Se a Variável ou Função não foi declarada, ela é adicionada ao map
-    std::string id;
+
     std::map<std::string, AST::Nodo*>::const_iterator it;
-    it = simbolos.find(id);
+    it = simbolos.find(v->id);
     if (it == simbolos.end()) {
         simbolos.insert ( std::pair< std::string, AST::Nodo*> (v->id,v) );
         return true;
