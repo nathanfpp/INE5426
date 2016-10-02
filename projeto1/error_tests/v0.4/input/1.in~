@@ -1,4 +1,0 @@
-int a = 0
-if a
-then {
-}

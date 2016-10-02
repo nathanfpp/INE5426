@@ -1,6 +1,0 @@
-int a
-int fun f (int x, int y)
-int fun f (int x, int y){
-ret 1
-}
-a = f (0.0, 0)
