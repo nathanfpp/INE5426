@@ -36,3 +36,8 @@ de acordo com um exemplo especificado no PDF do projeto.
   v0.8:
     1: ok
     2: ok
+   
+  v1.0:
+   1: ok
+   2: ok
+   3: ok

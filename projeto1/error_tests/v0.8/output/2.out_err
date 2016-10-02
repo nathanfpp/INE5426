@@ -1,1 +1,2 @@
 [Line 2] semantic error: index operator expects integer but received bool
+semantic error: attribution operation expects integer pointer but received integer

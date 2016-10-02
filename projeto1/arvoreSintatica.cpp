@@ -312,10 +312,16 @@ Tipo OperacaoUnaria::analisar(AST::TabelaDeSimbolos *tabelaSimbolos, int linha) 
         case Tipo::parenteses:  return d;
 
       // Endereco de variavel retorna um tipo inteiro
-        case Tipo::endereco:    return Tipo::inteiro;
+        case Tipo::endereco:    
+	if (filho->id == "")
+	std::cerr<<" semantic error: address operation expects a pointer";
+	return Tipo::inteiro;
 
       // Referencia de variavel retorna o tipo dela
-        case Tipo::referencia:  return d;
+        case Tipo::referencia:  
+	if (filho->id == "")
+	std::cerr<<" semantic error: reference operation expects a pointer";
+	return d;
 
       // Por padrão, retorna o tipo do nodo
         default:  return Tipo::nulo;
@@ -345,6 +351,8 @@ Tipo OperacaoBinaria::analisar(AST::TabelaDeSimbolos *tabelaSimbolos, int linha)
   // A Atribuição recebe "int","float" ou "bool" e retorna "int", "float" ou "bool"
         case Tipo::atribuicao:
             coercao(this, e, d, linha);
+	    if(((Variavel*)esquerda)->ponteiroEsqAtribuicao == true && ((Variavel*)direita)->ponteiros == 0)
+		std::cerr << "semantic error: attribution operation expects "<<imprimirTipoPorExtenso(e)<<" pointer but received "<<imprimirTipoPorExtenso(d);
             return e;
 
   // Operaçãos Aritméticas recebem "int" ou "float" e devolvem "int" ou "float"

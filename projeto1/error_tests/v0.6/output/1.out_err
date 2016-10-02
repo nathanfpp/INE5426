@@ -1,2 +1,2 @@
-[Line 4] semantic error: undeclared variable f
+semantic error: attribution operation expects integer pointer but received integer[Line 4] semantic error: undeclared variable f
 [Line 4] semantic error: undeclared variable f
