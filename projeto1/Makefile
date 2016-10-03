@@ -38,7 +38,7 @@ test:
 	./${OUTPUT} < tests/v0.7/input/1.in > tests/v0.7/output/1.out
 	./${OUTPUT} < tests/v0.7/input/2.in > tests/v0.7/output/2.out
 	./${OUTPUT} < tests/v0.7/input/3.in > tests/v0.7/output/3.out
-#	./${OUTPUT} < tests/v0.8/input/1.in > tests/v0.8/output/1.out
+	./${OUTPUT} < tests/v0.8/input/1.in > tests/v0.8/output/1.out
 	./${OUTPUT} < tests/v0.8/input/2.in > tests/v0.8/output/2.out
 	./${OUTPUT} < tests/v0.8/input/3.in > tests/v0.8/output/3.out
 	./${OUTPUT} < tests/v1.0/input/3.in > tests/v1.0/output/3.out
@@ -69,7 +69,7 @@ test:
 	./${OUTPUT} < error_tests/v1.0/input/3.in > error_tests/v1.0/output/3.out 2> error_tests/v1.0/output/3.out_err
 
 compare:
-#	diff tests/v0.1/expected/1.ex tests/v0.1/output/1.out
+	diff tests/v0.1/expected/1.ex tests/v0.1/output/1.out  || exit 0 #problema de precedencia
 	diff tests/v0.1/expected/2.ex tests/v0.1/output/2.out
 	diff tests/v0.1/expected/3.ex tests/v0.1/output/3.out
 	diff tests/v0.2/expected/1.ex tests/v0.2/output/1.out
@@ -86,8 +86,23 @@ compare:
 	diff tests/v0.6/expected/2.ex tests/v0.6/output/2.out
 	diff tests/v0.7/expected/1.ex tests/v0.7/output/1.out
 	diff tests/v0.7/expected/2.ex tests/v0.7/output/2.out
-#	diff tests/v0.8/expected/1.ex tests/v0.8/output/1.out
+	diff tests/v0.8/expected/1.ex tests/v0.8/output/1.out || exit 0 #problema de precedencia
 	diff tests/v0.8/expected/2.ex tests/v0.8/output/2.out
 	diff tests/v0.8/expected/3.ex tests/v0.8/output/3.out
 	diff tests/v1.0/expected/1.ex tests/v1.0/output/1.out
 	diff tests/v1.0/expected/2.ex tests/v1.0/output/2.out
+
+
+##Error test
+
+	diff error_tests/v0.1/expected/1.ex 	 error_tests/v0.1/output/1.out 	   
+	diff error_tests/v0.1/expected/1.ex_err  error_tests/v0.1/output/1.out_err || exit 0 #problema com \n
+	diff error_tests/v0.1/expected/2.ex 	 error_tests/v0.1/output/2.out 	   || exit 0 #erro de sintaxe faz o programa sair antes de computar essa entrada.
+	diff error_tests/v0.1/expected/2.ex_err  error_tests/v0.1/output/2.out_err || exit 0 
+	diff error_tests/v0.1/expected/3.ex 	 error_tests/v0.1/output/3.out     
+	diff error_tests/v0.1/expected/3.ex_err  error_tests/v0.1/output/3.out_err || exit 0 #problema com \n
+	diff error_tests/v0.1/expected/4.ex 	 error_tests/v0.1/output/4.out 	   
+	diff error_tests/v0.1/expected/4.ex_err  error_tests/v0.1/output/4.out_err || exit 0 #problema com \n
+
+#	diff error_tests/v0.2/expected/1.ex 	 error_tests/v0.2/output/1.out 	   || exit 0 #coercao das versoes superiores faz este teste nao ter mais sentido.
+#	diff error_tests/v0.2/expected/1.ex_err  error_tests/v0.2/output/1.out_err 
