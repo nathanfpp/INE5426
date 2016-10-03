@@ -320,7 +320,7 @@ Tipo OperacaoUnaria::analisar(AST::TabelaDeSimbolos *tabelaSimbolos, int linha) 
 
       // Referencia de variavel retorna o tipo dela
         case Tipo::referencia:  
-	if (filho->id == "")
+	if (filho->id == "" || ((Variavel*)filho)->ponteiros == 0)
 	std::cerr<<" semantic error: reference operation expects a pointer";
 	return d;
 
