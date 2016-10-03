@@ -519,8 +519,8 @@ static const yytype_uint16 yyrline[] =
      242,   247,   248,   252,   256,   259,   264,   265,   269,   273,
      274,   278,   279,   280,   281,   282,   283,   284,   285,   286,
      287,   288,   290,   291,   292,   293,   294,   295,   296,   297,
-     298,   299,   300,   301,   305,   306,   307,   311,   312,   313,
-     314,   318,   319,   323,   323
+     299,   300,   301,   302,   307,   308,   309,   313,   314,   315,
+     316,   320,   321,   325,   325
 };
 #endif
 
@@ -609,9 +609,9 @@ static const yytype_uint8 yydefact[] =
       58,     0,     0,    64,    65,    66,    67,    68,    71,    70,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
        0,     0,     0,    92,     0,     0,     0,    13,     0,     0,
-       0,    92,     0,    29,     0,    26,    58,    69,     0,    72,
-      73,    74,    75,    76,    77,    78,    79,    80,    81,    82,
-      83,     0,     0,     0,    61,     0,    18,    20,     0,     0,
+       0,    92,     0,    29,     0,    26,    58,    69,     0,    80,
+      81,    82,    83,    72,    73,    74,    75,    76,    77,    78,
+      79,     0,     0,     0,    61,     0,    18,    20,     0,     0,
       57,    58,    30,     0,     0,     0,     0,    24,    45,     0,
       51,     0,    61,    27,     0,     0,     0,     0,     0,     0,
       46,     0,    91,    53,    25,    31,     0,    37,     0,     0,
@@ -1954,126 +1954,126 @@ yyreduce:
 
   case 72:
 #line 290 "parser.y" /* yacc.c:1646  */
-    { (yyval.nodo) = new AST::OperacaoBinaria( AST::Tipo::opBinaria , AST::Tipo::adicao         , (yyvsp[-2].nodo),  (yyvsp[0].nodo) ); }
+    { (yyval.nodo) = new AST::OperacaoBinaria( AST::Tipo::opBinaria , AST::Tipo::e              , (yyvsp[-2].nodo),  (yyvsp[0].nodo) ); }
 #line 1959 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 73:
 #line 291 "parser.y" /* yacc.c:1646  */
-    { (yyval.nodo) = new AST::OperacaoBinaria( AST::Tipo::opBinaria , AST::Tipo::subtracao      , (yyvsp[-2].nodo),  (yyvsp[0].nodo) ); }
+    { (yyval.nodo) = new AST::OperacaoBinaria( AST::Tipo::opBinaria , AST::Tipo::ou             , (yyvsp[-2].nodo),  (yyvsp[0].nodo) ); }
 #line 1965 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 74:
 #line 292 "parser.y" /* yacc.c:1646  */
-    { (yyval.nodo) = new AST::OperacaoBinaria( AST::Tipo::opBinaria , AST::Tipo::multiplicacao  , (yyvsp[-2].nodo),  (yyvsp[0].nodo) ); }
+    { (yyval.nodo) = new AST::OperacaoBinaria( AST::Tipo::opBinaria , AST::Tipo::igual          , (yyvsp[-2].nodo),  (yyvsp[0].nodo) ); }
 #line 1971 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 75:
 #line 293 "parser.y" /* yacc.c:1646  */
-    { (yyval.nodo) = new AST::OperacaoBinaria( AST::Tipo::opBinaria , AST::Tipo::divisao        , (yyvsp[-2].nodo),  (yyvsp[0].nodo) ); }
+    { (yyval.nodo) = new AST::OperacaoBinaria( AST::Tipo::opBinaria , AST::Tipo::diferente      , (yyvsp[-2].nodo),  (yyvsp[0].nodo) ); }
 #line 1977 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 76:
 #line 294 "parser.y" /* yacc.c:1646  */
-    { (yyval.nodo) = new AST::OperacaoBinaria( AST::Tipo::opBinaria , AST::Tipo::e              , (yyvsp[-2].nodo),  (yyvsp[0].nodo) ); }
+    { (yyval.nodo) = new AST::OperacaoBinaria( AST::Tipo::opBinaria , AST::Tipo::maior          , (yyvsp[-2].nodo) , (yyvsp[0].nodo) ); }
 #line 1983 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 77:
 #line 295 "parser.y" /* yacc.c:1646  */
-    { (yyval.nodo) = new AST::OperacaoBinaria( AST::Tipo::opBinaria , AST::Tipo::ou             , (yyvsp[-2].nodo),  (yyvsp[0].nodo) ); }
+    { (yyval.nodo) = new AST::OperacaoBinaria( AST::Tipo::opBinaria , AST::Tipo::maior_igual    , (yyvsp[-2].nodo),  (yyvsp[0].nodo) ); }
 #line 1989 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 78:
 #line 296 "parser.y" /* yacc.c:1646  */
-    { (yyval.nodo) = new AST::OperacaoBinaria( AST::Tipo::opBinaria , AST::Tipo::igual          , (yyvsp[-2].nodo),  (yyvsp[0].nodo) ); }
+    { (yyval.nodo) = new AST::OperacaoBinaria( AST::Tipo::opBinaria , AST::Tipo::menor          , (yyvsp[-2].nodo),  (yyvsp[0].nodo) ); }
 #line 1995 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 79:
 #line 297 "parser.y" /* yacc.c:1646  */
-    { (yyval.nodo) = new AST::OperacaoBinaria( AST::Tipo::opBinaria , AST::Tipo::diferente      , (yyvsp[-2].nodo),  (yyvsp[0].nodo) ); }
+    { (yyval.nodo) = new AST::OperacaoBinaria( AST::Tipo::opBinaria , AST::Tipo::menor_igual    , (yyvsp[-2].nodo),  (yyvsp[0].nodo) ); }
 #line 2001 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 80:
-#line 298 "parser.y" /* yacc.c:1646  */
-    { (yyval.nodo) = new AST::OperacaoBinaria( AST::Tipo::opBinaria , AST::Tipo::maior          , (yyvsp[-2].nodo) , (yyvsp[0].nodo) ); }
+#line 299 "parser.y" /* yacc.c:1646  */
+    { (yyval.nodo) = new AST::OperacaoBinaria( AST::Tipo::opBinaria , AST::Tipo::adicao         , (yyvsp[-2].nodo),  (yyvsp[0].nodo) ); }
 #line 2007 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 81:
-#line 299 "parser.y" /* yacc.c:1646  */
-    { (yyval.nodo) = new AST::OperacaoBinaria( AST::Tipo::opBinaria , AST::Tipo::maior_igual    , (yyvsp[-2].nodo),  (yyvsp[0].nodo) ); }
+#line 300 "parser.y" /* yacc.c:1646  */
+    { (yyval.nodo) = new AST::OperacaoBinaria( AST::Tipo::opBinaria , AST::Tipo::subtracao      , (yyvsp[-2].nodo),  (yyvsp[0].nodo) ); }
 #line 2013 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 82:
-#line 300 "parser.y" /* yacc.c:1646  */
-    { (yyval.nodo) = new AST::OperacaoBinaria( AST::Tipo::opBinaria , AST::Tipo::menor          , (yyvsp[-2].nodo),  (yyvsp[0].nodo) ); }
+#line 301 "parser.y" /* yacc.c:1646  */
+    { (yyval.nodo) = new AST::OperacaoBinaria( AST::Tipo::opBinaria , AST::Tipo::multiplicacao  , (yyvsp[-2].nodo),  (yyvsp[0].nodo) ); }
 #line 2019 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 83:
-#line 301 "parser.y" /* yacc.c:1646  */
-    { (yyval.nodo) = new AST::OperacaoBinaria( AST::Tipo::opBinaria , AST::Tipo::menor_igual    , (yyvsp[-2].nodo),  (yyvsp[0].nodo) ); }
+#line 302 "parser.y" /* yacc.c:1646  */
+    { (yyval.nodo) = new AST::OperacaoBinaria( AST::Tipo::opBinaria , AST::Tipo::divisao        , (yyvsp[-2].nodo),  (yyvsp[0].nodo) ); }
 #line 2025 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 84:
-#line 305 "parser.y" /* yacc.c:1646  */
+#line 307 "parser.y" /* yacc.c:1646  */
     { (yyval.tipo) = AST::Tipo::inteiro;  ultimoTipo = (yyvsp[0].tipo); }
 #line 2031 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 85:
-#line 306 "parser.y" /* yacc.c:1646  */
+#line 308 "parser.y" /* yacc.c:1646  */
     { (yyval.tipo) = AST::Tipo::real;     ultimoTipo = (yyvsp[0].tipo); }
 #line 2037 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 86:
-#line 307 "parser.y" /* yacc.c:1646  */
+#line 309 "parser.y" /* yacc.c:1646  */
     { (yyval.tipo) = AST::Tipo::boolean;  ultimoTipo = (yyvsp[0].tipo); }
 #line 2043 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 88:
-#line 312 "parser.y" /* yacc.c:1646  */
+#line 314 "parser.y" /* yacc.c:1646  */
     { (yyval.nodo) = new AST::Boolean  ( (yyvsp[0].valor) ); (yyval.nodo)->tipo = AST::Tipo::boolean; }
 #line 2049 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 89:
-#line 313 "parser.y" /* yacc.c:1646  */
+#line 315 "parser.y" /* yacc.c:1646  */
     { (yyval.nodo) = new AST::Inteiro  ( (yyvsp[0].valor) ); (yyval.nodo)->tipo = AST::Tipo::inteiro; }
 #line 2055 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 90:
-#line 314 "parser.y" /* yacc.c:1646  */
+#line 316 "parser.y" /* yacc.c:1646  */
     { (yyval.nodo) = new AST::Real     ( (yyvsp[0].valor) ); (yyval.nodo)->tipo = AST::Tipo::real;    }
 #line 2061 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 91:
-#line 318 "parser.y" /* yacc.c:1646  */
+#line 320 "parser.y" /* yacc.c:1646  */
     { (yyval.nodo) = new AST::Variavel( AST::Tipo::variavel, AST::Tipo::nulo , (yyvsp[0].valor), 0 );}
 #line 2067 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 92:
-#line 319 "parser.y" /* yacc.c:1646  */
+#line 321 "parser.y" /* yacc.c:1646  */
     { (yyval.nodo) = new AST::Variavel( AST::Tipo::variavel, AST::Tipo::nulo, (yyvsp[0].valor), (yyvsp[-1].num_ref) );}
 #line 2073 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 94:
-#line 323 "parser.y" /* yacc.c:1646  */
+#line 325 "parser.y" /* yacc.c:1646  */
     {(yyval.num_ref) = (yyval.num_ref) + 1;}
 #line 2079 "parser.cpp" /* yacc.c:1646  */
     break;
@@ -2307,5 +2307,5 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 326 "parser.y" /* yacc.c:1906  */
+#line 328 "parser.y" /* yacc.c:1906  */
 

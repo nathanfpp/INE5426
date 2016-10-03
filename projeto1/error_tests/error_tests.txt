@@ -14,7 +14,7 @@
   v0.3: segundo a especificação não solicitava testes de erro.
   
 //esses testes abaixo foram criados pelo nosso grupo, portanto por uma questão de imparcialidade nossa a saída esperada ou está vazia ou está
-de acordo com um exemplo especificado no PDF do projeto.
+de acordo com um exemplo especificado no PDF do projeto, isto é para os inputs invalidos sugeridos na especificação no projeto, mensagens de erros foram emitadas.
 
   v0.4: 
     1:  ok

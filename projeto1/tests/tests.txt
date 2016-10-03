@@ -30,7 +30,7 @@ v0.7
   2 : ok
 
 v0.8
-  1 : precedência de operadores "/" e "=="
+  1 : precedência de operadores "/" e "==" causa erro semântico, pois ele está comparando primeiro para depois dividir retornando um inteiro para a condição if e não um booleano.
   2 : ok
 
 v1.0

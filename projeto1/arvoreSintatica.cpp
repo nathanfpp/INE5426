@@ -1021,51 +1021,6 @@ Nodo* TabelaDeSimbolos::recuperar(std::string id, int linha, bool variavel) {
     return NULL;
 }
 
-/*
-
-bool TabelaDeSimbolos::funcaoOuArranjo(std::string nome) {
-
- No parser.y havia:
-arranjo :
-          T_VAR T_OPEN expressao T_CLOSE 
-          { if(escopoPrincipal->funcaoOuArranjo($1)) {
-                $$ = new AST::Arranjo( AST::Tipo::nulo , $1, $3 ); std::cerr << "arranjo: arranjo\n";
-            } else {
-                $$ = new AST::Funcao( AST::Tipo::funcao_cha, AST::Tipo::nulo , $1 , new AST::Parametro( AST::Tipo::nulo, $3, NULL ) , NULL , NULL ); std::cerr << "arranjo: funcao\n";
-            }
-          }
-        ;
-
-
-  // Alcança o último escopo definido
-    if(proximo != NULL) {
-        return proximo->funcaoOuArranjo(nome);
-    }
-
-  // Tenta encontrar o nome na tabela de símbolos
-    Nodo *n = recuperar(nome, -1, false);
-    if(n != NULL) {
-
-      // Caso uma função já tenha sido definida com o nome, retorna-se true
-        switch(n->tipo) {
-            case Tipo::funcao_dec:
-            case Tipo::funcao_def:
-            case Tipo::funcao_cha:
-                std::cerr << "found function!\n";
-                return false;
-            case Tipo::arranjo:
-                std::cerr << "found array!\n";
-                return true;      
-            default:
-                break;      
-        }
-    }
-    std::cerr << "found nothing!\n";
-  // Se o nome estiver livre, retorna-se true
-    return true;
-}
-*/
-
 
 ///////////////////////
 // ChamadaOuArranjo //
@@ -1147,7 +1102,6 @@ void ChamadaOuArranjo::imprimir(int espaco, bool declaracao) {
         std::cout << id << "["<< quantidadeDeParametros << " params]";        
     } else {
         std::cout << "[index] " << id << "";        
-//      ((Arranjo*) this)->imprimir(0,false);  
     }
     if(parametros != NULL) {
         parametros->imprimir(0, false);
