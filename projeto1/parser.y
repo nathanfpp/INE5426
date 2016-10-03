@@ -84,7 +84,7 @@ A regra "arranjo" antes derivava o equivalente à funcao_arranjo, porém mostrou
 // %left, %right, %nonassoc
 // Precedência de operadores matemáticos, os últimos listados possuem maior procedência.
 %left T_AND T_OR
-%left T_EQUALS2 T_DIF T_HIGHER T_HIGH T_LOWER T_LOW
+%left T_EQUAL2 T_DIF T_HIGHER T_HIGH T_LOWER T_LOW
 %left T_PLUS T_MINUS
 %left T_DIV
 %left T_TIMES
