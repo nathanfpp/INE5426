@@ -66,7 +66,7 @@ compare_test:
 	diff tests/v0.6/expected/2.ex tests/v0.6/output/2.out
 	diff tests/v0.7/expected/1.ex tests/v0.7/output/1.out
 	diff tests/v0.7/expected/2.ex tests/v0.7/output/2.out
-	diff tests/v0.8/expected/1.ex tests/v0.8/output/1.out || exit 0
+	diff tests/v0.8/expected/1.ex tests/v0.8/output/1.out
 	diff tests/v0.8/expected/2.ex tests/v0.8/output/2.out
 	diff tests/v0.8/expected/3.ex tests/v0.8/output/3.out
 	diff tests/v1.0/expected/1.ex tests/v1.0/output/1.out
