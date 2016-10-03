@@ -101,6 +101,3 @@ error_test:
 	./${OUTPUT} < error_tests/v1.0/input/1.in > error_tests/v1.0/output/1.out 2> error_tests/v1.0/output/1.out_err
 	./${OUTPUT} < error_tests/v1.0/input/2.in > error_tests/v1.0/output/2.out 2> error_tests/v1.0/output/2.out_err
 	./${OUTPUT} < error_tests/v1.0/input/3.in > error_tests/v1.0/output/3.out 2> error_tests/v1.0/output/3.out_err
-
-
-
