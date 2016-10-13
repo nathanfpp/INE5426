@@ -1,0 +1,16 @@
+int fun c()
+int fun c(){
+ret 3
+}
+int fun d(int y)
+int fun d(int y){
+ret 4
+}
+int a(10)
+int i = 0
+int ref mypointer = 0, aa
+aa = ref mypointer
+int w 
+int ref ref ref b
+w = d(ref b)
+

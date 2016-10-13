@@ -1,0 +1,6 @@
+int i = 0
+int ref point
+point = i
+ref point = i
+ref point = ref i
+

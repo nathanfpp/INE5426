@@ -1,0 +1,21 @@
+bool a = true
+for , true, { 
+}
+for a=false, true, { 
+}
+for , true, a=false{ 
+}
+for a=false, true,a=false { 
+}
+for , true, { 
+  a = true
+}
+for a=false, true, { 
+  a=true
+}
+for , true, a=false{ 
+  a=true
+}
+for a=false, true,a=false { 
+  a=true
+}
