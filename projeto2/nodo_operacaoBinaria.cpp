@@ -14,9 +14,15 @@ Tipo OperacaoBinaria::analisar(AST::TabelaDeSimbolos *tabelaSimbolos, int linha)
     Tipo e = esquerda->analisar(tabelaSimbolos, linha);
     Tipo d = direita->analisar(tabelaSimbolos, linha);
 
+  // Se um dos tipos foram nulo não tem porque seguir adiante
+  if (e == Tipo::nulo)
+	return e;
+  if (d == Tipo::nulo)
+	return d;
+
   // Tenho que capturar os ponteiros dos filhos da direita e esquerda também
-    int e_ponteiros = e != Tipo::nulo ? esquerda->recuperarPonteiros(tabelaSimbolos, linha) : 0;
-    int d_ponteiros = d != Tipo::nulo ? direita->recuperarPonteiros(tabelaSimbolos, linha) : 0;
+    int e_ponteiros = esquerda->recuperarPonteiros(tabelaSimbolos, linha);
+    int d_ponteiros = direita->recuperarPonteiros(tabelaSimbolos, linha);
 
   // Operações Binárias possuem comportamentos diferentes
     switch(operacao) {
@@ -27,7 +33,7 @@ Tipo OperacaoBinaria::analisar(AST::TabelaDeSimbolos *tabelaSimbolos, int linha)
 		 || (e == Tipo::boolean && d != Tipo::boolean)
 		 || (e == Tipo::real && d == Tipo::boolean))  
             	imprimirErroDeOperacao(operacao, e, d, linha);
-            coercao(this, e, d, linha);
+            else{coercao(this, e, d, linha);} //não faz sentido realizar coercao, se há erro acima
 	    if(e_ponteiros > 0 && d_ponteiros == 0 && d!=Tipo::endereco) 
 		std::cerr << "[ Line " << linha << " ] semantic error: attribution operation expects "<<imprimirTipoPorExtenso(e)<<" pointer but received "<<imprimirTipoPorExtenso(d) <<"\n";
             return e;

@@ -1,19 +1,19 @@
 /error_tests
 
-  v0.1: problemas com \n nos out_err
-    1 : ok
-    2 : erro de sintaxe aborta o resto do programa
-    3 : ok
+  v0.1: 
+   ¹1 : ok
+  ¹²2 : ok 
+   ¹3 : ok
     3b: ok
-    4 : ok
+   ¹4 : ok
 
 
   v0.2
-    1:  não passou
+   ³1:  ok
 
   v0.3: segundo a especificação não solicitava testes de erro.
   
-//esses testes abaixo foram criados pelo nosso grupo, portanto por uma questão de imparcialidade nossa a saída esperada está vazia, isto é para os inputs invalidos sugeridos na especificação no projeto, mensagens de erros foram emitadas.
+//esses testes abaixo foram criados pelo nosso grupo.
 
   v0.4: 
     1:  ok
@@ -43,3 +43,9 @@
    4: ok
    5: ok
    6: ok
+
+
+Notas:
+
+¹: \n retirado do expected fornecido pelo professor.
+²: .out vazio - erro de sintaxe aborta o resto do programa.

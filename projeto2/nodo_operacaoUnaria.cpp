@@ -12,8 +12,13 @@ Tipo OperacaoUnaria::analisar(AST::TabelaDeSimbolos *tabelaSimbolos, int linha) 
  
   // Captura o tipo do filho
     Tipo d = filho->analisar(tabelaSimbolos, linha);
+
+  // Se o tipo do nodo for nulo não tem porque seguir adiante
+  if (d == Tipo::nulo)
+	return d;
+
   // Tenho que capturar os ponteiros do filho também
-    int d_ponteiros = d != Tipo::nulo ? filho->recuperarPonteiros(tabelaSimbolos, linha) : 0;
+    int d_ponteiros = filho->recuperarPonteiros(tabelaSimbolos, linha);
 
   // Operações Unárias possuem tratamento diferenciado
     switch(operacao) {
