@@ -1,0 +1,4 @@
+[Line 4] semantic error: operation attribution expected integer but received bool
+[Line 5] semantic error: operation attribution expected float but received bool
+[Line 6] semantic error: operation division expected float but received bool
+[Line 6] semantic error: operation attribution expected integer but received float

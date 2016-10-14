@@ -10,6 +10,7 @@
   v0.2
    ³1:  ok
     2:  ok
+    3:  ok
 
   v0.3: segundo a especificação não solicitava testes de erro.
   

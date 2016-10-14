@@ -1,0 +1,8 @@
+int a=0
+float b=0.0
+bool c=false
+
+a=c
+b=c
+
+a=b/c
