@@ -7,9 +7,9 @@
     3b: ok
    ¹4 : ok
 
-
   v0.2
    ³1:  ok
+    2:  ok
 
   v0.3: segundo a especificação não solicitava testes de erro.
   
@@ -49,3 +49,4 @@ Notas:
 
 ¹: \n retirado do expected fornecido pelo professor.
 ²: .out vazio - erro de sintaxe aborta o resto do programa.
+³: expected fornecido pelo professor alterado para acomodar a coercao realizada nodo folha

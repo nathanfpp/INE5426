@@ -1,3 +1,3 @@
 int var: a
-= a + 1 3.0
+= a + [float] 1 3.0
 
