@@ -13,7 +13,8 @@ Tipo OperacaoUnaria::analisar(AST::TabelaDeSimbolos *tabelaSimbolos, int linha) 
   // Captura o tipo do filho
     Tipo d = filho->analisar(tabelaSimbolos, linha);
   // Tenho que capturar os ponteiros do filho também
-    int d_ponteiros = filho->recuperarPonteiros(tabelaSimbolos, linha);
+    int d_ponteiros = d != Tipo::nulo ? filho->recuperarPonteiros(tabelaSimbolos, linha) : 0;
+
   // Operações Unárias possuem tratamento diferenciado
     switch(operacao) {
 

@@ -15,9 +15,8 @@ Tipo OperacaoBinaria::analisar(AST::TabelaDeSimbolos *tabelaSimbolos, int linha)
     Tipo d = direita->analisar(tabelaSimbolos, linha);
 
   // Tenho que capturar os ponteiros dos filhos da direita e esquerda também
-    int e_ponteiros = esquerda->recuperarPonteiros(tabelaSimbolos, linha);
-    int d_ponteiros = direita->recuperarPonteiros(tabelaSimbolos, linha);
-
+    int e_ponteiros = e != Tipo::nulo ? esquerda->recuperarPonteiros(tabelaSimbolos, linha) : 0;
+    int d_ponteiros = d != Tipo::nulo ? direita->recuperarPonteiros(tabelaSimbolos, linha) : 0;
 
   // Operações Binárias possuem comportamentos diferentes
     switch(operacao) {
