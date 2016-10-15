@@ -1,1 +1,7 @@
 int fun ff ()
+int fun ff(){
+ret 9
+}
+
+int y = ff()
+y = pitagoras(10,10)

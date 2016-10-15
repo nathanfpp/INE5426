@@ -68,7 +68,7 @@ Tipo ChamadaOuArranjo::analisar(AST::TabelaDeSimbolos *tabelaSimbolos, int linha
     }
 
   // A Chamada de Função ou Arranjo não foi declarada
-    std::cerr << "[Line " << linha << "] semantic error: undeclared variable " << id << "\n";
+    std::cerr << "[Line " << linha << "] semantic error: undeclared array or function" << id << "\n";
     //std::cerr << "[Line " << linha << "] semantic error: undeclared function " << id << "\n";
     return tipo;
 }
