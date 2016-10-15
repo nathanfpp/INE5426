@@ -1,0 +1,6 @@
+[Line 1] semantic error: undeclared array or function k
+[Line 4] semantic error: re-declaration of function a
+[Line 5] semantic error: re-definition of function a
+[Line 7] semantic error: re-declaration of function b
+[Line 9] semantic error: re-definition of function c
+[Line 9] semantic error: function b is declared but never defined

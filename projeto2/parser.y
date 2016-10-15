@@ -229,12 +229,13 @@ parametros :
            ;
 
 parametro:
-           tipo var  { $$ = new AST::Parametro( AST::Tipo::parametro, $1, $2, NULL );  }
+             tipo var      { $$ = new AST::Parametro( AST::Tipo::parametro, $1, $2, NULL );  }
+	   | tipo arranjo  { $$ = new AST::Parametro( AST::Tipo::parametro, $1, $2, NULL );  }
          ;
 
 retorno:
          primitiva { $$ = $1; }
-       | var       { $$ = $1; }
+       | arranjo    { $$ = $1; }
        ;
 
 expressao:         

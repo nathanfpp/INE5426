@@ -20,10 +20,17 @@
     1:  ok
 
   v0.5: 
-    1:  ok
+   º1:  ok
+    2:  ok
+    3:  ok
+    4:  ok
+    5:  ok
 
   v0.6:
     1: ok
+    2: ok
+    3: ok
+
   v0.7:
     1: ok
     2: ok
@@ -36,6 +43,9 @@
   v0.8:
     1: ok
     2: ok
+    3: ok
+    4: ok
+    5: ok
    
   v1.0:
    1: ok
@@ -51,3 +61,4 @@ Notas:
 ¹: \n retirado do expected fornecido pelo professor.
 ²: .out vazio - erro de sintaxe aborta o resto do programa.
 ³: expected fornecido pelo professor alterado para acomodar a coercao realizada nodo folha
+º: problema com número da linha identificadora do erro.

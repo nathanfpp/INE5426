@@ -1,0 +1,16 @@
+int var: i
+if: true
+then:
+  float var: i = 0.0
+for: = i 0, < i 2, = i + i 2
+do:
+  int var: a
+  if: true
+  then:
+    float var: f = 0.0
+    bool fun: myFunc (params: )
+      bool var: l = true
+      ret true
+= f + f 2.0
+bool var: g = & myFunc[0 params] l
+
