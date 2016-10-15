@@ -8,5 +8,5 @@ do:
   if: true
   then:
     float var: f = 0.0
-= f + f 2.0
+= g + f 2.0
 

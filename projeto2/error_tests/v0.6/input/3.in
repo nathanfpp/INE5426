@@ -1,4 +1,5 @@
 int i
+bool fun myFunc()
 if true 
 then{
 float i = 0.0
@@ -8,6 +9,11 @@ int a
 if true 
 then{
 float f = 0.0
+bool fun myFunc(){
+bool l = true
+ret true
+}
 }
 }
 f = f + 2.0
+bool g = myFunc() & l 

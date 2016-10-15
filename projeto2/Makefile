@@ -132,3 +132,22 @@ compare_error_test:
 	diff error_tests/v0.4/expected/1.ex_err error_tests/v0.4/output/1.out_err 
 	diff error_tests/v0.4/expected/2.ex     error_tests/v0.4/output/2.out
 	diff error_tests/v0.4/expected/2.ex_err error_tests/v0.4/output/2.out_err
+	diff error_tests/v0.5/expected/2.ex     error_tests/v0.5/output/2.out 
+	diff error_tests/v0.5/expected/2.ex_err error_tests/v0.5/output/2.out_err || exit 0    
+	diff error_tests/v0.5/expected/3.ex     error_tests/v0.5/output/3.out
+	diff error_tests/v0.5/expected/3.ex_err error_tests/v0.5/output/3.out_err || exit 0    
+	diff error_tests/v0.5/expected/4.ex     error_tests/v0.5/output/4.out
+	diff error_tests/v0.5/expected/4.ex_err error_tests/v0.5/output/4.out_err || exit 0    
+	diff error_tests/v1.0/expected/1.ex     error_tests/v1.0/output/1.out 
+	diff error_tests/v1.0/expected/1.ex_err error_tests/v1.0/output/1.out_err     
+	diff error_tests/v1.0/expected/2.ex     error_tests/v1.0/output/2.out
+	diff error_tests/v1.0/expected/2.ex_err error_tests/v1.0/output/2.out_err  
+	diff error_tests/v1.0/expected/3.ex     error_tests/v1.0/output/3.out
+	diff error_tests/v1.0/expected/3.ex_err error_tests/v1.0/output/3.out_err 
+	diff error_tests/v1.0/expected/4.ex     error_tests/v1.0/output/4.out 
+	diff error_tests/v1.0/expected/4.ex_err error_tests/v1.0/output/4.out_err 
+	diff error_tests/v1.0/expected/5.ex     error_tests/v1.0/output/5.out
+	diff error_tests/v1.0/expected/5.ex_err error_tests/v1.0/output/5.out_err     
+	diff error_tests/v1.0/expected/6.ex     error_tests/v1.0/output/6.out
+	diff error_tests/v1.0/expected/6.ex_err error_tests/v1.0/output/6.out_err
+

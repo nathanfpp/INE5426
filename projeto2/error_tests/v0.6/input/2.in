@@ -9,5 +9,10 @@ if true
 then{
 float f = 0.0
 }
+bool fun myFunc()
+bool fun myFunc(){
+ret true
+}
 }
 f = f + 2.0
+bool y = myFunc()

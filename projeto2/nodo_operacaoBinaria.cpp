@@ -30,14 +30,13 @@ Tipo OperacaoBinaria::analisar(AST::TabelaDeSimbolos *tabelaSimbolos, int linha)
   // A Atribuição recebe "int","float" ou "bool" e retorna "int", "float" ou "bool"
         case Tipo::atribuicao:
 
-            if(d != Tipo::nulo) {
 	        if((e == Tipo::inteiro && (d != Tipo::inteiro && d != Tipo::endereco))
 		     || (e == Tipo::boolean && d != Tipo::boolean)
 		     || (e == Tipo::real && d == Tipo::boolean)) {
 
             	    imprimirErroDeOperacao(operacao, e, d, linha);
                 }
-            }
+
             else{coercao(this, e, d, linha);} //não faz sentido realizar coercao, se há erro acima
 	    if(e_ponteiros > 0 && d_ponteiros == 0 && d!=Tipo::endereco) 
 		std::cerr << "[Line " << linha << "] semantic error: attribution operation expects "<<imprimirTipoPorExtenso(e)<<" pointer but received "<<imprimirTipoPorExtenso(d) <<"\n";

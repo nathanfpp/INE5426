@@ -8,5 +8,9 @@ do:
   if: true
   then:
     float var: f = 0.0
+    bool fun: myFunc (params: )
+      bool var: l = true
+      ret true
 = f + f 2.0
+bool var: g = & myFunc[0 params] l
 

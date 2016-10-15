@@ -26,9 +26,7 @@ Tipo Definicao::analisar(AST::TabelaDeSimbolos *tabelaSimbolos, int linha) {
   // Caso a Definição atribua um valor à Variável, realizando coerção se necessário
     if(valor != NULL) {
         Tipo tipoDoValor = valor->analisar(tabelaSimbolos, linha); // anteriormente após a coerção
-        if(tipoDoValor == Tipo::inteiro || tipoDoValor == Tipo::real || tipoDoValor == Tipo::boolean) {
-            coercaoDaDefinicao(this, tipoDeVariavel, tipoDoValor, linha);        
-        }
+        coercaoDaDefinicao(this, tipoDeVariavel, tipoDoValor, linha);        
     }
 
   // Se outra Variável foi declarada, atribui o tipo da Declaração e inicia sua análise 
