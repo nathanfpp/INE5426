@@ -24,7 +24,7 @@ bool TabelaDeSimbolos::retornarEscopo(int linha) {
  // Procura-se entre as funções declaradas...
     typedef std::map<std::string, Nodo*>::iterator it;
     for(it iterator = simbolos.begin(); iterator != simbolos.end(); iterator++) {
-        if(iterator->second->tipo == Tipo::funcao_def) {
+        if(iterator->second->tipo == Tipo::funcao_dec) {
             Funcao *f = ((Funcao*)iterator->second);
 
           // ... aquelas que não foram definidas
@@ -64,7 +64,8 @@ bool TabelaDeSimbolos::adicionar(AST::Nodo *v, int linha, bool variavel) {
   // Caso a Variável ou Função já tenha sido declarada, ocorre um erro semântico
     } else if (variavel) {
         std::cerr << "[Line " << linha << "] semantic error: re-declaration of variable " << v->id << "\n";         
-    } else {
+    }
+      else {
         std::cerr << "[Line " << linha << "] semantic error: re-declaration of function " << v->id << "\n"; 
     }
     return false;
@@ -86,7 +87,7 @@ Nodo* TabelaDeSimbolos::recuperar(std::string id, int linha, bool variavel) {
     }
 
   // Variável ou Função não encontrada em nenhum escopo
-    else if (linha >= 0) {
+   else if (linha >= 0) {
         if(variavel) {
             std::cerr << "[Line " << linha << "] semantic error: undeclared variable " << id << "\n";
         } else {

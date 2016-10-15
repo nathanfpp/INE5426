@@ -48,13 +48,13 @@ Tipo OperacaoUnaria::analisar(AST::TabelaDeSimbolos *tabelaSimbolos, int linha) 
       // Endereco de variavel retorna um tipo inteiro
         case Tipo::endereco:    
 	if (filho->id == "")
-	std::cerr<<"[ Line " << linha << " ] semantic error: address operation expects a variable or array item";
+	std::cerr<<"[Line " << linha << "] semantic error: address operation expects a variable or array item";
 	return Tipo::endereco;
 
       // Referencia de variavel retorna o tipo dela
         case Tipo::referencia:  
 	if (filho->id == "" || (filho->id != "" && d_ponteiros == 0)) //estou referenciando um valor ou uma variavel sem ponteiro ?
-	std::cerr<<"[ Line " << linha << " ] semantic error: reference operation expects a pointer";
+	std::cerr<<"[Line " << linha << "] semantic error: reference operation expects a pointer";
 	this->ponteiros++;
 	return d;
 

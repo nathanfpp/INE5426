@@ -17,10 +17,12 @@ Tipo Arranjo::analisar(AST::TabelaDeSimbolos *tabelaSimbolos, int linha) {
         std::cerr << imprimirTipoPorExtenso(indice) << "\n"; 
     }
 
-  // O arranjo foi declarado? Senão o erro é imprimido pela tabela
+  // O arranjo foi declarado? Senão o erro é imprimido
     Arranjo *v = ((Arranjo*) tabelaSimbolos->recuperar(id, linha, true));
     if(v != NULL) {
         return v->tipoDeVariavel;
+    } else {
+        std::cerr << "[Line " << linha << "] semantic error: undeclared variable " << id << "\n";
     }
 
   // Retorna o tipo

@@ -10,6 +10,8 @@ using namespace AST;
 
 bool Nodo::coercaoDaDefinicao(Definicao *coagido, Tipo esperado, Tipo recebido, int linha) {
 
+if(recebido == Tipo::nulo) return true;
+
  // Se o tipo esperado e o recebido forem diferentes, ocorreu um erro...
     if(esperado != recebido) {
 

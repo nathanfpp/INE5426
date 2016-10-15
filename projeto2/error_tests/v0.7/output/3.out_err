@@ -1,1 +1,2 @@
 [Line 2] semantic error: re-declaration of function f
+[Line 2] semantic error: function f is declared but never defined

@@ -11,15 +11,26 @@ using namespace AST;
 Tipo DefinicaoDeFuncao::analisar(AST::TabelaDeSimbolos *tabelaSimbolos, int linha) {
 
   // Conta a quantidade de parâmetros: se não houver parâmetros a quantidade é 0
+    definida = true;
     Funcao::contarParametros();
 
   // Definição ou Chamada de Função
     TabelaDeSimbolos *novoEscopo; 
     novoEscopo = tabelaSimbolos->novoEscopo(tabelaSimbolos);
 
-  // Recupera a Função, caso ela já tenha sido definida anteriormente
+  // Recupera a Função, caso ela já tenha sido DECLARADA anteriormente
     Funcao *f = ((Funcao*) tabelaSimbolos->recuperar(id, -1, false));
     if(f != NULL) {
+
+    // Caso a função já tenha sido DEFINIDA anterioremente, impre-se um erro
+      if(f->definida) {
+          tipo = Tipo::nulo;
+          std::cerr << "[Line " << linha << "] semantic error: re-definition of function " << f->id << "\n"; 
+          return f->tipoDoRetorno;
+      }
+
+    // Define a função DECLARADA como DEFINIDA
+      f->definida = true;
 
       // Obtém a quantidade de parâmetros da Função encontrada na Tabela de Símbolos
         int quantidadeEsperada = f->contarParametros();
@@ -49,7 +60,7 @@ Tipo DefinicaoDeFuncao::analisar(AST::TabelaDeSimbolos *tabelaSimbolos, int linh
     
       // Retorna o tipo da variável retornada pela função
         return tipoDoRetorno;
-    } 
+    }
  
     definida = true;
     if(parametros != NULL) {                
@@ -64,19 +75,21 @@ Tipo DefinicaoDeFuncao::analisar(AST::TabelaDeSimbolos *tabelaSimbolos, int linh
 
 
 void DefinicaoDeFuncao::imprimir(int espaco, bool novaLinha) {
-    imprimirEspaco(espaco);
-    imprimirTipo(tipoDoRetorno);
-    std::cout << " fun: " << id << " (params: ";
-    if(parametros != NULL) {
-        parametros->imprimir(0, true);
+    if(tipo == Tipo::funcao_def){
+        imprimirEspaco(espaco);
+        imprimirTipo(tipoDoRetorno);
+        std::cout << " fun: " << id << " (params: ";
+        if(parametros != NULL) {
+            parametros->imprimir(0, true);
+        }
+        std::cout << ")\n";
+        if(corpo != NULL) {
+                corpo->imprimir(espaco+2, true);
+        }
+        imprimirEspaco(espaco);        
+        std::cout << "  ret ";
+        retorno->imprimir(espaco+2, false);
+        std::cout << "\n";
     }
-    std::cout << ")\n";
-    if(corpo != NULL) {
-            corpo->imprimir(espaco+2, true);
-    }
-    imprimirEspaco(espaco);        
-    std::cout << "  ret ";
-    retorno->imprimir(espaco+2, false);
-    std::cout << "\n";
 };
 
