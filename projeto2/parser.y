@@ -59,7 +59,7 @@ extern void yyerror(const char* s, ...);
 %token T_NL T_OPEN T_CLOSE  T_OPEN_KEY T_CLOSE_KEY T_EQUAL T_COMMA T_PLUS T_MINUS T_TIMES T_DIV T_NOT T_AND T_OR 
 %token T_EQUAL2 T_DIF T_HIGHER T_HIGH T_LOWER T_LOW
 %token T_CAST_INT T_CAST_FLOAT T_CAST_BOOL T_ADDR
-%token T_IF T_THEN T_ELSE T_FOR T_FUN T_RET
+%token T_IF T_THEN T_ELSE T_FOR T_FUN T_RET T_ATRIB_ELSE T_ATRIB_ASK
 %token <num_ref> T_REF
 
 // %type
@@ -84,14 +84,14 @@ A regra "arranjo" antes derivava o equivalente à funcao_arranjo, porém mostrou
 
 // %left, %right, %nonassoc
 // Precedência de operadores matemáticos, os últimos listados possuem maior procedência.
-%left T_AND T_OR
+%left T_AND T_OR T_ATRIB_ASK
 %left T_EQUAL2 T_DIF T_HIGHER T_HIGH T_LOWER T_LOW
 %left T_PLUS T_MINUS
 %left T_DIV
 %left T_TIMES
 %left T_OPEN T_CLOSE
 %left T_NOT UMINUS // UMINUS: http://www.gnu.org/software/bison/manual/html_node/Contextual-Precedence.html
-%left T_CAST INT T_CAST_FLOAT T_CAST_BOOL T_REF T_ADDR
+%left T_CAST INT T_CAST_FLOAT T_CAST_BOOL T_REF T_ADDR T_ATRIB_ELSE
 
 
 // %start
@@ -261,6 +261,7 @@ expressao:
          | expressao T_HIGH       expressao              { $$ = new AST::OperacaoBinaria( AST::Tipo::opBinaria , AST::Tipo::maior_igual    , $1,  $3 ); }
          | expressao T_LOWER      expressao              { $$ = new AST::OperacaoBinaria( AST::Tipo::opBinaria , AST::Tipo::menor          , $1,  $3 ); }
          | expressao T_LOW        expressao              { $$ = new AST::OperacaoBinaria( AST::Tipo::opBinaria , AST::Tipo::menor_igual    , $1,  $3 ); }
+         | T_OPEN expressao T_ATRIB_ASK expressao T_ATRIB_ELSE expressao T_CLOSE { $$ = new AST::OperacaoTernaria(AST::Tipo::opTernaria, new AST::OperacaoUnaria( AST::Tipo::opUnaria , AST::Tipo::condicao_atribuicao, $2 ),  new AST::OperacaoBinaria( AST::Tipo::opUnaria , AST::Tipo::atribuicao_condicional, $4, $6)); }
          ; 
 
 tipo:

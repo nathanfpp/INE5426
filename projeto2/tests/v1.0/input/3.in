@@ -1,5 +1,5 @@
-int fun c()
-int fun c(){
+int fun c(int ref s)
+int fun c(int ref s){
 ret 3
 }
 int fun d(int y)
@@ -13,4 +13,5 @@ aa = ref mypointer
 int w 
 int ref ref ref b
 w = d(ref b)
+w = c(b)
 

@@ -17,11 +17,11 @@ extern void yyerror(const char *s, ...);
 
 namespace AST {
 
-enum Tipo { inteiro, real, boolean, variavel, declaracao, definicao, definicao_arranjo, opUnaria, opBinaria, condicao, laco, 
+enum Tipo { inteiro, real, boolean, variavel, declaracao, definicao, definicao_arranjo, opUnaria, opBinaria, opTernaria, condicao, laco, 
             funcao_dec, funcao_def, funcao_cha, bloco, arranjo, parametro,
             negacao, inversao, conversao_int, conversao_float, conversao_bool, parenteses, referencia, endereco,
             atribuicao, adicao, subtracao, multiplicacao, divisao, e, ou, igual, diferente, maior, maior_igual, menor, menor_igual,
-            teste, nulo };
+            teste, condicao_atribuicao, atribuicao_condicional, nulo };
 
 class Nodo;
 class Variavel;
@@ -147,6 +147,16 @@ class OperacaoBinaria : public Nodo {
         Nodo *direita;
     //
         OperacaoBinaria(Tipo t, Tipo o, Nodo *e, Nodo *d) : Nodo(t,""), operacao(o), retorno(Tipo::nulo), esquerda(e), direita(d) { };
+        Tipo analisar(AST::TabelaDeSimbolos *tabelaSimbolos, int linha);
+        void imprimir(int espaco, bool novaLinha);
+};
+
+class OperacaoTernaria : public Nodo {
+    public:
+        OperacaoUnaria *esquerda; 
+        OperacaoBinaria *direita;
+    //
+        OperacaoTernaria(Tipo t, OperacaoUnaria *e, OperacaoBinaria *d) : Nodo(t,""), esquerda(e), direita(d) { };
         Tipo analisar(AST::TabelaDeSimbolos *tabelaSimbolos, int linha);
         void imprimir(int espaco, bool novaLinha);
 };

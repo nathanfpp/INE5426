@@ -70,31 +70,33 @@ void Nodo::imprimirEspaco(int espaco) {
 void Nodo::imprimirTipo(Tipo t) {
   // One switch to rule them all
     switch(t) {
-        case Tipo::inteiro:          std::cout << "int";       break;
-        case Tipo::real:             std::cout << "float";     break;
-        case Tipo::boolean:          std::cout << "bool";      break;
-        case Tipo::atribuicao:       std::cout << "=";         break; //
-        case Tipo::adicao:           std::cout << "+";         break;
-        case Tipo::subtracao:        std::cout << "-";         break;
-        case Tipo::multiplicacao:    std::cout << "*";         break;
-        case Tipo::divisao:          std::cout << "/";         break;
-        case Tipo::e:                std::cout << "&";         break;
-        case Tipo::ou:               std::cout << "|";         break;
-        case Tipo::igual:            std::cout << "==";        break; //
-        case Tipo::diferente:        std::cout << "!=";        break;
-        case Tipo::maior:            std::cout << ">";         break;
-        case Tipo::maior_igual:      std::cout << ">=";        break;
-        case Tipo::menor:            std::cout << "<";         break;
-        case Tipo::menor_igual:      std::cout << "<=";        break;
-        case Tipo::negacao:          std::cout << "-u ";       break; //
-        case Tipo::inversao:         std::cout << "! ";        break;
-        case Tipo::conversao_int:    std::cout << "[int] ";    break;
-        case Tipo::conversao_float:  std::cout << "[float] ";  break;
-        case Tipo::conversao_bool:   std::cout << "[bool] ";   break;
-        case Tipo::parenteses:       std::cout << "";          break; //
-        case Tipo::endereco:         std::cout << "[addr] ";   break;
-        case Tipo::referencia:       std::cout << "[ref] ";    break;
-        default:                     std::cout << "";          break;
+        case Tipo::inteiro:          	   std::cout << "int";       break;
+        case Tipo::real:             	   std::cout << "float";     break;
+        case Tipo::boolean:          	   std::cout << "bool";      break;
+        case Tipo::atribuicao:       	   std::cout << "=";         break; //
+        case Tipo::adicao:           	   std::cout << "+";         break;
+        case Tipo::subtracao:        	   std::cout << "-";         break;
+        case Tipo::multiplicacao:    	   std::cout << "*";         break;
+        case Tipo::divisao:          	   std::cout << "/";         break;
+        case Tipo::e:                	   std::cout << "&";         break;
+        case Tipo::ou:               	   std::cout << "|";         break;
+        case Tipo::igual:            	   std::cout << "==";        break; //
+        case Tipo::diferente:        	   std::cout << "!=";        break;
+        case Tipo::maior:                  std::cout << ">";         break;
+        case Tipo::maior_igual:      	   std::cout << ">=";        break;
+        case Tipo::menor:            	   std::cout << "<";         break;
+        case Tipo::menor_igual:      	   std::cout << "<=";        break;
+        case Tipo::negacao:          	   std::cout << "-u ";       break; //
+        case Tipo::inversao:         	   std::cout << "! ";        break;
+        case Tipo::conversao_int:    	   std::cout << "[int] ";    break;
+        case Tipo::conversao_float:  	   std::cout << "[float] ";  break;
+        case Tipo::conversao_bool:   	   std::cout << "[bool] ";   break;
+        case Tipo::parenteses:        	   std::cout << "";          break; //
+        case Tipo::endereco:      	   std::cout << "[addr] ";   break;
+        case Tipo::referencia:      	   std::cout << "[ref] ";    break;
+        case Tipo::condicao_atribuicao:    std::cout << "? ";       break;
+        case Tipo::atribuicao_condicional: std::cout << ": ";       break;
+        default:                     	   std::cout << "";          break;
     }
 }
 
@@ -102,33 +104,35 @@ void Nodo::imprimirTipo(Tipo t) {
 std::string Nodo::imprimirTipoPorExtenso(Tipo t) {
   // One switch to rule them all
     switch(t) {
-        case Tipo::inteiro:          return "integer";         
-        case Tipo::real:             return "float";           
-        case Tipo::boolean:          return "bool";            
-        case Tipo::atribuicao:       return "attribution";     
-        case Tipo::adicao:           return "addition";        
-        case Tipo::subtracao:        return "subtraction";     
-        case Tipo::multiplicacao:    return "multiplication";  
-        case Tipo::divisao:          return "division";        
-        case Tipo::e:                return "and";             
-        case Tipo::ou:               return "or";              
-        case Tipo::negacao:          return "- ";        
-        case Tipo::inversao:         return "! ";              
-        case Tipo::igual:            return "==";              
-        case Tipo::diferente:        return "!= ";             
-        case Tipo::maior:            return "> ";              
-        case Tipo::maior_igual:      return ">= ";             
-        case Tipo::menor:            return "< ";              
-        case Tipo::menor_igual:      return "<= ";             
-        case Tipo::conversao_int:    return "[int] ";          
-        case Tipo::conversao_float:  return "[float] ";        
-        case Tipo::conversao_bool:   return "[bool] ";         
-        case Tipo::parenteses:       return "()";
-        case Tipo::teste:            return "test";    
-        case Tipo::nulo:             return "null";          
-        case Tipo::endereco:         return "address";
-        case Tipo::referencia:       return "reference";
-        default:                     return " ";            
+        case Tipo::inteiro:         	   return "integer";         
+        case Tipo::real:            	   return "float";           
+        case Tipo::boolean:         	   return "bool";            
+        case Tipo::atribuicao:      	   return "attribution";     
+        case Tipo::adicao:         	   return "addition";        
+        case Tipo::subtracao:       	   return "subtraction";     
+        case Tipo::multiplicacao:   	   return "multiplication";  
+        case Tipo::divisao:         	   return "division";        
+        case Tipo::e:               	   return "and";             
+        case Tipo::ou:              	   return "or";              
+        case Tipo::negacao:         	   return "- ";        
+        case Tipo::inversao:        	   return "! ";              
+        case Tipo::igual:           	   return "==";              
+        case Tipo::diferente:        	   return "!= ";             
+        case Tipo::maior:           	   return "> ";              
+        case Tipo::maior_igual:     	   return ">= ";             
+        case Tipo::menor:            	   return "< ";              
+        case Tipo::menor_igual:      	   return "<= ";             
+        case Tipo::conversao_int:    	   return "[int] ";          
+        case Tipo::conversao_float:  	   return "[float] ";        
+        case Tipo::conversao_bool:   	   return "[bool] ";         
+        case Tipo::parenteses:             return "()";
+        case Tipo::teste:                  return "test";    
+        case Tipo::nulo:                   return "null";          
+        case Tipo::endereco:               return "address";
+        case Tipo::referencia: 		   return "reference";
+        case Tipo::condicao_atribuicao:    return "? ";   
+        case Tipo::atribuicao_condicional: return ": ";
+        default:                	   return " ";            
     }
 }
 

@@ -1,0 +1,2 @@
+[Line 2] semantic error: operation and expected bool but received integer
+[Line 2] semantic error: operation addition expected integer but received bool

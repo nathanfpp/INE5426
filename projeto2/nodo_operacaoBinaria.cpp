@@ -112,6 +112,22 @@ Tipo OperacaoBinaria::analisar(AST::TabelaDeSimbolos *tabelaSimbolos, int linha)
             return Tipo::boolean;
             break;
 
+   // Atribuicao condicional
+	case Tipo::atribuicao_condicional:
+  
+         // Realiza-se coerção, se necessário
+            coercao(this, e, d, linha);
+
+          // O tipo da esquerda é válido?
+            if(e != d) {
+                imprimirErroDeOperacao(operacao, e, d, linha);
+            }
+
+         // Independente do retorno da coerção, retorna-se o tipo do nodo à esquerda
+	    return e;
+	    break;
+	
+
       // Caso ocorra uma operação inválida, retorna-se Tipo::nulo
         default:
             return Tipo::nulo;

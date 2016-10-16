@@ -58,6 +58,12 @@ Tipo OperacaoUnaria::analisar(AST::TabelaDeSimbolos *tabelaSimbolos, int linha) 
 	this->ponteiros++;
 	return d;
 
+    // Condicao booleana para uma atribuicao
+	case Tipo::condicao_atribuicao:
+	if (d != Tipo::boolean)
+        imprimirErroDeOperacao(tipo, Tipo::boolean, d, linha);
+	return Tipo::boolean;
+
       // Por padrão, retorna o tipo do nodo
         default:  return Tipo::nulo;
     }

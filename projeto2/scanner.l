@@ -31,6 +31,8 @@ rejeite         [^0-9a-zA-Z\(\)\,\{\}\_\+\=\/\>\<\*\-\!\&\|\t" "\n]+
 "for"               { return T_FOR;  }
 "fun"               { return T_FUN;  }
 "ret"               { return T_RET;  }
+"\?"	            { return T_ATRIB_ASK; }
+"\:"	            { return T_ATRIB_ELSE; }
 
 "[int]"             { return T_CAST_INT;   } //
 "[float]"           { return T_CAST_FLOAT; } // Conversores de Tipo

@@ -28,6 +28,9 @@ v0.6
 v0.7
   1 : ok
   2 : ok
+ *3 : ok - teste extra acrescentado
+ *4 : ok - teste extra acrescentado
+ *5 : ok - teste extra acrescentado
 
 v0.8
   1 : ok
@@ -39,4 +42,10 @@ v0.8
 v1.0
   1 : ok
   2 : ok
+ *3 : ok - teste extra acrescentado
+
+v1.1
+  1 : ok
+  2 : ok
+  3 : ok
 
