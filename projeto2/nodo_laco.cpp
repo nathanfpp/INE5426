@@ -40,24 +40,50 @@ Tipo Laco::analisar(AST::TabelaDeSimbolos *tabelaSimbolos, int linha) {
 
 
 void Laco::imprimir(int espaco, bool novaLinha) {
-    imprimirEspaco(espaco);
-    std::cout << "for: ";
-    if(inicializacao != NULL) {
-        inicializacao->imprimir(0, false);
+    switch(tipo){
+        case Tipo::for_laco:
+            imprimirEspaco(espaco);
+            std::cout << "for: ";
+            if(inicializacao != NULL) {
+                inicializacao->imprimir(0, false);
+            }
+            std::cout << ", ";   
+            teste->imprimir(0, false);
+            std::cout << ", ";
+            if(iteracao != NULL) {
+                iteracao->imprimir(0, false);
+            }
+            std::cout << "\n";
+            imprimirEspaco(espaco);
+            std::cout << "do:";
+            if(laco != NULL) {
+                std::cout << "\n";
+                laco->imprimir(espaco+2, true);
+            } else {
+                std::cout << "\n";
+            }
+            break;
+
+        case Tipo::do_while_laco:
+            imprimirEspaco(espaco);
+            std::cout << "do:\n";
+            laco->imprimir(espaco+2, true);
+            std::cout << "while: ";
+            teste->imprimir(0, false);
+            std::cout << "\n";
+            break;
+
+        case Tipo::while_laco:
+           imprimirEspaco(espaco);
+           std::cout << "while: ";
+           teste->imprimir(0, false);
+           std::cout << "\ndo:\n";
+           laco->imprimir(espaco+2, true);            
+           break;
+
+        default:
+            break;
     }
-    std::cout << ", ";   
-    teste->imprimir(0, false);
-    std::cout << ", ";
-    if(iteracao != NULL) {
-        iteracao->imprimir(0, false);
-    }
-    std::cout << "\n";
-    imprimirEspaco(espaco);
-    std::cout << "do:";
-    if(laco != NULL) {
-        std::cout << "\n";
-        laco->imprimir(espaco+2, true);
-    } else {
-        std::cout << "\n";
-    }
+
+    
 }

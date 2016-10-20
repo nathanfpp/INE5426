@@ -1,0 +1,17 @@
+int fun f ()
+int fun f () {
+ret 9
+}
+int a, b, c
+do {
+    b = b - 1
+    a = c - b
+    do {
+      c = c + 1
+      if c > 10
+      then {
+        a = 0
+      }
+    } while a | f()
+} while a + true & f()
+

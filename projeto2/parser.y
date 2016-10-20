@@ -59,7 +59,7 @@ extern void yyerror(const char* s, ...);
 %token T_NL T_OPEN T_CLOSE  T_OPEN_KEY T_CLOSE_KEY T_EQUAL T_COMMA T_PLUS T_MINUS T_TIMES T_DIV T_NOT T_AND T_OR 
 %token T_EQUAL2 T_DIF T_HIGHER T_HIGH T_LOWER T_LOW
 %token T_CAST_INT T_CAST_FLOAT T_CAST_BOOL T_ADDR
-%token T_IF T_THEN T_ELSE T_FOR T_FUN T_RET T_ATRIB_ELSE T_ATRIB_ASK
+%token T_IF T_THEN T_ELSE T_FOR T_FUN T_RET T_ATRIB_ELSE T_ATRIB_ASK T_DO T_WHILE
 %token <num_ref> T_REF
 
 // %type
@@ -70,7 +70,7 @@ extern void yyerror(const char* s, ...);
 %type <definicao> variaveis variavel def_arranjo
 %type <opBinaria> atribuicao atrib_null
 %type <condicao> condicao
-%type <laco> laco
+%type <laco> for_laco do_while_laco while_laco
 %type <funcao> dec_funcao def_funcao
 %type <parametro> parametros parametro argumentos argumento param_null arg_null
 %type <bloco> programa linhas linhas_null senao
@@ -118,7 +118,9 @@ linha:
        atribuicao T_NL      { $$ = $1;   }
      | declaracao T_NL      { $$ = $1;   }
      | condicao T_NL        { $$ = $1;   }
-     | laco T_NL            { $$ = $1;   }
+     | for_laco T_NL        { $$ = $1;   }
+     | do_while_laco T_NL   { $$ = $1;   }
+     | while_laco T_NL      { $$ = $1;   }
      | dec_funcao T_NL      { $$ = $1;   }
      | def_funcao T_NL      { $$ = $1;   }
      | funcao_arranjo T_NL  { $$ = $1;   }
@@ -193,10 +195,18 @@ senao:
      |                                                 { $$ = NULL; }
      ;
 
-laco:
+for_laco:
       T_FOR atrib_null T_COMMA expressao T_COMMA atrib_null T_OPEN_KEY T_NL linhas_null T_CLOSE_KEY
-      { $$ = new AST::Laco( AST::Tipo::laco , $2 , $4 , $6 , $9 ); }
+      { $$ = new AST::Laco( AST::Tipo::for_laco , $2 , $4 , $6 , $9 ); }
     ;
+
+do_while_laco: T_DO T_OPEN_KEY T_NL linhas T_CLOSE_KEY T_WHILE expressao
+        { $$ = new AST::Laco( AST::Tipo::do_while_laco , NULL , $7 , NULL , $4 ); }
+       ;
+
+while_laco: T_WHILE expressao T_OPEN_KEY T_NL linhas T_CLOSE_KEY
+           { $$ = new AST::Laco( AST::Tipo::while_laco , NULL , $2 , NULL , $5 ); }
+          ;
 
 atrib_null :
              atribuicao { $$ = $1;   }

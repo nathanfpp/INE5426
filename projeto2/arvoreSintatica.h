@@ -17,7 +17,8 @@ extern void yyerror(const char *s, ...);
 
 namespace AST {
 
-enum Tipo { inteiro, real, boolean, variavel, declaracao, definicao, definicao_arranjo, opUnaria, opBinaria, opTernaria, condicao, laco, 
+enum Tipo { inteiro, real, boolean, variavel, declaracao, definicao, definicao_arranjo, opUnaria, opBinaria, opTernaria, condicao, 
+            for_laco, do_while_laco, while_laco, 
             funcao_dec, funcao_def, funcao_cha, bloco, arranjo, parametro,
             negacao, inversao, conversao_int, conversao_float, conversao_bool, parenteses, referencia, endereco,
             atribuicao, adicao, subtracao, multiplicacao, divisao, e, ou, igual, diferente, maior, maior_igual, menor, menor_igual,

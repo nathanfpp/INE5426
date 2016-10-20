@@ -90,10 +90,12 @@ extern int yydebug;
     T_RET = 294,
     T_ATRIB_ELSE = 295,
     T_ATRIB_ASK = 296,
-    T_REF = 297,
-    UMINUS = 298,
-    T_CAST = 299,
-    INT = 300
+    T_DO = 297,
+    T_WHILE = 298,
+    T_REF = 299,
+    UMINUS = 300,
+    T_CAST = 301,
+    INT = 302
   };
 #endif
 
@@ -123,7 +125,7 @@ union YYSTYPE
     AST::Tipo tipo;
     int num_ref;
 
-#line 127 "parser.h" /* yacc.c:1909  */
+#line 129 "parser.h" /* yacc.c:1909  */
 };
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1

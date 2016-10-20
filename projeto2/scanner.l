@@ -23,16 +23,18 @@ rejeite         [^0-9a-zA-Z\(\)\,\{\}\_\+\=\/\>\<\*\-\!\&\|\t" "\n]+
 "int"               { yylval.tipo = AST::Tipo::inteiro;  return T_TYPE_INT;   } // 
 "float"             { yylval.tipo = AST::Tipo::real;     return T_TYPE_FLOAT; } // Tipos de Variáveis
 "bool"              { yylval.tipo = AST::Tipo::boolean;  return T_TYPE_BOOL;  } // 
-"addr"		    { return T_ADDR;   }
-"ref"		    { yylval.num_ref = 1;  return T_REF;   }
-"if"                { return T_IF;   }
-"then"              { return T_THEN; }
-"else"              { return T_ELSE; }
-"for"               { return T_FOR;  }
-"fun"               { return T_FUN;  }
-"ret"               { return T_RET;  }
-"\?"	            { return T_ATRIB_ASK; }
-"\:"	            { return T_ATRIB_ELSE; }
+"addr"		    { return T_ADDR;                                          }
+"ref"		    { yylval.num_ref = 1;  return T_REF;                      }
+"if"                { return T_IF;                                            }
+"then"              { return T_THEN;                                          }
+"else"              { return T_ELSE;                                          }
+"for"               { return T_FOR;                                           }
+"do"                { return T_DO;                                            }
+"while"             { return T_WHILE;                                         }
+"fun"               { return T_FUN;                                           }
+"ret"               { return T_RET;                                           }
+"\?"	            { return T_ATRIB_ASK;                                     }
+"\:"	            { return T_ATRIB_ELSE;                                    }
 
 "[int]"             { return T_CAST_INT;   } //
 "[float]"           { return T_CAST_FLOAT; } // Conversores de Tipo

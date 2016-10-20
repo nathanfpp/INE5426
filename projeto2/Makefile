@@ -51,6 +51,9 @@ test:
 	./${OUTPUT} < tests/v1.1/input/1.in > tests/v1.1/output/1.out
 	./${OUTPUT} < tests/v1.1/input/2.in > tests/v1.1/output/2.out
 	./${OUTPUT} < tests/v1.1/input/3.in > tests/v1.1/output/3.out
+	./${OUTPUT} < tests/v1.2/input/1.in > tests/v1.2/output/1.out
+	./${OUTPUT} < tests/v1.2/input/2.in > tests/v1.2/output/2.out
+	./${OUTPUT} < tests/v1.2/input/3.in > tests/v1.2/output/3.out
 
 compare_test:
 	diff tests/v0.1/expected/1.ex tests/v0.1/output/1.out  || exit 0
@@ -84,6 +87,7 @@ compare_test:
 	diff tests/v1.1/expected/1.ex tests/v1.1/output/1.out
 	diff tests/v1.1/expected/2.ex tests/v1.1/output/2.out
 	diff tests/v1.1/expected/3.ex tests/v1.1/output/3.out
+	diff tests/v1.2/expected/1.ex tests/v1.2/output/1.out
 
 ##Testes de erro
 
@@ -130,6 +134,8 @@ error_test:
 	./${OUTPUT} < error_tests/v1.1/input/1.in > error_tests/v1.1/output/1.out 2> error_tests/v1.1/output/1.out_err
 	./${OUTPUT} < error_tests/v1.1/input/2.in > error_tests/v1.1/output/2.out 2> error_tests/v1.1/output/2.out_err
 	./${OUTPUT} < error_tests/v1.1/input/3.in > error_tests/v1.1/output/3.out 2> error_tests/v1.1/output/3.out_err
+	./${OUTPUT} < error_tests/v1.2/input/1.in > error_tests/v1.2/output/1.out 2> error_tests/v1.2/output/1.out_err
+	./${OUTPUT} < error_tests/v1.2/input/2.in > error_tests/v1.2/output/2.out 2> error_tests/v1.2/output/2.out_err
 
 compare_error_test:
 	diff error_tests/v0.1/expected/1.ex     error_tests/v0.1/output/1.out 
@@ -200,9 +206,13 @@ compare_error_test:
 	diff error_tests/v1.0/expected/5.ex_err error_tests/v1.0/output/5.out_err     
 	diff error_tests/v1.0/expected/6.ex     error_tests/v1.0/output/6.out
 	diff error_tests/v1.0/expected/6.ex_err error_tests/v1.0/output/6.out_err
-#	diff error_tests/v1.1/expected/1.ex     error_tests/v1.1/output/1.out 
-#	diff error_tests/v1.1/expected/1.ex_err error_tests/v1.1/output/1.out_err  
-#	diff error_tests/v1.1/expected/2.ex     error_tests/v1.1/output/2.out 
-#	diff error_tests/v1.1/expected/2.ex_err error_tests/v1.1/output/2.out_err  
-#	diff error_tests/v1.1/expected/3.ex     error_tests/v1.1/output/3.out 
-#	diff error_tests/v1.1/expected/3.ex_err error_tests/v1.1/output/3.out_err  
+	diff error_tests/v1.1/expected/1.ex     error_tests/v1.1/output/1.out 
+	diff error_tests/v1.1/expected/1.ex_err error_tests/v1.1/output/1.out_err  
+	diff error_tests/v1.1/expected/2.ex     error_tests/v1.1/output/2.out 
+	diff error_tests/v1.1/expected/2.ex_err error_tests/v1.1/output/2.out_err  
+	diff error_tests/v1.1/expected/3.ex     error_tests/v1.1/output/3.out 
+	diff error_tests/v1.1/expected/3.ex_err error_tests/v1.1/output/3.out_err  
+	diff error_tests/v1.2/expected/1.ex     error_tests/v1.2/output/1.out 
+	diff error_tests/v1.2/expected/1.ex_err error_tests/v1.2/output/1.out_err  
+	diff error_tests/v1.2/expected/2.ex     error_tests/v1.2/output/2.out 
+	diff error_tests/v1.2/expected/2.ex_err error_tests/v1.2/output/2.out_err  
