@@ -1,0 +1,12 @@
+bool b,a(2,5)
+int ref c(2,3), d(10), e 
+int i
+for i = 0, i < 5, i = i + 1 {
+  a(i,0) = true
+  a(i,1) = true
+  c(2,3) = ref d(2)
+  c(e,e)  = d(e)
+ref c(e,e)  = d(e)
+ref c(e,e) = addr c(e,e)
+}
+b = a(0,0) & a(1,1)

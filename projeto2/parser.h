@@ -65,37 +65,38 @@ extern int yydebug;
     T_CLOSE_KEY = 269,
     T_EQUAL = 270,
     T_COMMA = 271,
-    T_PLUS = 272,
-    T_MINUS = 273,
-    T_TIMES = 274,
-    T_DIV = 275,
-    T_NOT = 276,
-    T_AND = 277,
-    T_OR = 278,
-    T_EQUAL2 = 279,
-    T_DIF = 280,
-    T_HIGHER = 281,
-    T_HIGH = 282,
-    T_LOWER = 283,
-    T_LOW = 284,
-    T_CAST_INT = 285,
-    T_CAST_FLOAT = 286,
-    T_CAST_BOOL = 287,
-    T_ADDR = 288,
-    T_IF = 289,
-    T_THEN = 290,
-    T_ELSE = 291,
-    T_FOR = 292,
-    T_FUN = 293,
-    T_RET = 294,
-    T_ATRIB_ELSE = 295,
-    T_ATRIB_ASK = 296,
-    T_DO = 297,
-    T_WHILE = 298,
-    T_REF = 299,
-    UMINUS = 300,
-    T_CAST = 301,
-    INT = 302
+    T_SEMICOLON = 272,
+    T_COLON = 273,
+    T_PLUS = 274,
+    T_MINUS = 275,
+    T_TIMES = 276,
+    T_DIV = 277,
+    T_NOT = 278,
+    T_AND = 279,
+    T_OR = 280,
+    T_EQUAL2 = 281,
+    T_DIF = 282,
+    T_HIGHER = 283,
+    T_HIGH = 284,
+    T_LOWER = 285,
+    T_LOW = 286,
+    T_CAST_INT = 287,
+    T_CAST_FLOAT = 288,
+    T_CAST_BOOL = 289,
+    T_ADDR = 290,
+    T_IF = 291,
+    T_THEN = 292,
+    T_ELSE = 293,
+    T_FOR = 294,
+    T_FUN = 295,
+    T_RET = 296,
+    T_ATRIB_ASK = 297,
+    T_DO = 298,
+    T_WHILE = 299,
+    T_REF = 300,
+    UMINUS = 301,
+    T_CAST = 302,
+    INT = 303
   };
 #endif
 
@@ -114,9 +115,11 @@ union YYSTYPE
     //AST::Boolean *boolean;
     AST::Declaracao *declaracao;
     AST::Definicao *definicao;
-    AST::DefinicaoArranjo *definicaoArranjo;
+    AST::DefinicaoDeArranjo *definicaoDeArranjo;
     AST::OperacaoUnaria *opUnaria;
     AST::OperacaoBinaria *opBinaria;
+    AST::DeclaracaoDeHash *declaracao_hash;
+    AST::Hash *hash;
     AST::Condicao *condicao;
     AST::Laco *laco;
     AST::Funcao *funcao;
@@ -125,7 +128,7 @@ union YYSTYPE
     AST::Tipo tipo;
     int num_ref;
 
-#line 129 "parser.h" /* yacc.c:1909  */
+#line 132 "parser.h" /* yacc.c:1909  */
 };
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1

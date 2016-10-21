@@ -1,0 +1,19 @@
+int:int a, b
+bool:int s
+int c
+c = a(1) + b(2)
+c = a(a(1))
+int values(100)
+c = values(values(12))
+c = values(5)
+int v(20,20)
+c = v(5,5)
+c = v(v(1,1),5)
+c = v(v(1,1),a(1))
+c = v(v(1,1),v(1,1))
+int fun f(int x){
+  ret 0
+}
+c = f(f(0))
+s(true) = 9
+

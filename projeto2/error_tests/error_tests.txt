@@ -65,6 +65,15 @@
    1: ok
    2: ok
 
+  v1.3:
+
+   1: ok
+   2: ok
+   3: ok
+   4: ok
+   5: ok
+   6: ok
+
 
 Notas:
 

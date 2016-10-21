@@ -1,0 +1,18 @@
+int a(false)
+int b(true)
+int c(20,false)
+int d(false, 30)
+int e(false,false)
+int f(10,10)
+int g(10)
+int y(10,20), w(10,true)
+a(false) = 1
+f(10,10) = g(true,true)
+f(10,10) = g(true)
+g(10) = f(true,10)
+g(10,10) = f(10)
+f(true,10) = g(true,true)
+f(10,10) = g(true)
+g(10) = f(true,10)
+g(10,true) = f(10)
+

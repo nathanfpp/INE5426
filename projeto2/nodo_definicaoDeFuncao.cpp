@@ -8,7 +8,7 @@
 
 using namespace AST;
 
-Tipo DefinicaoDeFuncao::analisar(AST::TabelaDeSimbolos *tabelaSimbolos, int linha) {
+Tipo DefinicaoDeFuncao::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha) {
 
   // Conta a quantidade de parâmetros: se não houver parâmetros a quantidade é 0
     definida = true;
@@ -16,10 +16,10 @@ Tipo DefinicaoDeFuncao::analisar(AST::TabelaDeSimbolos *tabelaSimbolos, int linh
 
   // Definição ou Chamada de Função
     TabelaDeSimbolos *novoEscopo; 
-    novoEscopo = tabelaSimbolos->novoEscopo(tabelaSimbolos);
+    novoEscopo = tabelaDeSimbolos->novoEscopo(tabelaDeSimbolos);
 
   // Recupera a Função, caso ela já tenha sido DECLARADA anteriormente
-    Funcao *f = ((Funcao*) tabelaSimbolos->recuperar(id, -1, false));
+    Funcao *f = ((Funcao*) tabelaDeSimbolos->recuperar(id, -1, false));
     if(f != NULL) {
 
     // Caso a função já tenha sido DEFINIDA anterioremente, impre-se um erro
@@ -69,7 +69,7 @@ Tipo DefinicaoDeFuncao::analisar(AST::TabelaDeSimbolos *tabelaSimbolos, int linh
     if(corpo != NULL) {                  
         corpo->analisar(novoEscopo, linha);   
     }    
-    tabelaSimbolos->adicionar(this, linha, false);
+    tabelaDeSimbolos->adicionar(this, linha, false);
     return tipo;    
 };
 

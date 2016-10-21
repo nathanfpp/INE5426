@@ -1,0 +1,12 @@
+int i
+for i = 0, i < 2, i = i + 2 {
+if true 
+then{
+float f = 0.0
+}
+int fun a (int x, int y)
+int fun a (int x, int y){
+ret x*y
+}
+}
+int a(10,10) = 88

@@ -8,12 +8,13 @@
 
 using namespace AST;
 
-Tipo Parametro::analisar(TabelaDeSimbolos *tabelaSimbolos, int linha) {
+Tipo Parametro::analisar(TabelaDeSimbolos *tabelaDeSimbolos, int linha) {
     if(parametro != NULL) {
-        tabelaSimbolos->adicionar(parametro, linha, true);
+        tabelaDeSimbolos->adicionar(parametro, linha, true);
+        tipoDoParametro = parametro->analisar(tabelaDeSimbolos, linha);
     }
     if(proximo != NULL) {
-        proximo->analisar(tabelaSimbolos, linha);
+        proximo->analisar(tabelaDeSimbolos, linha);
     }
     return tipoDoParametro;
 }
@@ -35,7 +36,7 @@ void Parametro::imprimir(int espaco, bool naoArgumento) {
 }
 
 
-void Parametro::comparar(TabelaDeSimbolos *tabelaSimbolos, Parametro *comparado, int linha, bool definicao) {
+void Parametro::comparar(TabelaDeSimbolos *tabelaDeSimbolos, Parametro *comparado, int linha, bool definicao) {
 
   // Adiciona o parâmetro ao escopo da função
     ((Variavel*)parametro)->tipoDeVariavel = tipoDoParametro;
@@ -44,9 +45,9 @@ void Parametro::comparar(TabelaDeSimbolos *tabelaSimbolos, Parametro *comparado,
     Tipo tipoComparado;
     if(definicao) {
         tipoComparado = comparado->tipoDoParametro;
-        tabelaSimbolos->adicionar(parametro,linha, true);
+        tabelaDeSimbolos->adicionar(parametro,linha, true);
     } else {
-        tipoComparado = comparado->parametro->analisar(tabelaSimbolos, linha);
+        tipoComparado = comparado->parametro->analisar(tabelaDeSimbolos, linha);
     } 
 
   // Se os parâmetros forem do mesmo tipo
@@ -79,7 +80,7 @@ void Parametro::comparar(TabelaDeSimbolos *tabelaSimbolos, Parametro *comparado,
   // Se os parâmetros atuais forem igual e os próximos forem nulos, então todos os Parâmetro são iguais
     if(proximo != NULL && comparado->proximo != NULL) {           
       // Caso contrário, compara os próximos parâmetros
-        ((Parametro*)proximo)->comparar(tabelaSimbolos, ((Parametro*)comparado->proximo), linha, definicao);
+        ((Parametro*)proximo)->comparar(tabelaDeSimbolos, ((Parametro*)comparado->proximo), linha, definicao);
     }
 }
 

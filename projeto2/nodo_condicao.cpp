@@ -8,24 +8,24 @@
 
 using namespace AST;
 
-Tipo Condicao::analisar(AST::TabelaDeSimbolos *tabelaSimbolos, int linha) {
+Tipo Condicao::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha) {
 
   // O teste de uma Condição deve ser Booleano
-    Tipo esperado = teste->analisar(tabelaSimbolos, linha);
+    Tipo esperado = teste->analisar(tabelaDeSimbolos, linha);
     if(esperado != Tipo::boolean) {
         imprimirErroDeOperacao(Tipo::teste, Tipo::boolean, esperado, linha);
     }   
 
   // Caso "se" não seja nulo, cria um escopo próprio e é avaliado
     if(se != NULL) {
-        TabelaDeSimbolos *novoEscopo = tabelaSimbolos->novoEscopo(tabelaSimbolos);
+        TabelaDeSimbolos *novoEscopo = tabelaDeSimbolos->novoEscopo(tabelaDeSimbolos);
         se->analisar(novoEscopo, linha);
         novoEscopo->retornarEscopo(linha);
     }
 
   // Caso "senão" não seja nulo, cria um escopo próprio e é avaliado
     if(senao != NULL) {
-        TabelaDeSimbolos *novoEscopo = tabelaSimbolos->novoEscopo(tabelaSimbolos);
+        TabelaDeSimbolos *novoEscopo = tabelaDeSimbolos->novoEscopo(tabelaDeSimbolos);
         senao->analisar(novoEscopo, linha);
         novoEscopo->retornarEscopo(linha);  
     }

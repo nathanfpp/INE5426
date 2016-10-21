@@ -1,1 +1,2 @@
+[Line 1] semantic error: index operator expects integer but received bool
 [Line 2] semantic error: index operator expects integer but received bool

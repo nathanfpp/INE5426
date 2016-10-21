@@ -8,10 +8,10 @@
 
 using namespace AST;
 
-Tipo Bloco::analisar(AST::TabelaDeSimbolos *tabelaSimbolos, int linha) {
+Tipo Bloco::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha) {
 
 // Associa o escopo ao Bloco
-  escopo = tabelaSimbolos;  
+  escopo = tabelaDeSimbolos;  
 
   // Verificar os Tipos de todas as linhas do Bloco   
     for (Nodo* l: linhas) {

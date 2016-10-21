@@ -132,6 +132,8 @@ std::string Nodo::imprimirTipoPorExtenso(Tipo t) {
         case Tipo::referencia: 		   return "reference";
         case Tipo::condicao_atribuicao:    return "? ";   
         case Tipo::atribuicao_condicional: return ": ";
+        case Tipo::arranjo:                return "array";
+        case Tipo::arranjo_duplo:          return "double array";
         default:                	   return " ";            
     }
 }

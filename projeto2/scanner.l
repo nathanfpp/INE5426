@@ -34,7 +34,7 @@ rejeite         [^0-9a-zA-Z\(\)\,\{\}\_\+\=\/\>\<\*\-\!\&\|\t" "\n]+
 "fun"               { return T_FUN;                                           }
 "ret"               { return T_RET;                                           }
 "\?"	            { return T_ATRIB_ASK;                                     }
-"\:"	            { return T_ATRIB_ELSE;                                    }
+"\:"	            { return T_COLON;                                         }
 
 "[int]"             { return T_CAST_INT;   } //
 "[float]"           { return T_CAST_FLOAT; } // Conversores de Tipo
@@ -67,6 +67,7 @@ rejeite         [^0-9a-zA-Z\(\)\,\{\}\_\+\=\/\>\<\*\-\!\&\|\t" "\n]+
 "}"                 { return T_CLOSE_KEY; }
 "="                 { return T_EQUAL;     }
 ","                 { return T_COMMA;     }
+";"                 { return T_SEMICOLON; }
 
 \n                  { return T_NL; }
 

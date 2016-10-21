@@ -8,7 +8,7 @@
 
 using namespace AST;
 
-Tipo DefinicaoArranjo::analisar(AST::TabelaDeSimbolos *tabelaSimbolos, int linha) {
+Tipo DefinicaoDeArranjo::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha) {
 
   // Atribui tipoDeVariavel, recebido da Declaração, ao Nodo Variável (neste caso um Arranjo)
     variavel->tipoDeVariavel = tipoDeVariavel;
@@ -16,8 +16,24 @@ Tipo DefinicaoArranjo::analisar(AST::TabelaDeSimbolos *tabelaSimbolos, int linha
   // O tipo da próxima Definição que caso não exista será Tipo::nulo
     Tipo tipoDoProximo = Tipo::nulo;
 
+  // Verifico se a declaracao do primeiro indice do arranjo duplo ou indice do arranjo simples é válida
+    Tipo indice1 =  ((Arranjo*)variavel)->tamanho->analisar(tabelaDeSimbolos, linha);
+    if(indice1 != Tipo::inteiro) {
+        std::cerr << "[Line " << linha << "] semantic error: index operator expects integer but received ";
+        std::cerr << imprimirTipoPorExtenso(indice1) << "\n"; 
+    }
+
+  // Verifico se a declaracao do segundo indice do arranjo duplo é válida
+   if ( ((ArranjoDuplo*)variavel)->tipo == Tipo::arranjo_duplo){
+    Tipo indice2 = ((ArranjoDuplo*)variavel)->tamanho2->analisar(tabelaDeSimbolos, linha);
+    if(indice2 != Tipo::inteiro) {
+        std::cerr << "[Line " << linha << "] semantic error: index operator expects integer but received ";
+        std::cerr << imprimirTipoPorExtenso(indice1) << "\n"; 
+    }
+   }
+
   // Salva a Variável na Tabela de Símbolos
-    if(!tabelaSimbolos->adicionar(variavel, linha, true)) {
+    if(!tabelaDeSimbolos->adicionar(variavel, linha, true)) {
 
       // Porém, caso a variável já tenha sido declarada, além da impressão do erro, a definição é marcada
         tipo = Tipo::nulo;
@@ -27,7 +43,7 @@ Tipo DefinicaoArranjo::analisar(AST::TabelaDeSimbolos *tabelaSimbolos, int linha
     if(proxima != NULL) {
         proxima->tipoDeVariavel = tipoDeVariavel;
 	proxima->variavel->ponteiros = variavel->ponteiros;
-        proxima->analisar(tabelaSimbolos, linha);
+        proxima->analisar(tabelaDeSimbolos, linha);
 
       // E também registra-se seu Tipo de Nodo
         tipoDoProximo = proxima->tipoDeVariavel;
@@ -35,7 +51,6 @@ Tipo DefinicaoArranjo::analisar(AST::TabelaDeSimbolos *tabelaSimbolos, int linha
 
   // Caso o tipo desta Definição seja nulo, assim como o da próxima Definição...
     if(tipo == Tipo::nulo && tipoDoProximo == Tipo::nulo) {
-
       // ... isto significa que todas as Variáveis já foram declaradas anteriormente
         return Tipo::nulo;
     }
@@ -45,8 +60,7 @@ Tipo DefinicaoArranjo::analisar(AST::TabelaDeSimbolos *tabelaSimbolos, int linha
 }
 
 
-void DefinicaoArranjo::imprimir(int espaco, bool imprimirArray) {
-
+void DefinicaoDeArranjo::imprimir(int espaco, bool imprimirArray) {
   // A primeira definição após a declaraçãp imprime "array:"
     if(imprimirArray && variavel->ponteiros == 0) {
         std::cout << " array: ";
@@ -57,7 +71,6 @@ void DefinicaoArranjo::imprimir(int espaco, bool imprimirArray) {
       	  std::cout << " ref";
         std::cout << " array: ";
     }
-
 
     variavel->imprimir(0, true);
     if(proxima != NULL) {

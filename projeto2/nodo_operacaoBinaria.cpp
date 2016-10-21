@@ -8,11 +8,11 @@
 
 using namespace AST;
 
-Tipo OperacaoBinaria::analisar(AST::TabelaDeSimbolos *tabelaSimbolos, int linha) {  
+Tipo OperacaoBinaria::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha) {  
 
   // Captura os tipos dos filhos esquerda e direita
-    Tipo e = esquerda->analisar(tabelaSimbolos, linha);
-    Tipo d = direita->analisar(tabelaSimbolos, linha);
+    Tipo e = esquerda->analisar(tabelaDeSimbolos, linha);
+    Tipo d = direita->analisar(tabelaDeSimbolos, linha);
 
   // Se um dos tipos foram nulo não tem porque seguir adiante
   if (e == Tipo::nulo)
@@ -21,8 +21,8 @@ Tipo OperacaoBinaria::analisar(AST::TabelaDeSimbolos *tabelaSimbolos, int linha)
 	return d;
 
   // Tenho que capturar os ponteiros dos filhos da direita e esquerda também
-    int e_ponteiros = esquerda->recuperarPonteiros(tabelaSimbolos, linha);
-    int d_ponteiros = direita->recuperarPonteiros(tabelaSimbolos, linha);
+    int e_ponteiros = esquerda->recuperarPonteiros(tabelaDeSimbolos, linha);
+    int d_ponteiros = direita->recuperarPonteiros(tabelaDeSimbolos, linha);
 
   // Operações Binárias possuem comportamentos diferentes
     switch(operacao) {

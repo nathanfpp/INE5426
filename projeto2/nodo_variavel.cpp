@@ -12,10 +12,10 @@ using namespace AST;
 //////////////
 // Variavel//
 
-Tipo Variavel::analisar(AST::TabelaDeSimbolos *tabelaSimbolos, int linha) {
+Tipo Variavel::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha) {
 
   // Busca a variável na tabela de símbolos e, caso ele seja encontrado, retorna o tipo da variável, 
-    Variavel *v = ((Variavel*) tabelaSimbolos->recuperar(id, linha, true));
+    Variavel *v = ((Variavel*) tabelaDeSimbolos->recuperar(id, linha, true));
     if(v != NULL) {
         return v->tipoDeVariavel;
     }
@@ -24,10 +24,10 @@ Tipo Variavel::analisar(AST::TabelaDeSimbolos *tabelaSimbolos, int linha) {
     return tipoDeVariavel;
 }
 
-int Variavel::recuperarPonteiros(AST::TabelaDeSimbolos *tabelaSimbolos, int linha) {
+int Variavel::recuperarPonteiros(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha) {
 
   // Busca a variável na tabela de símbolos e, caso ele seja encontrado, retorna o número de referencias, 
-    Variavel *v = ((Variavel*) tabelaSimbolos->recuperar(id, linha, true));
+    Variavel *v = ((Variavel*) tabelaDeSimbolos->recuperar(id, linha, true));
     if(v != NULL) {
         return v->ponteiros;
     }

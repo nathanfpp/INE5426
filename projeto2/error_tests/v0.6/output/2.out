@@ -11,5 +11,5 @@ do:
   bool fun: myFunc (params: )
     ret true
 = f + f 2.0
-bool var: y = [index] myFunc
+bool var: y = [null] myFunc
 

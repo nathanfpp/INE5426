@@ -8,17 +8,17 @@
 
 using namespace AST;
 
-Tipo OperacaoUnaria::analisar(AST::TabelaDeSimbolos *tabelaSimbolos, int linha) {
+Tipo OperacaoUnaria::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha) {
  
   // Captura o tipo do filho
-    Tipo d = filho->analisar(tabelaSimbolos, linha);
+    Tipo d = filho->analisar(tabelaDeSimbolos, linha);
 
   // Se o tipo do nodo for nulo não tem porque seguir adiante
   if (d == Tipo::nulo)
 	return d;
 
   // Tenho que capturar os ponteiros do filho também
-    int d_ponteiros = filho->recuperarPonteiros(tabelaSimbolos, linha);
+    int d_ponteiros = filho->recuperarPonteiros(tabelaDeSimbolos, linha);
 
   // Operações Unárias possuem tratamento diferenciado
     switch(operacao) {
@@ -46,7 +46,7 @@ Tipo OperacaoUnaria::analisar(AST::TabelaDeSimbolos *tabelaSimbolos, int linha) 
         case Tipo::parenteses:  return d;
 
       // Endereco de variavel retorna um tipo inteiro
-        case Tipo::endereco:    
+        case Tipo::endereco:
 	if (filho->id == "")
 	std::cerr<<"[Line " << linha << "] semantic error: address operation expects a variable or array item\n";
 	return Tipo::endereco;
