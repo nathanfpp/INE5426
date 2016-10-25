@@ -119,7 +119,6 @@ union YYSTYPE
     AST::OperacaoUnaria *opUnaria;
     AST::OperacaoBinaria *opBinaria;
     AST::DeclaracaoDeHash *declaracao_hash;
-    AST::Hash *hash;
     AST::Condicao *condicao;
     AST::Laco *laco;
     AST::Funcao *funcao;
@@ -128,7 +127,7 @@ union YYSTYPE
     AST::Tipo tipo;
     int num_ref;
 
-#line 132 "parser.h" /* yacc.c:1909  */
+#line 131 "parser.h" /* yacc.c:1909  */
 };
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1

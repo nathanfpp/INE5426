@@ -12,7 +12,12 @@ Tipo Funcao::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha) {
 
   // Conta a quantidade de parâmetros: se não houver parâmetros a quantidade é 0
     contarParametros();
-  
+
+  // Analisa parâmetros
+    if(parametros != NULL) {
+        parametros->analisar(tabelaDeSimbolos, linha);
+    }
+
   // Adiciona-se a função à tabela de funções, caso já não tenha sido definida anteriormente
     definida = false;
     Funcao *f = ((Funcao*) tabelaDeSimbolos->recuperar(id, -1, false));
@@ -20,8 +25,7 @@ Tipo Funcao::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha) {
         tabelaDeSimbolos->adicionar(this, linha, false);
     } else {
         std::cerr << "[Line " << linha << "] semantic error: re-declaration of function " << f->id << "\n"; 
-    }
-        
+    }        
 
   // Retorna-se o tipo
     return tipo;

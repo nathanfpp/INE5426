@@ -9,10 +9,11 @@
 [Line 10] semantic error: array requires exactly one parameter
 [Line 11] semantic error: index operator expects integer but received bool
 [Line 12] semantic error: index operator expects integer but received bool
+[Line 13] semantic error: array requires exactly one parameter
 [Line 13] semantic error: array double requires exactly two parameters
 [Line 14] semantic error: index operator expects integer but received bool
 [Line 14] semantic error: array requires exactly one parameter
 [Line 15] semantic error: index operator expects integer but received bool
 [Line 16] semantic error: index operator expects integer but received bool
-[Line 17] semantic error: index operator expects integer but received bool
+[Line 17] semantic error: array requires exactly one parameter
 [Line 17] semantic error: array double requires exactly two parameters

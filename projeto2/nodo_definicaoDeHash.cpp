@@ -8,16 +8,19 @@
 
 using namespace AST;
 
-Tipo Definicao::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha) {
+Tipo DefinicaoDeHash::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha) {
 
-  // Atribui tipoDeVariavel, recebido da Declaração, à Variável
+  // Atribui os tipos ao Hash
+    variavel->tipo = Tipo::hash;
     variavel->tipoDeVariavel = tipoDeVariavel;
+    ((Hash*)variavel)->tipoDeChave = tipoDeChave;
 
   // O tipo da próxima Definição que caso não exista será Tipo::nulo
     Tipo tipoDoProximo = Tipo::nulo;
 
   // Salva a Variável na Tabela de Símbolos
     if(!tabelaDeSimbolos->adicionar(variavel, linha, true)) {
+
       // Porém, caso a variável já tenha sido declarada, além da impressão do erro, a definição é marcada
         tipo = Tipo::nulo;
     }
@@ -25,15 +28,16 @@ Tipo Definicao::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha) {
   // Caso a Definição atribua um valor à Variável, realizando coerção se necessário
     if(valor != NULL) {
         Tipo tipoDoValor = valor->analisar(tabelaDeSimbolos, linha); // anteriormente após a coerção
-        coercaoDaDefinicao(this, tipoDeVariavel, tipoDoValor, linha);        
+        coercaoDaDefinicao(this, tipoDeVariavel, tipoDoValor, linha);
     }
 
   // Se outra Variável foi declarada, atribui o tipo da Declaração e inicia sua análise 
     if(proxima != NULL) {
         proxima->tipoDeVariavel = tipoDeVariavel;
+        ((DefinicaoDeHash*)proxima)->tipoDeChave = tipoDeChave;
 	proxima->variavel->ponteiros = variavel->ponteiros;
         proxima->analisar(tabelaDeSimbolos, linha);
-
+     
       // E também registra-se seu Tipo de Nodo
         tipoDoProximo = proxima->tipoDeVariavel;
     }
@@ -50,23 +54,18 @@ Tipo Definicao::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha) {
 }
 
 
-void Definicao::imprimir(int espaco, bool imprimir) {
+void DefinicaoDeHash::imprimir(int espaco, bool imprimir) {
 
-    if(tipo == definicao){
-      // Caso esta seja a primeira definição após a declaração, ela imprime "var:"
-        if(imprimir) {
-            for(int i = 0; i < variavel->ponteiros; i++)
-    	    std::cout << " ref";    
-            std::cout << " var: ";
-        }     
-
-      // Imprime a definição apenas se ela for válida
-        variavel->imprimir(0, false);
-        if(valor != NULL) {
-            std::cout << " = ";
-            valor->imprimir(0, false);
-        }                   
-        if(proxima != NULL) std::cout << ", ";   
+    if(tipo == definicao_hash) {
+      // A primeira definição após a declaraçãp imprime "array:"
+        if(imprimir && variavel->ponteiros == 0) {
+            for(int i = 0; i < variavel->ponteiros; i++) {
+          	    std::cout << " ref";
+            }
+            std::cout << " hash: ";
+        }
+        variavel->imprimir(0, true);
+        if(proxima != NULL) std::cout << ", ";
     }
 
   // Imprime a próxima definição
@@ -74,16 +73,4 @@ void Definicao::imprimir(int espaco, bool imprimir) {
         proxima->imprimir(0, false);
     }
 }
-
-
-void Definicao::ajustarProxima(Definicao *p) {
-
- // Acrescenta a definição à ultima definição até então definida
-    if(proxima != NULL) {
-        proxima->ajustarProxima(p);
-    } else {
-      proxima = p;
-    }
-}
-
 

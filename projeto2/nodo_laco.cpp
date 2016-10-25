@@ -81,9 +81,6 @@ void Laco::imprimir(int espaco, bool novaLinha) {
            laco->imprimir(espaco+2, true);            
            break;
 
-        default:
-            break;
-    }
-
-    
+        default: break;
+    }    
 }

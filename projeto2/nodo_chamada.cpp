@@ -10,7 +10,7 @@ using namespace AST;
 
 Tipo Chamada::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha) {
 
-  // Caso a função (ou arranjo) não tenha sido definida/declarada, ocorre um erro semântico
+  // Caso a função/arranjo/hash não tenha sido definida/declarada, ocorre um erro semântico
     Nodo *n = tabelaDeSimbolos->recuperar(id, -1, false);
 
     if(n != NULL) {
@@ -25,21 +25,19 @@ Tipo Chamada::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha) {
               // Define o tipo desta Chamada como Chamada de Função
                 tipo = Tipo::funcao_cha;
 
-              // Conta a quantidade de parâmetros: se não houver parâmetros a quantidade é 0
+              // Conta a quantidade de parâmetros (0 caso não hajam parâmetros)
                 Funcao::contarParametros();              
               
-              // Recupera a Função
+              // Recupera a Função a partir do Nodo
                 Funcao *f = ((Funcao*) n);
                        
-              // Obtém a quantidade de parâmetros da Função encontrada na Tabela de Símbolos
+              // Compara a quantidade parâmetros da Função retornada e da Chamada
                 int quantidadeEsperada = f->contarParametros();
-
-              // Se de parâmetros for diferente, ocorre um erro semântico
                 if(quantidadeDeParametros != quantidadeEsperada) {
                     std::cerr << "[Line " << linha << "] semantic error: function " << id;
                     std::cerr << " expects " << quantidadeEsperada << " parameters";
                     std::cerr << " but received " << quantidadeDeParametros << "\n";
-                }
+                }              
 
               // Se os parâmetros não foram nulos, eles podem ser comparados
                 else if(parametros != NULL) {                
@@ -62,10 +60,11 @@ Tipo Chamada::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha) {
               // Recupera o Arranjo 
                 ArranjoDuplo *d = ((ArranjoDuplo*) n);
 
-              // Conta os "parâmetros" do arranjo, caso seja diferente de 1, erro!
+              // Caso a quantidade de "parâmetros" do arranjo duplo seja diferente de 2, erro!
                 if(((Parametro*)parametros)->contar() != 2) {
                     std::cerr << "[Line " << linha << "] semantic error: array double requires exactly two parameters\n";
                 } else {
+
                   // O tipo usado como índice é válido? parametros = tamanho
                     Tipo indice1 = (((Parametro*)parametros)->parametro)->analisar(tabelaDeSimbolos, linha);
                     Tipo indice2 = (((Parametro*)((Parametro*)parametros)->proximo)->parametro)->analisar(tabelaDeSimbolos, linha);
@@ -76,7 +75,7 @@ Tipo Chamada::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha) {
                     }
                 }
 
-              // Retorna o tipo da variável do arranjo
+              // Retorna-se o tipo da variável do arranjo
                 tipoDoRetorno = d->tipoDeVariavel;
                 return tipoDoRetorno;
             }
@@ -90,10 +89,11 @@ Tipo Chamada::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha) {
               // Recupera o Arranjo 
                 Arranjo *a = ((Arranjo*) n);
 
-              // Conta os "parâmetros" do arranjo, caso seja diferente de 1, não é um arranjo simples
+              // Caso a quantidade de "parâmetros" do arranjo simples seja diferente de 1, erro!
                 if(((Parametro*)parametros)->contar() != 1) {
                     std::cerr << "[Line " << linha << "] semantic error: array requires exactly one parameter\n";
                 } else {
+
                   // O tipo usado como índice é válido? parametros = tamanho
                     Tipo indice = (((Parametro*)parametros)->parametro)->analisar(tabelaDeSimbolos, linha);
                     if(indice != Tipo::inteiro) {
@@ -108,22 +108,21 @@ Tipo Chamada::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha) {
 
 // Hash
             case Tipo::hash: {
-            
+
               // Define o tipo
                 tipo = Tipo::hash;
 
               // Recupera o Arranjo 
                 Hash *h = ((Hash*) n);
 
-              // Conta os "parâmetros" do hash, caso seja diferente de 1, não é um hash
+              // Caso a quantidade de "parâmetros" do hash seja diferente de 1, erro!
                 if(((Parametro*)parametros)->contar() != 1) {
                     std::cerr << "[Line " << linha << "] semantic error: hash requires exactly one key\n";
-                }
-                else {
+                } else {
                   
                   // O tipo usado como índice é válido? parametros = tamanho
                     Tipo recebido = ((Parametro*)parametros)->parametro->analisar(tabelaDeSimbolos,linha);
-                    Tipo chave = h->tipoDaChave;
+                    Tipo chave = h->tipoDeChave;
                     if(chave != recebido) {
                         std::cerr << "[Line " << linha << "] semantic error: key operator expects ";
                         std::cerr << imprimirTipoPorExtenso(chave) << " but received " << imprimirTipoPorExtenso(recebido) << "\n";
@@ -133,7 +132,6 @@ Tipo Chamada::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha) {
               // Retorna o "tipo da variável", o valor do hash
                 tipoDoRetorno = h->tipoDeVariavel;
                  return tipoDoRetorno;
-
             }
 
 // Evitando warnings

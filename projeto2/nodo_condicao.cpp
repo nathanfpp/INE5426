@@ -50,5 +50,7 @@ void Condicao::imprimir(int espaco, bool novaLinha) {
         std::cout << "else:\n";
         senao->imprimir(espaco+2, false);
     }
-    if(se == NULL && senao == NULL) std::cout << "\n";
+    if(se == NULL && senao == NULL) {
+        std::cout << "\n";
+    }
 }

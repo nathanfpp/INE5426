@@ -1,11 +1,11 @@
 int i
-int fun a (int x(10))
+int fun a (int x)
 for i = 0, i < 2, i = i + 2 {
 if true 
 then{
 float f = 0.0
 }
-int fun a (int x(10)){
+int fun a (int x){
 ret x
 }
 }

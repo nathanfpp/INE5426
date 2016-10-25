@@ -9,14 +9,30 @@
 using namespace AST;
 
 Tipo Parametro::analisar(TabelaDeSimbolos *tabelaDeSimbolos, int linha) {
+
+  // Tipos de paraâmetros diferentes possuem tratamento diferenciado
     if(parametro != NULL) {
-        tabelaDeSimbolos->adicionar(parametro, linha, true);
-        tipoDoParametro = parametro->analisar(tabelaDeSimbolos, linha);
+        switch(parametro->tipo) {
+            case Tipo::variavel:
+                ((Variavel*)parametro)->tipoDeVariavel = tipoDoParametro; 
+                break;
+            case Tipo::hash:
+                ((Hash*)parametro)->tipoDeVariavel = tipoDoParametro; 
+                ((Hash*)parametro)->tipoDeChave = tipoReserva;
+                break;
+            default: break;
+        }
     }
+
+  // Analisa o próximo parâmetro, caso ele exista
     if(proximo != NULL) {
         proximo->analisar(tabelaDeSimbolos, linha);
     }
+
+  // Retorna o tipo
     return tipoDoParametro;
+
+
 }
 
 
@@ -38,49 +54,136 @@ void Parametro::imprimir(int espaco, bool naoArgumento) {
 
 void Parametro::comparar(TabelaDeSimbolos *tabelaDeSimbolos, Parametro *comparado, int linha, bool definicao) {
 
-  // Adiciona o parâmetro ao escopo da função
-    ((Variavel*)parametro)->tipoDeVariavel = tipoDoParametro;
+  // Se o tipoReserva não for nulo, ele representa a chave do parâmetro de HASH //
+    if(tipoReserva != Tipo::nulo) {
 
-  // Coleta os tipos dos parâmetros
-    Tipo tipoComparado;
-    if(definicao) {
-        tipoComparado = comparado->tipoDoParametro;
-        tabelaDeSimbolos->adicionar(parametro,linha, true);
-    } else {
-        tipoComparado = comparado->parametro->analisar(tabelaDeSimbolos, linha);
-    } 
+      // Coleta os tipos dos parâmetros
+        Tipo tipoChave = Tipo::nulo, tipoValor = Tipo::nulo;
 
-  // Se os parâmetros forem do mesmo tipo
-    if(tipoDoParametro == tipoComparado) {
-
-      // Caso se trate de um parâmetro, não um argumento de uma chamada de função...
+      // Definição de Função acrescenta os parâmetros à tabela de símbolos
         if(definicao) {
+            tipoValor = comparado->tipoDoParametro;
+            tipoChave = comparado->tipoReserva;
+            tabelaDeSimbolos->adicionar(parametro, linha, true);
+        }
 
-          // Captura-se os nomes dos parâmetros
-            std::string nomeEsperado = ((Variavel*) parametro)->id;
-            std::string nomeRecebido = ((Variavel*) comparado->parametro)->id;
+      // Chamada de Função consulta a tabela de símbolos para extrair a variável 
+        else {
+            Nodo *n = tabelaDeSimbolos->recuperar(comparado->parametro->id, linha, true);
+            tipoValor = ((Variavel*)n)->tipoDeVariavel;
+            tipoChave = ((Hash*)n)->tipoDeChave;
+        }
 
-          // Compara-se os nomes dos parâmetros, se forem diferentes um erro é emitido
-            if(nomeEsperado.compare(nomeRecebido) != 0) {
-                std::string id = ((Variavel*) parametro)->id;
-                std::cerr << "[Line " << linha << "] semantic error: parameter " << nomeEsperado;
-                std::cerr << " expected to be called " << nomeEsperado << " but was named " << nomeRecebido << "\n"; 
+      // Compara as Chaves dos Hashes
+        if(tipoChave == tipoReserva) {
+    
+          // Compara os Valores do Hashes
+            if(tipoValor == tipoDoParametro) {
+
+              // Caso se trate de um parâmetro, não um argumento de uma chamada de função...
+                if(definicao) {
+                  // Captura-se os nomes dos parâmetros
+                    std::string nomeEsperado = ((Variavel*) parametro)->id;
+                    std::string nomeRecebido = ((Variavel*) comparado->parametro)->id;
+
+                  // Compara-se os nomes dos parâmetros, se forem diferentes um erro é emitido
+                    if(nomeEsperado.compare(nomeRecebido) != 0) {
+                        std::string id = ((Variavel*) parametro)->id;
+                        std::cerr << "[Line " << linha << "] semantic error: hash parameter " << nomeEsperado;
+                        std::cerr << " expected to be called " << nomeEsperado << " but was named " << nomeRecebido << "\n"; 
+                    }
+                }            
             }
-        }            
+          // Se os Valores forem de tipos diferentes
+            else {              
+                std::cerr << "[Line " << linha << "] semantic error: hash parameter " << parametro->id;
+                std::cerr << " expected value of type " << imprimirTipoPorExtenso(tipoDoParametro);
+                std::cerr << " but received " << imprimirTipoPorExtenso(tipoValor) << "\n";              
+            }
+        }
+       // Se as Chaves forem de tipos diferentes
+        else {
+            std::cerr << "[Line " << linha << "] semantic error: hash parameter " << parametro->id;
+            std::cerr << " expected key of type " << imprimirTipoPorExtenso(tipoReserva);
+            std::cerr << " but received " << imprimirTipoPorExtenso(tipoChave) << "\n";              
+        }    
     }
 
-  // Se o Parâmetro atual for diferente do Parâmetro comparado, erro 
+
+// Variáveis Simples
     else {
-        std::string id = ((Variavel*) parametro)->id;
-        std::cerr << "[Line " << linha << "] semantic error: parameter " << id;
-        std::cerr << " expected " << imprimirTipoPorExtenso(tipoDoParametro);
-        std::cerr << " but received " << imprimirTipoPorExtenso(tipoComparado) << "\n";              
-    }   
+
+      // Coleta os tipos dos parâmetros
+        Tipo tipoComparado = Tipo::nulo;
+
+      // Definição de Função acrescenta os parâmetros à tabela de símbolos
+        if(definicao) {
+            tipoComparado = comparado->tipoDoParametro;
+            tabelaDeSimbolos->adicionar(parametro,linha, true);
+        }
+
+      // Chamada de Função analisa o parâmetro 
+        else {
+            // Nodo *n = tabelaDeSimbolos->recuperar(comparado->parametro->id, linha, true);
+            tipoComparado = comparado->parametro->analisar(tabelaDeSimbolos, linha);
+        } 
+
+      // Se os parâmetros forem do mesmo tipo
+        if(tipoDoParametro == tipoComparado) {
+    
+          // Caso se trate de um parâmetro, não um argumento de uma chamada de função...
+            if(definicao) {
+
+              // Captura-se os nomes dos parâmetros
+                std::string nomeEsperado = ((Variavel*) parametro)->id;
+                std::string nomeRecebido = ((Variavel*) comparado->parametro)->id;
+
+              // Compara-se os nomes dos parâmetros, se forem diferentes um erro é emitido
+                if(nomeEsperado.compare(nomeRecebido) != 0) {
+                    std::string id = ((Variavel*) parametro)->id;
+                    std::cerr << "[Line " << linha << "] semantic error: parameter " << nomeEsperado;
+                    std::cerr << " expected to be called " << nomeEsperado << " but was named " << nomeRecebido << "\n"; 
+                }
+            }            
+        }
+
+      // Se o Parâmetro atual for diferente do Parâmetro comparado, erro 
+        else {
+            std::string id = ((Variavel*) parametro)->id;
+            std::cerr << "[Line " << linha << "] semantic error: parameter " << id;
+            std::cerr << " expected " << imprimirTipoPorExtenso(tipoDoParametro);
+            std::cerr << " but received " << imprimirTipoPorExtenso(tipoComparado) << "\n";              
+        }   
+    }
+
 
   // Se os parâmetros atuais forem igual e os próximos forem nulos, então todos os Parâmetro são iguais
     if(proximo != NULL && comparado->proximo != NULL) {           
       // Caso contrário, compara os próximos parâmetros
         ((Parametro*)proximo)->comparar(tabelaDeSimbolos, ((Parametro*)comparado->proximo), linha, definicao);
+    }
+}
+
+
+void Parametro::acrescentarAoEscopo(TabelaDeSimbolos *tabelaDeSimbolos, int linha) {
+    if(parametro != NULL) {
+	((Variavel*)parametro)->tipoDeVariavel = tipoDoParametro;
+        switch(parametro->tipo) {
+            case Tipo::arranjo:
+		parametro->tipo = tabelaDeSimbolos->tipoDeArranjo(tipoDoParametro);
+		break;
+            case Tipo::arranjo_duplo:
+		parametro->tipo = tabelaDeSimbolos->tipoDeArranjoDuplo(tipoDoParametro);
+		break;
+            case Tipo::hash:
+                ((Hash*)parametro)->tipoDeChave = tipoReserva;
+                break;   
+	    default: break;           
+        }
+    }
+    tabelaDeSimbolos->adicionar(parametro, linha, variavel);
+    if(proximo != NULL) {
+        return ((Parametro*)proximo)->acrescentarAoEscopo(tabelaDeSimbolos, linha);
     }
 }
 

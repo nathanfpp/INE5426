@@ -10,23 +10,37 @@ using namespace AST;
 
 Tipo Bloco::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha) {
 
-// Associa o escopo ao Bloco
-  escopo = tabelaDeSimbolos;  
+  // Associa o escopo ao Bloco
+    escopo = tabelaDeSimbolos;  
+
+  // Tipo encontrado após cada linha
+    Tipo analise = Tipo::nulo;
+
+  // Tipo do retorno encontrado
+    Tipo retorno = Tipo::bloco;  
 
   // Verificar os Tipos de todas as linhas do Bloco   
-    for (Nodo* l: linhas) {
+    for (Nodo *l : linhas) {    
         if(l != NULL) {
             linha++;
-            l->analisar(escopo, linha);
+            analise = l->analisar(escopo, linha);
+            if(l->tipo == Tipo::retorno) {
+                if(retorno == Tipo::bloco) {
+                    retorno = analise; 
+                } else {
+                    retorno = Tipo::nulo;
+                }
+            }            
         }
     }
+
 
   // Desempilha-se este escopo, removendo seu endereçamento da tabela de símbolos ...
   // ... sendo o ponteiro para o escopo guardado apenas no Nodo::Bloco
     escopo->retornarEscopo(linha);
 
-  // O Bloco não possui um Tipo a ser retornado
-    return Tipo::nulo;
+  // Retorna-se o retorno obtido, ou o Tipo::bloco
+    return retorno;
 }
 
 

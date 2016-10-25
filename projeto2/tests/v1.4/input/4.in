@@ -1,0 +1,8 @@
+int:int fun test1(int:int p, int c) {  
+  int:int r
+  ret r
+}
+int:int mapa, r1
+int i = 0
+r1 = test1(mapa,i)
+

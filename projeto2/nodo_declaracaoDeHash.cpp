@@ -12,14 +12,11 @@ Tipo DeclaracaoDeHash::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int lin
 
   // Atribui o tipoDeVariavel da Declaração à primeira variável da declaração
     variaveis->tipoDeVariavel = tipoDeVariavel;
+    ((DefinicaoDeHash*)variaveis)->tipoDeChave = tipoDeChave;
 
   // Inicia a análise das variáveis declaradas
     Tipo valida;
-    if(variaveis->tipo == Tipo::hash_dec){
-        valida = variaveis->analisar(tabelaDeSimbolos, linha);
-    } else {
-        valida = ((Definicao*) variaveis)->analisar(tabelaDeSimbolos, linha);
-    }
+    valida = ((DefinicaoDeHash*) variaveis)->analisar(tabelaDeSimbolos, linha);
 
   // Caso todas as variáveis já tenham sido declaradas, troca o tipo da Declaração para não ser impressa
     if(valida == Tipo::nulo) {
@@ -34,15 +31,14 @@ Tipo DeclaracaoDeHash::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int lin
 void DeclaracaoDeHash::imprimir(int espaco, bool novaLinha) {
 
   // Imprime apenas se a declaração for válida
-    if(tipo == Tipo::hash_dec) {
+    if(tipo == Tipo::declaracao_hash) {
         imprimirEspaco(espaco);
-        imprimirTipo(tipoDeVariavel);
+        imprimirTipo(tipoDeChave);
         std::cout << ":";
-        imprimirTipo(valor);
+        imprimirTipo(tipoDeVariavel);
         if(variaveis != NULL) {
             variaveis->imprimir(0, true);
         }
         std::cout << "\n";
     }
 }
-

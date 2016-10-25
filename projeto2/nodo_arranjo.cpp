@@ -17,7 +17,7 @@ Tipo Arranjo::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha) {
         std::cerr << imprimirTipoPorExtenso(indice) << "\n"; 
     }
 
-  // O arranjo foi declarado? Senão o erro é imprimido
+  // O arranjo foi declarado?
     Arranjo *v = ((Arranjo*) tabelaDeSimbolos->recuperar(id, linha, true));
     if(v != NULL) {
         return v->tipoDeVariavel;
@@ -32,7 +32,7 @@ Tipo Arranjo::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha) {
 
 void Arranjo::imprimir(int espaco, bool declaracao) {    
 
- // Impressão para declaração de arranjo
+  // Impressão para declaração de arranjo
     if(declaracao) {
         std::cout << id << " (size: ";
         if(tamanho != NULL) {        

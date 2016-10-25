@@ -1,0 +1,7 @@
+int array: a (size: 10), v (size: 20, 20)
+int var: c
+= c [index][index] v 5 5
+= c [index][index] v [index][index] v 1 1 5
+= c [index][index] v [index][index] v 1 1 [index] a 1
+= c [index][index] v [index][index] v 1 1 [index][index] v 1 1
+

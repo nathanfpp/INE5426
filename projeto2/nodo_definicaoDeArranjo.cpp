@@ -24,13 +24,13 @@ Tipo DefinicaoDeArranjo::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int l
     }
 
   // Verifico se a declaracao do segundo indice do arranjo duplo é válida
-   if ( ((ArranjoDuplo*)variavel)->tipo == Tipo::arranjo_duplo){
-    Tipo indice2 = ((ArranjoDuplo*)variavel)->tamanho2->analisar(tabelaDeSimbolos, linha);
-    if(indice2 != Tipo::inteiro) {
-        std::cerr << "[Line " << linha << "] semantic error: index operator expects integer but received ";
-        std::cerr << imprimirTipoPorExtenso(indice1) << "\n"; 
+    if ( ((ArranjoDuplo*)variavel)->tipo == Tipo::arranjo_duplo){
+        Tipo indice2 = ((ArranjoDuplo*)variavel)->tamanho2->analisar(tabelaDeSimbolos, linha);
+        if(indice2 != Tipo::inteiro) {
+            std::cerr << "[Line " << linha << "] semantic error: index operator expects integer but received ";
+            std::cerr << imprimirTipoPorExtenso(indice1) << "\n"; 
+        }
     }
-   }
 
   // Salva a Variável na Tabela de Símbolos
     if(!tabelaDeSimbolos->adicionar(variavel, linha, true)) {
@@ -61,18 +61,21 @@ Tipo DefinicaoDeArranjo::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int l
 
 
 void DefinicaoDeArranjo::imprimir(int espaco, bool imprimirArray) {
+
   // A primeira definição após a declaraçãp imprime "array:"
-    if(imprimirArray && variavel->ponteiros == 0) {
-        std::cout << " array: ";
-    }
+    if(tipo == definicao_arranjo) {
+        if(imprimirArray && variavel->ponteiros == 0) {
+            std::cout << " array: ";
+        }
 
-    else if(imprimirArray && variavel->ponteiros > 0) {
-	for(int i = 0; i < variavel->ponteiros; i++)
-      	  std::cout << " ref";
-        std::cout << " array: ";
-    }
+        else if(imprimirArray && variavel->ponteiros > 0) {
+    	for(int i = 0; i < variavel->ponteiros; i++)
+          	  std::cout << " ref";
+            std::cout << " array: ";
+        }
 
-    variavel->imprimir(0, true);
+        variavel->imprimir(0, true);
+    }
     if(proxima != NULL) {
         std::cout << ", ";        
         proxima->imprimir(0, false);

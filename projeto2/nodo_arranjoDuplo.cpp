@@ -24,7 +24,7 @@ Tipo ArranjoDuplo::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha) 
         std::cerr << imprimirTipoPorExtenso(indice) << "\n"; 
     }
 
-  // O arranjo foi declarado? Senão o erro é imprimido
+  // O arranjo foi declarado?
     Arranjo *v = ((Arranjo*) tabelaDeSimbolos->recuperar(id, linha, true));
     if(v != NULL) {
         return v->tipoDeVariavel;
@@ -32,7 +32,7 @@ Tipo ArranjoDuplo::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha) 
         std::cerr << "[Line " << linha << "] semantic error: undeclared variable " << id << "\n";
     }
 
-  // Retorna o tipo
+  // Retorna-se o tipo
     return tipoDeVariavel;
 }
 

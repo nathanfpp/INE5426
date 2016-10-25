@@ -43,7 +43,6 @@ extern void yyerror(const char* s, ...);
     AST::OperacaoUnaria *opUnaria;
     AST::OperacaoBinaria *opBinaria;
     AST::DeclaracaoDeHash *declaracao_hash;
-    AST::Hash *hash;
     AST::Condicao *condicao;
     AST::Laco *laco;
     AST::Funcao *funcao;
@@ -66,20 +65,19 @@ extern void yyerror(const char* s, ...);
 
 // %type
 // Define o tipo de Símbolos Não-Terminais
-%type <nodo> expressao linha primitiva var retorno arranjo var_arranjo arranjo_duplo
-%type <variavel> dec_arranjo dec_hash
+%type <nodo> expressao linha primitiva var retorno arranjo var_arranjo arranjo_duplo hash
+%type <variavel> dec_arranjo
 %type <declaracao> declaracao
-%type <definicao> variaveis variavel def_arranjo  hashes def_hash
+%type <definicao> variaveis variavel def_arranjo  hashes def_hash 
 %type <opBinaria> atribuicao atrib_null
 %type <condicao> condicao
 %type <laco> for_laco do_while_laco while_laco
 %type <funcao> dec_funcao def_funcao
 %type <parametro> parametros parametro argumentos argumento param_null arg_null
-%type <bloco> programa linhas linhas_null senao
+%type <bloco> programa linhas linhas_null linhas_funcao senao
 %type <tipo> tipo
 %type <nodo> chamada
 %type <num_ref> referencia
-
 %type <declaracao_hash> dec_hashes
 
 // %left, %right, %nonassoc
@@ -106,7 +104,7 @@ programa:
                    $$->analisar(escopoPrincipal, 0);
                    $$->imprimir(0, true);
 		   std::cout <<"\n";
-                  } //sem esse cout dá erro nos testes
+                  }
         ;
 
 linhas: 
@@ -118,12 +116,12 @@ linha:
        atribuicao T_NL      { $$ = $1;   }
      | declaracao T_NL      { $$ = $1;   }
      | dec_hashes           { $$ = $1;   }
+     | dec_funcao T_NL      { $$ = $1;   }
+     | def_funcao T_NL      { $$ = $1;   }
      | condicao T_NL        { $$ = $1;   }
      | for_laco T_NL        { $$ = $1;   }
      | do_while_laco T_NL   { $$ = $1;   }
      | while_laco T_NL      { $$ = $1;   }
-     | dec_funcao T_NL      { $$ = $1;   }
-     | def_funcao T_NL      { $$ = $1;   }
      | chamada T_NL         { $$ = $1;   }
      | T_NL                 { $$ = NULL; }
      ;
@@ -135,9 +133,7 @@ atribuicao:
 
 var_arranjo:
              var            { $$ = $1; }
-           | arranjo        { $$ = $1; }
-           | arranjo_duplo  { $$ = $1; }
-//           | dec_hash 	    { $$ = $1; }
+           | chamada 	    { $$ = $1; }
            ;
 
 declaracao:
@@ -187,26 +183,27 @@ arranjo_duplo:
 
 chamada:
           T_VAR T_OPEN arg_null T_CLOSE 
-          {  $$ = new AST::Chamada ( AST::Tipo::nulo , AST::Tipo::nulo , $1 , $3 , NULL , NULL );}
+          {  $$ = new AST::Chamada ( AST::Tipo::nulo , AST::Tipo::nulo , $1 , $3 , NULL );}
+        | referencia T_VAR T_OPEN arg_null T_CLOSE 
+          {  $$ = new AST::Chamada ( AST::Tipo::nulo , AST::Tipo::nulo , $2 , $4 , NULL );}
         ;
 
 arg_null :
            argumentos  { $$ = $1;   }
          |             { $$ = NULL; }
-         ; 
-argumentos :
-             argumento                     { $$ = $1;                   }
-           | argumentos T_COMMA argumento  { $$ = $1; $$->proximo = $3; }
-           ;
-
-argumento :
-            expressao  { $$ = new AST::Parametro( AST::Tipo::parametro, AST::Tipo::nulo, $1, NULL );  }
+         ;
+ 
+argumentos:
+            argumento                     { $$ = $1;                   }
+          | argumentos T_COMMA argumento  { $$ = $1; $$->proximo = $3; }
           ;
 
-
+argumento:
+           expressao  { $$ = new AST::Parametro( AST::Tipo::parametro, AST::Tipo::nulo, AST::Tipo::nulo, $1, NULL );  }
+         ;
 
 dec_hashes:
-            tipo T_COLON tipo hashes  { $$ = new AST::DeclaracaoDeHash( AST::Tipo::hash_dec , $1, $3, $4 ); }
+            tipo T_COLON tipo hashes  { $$ = new AST::DeclaracaoDeHash( AST::Tipo::declaracao_hash, $1, $3, $4 ); }
           ;
 
 hashes: 
@@ -215,14 +212,7 @@ hashes:
       ;
 
 def_hash:
-          dec_hash { $$ = new AST::Definicao( AST::Tipo::hash_def, $1, NULL , NULL ); }
-        ;
-
-dec_hash:            
-          T_VAR
-            { $$ = new AST::Hash( AST::Tipo::hash, AST::Tipo::nulo, $1, 0 );}
-        | referencia T_VAR
-            { $$ = new AST::Hash( AST::Tipo::hash, AST::Tipo::nulo, $2, $1 ); }           
+          hash { $$ = new AST::DefinicaoDeHash( AST::Tipo::definicao_hash, ((AST::Variavel*)$1), NULL, NULL); }
         ;
 
 condicao :
@@ -240,6 +230,11 @@ for_laco:
       { $$ = new AST::Laco( AST::Tipo::for_laco , $2 , $4 , $6 , $9 ); }
     ;
 
+linhas_null:
+             linhas  { $$ = $1;   }
+           |         { $$ = NULL; }
+           ;
+
 do_while_laco: T_DO T_OPEN_KEY T_NL linhas T_CLOSE_KEY T_WHILE expressao
         { $$ = new AST::Laco( AST::Tipo::do_while_laco , NULL , $7 , NULL , $4 ); }
        ;
@@ -248,47 +243,61 @@ while_laco: T_WHILE expressao T_OPEN_KEY T_NL linhas T_CLOSE_KEY
            { $$ = new AST::Laco( AST::Tipo::while_laco , NULL , $2 , NULL , $5 ); }
           ;
 
-atrib_null :
-             atribuicao { $$ = $1;   }
-           |            { $$ = NULL; }
+atrib_null:
+            atribuicao { $$ = $1;   }
+          |            { $$ = NULL; }
+          ;
+
+dec_funcao:
+            tipo T_FUN T_VAR T_OPEN param_null T_CLOSE
+              { $$ = new AST::Funcao( AST::Tipo::funcao_dec, $1 , $3 , $5); }
+          | tipo T_OPEN T_CLOSE T_FUN T_VAR T_OPEN param_null T_CLOSE
+              { $$ = new AST::Funcao( AST::Tipo::funcao_dec, escopoPrincipal->tipoDeArranjo($1) , $5 , $7); }   
+          | tipo T_OPEN T_CLOSE T_OPEN T_CLOSE T_FUN T_VAR T_OPEN param_null T_CLOSE
+              { $$ = new AST::Funcao( AST::Tipo::funcao_dec, escopoPrincipal->tipoDeArranjoDuplo($1) , $7 , $9); }    
+          | tipo T_COLON tipo T_FUN T_VAR T_OPEN param_null T_CLOSE
+              { $$ = new AST::Funcao( AST::Tipo::funcao_dec, escopoPrincipal->tipoDeHash($1,$3) , $5 , $7); }
+          ;
+
+def_funcao:
+            tipo T_FUN T_VAR T_OPEN param_null T_CLOSE T_OPEN_KEY T_NL linhas_funcao T_RET retorno T_NL T_CLOSE_KEY  
+              {  $9->novaLinha($11); 
+                 $$ = new AST::DefinicaoDeFuncao( AST::Tipo::funcao_def, $1 , $3 , $5 , $9, $11); }
+          | tipo T_OPEN T_CLOSE T_FUN T_VAR T_OPEN param_null T_CLOSE T_OPEN_KEY T_NL linhas_funcao T_RET retorno T_NL T_CLOSE_KEY  
+              {  $11->novaLinha($13);
+                 $$ = new AST::DefinicaoDeFuncao( AST::Tipo::funcao_def, escopoPrincipal->tipoDeArranjo($1) , $5 , $7 , $11, $13 ); }         
+          | tipo T_OPEN T_CLOSE T_OPEN T_CLOSE T_FUN T_VAR T_OPEN param_null T_CLOSE T_OPEN_KEY T_NL linhas_funcao T_RET retorno T_NL T_CLOSE_KEY  
+              {  $13->novaLinha($15);
+                 $$ = new AST::DefinicaoDeFuncao( AST::Tipo::funcao_def, escopoPrincipal->tipoDeArranjoDuplo($1) , $7 , $9 , $13, $15 ); }         
+          | tipo T_COLON tipo T_FUN T_VAR T_OPEN param_null T_CLOSE T_OPEN_KEY T_NL linhas_funcao T_RET retorno T_NL T_CLOSE_KEY  
+              {  $11->novaLinha($13);
+                 $$ = new AST::DefinicaoDeFuncao( AST::Tipo::funcao_def, escopoPrincipal->tipoDeHash($1,$3) , $5 , $7 , $11, $13 );  }               
+          ;
+
+linhas_funcao:
+             linhas  { $$ = $1;                                 }
+           |         { $$ = new AST::Bloco( AST::Tipo::bloco ); }
            ;
 
-dec_funcao :
-             tipo T_FUN T_VAR T_OPEN param_null T_CLOSE
-             { $$ = new AST::Funcao( AST::Tipo::funcao_dec, $1 , $3 , $5); }
-           ;
+param_null: 
+            parametros  { $$ = $1;   }
+          |             { $$ = NULL; }
+          ;
 
-param_null : 
-             parametros  { $$ = $1;   }
-           |             { $$ = NULL; }
-           ;
-
-def_funcao :
-             tipo T_FUN T_VAR T_OPEN param_null T_CLOSE T_OPEN_KEY T_NL linhas_null T_RET retorno T_NL T_CLOSE_KEY  
-             { $$ = new AST::DefinicaoDeFuncao( AST::Tipo::funcao_def, $1 , $3 , $5 , $9 , $11 ); }
-           ;
-
-linhas_null :
-              linhas  { $$ = $1;   }
-            |         { $$ = NULL; }
-            ;
-
-parametros :
-             parametro                     { $$ = $1; }
-           | parametros T_COMMA parametro  { $$ = $1; $$->proximo = $3; }
-           ;
+parametros:
+            parametro                     { $$ = $1; }
+          | parametros T_COMMA parametro  { $$ = $1; $$->proximo = $3; }
+          ;
 
 parametro:
-           tipo var                    { $$ = new AST::Parametro( AST::Tipo::parametro, $1, $2, NULL );  }
-	 | tipo arranjo                { $$ = new AST::Parametro( AST::Tipo::parametro, $1, $2, NULL );  }
-         | tipo arranjo_duplo          { $$ = new AST::Parametro( AST::Tipo::parametro, $1, $2, NULL );  }
-//         | tipo T_COMMA tipo dec_hash  { $$ = new AST::Parametro( AST::Tipo::parametro, AST::Tipo::hash, $4, NULL );  }
+           tipo var                { $$ = new AST::Parametro( AST::Tipo::parametro, $1, AST::Tipo::nulo, $2, NULL );  }
+	 | tipo arranjo            { $$ = new AST::Parametro( AST::Tipo::parametro, $1, AST::Tipo::nulo, $2, NULL );  }
+         | tipo arranjo_duplo      { $$ = new AST::Parametro( AST::Tipo::parametro, $1, AST::Tipo::nulo, $2, NULL );  }
+         | tipo T_COLON tipo hash  { $$ = new AST::Parametro( AST::Tipo::parametro, $3, $1             , $4, NULL );  }
          ;
 
 retorno:
-         primitiva      { $$ = $1; }
-       | arranjo        { $$ = $1; }
-       | arranjo_duplo  { $$ = $1; }
+         expressao  { $$ = new AST::Retorno( AST::Tipo::retorno, $1); }
        ;
 
 expressao:         
@@ -325,15 +334,20 @@ tipo:
 
 primitiva:
            var
-         | T_BOOL   { $$ = new AST::Boolean  ( $1 ); $$->tipo = AST::Tipo::boolean; }
-         | T_INT    { $$ = new AST::Inteiro  ( $1 ); $$->tipo = AST::Tipo::inteiro; }
-         | T_FLOAT  { $$ = new AST::Real     ( $1 ); $$->tipo = AST::Tipo::real;    }
+         | T_BOOL   { $$ = new AST::Boolean  ( $1 ); }
+         | T_INT    { $$ = new AST::Inteiro  ( $1 ); }
+         | T_FLOAT  { $$ = new AST::Real     ( $1 ); }
          ;
 
 var:
-    T_VAR { $$ = new AST::Variavel( AST::Tipo::variavel, AST::Tipo::nulo , $1, 0 );}  
-  | referencia T_VAR { $$ = new AST::Variavel( AST::Tipo::variavel, AST::Tipo::nulo, $2, $1 );}  
-;
+     T_VAR            { $$ = new AST::Variavel( AST::Tipo::variavel, AST::Tipo::nulo , $1, 0 ); }
+   | referencia T_VAR { $$ = new AST::Variavel( AST::Tipo::variavel, AST::Tipo::nulo, $2, $1 ); }
+   ;
+
+hash:
+      T_VAR            { $$ = new AST::Hash( AST::Tipo::hash, AST::Tipo::nulo , $1, 0 ); }
+    | referencia T_VAR { $$ = new AST::Hash( AST::Tipo::hash, AST::Tipo::nulo, $2, $1 ); }
+    ;
 
 referencia: 
 	   T_REF | referencia T_REF {$$ = $$ + 1;}

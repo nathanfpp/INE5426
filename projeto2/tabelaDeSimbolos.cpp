@@ -97,3 +97,54 @@ Nodo* TabelaDeSimbolos::recuperar(std::string id, int linha, bool variavel) {
     return NULL;
 }
 
+Tipo TabelaDeSimbolos::tipoDeArranjo(Tipo tipo) {
+    Tipo array = Tipo::nulo;
+    switch(tipo) {
+        case Tipo::boolean: array = Tipo::arranjo_b; break;
+        case Tipo::inteiro: array = Tipo::arranjo_i; break;
+        case Tipo::real:    array = Tipo::arranjo_f; break;
+        default: break;
+    }
+    return array;
+}
+
+
+Tipo TabelaDeSimbolos::tipoDeArranjoDuplo(Tipo tipo) {
+    Tipo array_double = Tipo::nulo;
+    switch(tipo) {
+        case Tipo::boolean: array_double = Tipo::arranjo_2_b; break;
+        case Tipo::inteiro: array_double = Tipo::arranjo_2_i; break;
+        case Tipo::real:    array_double = Tipo::arranjo_2_f; break;
+        default: break;
+    }
+    return array_double;
+}
+
+Tipo TabelaDeSimbolos::tipoDeHash(Tipo chave, Tipo valor) {
+    Tipo tipo = Tipo::nulo;
+    switch(chave) {
+        case Tipo::boolean:
+            switch(valor) {
+                case Tipo::boolean: tipo = Tipo::hash_bb; break;
+                case Tipo::inteiro: tipo = Tipo::hash_bi; break;
+                case Tipo::real:    tipo = Tipo::hash_bf; break;
+                default: break;
+            } break;
+        case AST::Tipo::inteiro:
+            switch(valor) {
+                case Tipo::boolean: tipo = Tipo::hash_ib; break;
+                case Tipo::inteiro: tipo = Tipo::hash_ii; break;
+                case Tipo::real:    tipo = Tipo::hash_if; break;
+                default: break;
+            } break;
+        case AST::Tipo::real:
+            switch(valor) {
+                case Tipo::boolean: tipo = Tipo::hash_fb; break;
+                case Tipo::inteiro: tipo = Tipo::hash_fi; break;
+                case Tipo::real:    tipo = Tipo::hash_ff; break;
+                default: break;
+            } break;
+        default: break;
+    }
+    return tipo;
+}

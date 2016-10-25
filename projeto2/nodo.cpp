@@ -10,9 +10,12 @@ using namespace AST;
 
 bool Nodo::coercaoDaDefinicao(Definicao *coagido, Tipo esperado, Tipo recebido, int linha) {
 
-if(recebido == Tipo::nulo) return true;
+  // Caso o tipo recebido seja nulo, a coerção é ignorada e retorna-se true
+    if(recebido == Tipo::nulo) {
+        return true;
+    }
 
- // Se o tipo esperado e o recebido forem diferentes, ocorreu um erro...
+ // Se o tipo esperado e o recebido forem diferentes ocorrerá um erro...
     if(esperado != recebido) {
 
       // ... a não ser que possa ocorrer coerção de int para float
@@ -21,21 +24,19 @@ if(recebido == Tipo::nulo) return true;
             coagido->valor = ((Nodo*) coercao);
         }
 
-      // Caso contrário, ocorreu um erro na operação
+      // Caso contrário, ocorreu um erro é imprimido
         else {
             imprimirErroDeOperacao(Tipo::atribuicao, esperado, recebido, linha);
             return false;
         }
     }
 
- // Se os tipos são compatíveis, com ou sem coerção, o retorno é <true>
+ // Se os tipos forem compatíveis, com ou sem coerção, retorna-se true
     return true;
 }
 
 
 bool Nodo::coercao(OperacaoBinaria *coagido, Tipo e, Tipo d, int linha) {
-
-// Segundo a descrição da versão 0.3, apenas tipo int pode sofrer coerção para float, logo:
 
   // Se o tipo da esquerda for float e o da direita int, o da direita sofre coerção e retorna-se Tipo::real
     if (e == Tipo::real && d == Tipo::inteiro) {       
@@ -68,45 +69,75 @@ void Nodo::imprimirEspaco(int espaco) {
 
 
 void Nodo::imprimirTipo(Tipo t) {
-  // One switch to rule them all
     switch(t) {
-        case Tipo::inteiro:          	   std::cout << "int";       break;
-        case Tipo::real:             	   std::cout << "float";     break;
-        case Tipo::boolean:          	   std::cout << "bool";      break;
-        case Tipo::atribuicao:       	   std::cout << "=";         break; //
-        case Tipo::adicao:           	   std::cout << "+";         break;
-        case Tipo::subtracao:        	   std::cout << "-";         break;
-        case Tipo::multiplicacao:    	   std::cout << "*";         break;
-        case Tipo::divisao:          	   std::cout << "/";         break;
-        case Tipo::e:                	   std::cout << "&";         break;
-        case Tipo::ou:               	   std::cout << "|";         break;
-        case Tipo::igual:            	   std::cout << "==";        break; //
-        case Tipo::diferente:        	   std::cout << "!=";        break;
-        case Tipo::maior:                  std::cout << ">";         break;
-        case Tipo::maior_igual:      	   std::cout << ">=";        break;
-        case Tipo::menor:            	   std::cout << "<";         break;
-        case Tipo::menor_igual:      	   std::cout << "<=";        break;
-        case Tipo::negacao:          	   std::cout << "-u ";       break; //
-        case Tipo::inversao:         	   std::cout << "! ";        break;
-        case Tipo::conversao_int:    	   std::cout << "[int] ";    break;
-        case Tipo::conversao_float:  	   std::cout << "[float] ";  break;
-        case Tipo::conversao_bool:   	   std::cout << "[bool] ";   break;
-        case Tipo::parenteses:        	   std::cout << "";          break; //
-        case Tipo::endereco:      	   std::cout << "[addr] ";   break;
-        case Tipo::referencia:      	   std::cout << "[ref] ";    break;
-        case Tipo::condicao_atribuicao:    std::cout << "? ";       break;
-        case Tipo::atribuicao_condicional: std::cout << ": ";       break;
-        default:                     	   std::cout << "";          break;
+        case Tipo::inteiro:          	   std::cout << "int";          break;
+        case Tipo::real:             	   std::cout << "float";        break;
+        case Tipo::boolean:          	   std::cout << "bool";         break;
+        case Tipo::hash:                   std::cout << "hash:";        break;
+        case Tipo::arranjo_b:              std::cout << "bool array";   break;
+        case Tipo::arranjo_i:              std::cout << "int array";    break;
+        case Tipo::arranjo_f:              std::cout << "float array";  break;
+        case Tipo::arranjo_2_b:            std::cout << "bool double array"; break;
+        case Tipo::arranjo_2_i:            std::cout << "integer double array"; break;
+        case Tipo::arranjo_2_f:            std::cout << "float double array"; break;
+        case Tipo::hash_bb:                std::cout << "bool:bool";    break;
+        case Tipo::hash_bi:                std::cout << "bool:int";     break;
+        case Tipo::hash_bf:                std::cout << "bool:float";   break;
+        case Tipo::hash_ib:                std::cout << "int:bool";     break;
+        case Tipo::hash_ii:                std::cout << "int:int";      break;
+        case Tipo::hash_if:                std::cout << "int:float";    break;
+        case Tipo::hash_fb:                std::cout << "float:bool";   break;
+        case Tipo::hash_fi:                std::cout << "float:int";    break;
+        case Tipo::hash_ff:                std::cout << "float:float";  break;
+        case Tipo::atribuicao:       	   std::cout << "=";            break; //
+        case Tipo::adicao:           	   std::cout << "+";            break;
+        case Tipo::subtracao:        	   std::cout << "-";            break;
+        case Tipo::multiplicacao:    	   std::cout << "*";            break;
+        case Tipo::divisao:          	   std::cout << "/";            break;
+        case Tipo::e:                	   std::cout << "&";            break;
+        case Tipo::ou:               	   std::cout << "|";            break;
+        case Tipo::igual:            	   std::cout << "==";           break; //
+        case Tipo::diferente:        	   std::cout << "!=";           break;
+        case Tipo::maior:                  std::cout << ">";            break;
+        case Tipo::maior_igual:      	   std::cout << ">=";           break;
+        case Tipo::menor:            	   std::cout << "<";            break;
+        case Tipo::menor_igual:      	   std::cout << "<=";           break;
+        case Tipo::negacao:          	   std::cout << "-u ";          break; //
+        case Tipo::inversao:         	   std::cout << "! ";           break;
+        case Tipo::conversao_int:    	   std::cout << "[int] ";       break;
+        case Tipo::conversao_float:  	   std::cout << "[float] ";     break;
+        case Tipo::conversao_bool:   	   std::cout << "[bool] ";      break;
+        case Tipo::parenteses:        	   std::cout << "";             break; //
+        case Tipo::endereco:      	   std::cout << "[addr] ";      break;
+        case Tipo::referencia:      	   std::cout << "[ref] ";       break;
+        case Tipo::condicao_atribuicao:    std::cout << "? ";           break;
+        case Tipo::atribuicao_condicional: std::cout << ": ";           break;
+        default:                     	   std::cout << "";             break;
     }
 }
 
 
 std::string Nodo::imprimirTipoPorExtenso(Tipo t) {
-  // One switch to rule them all
     switch(t) {
         case Tipo::inteiro:         	   return "integer";         
         case Tipo::real:            	   return "float";           
-        case Tipo::boolean:         	   return "bool";            
+        case Tipo::boolean:         	   return "bool";
+        case Tipo::hash:         	   return "hash";
+        case Tipo::arranjo_b:              return "bool array";
+        case Tipo::arranjo_i:              return "integer array";
+        case Tipo::arranjo_f:              return "float array"; 
+        case Tipo::arranjo_2_b:            return "bool double array";
+        case Tipo::arranjo_2_i:            return "integer double array";
+        case Tipo::arranjo_2_f:            return "float double array"; 
+        case Tipo::hash_bb:                return "bool:bool";
+        case Tipo::hash_bi:                return "bool:int";
+        case Tipo::hash_bf:                return "bool:float";
+        case Tipo::hash_ib:                return "int:bool";
+        case Tipo::hash_ii:                return "int:int";
+        case Tipo::hash_if:                return "int:float";
+        case Tipo::hash_fb:                return "float:bool";
+        case Tipo::hash_fi:                return "float:int";
+        case Tipo::hash_ff:                return "float:float";      
         case Tipo::atribuicao:      	   return "attribution";     
         case Tipo::adicao:         	   return "addition";        
         case Tipo::subtracao:       	   return "subtraction";     

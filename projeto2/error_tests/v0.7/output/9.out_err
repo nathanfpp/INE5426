@@ -1,1 +1,9 @@
 [Line 4] semantic error: undeclared array, function or hash pitagoras
+[Line 6] semantic error: function aa definition return type expects bool but received integer
+[Line 8] semantic error: function bb definition return type expects integer but received bool
+[Line 8] semantic error: return of function bb expected bool but received integer
+[Line 9] semantic error: operation attribution expected integer but received bool
+[Line 11] semantic error: return of function dd expected bool but received integer
+[Line 12] semantic error: return of function d expected integer double array but received null
+[Line 14] semantic error: parameter a expected integer but received integer double array
+[Line 14] semantic error: operation attribution expected integer but received integer double array

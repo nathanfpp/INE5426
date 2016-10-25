@@ -10,9 +10,9 @@ int array: y (size: 10, 20), w (size: 10, true)
 = [index][index] f 10 10 [index] g true true
 = [index][index] f 10 10 [index] g true
 = [index] g 10 [index][index] f true 10
-= [index][index] g 10 10 [index][index] f 10
+= [index] g 10 10 [index][index] f 10
 = [index][index] f true 10 [index] g true true
 = [index][index] f 10 10 [index] g true
 = [index] g 10 [index][index] f true 10
-= [index][index] g 10 true [index][index] f 10
+= [index] g 10 true [index][index] f 10
 
