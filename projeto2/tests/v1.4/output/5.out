@@ -1,8 +1,9 @@
 int array fun: test1 (params: )
   int array: b (size: 3)
   ret b
-int fun: test2 (params: int p)
-  ret + p 3
+int fun: test2 (params: int [index] c 5)
+  int array: p (size: 4)
+  ret + [index] p 0 3
 int array: a (size: 5)
 = a test1[0 params]
 
