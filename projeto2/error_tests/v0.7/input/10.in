@@ -1,0 +1,40 @@
+int()() fun f0() {
+  int a(10,10)
+  ret a
+}
+int()() fun f1() {
+  int a(10)
+  ret a
+}
+int()() fun f2() {
+  int a
+  ret a
+}
+int()() fun f3(int a(10,10)) {  
+  ret a
+}
+int()() fun f4(int a(10)) { 
+  ret a
+}
+int()() fun f5(int a) {  
+  ret a
+}
+int a(10,10), b(10), c
+a = f0()
+a = f1()
+a = f2()
+a = f3(a)
+a = f4(b)
+a = f5(c)
+b = f0()
+b = f1()
+b = f2()
+b = f3(a)
+b = f4(b)
+b = f5(c)
+c = f0()
+c = f1()
+c = f2()
+c = f3(a)
+c = f4(b)
+c = f5(c)

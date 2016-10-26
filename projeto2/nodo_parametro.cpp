@@ -31,8 +31,6 @@ Tipo Parametro::analisar(TabelaDeSimbolos *tabelaDeSimbolos, int linha) {
 
   // Retorna o tipo
     return tipoDoParametro;
-
-
 }
 
 
@@ -128,6 +126,13 @@ void Parametro::comparar(TabelaDeSimbolos *tabelaDeSimbolos, Parametro *comparad
             tipoComparado = comparado->parametro->analisar(tabelaDeSimbolos, linha);
         } 
 
+      // Ajusta o tipoDoParametro caso se trate de um arranjo ou arrranjo duplo
+        if(parametro->tipo == Tipo::arranjo) {
+            tipoDoParametro = tabelaDeSimbolos->tipoDeArranjo(((Variavel*)parametro)->tipoDeVariavel);
+        } else if (parametro->tipo == Tipo::arranjo_duplo) {
+            tipoDoParametro = tabelaDeSimbolos->tipoDeArranjoDuplo(((Variavel*)parametro)->tipoDeVariavel);
+        }
+
       // Se os parâmetros forem do mesmo tipo
         if(tipoDoParametro == tipoComparado) {
     
@@ -167,18 +172,9 @@ void Parametro::comparar(TabelaDeSimbolos *tabelaDeSimbolos, Parametro *comparad
 
 void Parametro::acrescentarAoEscopo(TabelaDeSimbolos *tabelaDeSimbolos, int linha) {
     if(parametro != NULL) {
-	((Variavel*)parametro)->tipoDeVariavel = tipoDoParametro;
-        switch(parametro->tipo) {
-            case Tipo::arranjo:
-		parametro->tipo = tabelaDeSimbolos->tipoDeArranjo(tipoDoParametro);
-		break;
-            case Tipo::arranjo_duplo:
-		parametro->tipo = tabelaDeSimbolos->tipoDeArranjoDuplo(tipoDoParametro);
-		break;
-            case Tipo::hash:
-                ((Hash*)parametro)->tipoDeChave = tipoReserva;
-                break;   
-	    default: break;           
+      ((Variavel*)parametro)->tipoDeVariavel = tipoDoParametro; 
+        if(parametro->tipo == Tipo::hash) {
+            ((Hash*)parametro)->tipoDeChave = tipoReserva;        
         }
     }
     tabelaDeSimbolos->adicionar(parametro, linha, variavel);

@@ -110,14 +110,14 @@ Tipo TabelaDeSimbolos::tipoDeArranjo(Tipo tipo) {
 
 
 Tipo TabelaDeSimbolos::tipoDeArranjoDuplo(Tipo tipo) {
-    Tipo array_double = Tipo::nulo;
+    Tipo array = Tipo::nulo;
     switch(tipo) {
-        case Tipo::boolean: array_double = Tipo::arranjo_2_b; break;
-        case Tipo::inteiro: array_double = Tipo::arranjo_2_i; break;
-        case Tipo::real:    array_double = Tipo::arranjo_2_f; break;
+        case Tipo::boolean: array = Tipo::arranjo_2_b; break;
+        case Tipo::inteiro: array = Tipo::arranjo_2_i; break;
+        case Tipo::real:    array = Tipo::arranjo_2_f; break;
         default: break;
     }
-    return array_double;
+    return array;
 }
 
 Tipo TabelaDeSimbolos::tipoDeHash(Tipo chave, Tipo valor) {

@@ -4,6 +4,5 @@
 [Line 8] semantic error: return of function bb expected bool but received integer
 [Line 9] semantic error: operation attribution expected integer but received bool
 [Line 11] semantic error: return of function dd expected bool but received integer
-[Line 12] semantic error: return of function d expected double array but received integer
-[Line 14] semantic error: parameter a expected integer but received integer array
-[Line 14] semantic error: operation attribution expected integer but received double array
+[Line 12] semantic error: return of function d expected integer double array but received integer
+[Line 14] semantic error: parameter a expected integer array but received integer double array

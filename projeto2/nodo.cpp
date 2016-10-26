@@ -165,6 +165,8 @@ std::string Nodo::imprimirTipoPorExtenso(Tipo t) {
         case Tipo::atribuicao_condicional: return ": ";
         case Tipo::arranjo:                return "array";
         case Tipo::arranjo_duplo:          return "double array";
+        case Tipo::parametro:              return "parameter";
+        case Tipo::variavel:               return "variable";
         default:                	   return " ";            
     }
 }

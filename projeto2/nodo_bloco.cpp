@@ -34,6 +34,8 @@ Tipo Bloco::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha) {
         }
     }
 
+  // Caso o retorno seja "nulo", dois retornos ocorreram numa função
+    //if(retorno == Tipo::nulo) {        std::cerr << "Erro para dois retornos em função" << "\n";    }
 
   // Desempilha-se este escopo, removendo seu endereçamento da tabela de símbolos ...
   // ... sendo o ponteiro para o escopo guardado apenas no Nodo::Bloco

@@ -8,11 +8,27 @@
 
 using namespace AST;
 
-Tipo OperacaoBinaria::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha) {  
+Tipo OperacaoBinaria::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha) {
 
-  // Captura os tipos dos filhos esquerda e direita
-    Tipo e = esquerda->analisar(tabelaDeSimbolos, linha);
-    Tipo d = direita->analisar(tabelaDeSimbolos, linha);
+  // Os tipos dos filhos à esquerda e à direita da OperacaoBinaria
+    Tipo e, d;
+    e = esquerda->analisar(tabelaDeSimbolos, linha);
+    d = direita->analisar(tabelaDeSimbolos, linha);
+
+  // Tratamento especial no caso de atribuição à arranjos
+    if(esquerda->tipo == Tipo::variavel){
+        Tipo tipoDeVariavel = ((Variavel*)esquerda)->obterTipoDaTabela(tabelaDeSimbolos);
+        if(tipoDeVariavel == Tipo::arranjo || tipoDeVariavel == Tipo::arranjo_duplo || tipoDeVariavel == Tipo::hash) {
+            if(operacao == Tipo::atribuicao) {
+                if(e != d) {
+                    imprimirErroDeOperacao(operacao, e, d, linha);
+                }
+            } else {
+                std::cerr << "Arranjos/Hashes podem apenas ser atribuidos.\n";          
+            }
+            return Tipo::nulo;
+        }
+    }
 
   // Se um dos tipos foram nulo não tem porque seguir adiante
   if (e == Tipo::nulo)
@@ -30,10 +46,15 @@ Tipo OperacaoBinaria::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linh
   // A Atribuição recebe "int","float" ou "bool" e retorna "int", "float" ou "bool"
         case Tipo::atribuicao:
 
+              // O nodo à esquerda não pode ser uma função
+                if(esquerda->tipo == Tipo::funcao_cha) {
+                    std::cerr << "Não se atribui para função. Bocó.\n";
+                    return Tipo::nulo;
+                }
+
 	        if((e == Tipo::inteiro && (d != Tipo::inteiro && d != Tipo::endereco))
 		     || (e == Tipo::boolean && d != Tipo::boolean)
 		     || (e == Tipo::real && d == Tipo::boolean)) {
-
             	    imprimirErroDeOperacao(operacao, e, d, linha);
                 }
 

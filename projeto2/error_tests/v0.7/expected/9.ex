@@ -10,8 +10,8 @@ int fun: bb (params: )
 = y bb[0 params]
 bool fun: dd (params: )
   ret 9
- fun: d (params: int [index] a 1)
+integer double array fun: d (params: int array [index] a 1)
   ret 0
 int array: bd (size: 1, 1)
-= [index][index] bd 2 2 d[1 params] bd
+= bd d[1 params] bd
 

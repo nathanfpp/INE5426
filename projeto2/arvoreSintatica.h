@@ -64,6 +64,7 @@ class Variavel : public Nodo {
 	bool ponteiroEsqAtribuicao = false;
     Variavel(Tipo t, Tipo v, std::string i, int p) : Nodo(t,i), tipoDeVariavel(v), ponteiros(p) {};
     Tipo analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha);
+    Tipo obterTipoDaTabela(TabelaDeSimbolos *tabelaDeSimbolos);
     int recuperarPonteiros(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha);
     void imprimir(int espaco, bool novaLinha);
 };
