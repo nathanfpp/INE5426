@@ -1,0 +1,3 @@
+[Line 2] semantic error: operation attribution expected integer but received int:int
+[Line 4] semantic error: arrays or hashes can only be part of a simple attribution
+[Line 4] semantic error: operation attribution expected int:int but received null

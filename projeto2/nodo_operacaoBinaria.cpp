@@ -24,7 +24,7 @@ Tipo OperacaoBinaria::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linh
                     imprimirErroDeOperacao(operacao, e, d, linha);
                 }
             } else {
-                std::cerr << "Arranjos/Hashes podem apenas ser atribuidos.\n";          
+		    std::cerr << "[Line " << linha << "] semantic error: arrays or hashes can only be part of a simple attribution" <<"\n";
             }
             return Tipo::nulo;
         }
