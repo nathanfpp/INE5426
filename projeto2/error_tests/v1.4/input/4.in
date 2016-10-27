@@ -1,0 +1,13 @@
+int : int fun myfun1(bool : bool b, int:int c){
+ret c
+}
+int : int a
+a = myfun1(a)
+a = myfun1(a(3))
+
+int : int fun myfun2(bool : bool b, int:int c){
+ret ref c
+}
+int : int ref a
+int : int ref d
+a = ref myfun2(d,a)

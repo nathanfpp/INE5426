@@ -1,0 +1,4 @@
+[Line 2] semantic error: key operator expects integer but received float
+[Line 3] semantic error: key operator expects integer but received float
+[Line 3] semantic error: key operator expects integer but received float
+[Line 4] semantic error: operation attribution expected integer but received float

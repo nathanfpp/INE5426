@@ -1,9 +1,13 @@
-int()() fun a(int a(10,10)){
+int()() fun A(int a(10,10)){
   ret a
 }
-int()() fun a(int a(10)){
+int()() fun B(int a(10)){
   ret a
 }
-int()() fun a(int a){
+int()() fun C(int a){
   ret a
+}
+
+int : int fun D	(int a){
+ret a
 }

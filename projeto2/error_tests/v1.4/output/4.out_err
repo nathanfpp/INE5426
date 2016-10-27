@@ -1,0 +1,6 @@
+[Line 3] semantic error: function myfun1 expects 2 parameters but received 1
+[Line 4] semantic error: function myfun1 expects 2 parameters but received 1
+[Line 6] semantic error: reference operation expects a pointer
+[Line 6] semantic error: re-declaration of variable a
+[Line 8] semantic error: hash parameter b expected key of type bool but received integer
+[Line 8] semantic error: reference operation expects a pointer

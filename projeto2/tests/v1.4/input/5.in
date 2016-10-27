@@ -1,9 +1,5 @@
-int() fun test1() {  
-  int b(3)
-  ret b
-}
-int fun test2(int p(5)) {
-  ret p(0)+3
-}
-int a(5)
-a = test1()
+int : int a
+a(3) = 9
+a(4) = a([int] 4.4)
+a(3) = [int] 3.3
+a = a
