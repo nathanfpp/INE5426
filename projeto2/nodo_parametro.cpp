@@ -20,7 +20,8 @@ Tipo Parametro::analisar(TabelaDeSimbolos *tabelaDeSimbolos, int linha) {
                 ((Hash*)parametro)->tipoDeVariavel = tipoDoParametro; 
                 ((Hash*)parametro)->tipoDeChave = tipoReserva;
                 break;
-            default: break;
+	   default: break;
+
         }
     }
 
@@ -37,6 +38,38 @@ Tipo Parametro::analisar(TabelaDeSimbolos *tabelaDeSimbolos, int linha) {
 void Parametro::imprimir(int espaco, bool naoArgumento) {
     imprimirEspaco(espaco);
     if(naoArgumento) {
+
+	if (parametro->tipo == hash){
+	Tipo tipoHashImpressao = Tipo::nulo;
+	 switch(tipoReserva) {
+        case Tipo::boolean:
+            switch(tipoDoParametro) {
+                case Tipo::boolean: tipoHashImpressao = Tipo::hash_bb; break;
+                case Tipo::inteiro: tipoHashImpressao = Tipo::hash_bi; break;
+                case Tipo::real:    tipoHashImpressao = Tipo::hash_bf; break;
+                default: break;
+            } break;
+        case AST::Tipo::inteiro:
+            switch(tipoDoParametro) {
+                case Tipo::boolean: tipoHashImpressao = Tipo::hash_ib; break;
+                case Tipo::inteiro: tipoHashImpressao = Tipo::hash_ii; break;
+                case Tipo::real:    tipoHashImpressao = Tipo::hash_if; break;
+                default: break;
+            } break;
+        case AST::Tipo::real:
+            switch(tipoDoParametro) {
+                case Tipo::boolean: tipoHashImpressao = Tipo::hash_fb; break;
+                case Tipo::inteiro: tipoHashImpressao = Tipo::hash_fi; break;
+                case Tipo::real:    tipoHashImpressao = Tipo::hash_ff; break;
+                default: break;
+            } break;
+        default: break;
+    }
+	
+        imprimirTipo(tipoHashImpressao);
+
+    }
+	else
         imprimirTipo(tipoDoParametro);
     }
     std::cout << " ";
@@ -174,7 +207,7 @@ void Parametro::acrescentarAoEscopo(TabelaDeSimbolos *tabelaDeSimbolos, int linh
     if(parametro != NULL) {
       ((Variavel*)parametro)->tipoDeVariavel = tipoDoParametro; 
         if(parametro->tipo == Tipo::hash) {
-            ((Hash*)parametro)->tipoDeChave = tipoReserva;        
+            ((Hash*)parametro)->tipoDeChave = tipoReserva;
         }
     }
     tabelaDeSimbolos->adicionar(parametro, linha, variavel);

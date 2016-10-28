@@ -17,6 +17,16 @@ Tipo OperacaoUnaria::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha
   if (d == Tipo::nulo)
 	return d;
 
+// Arranjos e Hashes, quando o operando é a variável em si e não seus itens, deve dar erro.
+    if(filho->tipo == Tipo::variavel){
+        Tipo tipoDeVariavel = ((Variavel*)filho)->obterTipoDaTabela(tabelaDeSimbolos);
+        if(tipoDeVariavel == Tipo::arranjo || tipoDeVariavel == Tipo::arranjo_duplo || tipoDeVariavel == Tipo::hash) {
+              std::cerr << "[Line " << linha << "] semantic error: arrays or hashes can only be part of a simple attribution" <<"\n";
+              return Tipo::nulo;
+            }
+
+        }
+
   // Tenho que capturar os ponteiros do filho também
     int d_ponteiros = filho->recuperarPonteiros(tabelaDeSimbolos, linha);
 

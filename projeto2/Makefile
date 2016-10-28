@@ -169,6 +169,7 @@ error_test:
 	./${OUTPUT} < error_tests/v1.4/input/4.in > error_tests/v1.4/output/4.out 2> error_tests/v1.4/output/4.out_err
 	./${OUTPUT} < error_tests/v1.4/input/5.in > error_tests/v1.4/output/5.out 2> error_tests/v1.4/output/5.out_err
 	./${OUTPUT} < error_tests/v1.4/input/6.in > error_tests/v1.4/output/6.out 2> error_tests/v1.4/output/6.out_err
+	./${OUTPUT} < error_tests/v1.4/input/7.in > error_tests/v1.4/output/7.out 2> error_tests/v1.4/output/7.out_err
 
 compare_error_test:
 	diff error_tests/v0.1/expected/1.ex     error_tests/v0.1/output/1.out 
@@ -272,7 +273,7 @@ compare_error_test:
 	diff error_tests/v1.4/expected/2.ex_err error_tests/v1.4/output/2.out_err  
 	diff error_tests/v1.4/expected/3.ex     error_tests/v1.4/output/3.out
 	diff error_tests/v1.4/expected/3.ex_err error_tests/v1.4/output/3.out_err 
-	diff error_tests/v1.4/expected/4.ex     error_tests/v1.4/output/4.out 
+	diff error_tests/v1.4/expected/4.ex     error_tests/v1.4/output/4.out    
 	diff error_tests/v1.4/expected/4.ex_err error_tests/v1.4/output/4.out_err 
 	diff error_tests/v1.4/expected/5.ex     error_tests/v1.4/output/5.out
 	diff error_tests/v1.4/expected/5.ex_err error_tests/v1.4/output/5.out_err  

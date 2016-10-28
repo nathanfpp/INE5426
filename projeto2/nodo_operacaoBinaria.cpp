@@ -15,7 +15,7 @@ Tipo OperacaoBinaria::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linh
     e = esquerda->analisar(tabelaDeSimbolos, linha);
     d = direita->analisar(tabelaDeSimbolos, linha);
 
-  // Tratamento especial no caso de atribuição à arranjos
+// Arranjos e Hashes, quando o operando é a variável em si e não seus itens, deve dar erro.
     if(esquerda->tipo == Tipo::variavel){
         Tipo tipoDeVariavel = ((Variavel*)esquerda)->obterTipoDaTabela(tabelaDeSimbolos);
         if(tipoDeVariavel == Tipo::arranjo || tipoDeVariavel == Tipo::arranjo_duplo || tipoDeVariavel == Tipo::hash) {

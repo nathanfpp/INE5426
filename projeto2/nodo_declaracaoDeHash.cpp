@@ -36,6 +36,7 @@ void DeclaracaoDeHash::imprimir(int espaco, bool novaLinha) {
         imprimirTipo(tipoDeChave);
         std::cout << ":";
         imprimirTipo(tipoDeVariavel);
+
         if(variaveis != NULL) {
             variaveis->imprimir(0, true);
         }

@@ -54,22 +54,26 @@ Tipo DefinicaoDeHash::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linh
 }
 
 
-void DefinicaoDeHash::imprimir(int espaco, bool imprimir) {
+void DefinicaoDeHash::imprimir(int espaco, bool imprimirHash) {
 
     if(tipo == definicao_hash) {
-      // A primeira definição após a declaraçãp imprime "array:"
-        if(imprimir && variavel->ponteiros == 0) {
-            for(int i = 0; i < variavel->ponteiros; i++) {
-          	    std::cout << " ref";
-            }
+      // A primeira definição após a declaraçãp imprime "hash:"
+        if(imprimirHash && variavel->ponteiros == 0) {
             std::cout << " hash: ";
         }
+
+         else if(imprimirHash && variavel->ponteiros > 0) {
+	    	for(int i = 0; i < variavel->ponteiros; i++)
+               	    std::cout << " ref";
+	            std::cout << " hash: ";
+        }
+
         variavel->imprimir(0, true);
-        if(proxima != NULL) std::cout << ", ";
     }
 
   // Imprime a próxima definição
     if(proxima != NULL) {
+	std::cout << ", ";
         proxima->imprimir(0, false);
     }
 }
