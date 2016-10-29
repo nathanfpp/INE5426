@@ -1,4 +1,4 @@
-int fun myFun(int : bool d){
+int fun myFun(int : int d){
 int ref A_1
 int : int b
 A_1 = ref b(2)
@@ -8,4 +8,5 @@ d = c
 ret d
 }
 int : bool wA 
-int e = myFun(wA)
+int e = myFun(0+8383-33)
+e = myFun(e)

@@ -99,14 +99,27 @@ void Parametro::comparar(TabelaDeSimbolos *tabelaDeSimbolos, Parametro *comparad
         }
 
       // Chamada de Função consulta a tabela de símbolos para extrair a variável 
-        else {
+       else {
+	    //Recupera nodo se for variavel
+	    if(comparado->parametro->tipo == Tipo::hash) {
             Nodo *n = tabelaDeSimbolos->recuperar(comparado->parametro->id, linha, true);
-            tipoValor = ((Variavel*)n)->tipoDeVariavel;
-            tipoChave = ((Hash*)n)->tipoDeChave;
+	    if (n != NULL && n->tipo == Tipo::hash){//é uma variavel
+            	tipoValor = ((Variavel*)n)->tipoDeVariavel;
+	        tipoChave = ((Hash*)n)->tipoDeChave;
+	    	}
+	    }
+	    else{ //Parametro recebido é alguma coisa qualquer, menos um hash
+		tipoValor = comparado->parametro->analisar(tabelaDeSimbolos, linha);
+		std::cerr <<"[Line " << linha << "]"<<" semantic error: expected hash "<<imprimirTipoPorExtenso(tipoReserva)<<":";
+		std::cerr <<imprimirTipoPorExtenso(tipoDoParametro);	
+                std::cerr << " but received " << imprimirTipoPorExtenso(tipoValor) << "\n";              			
+		return;
+	    }
         }
-
+	
+	
       // Compara as Chaves dos Hashes
-        if(tipoChave == tipoReserva) {
+       if(tipoChave == tipoReserva) {
     
           // Compara os Valores do Hashes
             if(tipoValor == tipoDoParametro) {

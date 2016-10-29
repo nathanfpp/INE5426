@@ -1,3 +1,6 @@
 [Line 4] semantic error: reference operation expects a pointer
 [Line 5] semantic error: arrays or hashes can only be part of a simple attribution
-[Line 1] semantic error: return of function myFun expected integer but received bool:int
+[Line 7] semantic error: operation attribution expected int:int but received bool:int
+[Line 1] semantic error: return of function myFun expected integer but received int:int
+[Line 3] semantic error: expected hash integer : integer but received integer
+[Line 4] semantic error: expected hash integer : integer but received integer
