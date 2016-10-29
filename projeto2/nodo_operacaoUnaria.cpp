@@ -55,7 +55,7 @@ Tipo OperacaoUnaria::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha
       // Parênteses apenas retornam o tipo contido
         case Tipo::parenteses:  return d;
 
-      // Endereco de variavel retorna um tipo inteiro
+      // Endereco de variavel retorna um tipo endereco
         case Tipo::endereco:
 	if (filho->id == "")
 	std::cerr<<"[Line " << linha << "] semantic error: address operation expects a variable or array item\n";

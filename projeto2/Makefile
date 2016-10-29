@@ -279,3 +279,5 @@ compare_error_test:
 	diff error_tests/v1.4/expected/5.ex_err error_tests/v1.4/output/5.out_err  
 	diff error_tests/v1.4/expected/6.ex     error_tests/v1.4/output/6.out
 	diff error_tests/v1.4/expected/6.ex_err error_tests/v1.4/output/6.out_err  
+	diff error_tests/v1.4/expected/7.ex     error_tests/v1.4/output/7.out
+	diff error_tests/v1.4/expected/7.ex_err error_tests/v1.4/output/7.out_err 

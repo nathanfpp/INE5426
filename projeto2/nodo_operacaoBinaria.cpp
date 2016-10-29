@@ -53,7 +53,7 @@ Tipo OperacaoBinaria::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linh
                 }
 
 	        if((e == Tipo::inteiro && (d != Tipo::inteiro && d != Tipo::endereco))
-		     || (e == Tipo::boolean && d != Tipo::boolean)
+		     || (e == Tipo::boolean && (d != Tipo::boolean && d != Tipo::endereco))
 		     || (e == Tipo::real && d == Tipo::boolean)) {
             	    imprimirErroDeOperacao(operacao, e, d, linha);
                 }

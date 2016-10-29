@@ -87,70 +87,55 @@ void Parametro::comparar(TabelaDeSimbolos *tabelaDeSimbolos, Parametro *comparad
 
   // Se o tipoReserva não for nulo, ele representa a chave do parâmetro de HASH //
     if(tipoReserva != Tipo::nulo) {
-
-      // Coleta os tipos dos parâmetros
-        Tipo tipoChave = Tipo::nulo, tipoValor = Tipo::nulo;
-
       // Definição de Função acrescenta os parâmetros à tabela de símbolos
         if(definicao) {
-            tipoValor = comparado->tipoDoParametro;
-            tipoChave = comparado->tipoReserva;
+            Tipo tipoValor = comparado->tipoDoParametro;
+            Tipo tipoChave = comparado->tipoReserva;
             tabelaDeSimbolos->adicionar(parametro, linha, true);
+
+	        // Compara as Chaves dos Hashes
+	       if(tipoChave == tipoReserva) {
+	    
+		  // Compara os Valores do Hashes
+		    if(tipoValor == tipoDoParametro) {
+			  // Captura-se os nomes dos parâmetros
+			    std::string nomeEsperado = ((Variavel*) parametro)->id;
+			    std::string nomeRecebido = ((Variavel*) comparado->parametro)->id;
+
+			  // Compara-se os nomes dos parâmetros, se forem diferentes um erro é emitido
+			    if(nomeEsperado.compare(nomeRecebido) != 0) {
+			        std::string id = ((Variavel*) parametro)->id;
+			        std::cerr << "[Line " << linha << "] semantic error: hash parameter " << nomeEsperado;
+			        std::cerr << " expected to be called " << nomeEsperado << " but was named " << nomeRecebido << "\n"; 
+			    }            
+		    }
+		  // Se os Valores forem de tipos diferentes
+		    else {              
+			std::cerr << "[Line " << linha << "] semantic error: hash parameter " << parametro->id;
+			std::cerr << " expected value of type " << imprimirTipoPorExtenso(tipoDoParametro);
+			std::cerr << " but received " << imprimirTipoPorExtenso(tipoValor) << "\n";              
+		    }
+		}
+	       // Se as Chaves forem de tipos diferentes
+		else {
+		    std::cerr << "[Line " << linha << "] semantic error: hash parameter " << parametro->id;
+		    std::cerr << " expected key of type " << imprimirTipoPorExtenso(tipoReserva);
+		    std::cerr << " but received " << imprimirTipoPorExtenso(tipoChave) << "\n";              
+		}
         }
 
-      // Chamada de Função consulta a tabela de símbolos para extrair a variável 
+      // Chamada de Função: argumentos (qualquer expressao ou até mesmo um hash simples) vs Parametro (hash)
        else {
 	    //Recupera nodo se for variavel
-	    if(comparado->parametro->tipo == Tipo::hash) {
-            Nodo *n = tabelaDeSimbolos->recuperar(comparado->parametro->id, linha, true);
-	    if (n != NULL && n->tipo == Tipo::hash){//é uma variavel
-            	tipoValor = ((Variavel*)n)->tipoDeVariavel;
-	        tipoChave = ((Hash*)n)->tipoDeChave;
-	    	}
-	    }
-	    else{ //Parametro recebido é alguma coisa qualquer, menos um hash
-		tipoValor = comparado->parametro->analisar(tabelaDeSimbolos, linha);
-		std::cerr <<"[Line " << linha << "]"<<" semantic error: expected hash "<<imprimirTipoPorExtenso(tipoReserva)<<":";
-		std::cerr <<imprimirTipoPorExtenso(tipoDoParametro);	
-                std::cerr << " but received " << imprimirTipoPorExtenso(tipoValor) << "\n";              			
-		return;
+	    Tipo tipoArgumento = comparado->parametro->analisar(tabelaDeSimbolos, linha); 
+	    Tipo tipoParametroAjustado = tabelaDeSimbolos->tipoDeHash(tipoReserva, tipoDoParametro);//chave,valor->retorna tipo chave_Valor
+	    if(tipoParametroAjustado != tipoArgumento) {
+	     //Parametro recebido é alguma coisa qualquer, menos um hash
+		std::cerr <<"[Line " << linha << "]"<<" semantic error: expected hash "<<imprimirTipoPorExtenso(tipoParametroAjustado);
+                std::cerr << " but received " << imprimirTipoPorExtenso(tipoArgumento) << "\n";              			
 	    }
         }
-	
-	
-      // Compara as Chaves dos Hashes
-       if(tipoChave == tipoReserva) {
-    
-          // Compara os Valores do Hashes
-            if(tipoValor == tipoDoParametro) {
-
-              // Caso se trate de um parâmetro, não um argumento de uma chamada de função...
-                if(definicao) {
-                  // Captura-se os nomes dos parâmetros
-                    std::string nomeEsperado = ((Variavel*) parametro)->id;
-                    std::string nomeRecebido = ((Variavel*) comparado->parametro)->id;
-
-                  // Compara-se os nomes dos parâmetros, se forem diferentes um erro é emitido
-                    if(nomeEsperado.compare(nomeRecebido) != 0) {
-                        std::string id = ((Variavel*) parametro)->id;
-                        std::cerr << "[Line " << linha << "] semantic error: hash parameter " << nomeEsperado;
-                        std::cerr << " expected to be called " << nomeEsperado << " but was named " << nomeRecebido << "\n"; 
-                    }
-                }            
-            }
-          // Se os Valores forem de tipos diferentes
-            else {              
-                std::cerr << "[Line " << linha << "] semantic error: hash parameter " << parametro->id;
-                std::cerr << " expected value of type " << imprimirTipoPorExtenso(tipoDoParametro);
-                std::cerr << " but received " << imprimirTipoPorExtenso(tipoValor) << "\n";              
-            }
-        }
-       // Se as Chaves forem de tipos diferentes
-        else {
-            std::cerr << "[Line " << linha << "] semantic error: hash parameter " << parametro->id;
-            std::cerr << " expected key of type " << imprimirTipoPorExtenso(tipoReserva);
-            std::cerr << " but received " << imprimirTipoPorExtenso(tipoChave) << "\n";              
-        }    
+	 
     }
 
 

@@ -157,24 +157,36 @@ void Chamada::imprimir(int espaco, bool declaracao) {
             break;
 
         case Tipo::arranjo_duplo:
+	    if(ponteiroEsqAtribuicao == true && ponteiros > 0) {
+	    std::cout << "[ref] "; 
+ 	    }
             std::cout << "[index][index] " << id << "";
             if(parametros != NULL) {
                 parametros->imprimir(0, false);
             }
             break;
         case Tipo::arranjo:
+	    if(ponteiroEsqAtribuicao == true && ponteiros > 0) {
+	    std::cout << "[ref] "; 
+ 	    }
             std::cout << "[index] " << id << "";
             if(parametros != NULL) {
                 parametros->imprimir(0, false);
             }
             break;
         case Tipo::hash:
+	    if(ponteiroEsqAtribuicao == true && ponteiros > 0) {
+	    std::cout << "[ref] "; 
+ 	    }
             std::cout << "[key] " << id << "";
             if(parametros != NULL) {
                 parametros->imprimir(0, false);
             }
             break;
         default:
+	    if(ponteiroEsqAtribuicao == true && ponteiros > 0) {
+	    std::cout << "[ref] "; 
+ 	    }
            std::cout << "[" << imprimirTipoPorExtenso(tipo) << "] "<< id << "";
            if(parametros != NULL) {
                 parametros->imprimir(0, false);

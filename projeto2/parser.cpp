@@ -601,7 +601,7 @@ static const yytype_int16 yypact[] =
        5,    96,  -175,   224,   293,   177,   224,  -175,  -175,   181,
       33,   190,   125,   125,  -175,   185,   125,   189,   125,  -175,
     -175,  -175,    34,  -175,     3,   400,   293,   187,   192,   502,
-    -175,  -175,   195,   191,   196,   200,  -175,   224,    31,   201,
+    -175,  -175,   195,   191,   196,   200,   173,   224,    31,   201,
      199,  -175,   178,   293,   125,   204,   205,   293,   360,  -175,
      224,  -175,   206,  -175,   209,   202,   203,   210,   293,   183,
     -175,   224,   380,   216,  -175,   219,   293,   293,   224,   420,
@@ -649,7 +649,7 @@ static const yytype_int16 yypgoto[] =
     -175,  -175,     2,   -11,     9,  -175,  -175,  -175,   163,   188,
     -175,  -175,  -175,    45,   -88,  -175,   153,  -175,  -175,   111,
     -175,  -175,  -175,  -136,  -175,  -175,   121,  -175,  -175,  -128,
-    -107,  -175,    97,  -174,    -6,   -25,   -89,    35,    76,    -1
+    -107,    97,  -175,  -174,    -6,   -25,   -89,    35,    76,    -1
 };
 
   /* YYDEFGOTO[NTERM-NUM].  */
@@ -805,7 +805,7 @@ static const yytype_uint8 yystos[] =
       84,    85,    12,    18,    10,    75,    44,    14,     6,    85,
       88,    40,    11,    11,    68,    12,    16,     6,    18,    60,
       61,    86,    88,    12,    16,    83,    51,    72,    13,    83,
-      12,     6,     6,    79,    79,    13,    81,    11,    84,     6,
+      12,     6,     6,    79,    79,    13,    80,    11,    84,     6,
       85,    12,    14,    10,    11,    12,    12,    10,    83,    87,
       11,    12,    38,    70,    72,    79,    13,    13,    51,    78,
       12,    16,    83,    13,    14,    12,    10,    10,    41,    83,
@@ -1727,13 +1727,13 @@ yyreduce:
 
   case 35:
 #line 186 "parser.y" /* yacc.c:1646  */
-    {  (yyval.nodo) = new AST::Chamada ( AST::Tipo::nulo , AST::Tipo::nulo , (yyvsp[-3].valor) , (yyvsp[-1].parametro) , NULL );}
+    {  (yyval.nodo) = new AST::Chamada ( AST::Tipo::nulo , AST::Tipo::nulo , (yyvsp[-3].valor) , (yyvsp[-1].parametro) , NULL);}
 #line 1732 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 36:
 #line 188 "parser.y" /* yacc.c:1646  */
-    {  (yyval.nodo) = new AST::Chamada ( AST::Tipo::nulo , AST::Tipo::nulo , (yyvsp[-3].valor) , (yyvsp[-1].parametro) , NULL );}
+    {  (yyval.nodo) = new AST::Chamada ( AST::Tipo::nulo , AST::Tipo::nulo , (yyvsp[-3].valor) , (yyvsp[-1].parametro) , NULL);}
 #line 1738 "parser.cpp" /* yacc.c:1646  */
     break;
 

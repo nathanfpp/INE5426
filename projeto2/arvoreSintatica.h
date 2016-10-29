@@ -259,7 +259,7 @@ class Parametro : public Nodo {
         Tipo tipoDoParametro;
         Tipo tipoReserva;
         Nodo *parametro;
-        Nodo* proximo;
+        Nodo *proximo;
     Parametro(Tipo t, Tipo k, Tipo v, Nodo *p, Nodo *r) : Nodo(t,""), tipoDoParametro(k), tipoReserva(v), parametro(p), proximo(r) { };
     Tipo analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha);
     void imprimir(int espaco, bool naoArgumento);

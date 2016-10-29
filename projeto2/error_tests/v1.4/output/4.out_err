@@ -1,7 +1,7 @@
 [Line 1] semantic error: return of function myfun1 expected int:int but received integer array
-[Line 3] semantic error: function myfun1 expects 2 parameters but received 1
-[Line 4] semantic error: function myfun1 expects 2 parameters but received 1
+[Line 3] semantic error: function myfun1 expects 3 parameters but received 1
+[Line 4] semantic error: function myfun1 expects 3 parameters but received 1
 [Line 6] semantic error: arrays or hashes can only be part of a simple attribution
 [Line 5] semantic error: return of function myfun2 expected int:int but received null
-[Line 7] semantic error: expected hash bool : integer but received int:int
+[Line 7] semantic error: expected hash bool:int but received int:int
 [Line 7] semantic error: reference operation expects a pointer
