@@ -54,5 +54,10 @@ void Variavel::imprimir(int espaco, bool novaLinha) {
     if(ponteiroEsqAtribuicao == true && ponteiros > 0) {
         std::cout << "[ref] "; 
     }
+    if (ponteiros > 0 && ponteiroParametro == true){
+	std::cout << "ref ";
+        ponteiroParametro = false; 
+    }
     std::cout << id << "";
 }
+

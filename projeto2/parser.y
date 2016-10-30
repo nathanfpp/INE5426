@@ -183,9 +183,9 @@ arranjo_duplo:
 
 chamada:
           T_VAR T_OPEN arg_null T_CLOSE 
-          {  $$ = new AST::Chamada ( AST::Tipo::nulo , AST::Tipo::nulo , $1 , $3 , NULL);}
+          {  $$ = new AST::Chamada ( AST::Tipo::nulo , AST::Tipo::nulo , $1 , $3 , NULL, 0);}
         | referencia T_VAR T_OPEN arg_null T_CLOSE 
-          {  $$ = new AST::Chamada ( AST::Tipo::nulo , AST::Tipo::nulo , $2 , $4 , NULL);}
+          {  $$ = new AST::Chamada ( AST::Tipo::nulo , AST::Tipo::nulo , $2 , $4 , NULL, $1);}
         ;
 
 arg_null :

@@ -54,6 +54,11 @@ void ArranjoDuplo::imprimir(int espaco, bool declaracao) {
 
   // Impressão para uso comum
     else {
+        if (ponteiros > 0 && ponteiroParametro == true){
+	std::cout << "ref ";
+        ponteiroParametro = false; 
+    	}
+
         std::cout << "[index][index] " << id << " ";
         if(tamanho != NULL) {        
             tamanho->imprimir(0, false);

@@ -1,4 +1,4 @@
-int fun: c (params: int s)
+int fun: c (params: int ref s)
   ret 3
 int fun: d (params: int y)
   ret 4

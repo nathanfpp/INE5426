@@ -1727,13 +1727,13 @@ yyreduce:
 
   case 35:
 #line 186 "parser.y" /* yacc.c:1646  */
-    {  (yyval.nodo) = new AST::Chamada ( AST::Tipo::nulo , AST::Tipo::nulo , (yyvsp[-3].valor) , (yyvsp[-1].parametro) , NULL);}
+    {  (yyval.nodo) = new AST::Chamada ( AST::Tipo::nulo , AST::Tipo::nulo , (yyvsp[-3].valor) , (yyvsp[-1].parametro) , NULL, 0);}
 #line 1732 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 36:
 #line 188 "parser.y" /* yacc.c:1646  */
-    {  (yyval.nodo) = new AST::Chamada ( AST::Tipo::nulo , AST::Tipo::nulo , (yyvsp[-3].valor) , (yyvsp[-1].parametro) , NULL);}
+    {  (yyval.nodo) = new AST::Chamada ( AST::Tipo::nulo , AST::Tipo::nulo , (yyvsp[-3].valor) , (yyvsp[-1].parametro) , NULL, (yyvsp[-4].num_ref));}
 #line 1738 "parser.cpp" /* yacc.c:1646  */
     break;
 

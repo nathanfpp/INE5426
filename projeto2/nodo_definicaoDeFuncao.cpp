@@ -121,6 +121,7 @@ void DefinicaoDeFuncao::imprimir(int espaco, bool novaLinha) {
         imprimirTipo(tipoDoRetorno);
         std::cout << " fun: " << id << " (params: ";
         if(parametros != NULL) {
+            ((Parametro*)parametros)->ajustarPonteiroImpressao(((Parametro*)parametros));
             parametros->imprimir(0, true);
         }
         std::cout << ")\n";

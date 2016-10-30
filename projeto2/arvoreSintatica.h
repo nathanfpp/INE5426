@@ -62,6 +62,7 @@ class Variavel : public Nodo {
         Tipo tipoDeVariavel;
 	int ponteiros;  //0 nao é referenciado, > 1 n referencias
 	bool ponteiroEsqAtribuicao = false;
+        bool ponteiroParametro = false;
     Variavel(Tipo t, Tipo v, std::string i, int p) : Nodo(t,i), tipoDeVariavel(v), ponteiros(p) {};
     Tipo analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha);
     Tipo obterTipoDaTabela(TabelaDeSimbolos *tabelaDeSimbolos);
@@ -247,7 +248,7 @@ class Hash : public Variavel {
 
 class Chamada : public Funcao {
     public:
-    Chamada(Tipo t, Tipo d, std::string i, Nodo *p, Bloco *c) : Funcao(t,d,i,p) { definida = false; };
+    Chamada(Tipo t, Tipo d, std::string i, Nodo *p, Bloco *c, int ref) : Funcao(t,d,i,p) {ponteiros = ref; definida = false; };
     Tipo analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha);
     void imprimir(int espaco, bool novaLinha);
     int contarParametros();
@@ -265,6 +266,7 @@ class Parametro : public Nodo {
     void imprimir(int espaco, bool naoArgumento);
     void comparar(TabelaDeSimbolos *tabelaDeSimbolos, Parametro *comparado, int linha, bool definicao);
     void acrescentarAoEscopo(TabelaDeSimbolos *tabelaDeSimbolos, int linha);
+    void ajustarPonteiroImpressao(Parametro *p);
     int contar();
 };
 

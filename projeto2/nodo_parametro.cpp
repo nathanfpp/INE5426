@@ -72,6 +72,7 @@ void Parametro::imprimir(int espaco, bool naoArgumento) {
 	else
         imprimirTipo(tipoDoParametro);
     }
+    
     std::cout << " ";
     parametro->imprimir(0,false);
     if(proximo != NULL) {
@@ -222,4 +223,14 @@ int Parametro::contar() {
         return (((Parametro*)proximo)->contar() + 1);
     }    
 }
+
+void Parametro::ajustarPonteiroImpressao(Parametro *p) {
+   
+	if(((Variavel*)(p->parametro))->ponteiros > 0)
+	((Variavel*)(p->parametro))->ponteiroParametro = true;
+	if ( ((Parametro*)(p->proximo)) != NULL)
+	p->ajustarPonteiroImpressao(((Parametro*)(p->proximo)));	
+}    
+
+
 

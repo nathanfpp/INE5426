@@ -33,7 +33,7 @@ Tipo Arranjo::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha) {
 void Arranjo::imprimir(int espaco, bool declaracao) {    
 
   // Impressão para declaração de arranjo
-    if(declaracao) {
+    if(declaracao) {	
         std::cout << id << " (size: ";
         if(tamanho != NULL) {        
             tamanho->imprimir(0, false);
@@ -43,6 +43,10 @@ void Arranjo::imprimir(int espaco, bool declaracao) {
 
   // Impressão para uso comum
     else {
+	if (ponteiros > 0 && ponteiroParametro == true){
+	std::cout << "ref ";
+        ponteiroParametro = false; 
+        }
         std::cout << "[index] " << id << " ";
         if(tamanho != NULL) {        
             tamanho->imprimir(0, false);

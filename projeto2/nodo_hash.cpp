@@ -17,5 +17,9 @@ Tipo Hash::tipoDeHash(AST::TabelaDeSimbolos *tabelaDeSimbolos) {
 }
 
 void Hash::imprimir(int espaco, bool declaracao) {    
+    if (ponteiros > 0 && ponteiroParametro == true){
+	std::cout << "ref ";
+        ponteiroParametro = false; 
+    }
     std::cout << id << "";
 }

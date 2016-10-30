@@ -7,7 +7,7 @@ do:
   = [index][index] a i 1 true
   = [index][index] c 2 3 [ref] [index] d 2
   = [index][index] c e e [index] d e
-  = [index][index] c e e [index] d e
-  = [index][index] c e e [addr] [index][index] c e e
+  = [ref] [index][index] c e e [index] d e
+  = [ref] [index][index] c e e [addr] [index][index] c e e
 = b & [index][index] a 0 0 [index][index] a 1 1
 
