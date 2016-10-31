@@ -40,10 +40,11 @@ rejeite         [^0-9a-zA-Z\(\)\,\{\}\_\+\=\/\>\<\*\-\!\&\|\t" "\n]+
 "[float]"           { return T_CAST_FLOAT; } // Conversores de Tipo
 "[bool]"            { return T_CAST_BOOL;  } //
 
-{valor_int}         { yylval.valor = strdup(yytext);  return T_INT;   } // Valores de
-{valor_float}       { yylval.valor = strdup(yytext);  return T_FLOAT; } //  Variáveis
-{valor_bool}        { yylval.valor = strdup(yytext);  return T_BOOL;  } //
-{letter}            { yylval.valor = strdup(yytext);  return T_VAR;   } //
+{valor_int}         { yylval.valores.valor = strdup(yytext); yylval.valores.i = std::atoi(yytext);    return T_INT;       } // Valores de
+{valor_float}       { yylval.valores.valor = strdup(yytext); yylval.valores.f = std::atof(yytext);    return  T_FLOAT;    } //  Variáveis
+{valor_bool}        { yylval.valores.valor = strdup(yytext);  if(strcmp(yytext,"true") != 0) yylval.valores.b = false; 
+                                                           else yylval.valores.b = true;              return T_BOOL;      } //
+{letter}            { yylval.valores.valor = strdup(yytext);  					      return T_VAR;       } //
 
 "+"                 { return T_PLUS ; } //
 "-"                 { return T_MINUS; } // Operadores

@@ -15,6 +15,7 @@ extern void yyerror(const char* s, ...);
 // Estrutura complementar ao Union
 %code requires {
     #include "arvoreSintatica.h"
+
 }
 
 
@@ -31,7 +32,7 @@ extern void yyerror(const char* s, ...);
 // yylval == %union
 // A union informa os diferentes modos de armazenar dados, utilizado para definir os tipos de Símbolos Terminais e Não-Terminais
 %union {
-    const char* valor;
+    AST::atributo_nodo valores;
     AST::Nodo *nodo;
     AST::Variavel *variavel;
     //AST::Inteiro *inteiro;
@@ -55,7 +56,7 @@ extern void yyerror(const char* s, ...);
 
 // %token
 // Símbolos Terminais (tokens)
-%token <valor> T_FLOAT T_INT T_BOOL T_VAR
+%token <valores> T_FLOAT T_INT T_BOOL T_VAR
 %token <tipo> T_TYPE_INT T_TYPE_FLOAT T_TYPE_BOOL
 %token T_NL T_OPEN T_CLOSE  T_OPEN_KEY T_CLOSE_KEY T_EQUAL T_COMMA T_SEMICOLON T_COLON T_PLUS T_MINUS T_TIMES T_DIV T_NOT T_AND T_OR 
 %token T_EQUAL2 T_DIF T_HIGHER T_HIGH T_LOWER T_LOW

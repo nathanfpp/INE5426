@@ -44,7 +44,8 @@ extern int yydebug;
 
     #include "arvoreSintatica.h"
 
-#line 48 "parser.h" /* yacc.c:1909  */
+
+#line 49 "parser.h" /* yacc.c:1909  */
 
 /* Token type.  */
 #ifndef YYTOKENTYPE
@@ -105,9 +106,9 @@ extern int yydebug;
 typedef union YYSTYPE YYSTYPE;
 union YYSTYPE
 {
-#line 33 "parser.y" /* yacc.c:1909  */
+#line 34 "parser.y" /* yacc.c:1909  */
 
-    const char* valor;
+    AST::atributo_nodo valores;
     AST::Nodo *nodo;
     AST::Variavel *variavel;
     //AST::Inteiro *inteiro;
@@ -127,7 +128,7 @@ union YYSTYPE
     AST::Tipo tipo;
     int num_ref;
 
-#line 131 "parser.h" /* yacc.c:1909  */
+#line 132 "parser.h" /* yacc.c:1909  */
 };
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1
