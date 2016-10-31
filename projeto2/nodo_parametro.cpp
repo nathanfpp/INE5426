@@ -135,6 +135,7 @@ void Parametro::comparar(TabelaDeSimbolos *tabelaDeSimbolos, Parametro *comparad
 		std::cerr <<"[Line " << linha << "]"<<" semantic error: expected hash "<<imprimirTipoPorExtenso(tipoParametroAjustado);
                 std::cerr << " but received " << imprimirTipoPorExtenso(tipoArgumento) << "\n";              			
 	    }
+	    //ELSE {ISSO DEVERÁ SER UMA OPERAÇÃO BINÁRIA QUE GUARDE O RESULTADO NO INTERPRETADOR}
         }
 	 
     }

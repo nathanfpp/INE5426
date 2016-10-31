@@ -31,6 +31,8 @@ bool Nodo::coercaoDaDefinicao(Definicao *coagido, Tipo esperado, Tipo recebido, 
         }
     }
 
+/*NO INTERPRETADOR ISSO DEVE VIRAR UMA OPERAÇÃO BINÁRIA QUE GUARDE O RESULTADO*/
+
  // Se os tipos forem compatíveis, com ou sem coerção, retorna-se true
     return true;
 }

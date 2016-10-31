@@ -25,11 +25,6 @@ Tipo DefinicaoDeHash::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linh
         tipo = Tipo::nulo;
     }
 
-  // Caso a Definição atribua um valor à Variável, realizando coerção se necessário
-    if(valor != NULL) {
-        Tipo tipoDoValor = valor->analisar(tabelaDeSimbolos, linha); // anteriormente após a coerção
-        coercaoDaDefinicao(this, tipoDeVariavel, tipoDoValor, linha);
-    }
 
   // Se outra Variável foi declarada, atribui o tipo da Declaração e inicia sua análise 
     if(proxima != NULL) {
