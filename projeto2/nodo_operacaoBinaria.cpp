@@ -48,7 +48,7 @@ Tipo OperacaoBinaria::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linh
 
               // O nodo à esquerda não pode ser uma função
                 if(esquerda->tipo == Tipo::funcao_cha) {
-                    std::cerr << std::cerr << "[Line " << linha << "] semantic error: attribution operation expects a variable on the left side not a function" <<"\n";
+                    std::cerr << "[Line " << linha << "] semantic error: attribution operation expects a variable on the left side not a function" <<"\n";
                     return Tipo::nulo;
                 }
 
