@@ -8,19 +8,21 @@
 
 using namespace AST;
 
-Tipo Chamada::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha) {
+Tipo Chamada::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool analisador) {
 
   // Caso a função/arranjo/hash não tenha sido definida/declarada, ocorre um erro semântico
     Nodo *n = tabelaDeSimbolos->recuperar(id, -1, false);
 
     if(n != NULL) {
 
-      // Uma chamada ou função pode ser...
+      // Uma chamada pode ser...
         switch(n->tipo) {
 
 // Função
             case Tipo::funcao_dec:
             case Tipo::funcao_def: {
+
+//std::cerr << "chamada::analisar " << id << " 1\n";
 
               // Define o tipo desta Chamada como Chamada de Função
                 tipo = Tipo::funcao_cha;
@@ -30,23 +32,44 @@ Tipo Chamada::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha) {
               
               // Recupera a Função a partir do Nodo
                 Funcao *f = ((Funcao*) n);
-                       
+     
+              // Analisa os parâmetros, caso existam  
+                if(parametros!=NULL) {           
+                    parametros->analisar(tabelaDeSimbolos, linha, analisador);
+                }
+
               // Compara a quantidade parâmetros da Função retornada e da Chamada
                 int quantidadeEsperada = f->contarParametros();
                 if(quantidadeDeParametros != quantidadeEsperada) {
                     std::cerr << "[Line " << linha << "] semantic error: function " << id;
                     std::cerr << " expects " << quantidadeEsperada << " parameters";
                     std::cerr << " but received " << quantidadeDeParametros << "\n";
-                }              
+                }          
 
               // Se os parâmetros não foram nulos, eles podem ser comparados
-                else if(parametros != NULL) {                
-                    ((Parametro*)f->parametros)->comparar(tabelaDeSimbolos, ((Parametro*)parametros), linha, false);
+                else if(parametros != NULL) {
+                    ((Parametro*)f->parametros)->comparar(tabelaDeSimbolos, ((Parametro*)parametros), linha, false, analisador);
                 }
 
               // Atribui o tipo da função definida à declaração ou chamada
                 tipoDoRetorno = f->tipoDoRetorno;
- 
+
+              // Executa a função e armazena o retorno na Chamada, caso ela tenha sido definida
+                if(analisador) {
+                    if(f->definida) {
+                        ((DefinicaoDeFuncao*)f)->executar(tabelaDeSimbolos, ((Parametro*)parametros), linha, analisador);
+                        boolean = f->boolean;
+                        inteiro = f->inteiro;
+                        real    = f->real;
+//std::cout << "@chamada: " << id << " " << inteiro << "\n";
+                    }
+
+                  // Caso a função não tenha sido definida, e o analisador estiver ativo, uma mensagem de erro é emitida
+                    else {
+                        std::cout << "$ Undefined function " << f->id << ", the result below should not be trusted\n";                        
+                    }
+                }
+
               // Retorna o tipo da variável retornada pela função
                 return tipoDoRetorno;
             }
@@ -66,8 +89,8 @@ Tipo Chamada::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha) {
                 } else {
 
                   // O tipo usado como índice é válido? parametros = tamanho
-                    Tipo indice1 = (((Parametro*)parametros)->parametro)->analisar(tabelaDeSimbolos, linha);
-                    Tipo indice2 = (((Parametro*)((Parametro*)parametros)->proximo)->parametro)->analisar(tabelaDeSimbolos, linha);
+                    Tipo indice1 = (((Parametro*)parametros)->parametro)->analisar(tabelaDeSimbolos, linha, analisador);
+                    Tipo indice2 = (((Parametro*)((Parametro*)parametros)->proximo)->parametro)->analisar(tabelaDeSimbolos, linha, analisador);
                     if(indice1 != Tipo::inteiro) {
                         std::cerr << "[Line " << linha << "] semantic error: index operator expects integer but received " << imprimirTipoPorExtenso(indice1) << "\n";
                     } else if(indice2 != Tipo::inteiro) {
@@ -95,7 +118,7 @@ Tipo Chamada::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha) {
                 } else {
 
                   // O tipo usado como índice é válido? parametros = tamanho
-                    Tipo indice = (((Parametro*)parametros)->parametro)->analisar(tabelaDeSimbolos, linha);
+                    Tipo indice = (((Parametro*)parametros)->parametro)->analisar(tabelaDeSimbolos, linha, analisador);
                     if(indice != Tipo::inteiro) {
                       std::cerr << "[Line " << linha << "] semantic error: index operator expects integer but received " << imprimirTipoPorExtenso(indice) << "\n";
                     }
@@ -103,6 +126,7 @@ Tipo Chamada::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha) {
 
               // Retorna o tipo da variável do arranjo
                  tipoDoRetorno = a->tipoDeVariavel;
+//std::cerr << "@chamada : " << imprimirTipoPorExtenso(tipoDoRetorno) << "\n";
                  return tipoDoRetorno;
             }
 
@@ -121,7 +145,7 @@ Tipo Chamada::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha) {
                 } else {
                   
                   // O tipo usado como índice é válido? parametros = tamanho
-                    Tipo recebido = ((Parametro*)parametros)->parametro->analisar(tabelaDeSimbolos,linha);
+                    Tipo recebido = ((Parametro*)parametros)->parametro->analisar(tabelaDeSimbolos,linha, analisador);
                     Tipo chave = h->tipoDeChave;
                     if(chave != recebido) {
                         std::cerr << "[Line " << linha << "] semantic error: key operator expects ";
@@ -147,7 +171,8 @@ Tipo Chamada::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha) {
     return tipo;
 }
 
-void Chamada::imprimir(int espaco, bool declaracao) {
+void Chamada::imprimir(int espaco, bool novaLinha) {
+
     switch(tipo) {
         case Tipo::funcao_cha:
             std::cout << id << "["<< quantidadeDeParametros << " params]";

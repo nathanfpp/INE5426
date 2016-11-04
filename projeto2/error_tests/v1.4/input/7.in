@@ -1,11 +1,11 @@
 int fun myFun(int : int d){
-int ref A_1
-int : int b
-A_1 = ref b(2)
-A_1 = addr b
-int : bool c
-d = c
-ret d
+  int ref A_1
+  int : int b
+  A_1 = ref b(2)
+  A_1 = addr b
+  int : bool c
+  d = c
+  ret d
 }
 int : bool wA 
 int e = myFun(0+8383-33)

@@ -1,0 +1,20 @@
+int fun f1(int p) {
+  int k = 1000 + p
+  ret k
+}
+int fun f2(int p) {
+  int k = 100 + f1(p)
+  ret k
+}
+int fun f3(int p) {
+  int k = 10 + f2(p)
+  ret k
+}
+$f3(1)
+int fun f(int x, int y){
+  int a = x + y
+  ret x + y + a
+}  
+int b = 9
+b = f(33 + 3, b*(b+2))
+$b

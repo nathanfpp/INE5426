@@ -95,9 +95,10 @@ extern int yydebug;
     T_DO = 298,
     T_WHILE = 299,
     T_REF = 300,
-    UMINUS = 301,
-    T_CAST = 302,
-    INT = 303
+    T_CALC = 301,
+    UMINUS = 302,
+    T_CAST = 303,
+    INT = 304
   };
 #endif
 
@@ -106,7 +107,7 @@ extern int yydebug;
 typedef union YYSTYPE YYSTYPE;
 union YYSTYPE
 {
-#line 34 "parser.y" /* yacc.c:1909  */
+#line 35 "parser.y" /* yacc.c:1909  */
 
     AST::atributo_nodo valores;
     AST::Nodo *nodo;
@@ -128,7 +129,7 @@ union YYSTYPE
     AST::Tipo tipo;
     int num_ref;
 
-#line 132 "parser.h" /* yacc.c:1909  */
+#line 133 "parser.h" /* yacc.c:1909  */
 };
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1

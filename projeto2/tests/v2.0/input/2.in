@@ -1,0 +1,8 @@
+int a = 0, b
+if a < 0
+then {
+  b = -1
+} else {
+  b = 1
+}
+$a-b*2

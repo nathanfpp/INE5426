@@ -8,7 +8,7 @@
 
 using namespace AST;
 
-Tipo Hash::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha) {
+Tipo Hash::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool analisador) {
     return tabelaDeSimbolos->tipoDeHash(tipoDeVariavel, tipoDeChave);
 }
 

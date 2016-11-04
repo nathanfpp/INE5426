@@ -8,11 +8,11 @@
 
 using namespace AST;
 
-Tipo OperacaoTernaria::analisar(AST::TabelaDeSimbolos *tabelaSimbolos, int linha) {  
+Tipo OperacaoTernaria::analisar(AST::TabelaDeSimbolos *tabelaSimbolos, int linha, bool analisador) {  
 
   // Captura os tipos dos filhos esquerda e direita
-    Tipo e = esquerda->analisar(tabelaSimbolos, linha);
-    Tipo d = direita->analisar(tabelaSimbolos, linha);
+    Tipo e = esquerda->analisar(tabelaSimbolos, linha, analisador);
+    Tipo d = direita->analisar(tabelaSimbolos, linha, analisador);
 
   // Se um dos tipos foram nulo não tem porque seguir adiante
   if (e == Tipo::nulo)

@@ -8,7 +8,7 @@
 
 using namespace AST;
 
-Tipo Bloco::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha) {
+Tipo Bloco::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool analisador) {
 
   // Associa o escopo ao Bloco
     escopo = tabelaDeSimbolos;  
@@ -23,10 +23,13 @@ Tipo Bloco::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha) {
     for (Nodo *l : linhas) {    
         if(l != NULL) {
             linha++;
-            analise = l->analisar(escopo, linha);
+            analise = l->analisar(escopo, linha, analisador);
             if(l->tipo == Tipo::retorno) {
                 if(retorno == Tipo::bloco) {
-                    retorno = analise; 
+                    retorno = analise;
+                    boolean = l->boolean;
+                    inteiro = l->inteiro;
+                    real    = l->real;
                 } else {
                     retorno = Tipo::nulo;
                 }

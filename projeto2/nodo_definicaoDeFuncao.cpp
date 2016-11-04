@@ -8,7 +8,7 @@
 
 using namespace AST;
 
-Tipo DefinicaoDeFuncao::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha) {
+Tipo DefinicaoDeFuncao::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool analisador) {
 
   // Conta a quantidade de parâmetros: se não houver parâmetros a quantidade é 0
     definida = true;
@@ -52,7 +52,7 @@ Tipo DefinicaoDeFuncao::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int li
 
       // Se os parâmetros não foram nulos, eles podem ser comparados
         else if(parametros != NULL) {         
-            ((Parametro*)f->parametros)->comparar(novoEscopo, ((Parametro*)parametros), linha, true);
+            ((Parametro*)f->parametros)->comparar(novoEscopo, ((Parametro*)parametros), linha, true, analisador);
         }
 
       // Instancia o tipo a ser retornado pela função
@@ -60,10 +60,10 @@ Tipo DefinicaoDeFuncao::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int li
 
       // Se o corpo da Função não for nulo, ele deve ser analisado
         if(corpo != NULL) {                  
-            tipoRetornado = corpo->analisar(novoEscopo, linha);
+            tipoRetornado = corpo->analisar(novoEscopo, linha, analisador);
         }
 	else{
-	    tipoRetornado = retorno->analisar(novoEscopo, linha);
+	    tipoRetornado = retorno->analisar(novoEscopo, linha, analisador);
 	}
 
       // Compara o retorno do bloco com o tipo do retorno da Função
@@ -79,6 +79,10 @@ Tipo DefinicaoDeFuncao::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int li
       // Retorna ao escopo anterior a Função
         novoEscopo->retornarEscopo(linha);    
     
+      // Substitui a declaração pela definição na tabela de símbolos
+        tabelaDeSimbolos->remover(id);
+        tabelaDeSimbolos->adicionar(this, linha, false);
+
       // Retorna o tipo da variável retornada pela função
         return tipoDoRetorno;
     }
@@ -92,10 +96,10 @@ Tipo DefinicaoDeFuncao::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int li
   // Se o corpo da Função não for nulo, ele deve ser analisado
     Tipo tipoRetornado;
     if(corpo != NULL) {                  
-        tipoRetornado = corpo->analisar(novoEscopo, linha);
+        tipoRetornado = corpo->analisar(novoEscopo, linha, analisador);
      }
     else{
-	tipoRetornado = retorno->analisar(novoEscopo, linha);
+	tipoRetornado = retorno->analisar(novoEscopo, linha, analisador);
      }
 
         
@@ -112,6 +116,44 @@ Tipo DefinicaoDeFuncao::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int li
   // Adiciona a função à tabela de símbolos
     tabelaDeSimbolos->adicionar(this, linha, false);
     return tipo;    
+};
+
+
+Tipo DefinicaoDeFuncao::executar(AST::TabelaDeSimbolos *tabelaDeSimbolos, Parametro *valores, int linha, bool analisador) {
+
+//std::cout << "\n@defFuncao:executar: " << id << ", p = " << ((Parametro*)valores)->parametro->inteiro << "\n";
+
+// Não é possível executar função que não foi definida
+    if(definida) {
+
+      // Cria um novo escopo para a execução da função
+        std::cout << "*";
+        TabelaDeSimbolos *novoEscopo = tabelaDeSimbolos->novoEscopo(tabelaDeSimbolos);
+
+      // Acrescenta os valores dos parâmetros à chamada da função
+        if(parametros != NULL) {
+            ((Parametro*)parametros)->acrescentarComValoresAoEscopo(novoEscopo, valores, linha);
+        }
+
+      // Obtém o retorno da função
+        if(corpo != NULL) {
+            corpo->analisar(novoEscopo, linha, true);
+        }
+        retorno->analisar(novoEscopo, linha, true);
+        boolean = retorno->boolean;
+        inteiro = retorno->inteiro;
+        real    = retorno->real;             
+        
+        //tabelaDeSimbolos->modificar(this, id);
+
+      // Retorna ao escopo anterior a Função
+        std::cout << "*";
+        novoEscopo->retornarEscopo(linha);
+    }
+
+ // Retorna o tipo da variável retornada pela função
+  return tipoDoRetorno;
+
 };
 
 

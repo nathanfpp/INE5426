@@ -8,7 +8,7 @@
 
 using namespace AST;
 
-Tipo Declaracao::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha) {
+Tipo Declaracao::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool analisador) {
 
   // Atribui o tipoDeVariavel da Declaração à primeira variável da declaração
     variaveis->tipoDeVariavel = tipoDeVariavel;
@@ -16,9 +16,9 @@ Tipo Declaracao::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha) {
   // Inicia a análise das variáveis declaradas
     Tipo valida;
     if(variaveis->tipo == Tipo::declaracao){
-        valida = variaveis->analisar(tabelaDeSimbolos, linha);
+        valida = variaveis->analisar(tabelaDeSimbolos, linha, analisador);
     } else {
-        valida = ((DefinicaoDeArranjo*) variaveis)->analisar(tabelaDeSimbolos, linha);
+        valida = ((DefinicaoDeArranjo*) variaveis)->analisar(tabelaDeSimbolos, linha, analisador);
     }
 
   // Caso todas as variáveis já tenham sido declaradas, troca o tipo da Declaração para não ser impressa

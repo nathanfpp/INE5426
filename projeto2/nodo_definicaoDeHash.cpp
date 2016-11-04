@@ -8,7 +8,7 @@
 
 using namespace AST;
 
-Tipo DefinicaoDeHash::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha) {
+Tipo DefinicaoDeHash::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool analisador) {
 
   // Atribui os tipos ao Hash
     variavel->tipo = Tipo::hash;
@@ -31,7 +31,7 @@ Tipo DefinicaoDeHash::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linh
         proxima->tipoDeVariavel = tipoDeVariavel;
         ((DefinicaoDeHash*)proxima)->tipoDeChave = tipoDeChave;
 	proxima->variavel->ponteiros = variavel->ponteiros;
-        proxima->analisar(tabelaDeSimbolos, linha);
+        proxima->analisar(tabelaDeSimbolos, linha, analisador);
      
       // E também registra-se seu Tipo de Nodo
         tipoDoProximo = proxima->tipoDeVariavel;

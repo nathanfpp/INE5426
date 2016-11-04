@@ -8,7 +8,7 @@
 
 using namespace AST;
 
-Tipo DeclaracaoDeHash::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha) {
+Tipo DeclaracaoDeHash::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool analisador) {
 
   // Atribui o tipoDeVariavel da Declaração à primeira variável da declaração
     variaveis->tipoDeVariavel = tipoDeVariavel;
@@ -16,7 +16,7 @@ Tipo DeclaracaoDeHash::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int lin
 
   // Inicia a análise das variáveis declaradas
     Tipo valida;
-    valida = ((DefinicaoDeHash*) variaveis)->analisar(tabelaDeSimbolos, linha);
+    valida = ((DefinicaoDeHash*) variaveis)->analisar(tabelaDeSimbolos, linha, analisador);
 
   // Caso todas as variáveis já tenham sido declaradas, troca o tipo da Declaração para não ser impressa
     if(valida == Tipo::nulo) {

@@ -8,10 +8,10 @@
 
 using namespace AST;
 
-Tipo Arranjo::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha) {
+Tipo Arranjo::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool analisador) {
 
   // O tipo usado como índice é válido?
-    Tipo indice = tamanho->analisar(tabelaDeSimbolos, linha);
+    Tipo indice = tamanho->analisar(tabelaDeSimbolos, linha, analisador);
     if(indice != Tipo::inteiro) {
         std::cerr << "[Line " << linha << "] semantic error: index operator expects integer but received ";
         std::cerr << imprimirTipoPorExtenso(indice) << "\n"; 

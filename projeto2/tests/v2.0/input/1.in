@@ -1,0 +1,11 @@
+int a = 9, b =3, c
+int d, e = a
+$ a + b + e  
+$ a + b + c + d + e
+bool f, g = true, h
+$f
+$f & g | h
+h = g & g | [bool] c
+$h
+
+

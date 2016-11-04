@@ -9,7 +9,6 @@
 using namespace AST;
 
 TabelaDeSimbolos* TabelaDeSimbolos::novoEscopo(TabelaDeSimbolos *a) {
-
   // Cria o novo escopo, ajustando os ponteiros de *anterior e *proximo
     TabelaDeSimbolos *novoEscopo = new TabelaDeSimbolos(); 
     novoEscopo->anterior = a;
@@ -20,7 +19,6 @@ TabelaDeSimbolos* TabelaDeSimbolos::novoEscopo(TabelaDeSimbolos *a) {
 
 
 bool TabelaDeSimbolos::retornarEscopo(int linha) {
-
  // Procura-se entre as funções declaradas...
     typedef std::map<std::string, Nodo*>::iterator it;
     for(it iterator = simbolos.begin(); iterator != simbolos.end(); iterator++) {
@@ -42,17 +40,19 @@ bool TabelaDeSimbolos::retornarEscopo(int linha) {
 
   // Senão, ele pode remover o último escopo, caso ele retorne <true>
     else {
-
       // Isto só é viável pois cada Nodo::Bloco possui uma referência para a TabelDeSimbolos de seu escopo
         simbolos.clear();
         anterior->proximo = NULL;
         anterior = NULL;
+//std::cout << "<-\n";
         return true;
     }    
 }
 
 
 bool TabelaDeSimbolos::adicionar(AST::Nodo *v, int linha, bool variavel) {
+
+//std::cerr << "@tabelaDeSimbolos::adicionar " << v->id << " " << v->inteiro << " " << v->imprimirTipoPorExtenso(((Variavel*)v)->tipo) << " " << v->imprimirTipoPorExtenso(((Variavel*)v)->tipoDeVariavel) << "\n";
 
   // Se a Variável ou Função não foi declarada, ela é adicionada ao map
     std::map<std::string, AST::Nodo*>::const_iterator it;
@@ -74,10 +74,14 @@ bool TabelaDeSimbolos::adicionar(AST::Nodo *v, int linha, bool variavel) {
 
 Nodo* TabelaDeSimbolos::recuperar(std::string id, int linha, bool variavel) {
 
+//std::cout<<".";
   // Variável ou Função encontrada no escopo atual
     std::map<std::string, AST::Nodo*>::const_iterator it;
     it = simbolos.find(id);
     if (it != simbolos.end()) {
+
+//std::cout << "@tabelaDeSimbolos::recuperar " << id << " " << it->second->inteiro << "\n";
+
         return it->second;
     }
 
@@ -95,6 +99,27 @@ Nodo* TabelaDeSimbolos::recuperar(std::string id, int linha, bool variavel) {
         }
     }
     return NULL;
+}
+
+void TabelaDeSimbolos::modificar(Nodo *novoValor, std::string id) {
+//std::cout<<".";
+  // Variável ou Função encontrada no escopo atual
+    std::map<std::string, AST::Nodo*>::iterator it;
+    it = simbolos.find(id);
+    if (it != simbolos.end()) {
+        it->second = novoValor;
+//std::cout << "@tabelaDeSimbolos::modificar " << it->second->id << " " << it->second->inteiro << "\n";
+        return;
+    }
+
+  // Variavel ou Função não encontrada, procurar no escopo anterior
+    else if (anterior != NULL) {
+        return anterior->modificar(novoValor, id);
+    }
+}
+
+void TabelaDeSimbolos::remover(std::string id) {
+    simbolos.erase(id);
 }
 
 Tipo TabelaDeSimbolos::tipoDeArranjo(Tipo tipo) {

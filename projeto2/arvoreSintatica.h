@@ -15,24 +15,22 @@ extern void yyerror(const char *s, ...);
 
 namespace AST {
 
-typedef struct{
-       
-     int i;
-     double f;
-     bool b;
-     char *valor;
-
-     }atributo_nodo;
-
 enum Tipo { inteiro, real, boolean, variavel, hash, arranjo_b, arranjo_i, arranjo_f, arranjo_2_b, arranjo_2_i, arranjo_2_f,
             hash_bb, hash_bi, hash_bf, hash_ib, hash_ii, hash_if, hash_fb, hash_fi, hash_ff,
             declaracao, declaracao_hash, definicao, definicao_arranjo, definicao_hash,
-            opUnaria, opBinaria, opTernaria, condicao, retorno,
+            opUnaria, opBinaria, opTernaria, condicao, retorno, chamada,
             for_laco, do_while_laco, while_laco,
             funcao_dec, funcao_def, funcao_cha, bloco, arranjo, arranjo_duplo, parametro,
             negacao, inversao, conversao_int, conversao_float, conversao_bool, parenteses, referencia, endereco,
             atribuicao, adicao, subtracao, multiplicacao, divisao, e, ou, igual, diferente, maior, maior_igual, menor, menor_igual,
-            teste, condicao_atribuicao, atribuicao_condicional, nulo };
+            teste, condicao_atribuicao, atribuicao_condicional, interpretador, nulo };
+
+typedef struct {       
+    int i;
+    double f;
+    bool b;
+    char *valor;
+} atributo_nodo;
 
 class Nodo;
 class Variavel;
@@ -58,19 +56,17 @@ class Nodo {
         Nodo(Tipo t, atributo_nodo an) : tipo(t), id( an.valor == NULL ? "" : std::string(an.valor)), inteiro(an.i), real(an.f), boolean(an.b) {};
      	Nodo(Tipo t, std::string i) : tipo(t), id(i) {};
         virtual ~Nodo() {};
-        virtual Tipo analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha) { return Tipo::nulo; };
+        virtual Tipo analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool analisador) { return Tipo::nulo; };
 	virtual int recuperarPonteiros(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha) {return 0;}
         virtual void imprimir(int espaco, bool novaLinha) { std::cout << id << ""; }
                 bool coercaoDaDefinicao(Definicao *coagido, Tipo esperado, Tipo recebido, int linha);
-                bool coercao(OperacaoBinaria *coagido, Tipo e, Tipo d, int linha);
+                bool coercao(OperacaoBinaria *coagido, Tipo e, Tipo d, Tipo operacao, int linha, bool analisador);
                 void imprimirEspaco(int espaco);
                 void imprimirTipo(Tipo t);
                 std::string imprimirTipoPorExtenso(Tipo t);
                 void imprimirErroDeOperacao(Tipo operacao, Tipo esperava, Tipo recebeu, int linha);
 
 };
-	
-/* Variáveis */
 
 class Variavel : public Nodo {
     public:
@@ -79,7 +75,7 @@ class Variavel : public Nodo {
 	bool ponteiroEsqAtribuicao = false;
         bool ponteiroParametro = false;
     Variavel(Tipo t, Tipo v, atributo_nodo an, int p) : Nodo(t,an), tipoDeVariavel(v), ponteiros(p) {};
-    Tipo analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha);
+    Tipo analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool analisador);
     Tipo obterTipoDaTabela(TabelaDeSimbolos *tabelaDeSimbolos);
     int recuperarPonteiros(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha);
     void imprimir(int espaco, bool novaLinha);
@@ -88,25 +84,25 @@ class Variavel : public Nodo {
 class Inteiro : public Nodo {
     public:
     	std::string valor;
-    Inteiro(atributo_nodo an) : Nodo(Tipo::inteiro,""), valor(an.valor) {inteiro = an.i; }; 
-    Tipo analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha)        { return Tipo::inteiro;     };
-    void imprimir(int espaco, bool novaLinha)                                { std::cout << valor << ""; };
+    Inteiro(atributo_nodo an) : Nodo(Tipo::inteiro,""), valor(an.valor)                { inteiro = an.i;           }; 
+    Tipo analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool analisador) { return Tipo::inteiro;     };
+    void imprimir(int espaco, bool novaLinha)                                          { std::cout << valor << ""; };
 };
 
 class Real : public Nodo {
     public:
     	std::string valor;
-    Real(atributo_nodo an) : Nodo(Tipo::real,""), valor(an.valor) { real = an.f; };
-    Tipo analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha)        { return Tipo::real;        }
-    void imprimir(int espaco, bool novaLinha)                                { std::cout << valor << ""; };
+    Real(atributo_nodo an) : Nodo(Tipo::real,""), valor(an.valor)                      { real = an.f;              };
+    Tipo analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool analisador) { return Tipo::real;        }
+    void imprimir(int espaco, bool novaLinha)                                          { std::cout << valor << ""; };
 };
 
 class Boolean : public Nodo {
     public:
     	std::string valor;
-    Boolean(atributo_nodo an) : Nodo(Tipo::boolean,""), valor(an.valor) { boolean = an.b;};
-    Tipo analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha)        { return Tipo::boolean;                       };  
-    void imprimir(int espaco, bool novaLinha)                                { std::cout << std::boolalpha << valor << ""; };
+    Boolean(atributo_nodo an) : Nodo(Tipo::boolean,""), valor(an.valor)                 { boolean = an.b;                             };
+    Tipo analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool analisador) { return Tipo::boolean;                       };  
+    void imprimir(int espaco, bool novaLinha)                                          { std::cout << std::boolalpha << valor << ""; };
 };
 
 class Declaracao : public Nodo {
@@ -114,7 +110,7 @@ class Declaracao : public Nodo {
         Tipo tipoDeVariavel;
         Definicao *variaveis;
     Declaracao(Tipo t, Tipo v, Definicao *d) : Nodo(t,vazio), tipoDeVariavel(v), variaveis(d) { };
-    Tipo analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha);
+    Tipo analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool analisador);
     void imprimir(int espaco, bool novaLinha);
 };
 
@@ -122,7 +118,7 @@ class DeclaracaoDeHash : public Declaracao {
     public:
         Tipo tipoDeChave;
     DeclaracaoDeHash(Tipo t, Tipo k, Tipo v, Definicao *d) : Declaracao(t,v,d), tipoDeChave(k) { };
-    Tipo analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha);
+    Tipo analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool analisador);
     void imprimir(int espaco, bool novaLinha);
 };
 
@@ -133,7 +129,7 @@ class Definicao : public Nodo {
         Nodo *valor;
         Definicao *proxima;
     Definicao(Tipo t, Variavel *v, Nodo *c, Definicao *p) : Nodo(t,vazio), variavel(v), valor(c), proxima(p) { };
-    Tipo analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha);
+    Tipo analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool analisador);
     void imprimir(int espaco, bool novaLinha);
     void ajustarProxima(Definicao *p);
 };
@@ -141,7 +137,7 @@ class Definicao : public Nodo {
 class DefinicaoDeArranjo : public Definicao {
     public:
     DefinicaoDeArranjo(Tipo t, Variavel *a, Nodo *c, DefinicaoDeArranjo *p) : Definicao(t,a,c,p) { };
-    Tipo analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha);
+    Tipo analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool analisador);
     void imprimir(int espaco, bool novaLinha);
 };
 
@@ -149,18 +145,18 @@ class DefinicaoDeHash : public Definicao {
     public:
         Tipo tipoDeChave;
     DefinicaoDeHash(Tipo t, Variavel *a, Nodo *c, DefinicaoDeArranjo *p) : Definicao(t,a,c,p) { };
-    Tipo analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha);
+    Tipo analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool analisador);
     void imprimir(int espaco, bool novaLinha);
 };
 
 class OperacaoUnaria : public Nodo {
     public:
         Tipo operacao;
-        Tipo retorno;
+        Tipo tipoDoRetorno;
         Nodo *filho;
 	int ponteiros; //uma operacao unaria pode conter uma referencia ao lado direito, portanto deve ser passado para cima
-    OperacaoUnaria(Tipo t, Tipo o, Nodo *f) : Nodo(t,vazio), operacao(o), retorno(Tipo::nulo), filho(f) { };
-    Tipo analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha);
+    OperacaoUnaria(Tipo t, Tipo o, Nodo *f) : Nodo(t,vazio), operacao(o), tipoDoRetorno(Tipo::nulo), filho(f) { };
+    Tipo analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool analisador);
     int recuperarPonteiros(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha){return ponteiros;}
     void imprimir(int espaco, bool novaLinha);
 };
@@ -168,11 +164,11 @@ class OperacaoUnaria : public Nodo {
 class OperacaoBinaria : public Nodo {
     public:
         Tipo operacao;
-        Tipo retorno;
+        Tipo tipoDoRetorno;
         Nodo *esquerda;
         Nodo *direita;
-    OperacaoBinaria(Tipo t, Tipo o, Nodo *e, Nodo *d) : Nodo(t,vazio), operacao(o), retorno(Tipo::nulo), esquerda(e), direita(d) { };
-    Tipo analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha);
+    OperacaoBinaria(Tipo t, Tipo o, Nodo *e, Nodo *d) : Nodo(t,vazio), operacao(o), tipoDoRetorno(Tipo::nulo), esquerda(e), direita(d) { };
+    Tipo analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool analisador);
     void imprimir(int espaco, bool novaLinha);
 };
 
@@ -181,7 +177,7 @@ class OperacaoTernaria : public Nodo {
         OperacaoUnaria *esquerda; 
         OperacaoBinaria *direita;
     OperacaoTernaria(Tipo t, OperacaoUnaria *e, OperacaoBinaria *d) : Nodo(t,vazio), esquerda(e), direita(d) { };
-    Tipo analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha);
+    Tipo analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool analisador);
     void imprimir(int espaco, bool novaLinha);
 };
 
@@ -191,7 +187,7 @@ class Condicao : public Nodo {
         Bloco *se;
         Bloco *senao;
     Condicao(Tipo t, Nodo *a,  Bloco *b,  Bloco *c) : Nodo(t,vazio), teste(a), se(b), senao(c) {  };
-    Tipo analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha);
+    Tipo analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool analisador);
     void imprimir(int espaco, bool novaLinha);
 };
 
@@ -202,7 +198,7 @@ class Laco : public Nodo {
         Nodo *iteracao;
         Bloco *laco;
     Laco(Tipo t, Nodo *a, Nodo *b, Nodo *c, Bloco *d) : Nodo(t,vazio), inicializacao(a), teste(b), iteracao(c), laco(d) { };
-    Tipo analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha);
+    Tipo analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool analisador);
     void imprimir(int espaco, bool novaLinha);
 };
 
@@ -213,7 +209,7 @@ class Funcao : public Variavel {
         int quantidadeDeParametros;
         bool definida;
     Funcao(Tipo t, Tipo d, atributo_nodo an, Nodo *p) : Variavel(t,d,an,0), tipoDoRetorno(d), parametros(p) { definida = false; };
-    Tipo analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha);
+    Tipo analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool analisador);
     void imprimir(int espaco, bool novaLinha) { };
     int contarParametros();
 };
@@ -222,7 +218,7 @@ class Retorno : public Nodo {
     public:
         Nodo *retorno;
     Retorno(Tipo t, Nodo *r) : Nodo(t,vazio), retorno(r) {};
-    Tipo analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha);
+    Tipo analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool analisador);
     void imprimir(int espaco, bool novaLinha);
 };
 
@@ -231,7 +227,8 @@ class DefinicaoDeFuncao : public Funcao {
         Bloco *corpo;
 	Nodo *retorno;
     DefinicaoDeFuncao(Tipo t, Tipo d, atributo_nodo an, Nodo *p, Bloco *c, Nodo *r) : Funcao(t,d,an,p), corpo(c), retorno(r) { definida = false; };
-    Tipo analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha);
+    Tipo analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool analisador);
+    Tipo executar(AST::TabelaDeSimbolos *tabelaDeSimbolos, Parametro *valores, int linha, bool analisador);
     void imprimir(int espaco, bool novaLinha);
     int contarParametros();
 };
@@ -240,7 +237,7 @@ class Arranjo : public Variavel {
     public:
         Nodo *tamanho;
     Arranjo(Tipo t, Tipo v, atributo_nodo an, Nodo *p, int ponteiros) : Variavel(t, v, an, ponteiros), tamanho(p) {};
-    Tipo analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha);
+    Tipo analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool analisador);
     void imprimir(int espaco, bool novaLinha);
 };
 
@@ -248,7 +245,7 @@ class ArranjoDuplo : public Arranjo {
     public:
         Nodo *tamanho2;
     ArranjoDuplo(Tipo t, Tipo v, atributo_nodo an, Nodo *p, Nodo *q, int ponteiros) : Arranjo(t, v, an, p, ponteiros), tamanho2(q) {};
-    Tipo analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha);
+    Tipo analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool analisador);
     void imprimir(int espaco, bool novaLinha);
 };
 
@@ -256,7 +253,7 @@ class Hash : public Variavel {
     public:
         Tipo tipoDeChave;
     Hash(Tipo t, Tipo v, atributo_nodo an, int ponteiros) : Variavel(t, v, an, ponteiros), tipoDeChave(Tipo::nulo) {};
-    Tipo analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha);
+    Tipo analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool analisador);
     Tipo tipoDeHash(AST::TabelaDeSimbolos *tabelaDeSimbolos);
     void imprimir(int espaco, bool novaLinha);
 };
@@ -264,11 +261,10 @@ class Hash : public Variavel {
 class Chamada : public Funcao {
     public:
     Chamada(Tipo t, Tipo d, atributo_nodo an, Nodo *p, Bloco *c, int ref) : Funcao(t,d,an,p) {ponteiros = ref; definida = false; };
-    Tipo analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha);
+    Tipo analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool analisador);
     void imprimir(int espaco, bool novaLinha);
     int contarParametros();
 };
-
 
 class Parametro : public Nodo {
     public:
@@ -277,10 +273,11 @@ class Parametro : public Nodo {
         Nodo *parametro;
         Nodo *proximo;
     Parametro(Tipo t, Tipo k, Tipo v, Nodo *p, Nodo *r) : Nodo(t,vazio), tipoDoParametro(k), tipoReserva(v), parametro(p), proximo(r) { };
-    Tipo analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha);
+    Tipo analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool analisador);
     void imprimir(int espaco, bool naoArgumento);
-    void comparar(TabelaDeSimbolos *tabelaDeSimbolos, Parametro *comparado, int linha, bool definicao);
+    void comparar(TabelaDeSimbolos *tabelaDeSimbolos, Parametro *comparado, int linha, bool definicao, bool analisador);
     void acrescentarAoEscopo(TabelaDeSimbolos *tabelaDeSimbolos, int linha);
+    void acrescentarComValoresAoEscopo(TabelaDeSimbolos *tabelaDeSimbolos, Parametro *valores, int linha);
     void ajustarPonteiroImpressao(Parametro *p);
     int contar();
 };
@@ -291,21 +288,34 @@ class Bloco : public Nodo {
         TabelaDeSimbolos *escopo;
     Bloco(Tipo t) : Nodo(t,vazio) {} ; // Construtor para um Bloco de linhas comum
     Bloco(Tipo t, TabelaDeSimbolos *s) : Nodo(t,vazio), escopo(s) { }; // Construtor para o Bloco principal, a Árvore Sintática
-    Tipo analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha);
+    Tipo analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool analisador);
     void imprimir(int espaco, bool novaLinha);
     void novaLinha(Nodo *linha);
+};
+
+class Interpretador : public Nodo {
+    public:
+        Nodo* raiz;
+    Interpretador(Tipo t, Nodo* r) : Nodo(t,vazio), raiz(r) { };
+    Tipo analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool analisador);
+    void imprimir(int espaco, bool novaLinha);
 };
 
 class TabelaDeSimbolos {
     public:
         std::map<std::string, AST::Nodo*> simbolos;
+        std::vector<atributo_nodo*> parametros;
         TabelaDeSimbolos *anterior, *proximo;
     TabelaDeSimbolos() {}
-    ~TabelaDeSimbolos() { }
+    ~TabelaDeSimbolos() {}
     TabelaDeSimbolos* novoEscopo(TabelaDeSimbolos *a);
     bool retornarEscopo(int linha);
     bool adicionar(AST::Nodo *v, int linha, bool variavel);
     Nodo* recuperar(std::string id, int linha, bool variavel);
+    void modificar(Nodo *novoValor, std::string id);
+    void remover(std::string id);
+    void adicionarParametro();
+    atributo_nodo coletarParametro();
     Tipo tipoDeArranjo(Tipo tipo);
     Tipo tipoDeArranjoDuplo(Tipo tipo);
     Tipo tipoDeHash(Tipo chave, Tipo valor);

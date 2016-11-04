@@ -8,14 +8,14 @@
 
 using namespace AST;
 
-Tipo Funcao::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha) {
+Tipo Funcao::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool analisador) {
 
   // Conta a quantidade de parâmetros: se não houver parâmetros a quantidade é 0
     contarParametros();
 
   // Analisa parâmetros
     if(parametros != NULL) {
-        parametros->analisar(tabelaDeSimbolos, linha);
+        parametros->analisar(tabelaDeSimbolos, linha, analisador);
     }
 
   // Adiciona-se a função à tabela de funções, caso já não tenha sido definida anteriormente
@@ -31,6 +31,15 @@ Tipo Funcao::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha) {
     return tipo;
 
 }
+
+/*
+Tipo DefinicaoDeFuncao::executar(AST::TabelaDeSimbolos *tabelaDeSimbolos, Parametro *valores, int linha, bool analisador) {
+    boolean = false; 
+    inteiro = 0; 
+    real = 0.0; 
+    return tipoDoRetorno;
+}
+*/
 
 int Funcao::contarParametros() {
     if(parametros == NULL) {

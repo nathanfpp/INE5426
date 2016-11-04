@@ -8,7 +8,7 @@
 
 using namespace AST;
 
-Tipo DefinicaoDeArranjo::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha) {
+Tipo DefinicaoDeArranjo::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool analisador) {
 
   // Atribui tipoDeVariavel, recebido da Declaração, ao Nodo Variável (neste caso um Arranjo)
     variavel->tipoDeVariavel = tipoDeVariavel;
@@ -17,7 +17,7 @@ Tipo DefinicaoDeArranjo::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int l
     Tipo tipoDoProximo = Tipo::nulo;
 
   // Verifico se a declaracao do primeiro indice do arranjo duplo ou indice do arranjo simples é válida
-    Tipo indice1 =  ((Arranjo*)variavel)->tamanho->analisar(tabelaDeSimbolos, linha);
+    Tipo indice1 =  ((Arranjo*)variavel)->tamanho->analisar(tabelaDeSimbolos, linha, analisador);
     if(indice1 != Tipo::inteiro) {
         std::cerr << "[Line " << linha << "] semantic error: index operator expects integer but received ";
         std::cerr << imprimirTipoPorExtenso(indice1) << "\n"; 
@@ -25,7 +25,7 @@ Tipo DefinicaoDeArranjo::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int l
 
   // Verifico se a declaracao do segundo indice do arranjo duplo é válida
     if ( ((ArranjoDuplo*)variavel)->tipo == Tipo::arranjo_duplo){
-        Tipo indice2 = ((ArranjoDuplo*)variavel)->tamanho2->analisar(tabelaDeSimbolos, linha);
+        Tipo indice2 = ((ArranjoDuplo*)variavel)->tamanho2->analisar(tabelaDeSimbolos, linha, analisador);
         if(indice2 != Tipo::inteiro) {
             std::cerr << "[Line " << linha << "] semantic error: index operator expects integer but received ";
             std::cerr << imprimirTipoPorExtenso(indice1) << "\n"; 
@@ -43,7 +43,7 @@ Tipo DefinicaoDeArranjo::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int l
     if(proxima != NULL) {
         proxima->tipoDeVariavel = tipoDeVariavel;
 	proxima->variavel->ponteiros = variavel->ponteiros;
-        proxima->analisar(tabelaDeSimbolos, linha);
+        proxima->analisar(tabelaDeSimbolos, linha, analisador);
 
       // E também registra-se seu Tipo de Nodo
         tipoDoProximo = proxima->tipoDeVariavel;

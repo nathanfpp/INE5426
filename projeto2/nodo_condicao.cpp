@@ -8,10 +8,10 @@
 
 using namespace AST;
 
-Tipo Condicao::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha) {
+Tipo Condicao::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool analisador) {
 
   // O teste de uma Condição deve ser Booleano
-    Tipo esperado = teste->analisar(tabelaDeSimbolos, linha);
+    Tipo esperado = teste->analisar(tabelaDeSimbolos, linha, analisador);
     if(esperado != Tipo::boolean) {
         imprimirErroDeOperacao(Tipo::teste, Tipo::boolean, esperado, linha);
     }   
@@ -19,14 +19,33 @@ Tipo Condicao::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha) {
   // Caso "se" não seja nulo, cria um escopo próprio e é avaliado
     if(se != NULL) {
         TabelaDeSimbolos *novoEscopo = tabelaDeSimbolos->novoEscopo(tabelaDeSimbolos);
-        se->analisar(novoEscopo, linha);
+
+      // Caso a condição seja verdadeira e o código esteja sendo executado, o bloco "then" também é executado
+        if(analisador && teste->boolean) {
+            se->analisar(novoEscopo, linha, true);
+        }
+
+      // Caso contrário, o bloco "then" é apenas analisado
+        else if (!analisador){
+            se->analisar(novoEscopo, linha, false);
+        }
+
         novoEscopo->retornarEscopo(linha);
     }
 
   // Caso "senão" não seja nulo, cria um escopo próprio e é avaliado
     if(senao != NULL) {
         TabelaDeSimbolos *novoEscopo = tabelaDeSimbolos->novoEscopo(tabelaDeSimbolos);
-        senao->analisar(novoEscopo, linha);
+
+      // Caso a condição seja falsa e o código esteja sendo executado, o bloco "else" também é executado
+        if(analisador && !teste->boolean) {
+            senao->analisar(novoEscopo, linha, true);
+        }
+
+      // Caso contrário, o bloco "else" é apenas analisado
+        else if (!analisador){
+            senao->analisar(novoEscopo, linha, false);
+        }
         novoEscopo->retornarEscopo(linha);  
     }
 
