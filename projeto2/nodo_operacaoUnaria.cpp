@@ -123,6 +123,7 @@ Tipo OperacaoUnaria::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha
             if (d != Tipo::boolean) {
                 imprimirErroDeOperacao(tipo, Tipo::boolean, d, linha);
             }
+	    boolean = filho->boolean;
             return Tipo::boolean;
 
       // Por padrão, retorna o tipo do nodo

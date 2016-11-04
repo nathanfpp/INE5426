@@ -13,5 +13,5 @@ int fun: f (params: int x, int y)
   ret + + x y a
 int var: b = 9
 = b f[2 params] + 33 3 * b + b 2
-$ R: b = ?
+$ R: b = 270
 

@@ -7,3 +7,6 @@ int fun somatorio(int p) {
   ret r
 }
 $somatorio(3)
+int a
+a = (4 > 0 ? 4 : 0) + 8
+$a

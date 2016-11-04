@@ -4,5 +4,5 @@ then:
   = b -u 1
 else:
   = b 1
-$ R: 0
+$ R: -2
 

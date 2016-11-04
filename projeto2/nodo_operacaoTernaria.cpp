@@ -19,7 +19,14 @@ Tipo OperacaoTernaria::analisar(AST::TabelaDeSimbolos *tabelaSimbolos, int linha
 	return e;
   if (d == Tipo::nulo)
 	return d;
+   
+   //Interpretador opera atribuicao condicional
 
+   if (analisador){
+	inteiro = esquerda->boolean ? direita->esquerda->inteiro : direita->direita->inteiro;
+	boolean = esquerda->boolean ? direita->esquerda->boolean : direita->direita->boolean;
+	real =    esquerda->boolean ? direita->esquerda->real : direita->direita->real;
+   }
   //Retorna o nodo a direita que é o valor da atribuicao a ser retornado.
 	return d;
 }

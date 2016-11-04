@@ -5,4 +5,7 @@
     = r + p somatorio[1 params] - p 1
   ret r
 $ R: 5
+int var: a
+= a + ? > 4 0:  4 0 8
+$ R: a = 12
 
