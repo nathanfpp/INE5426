@@ -5,5 +5,5 @@ int var: a, b, c
 while: < a 100
 do:
   = a + + a b c
-$ R: a = 7
+$ R: a = 106
 
