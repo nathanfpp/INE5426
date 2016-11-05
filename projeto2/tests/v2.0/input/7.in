@@ -4,6 +4,6 @@ b = 2
 c = 1
 int i
 for i = 0, i < 100 , i = i + 1 {
-  a = a + b + b
+  a = a + 10
 }
 $a

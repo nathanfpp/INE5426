@@ -7,6 +7,6 @@ do:
   int var: dado = 10
   = dado + dado 10
   = a + + a b c
-$ R: a = 106
+$ R: a = 100
 $ R: dado = ?
 

@@ -5,6 +5,6 @@ int var: a, b, c
 int var: i
 for: = i 0, < i 100, = i + i 1
 do:
-  = a + + a b b
-$ R: a = 408
+  = a + a 10
+$ R: a = 1004
 

@@ -94,13 +94,13 @@ Tipo Laco::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool ana
     else if(tipo == Tipo::while_laco){
          if(analisador) {
 	      while(teste->boolean) {
-                 teste->analisar(tabelaDeSimbolos, linha, true);
 	         TabelaDeSimbolos *novoEscopo;
 		 if(laco != NULL){
 		    novoEscopo = tabelaDeSimbolos->novoEscopo(tabelaDeSimbolos);
         	    laco->analisar(novoEscopo, linha, analisador);
 	            novoEscopo->retornarEscopo(linha);
 		}
+                 teste->analisar(tabelaDeSimbolos, linha, true);
              }
        }
   }
@@ -108,29 +108,27 @@ Tipo Laco::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool ana
   else if(tipo == Tipo::do_while_laco){
          if(analisador) {
 	     do{
-                 teste->analisar(tabelaDeSimbolos, linha, true);
 	         TabelaDeSimbolos *novoEscopo;
 		 if(laco != NULL){
 		    novoEscopo = tabelaDeSimbolos->novoEscopo(tabelaDeSimbolos);
         	    laco->analisar(novoEscopo, linha, analisador);
 	            novoEscopo->retornarEscopo(linha);
 		}
+                 teste->analisar(tabelaDeSimbolos, linha, true);
        	     } while(teste->boolean);
         }
   }
 
 
   // Se o conteúdo do laço não for vazio, também deve ser verificado
- /* INTERPRETADOR: Como eu executo um teste de condição acima no imprimir erro, devo executar o laço mais uma vez para compensar.
-    INTERPRETADOR DESATIVADO: Devo executar.
- */
+  if(!analisador){
     TabelaDeSimbolos *novoEscopo;
     if(laco != NULL) {
         novoEscopo = tabelaDeSimbolos->novoEscopo(tabelaDeSimbolos);
         laco->analisar(novoEscopo, linha, analisador);
         novoEscopo->retornarEscopo(linha);
     }
-
+  }
   // Retorna o tipo do nodo
     return tipo;
 }
