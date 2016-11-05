@@ -1,2 +1,2 @@
-@ESTEPÔ: 33 ##@[Line 4] semantic error: operation test expected bool but received integer
-@ESTEPÔ: 32 ##@[Line 7] semantic error: operation test expected bool but received integer
+[Line 4] semantic error: operation test expected bool but received integer
+[Line 7] semantic error: operation test expected bool but received integer

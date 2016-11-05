@@ -4,6 +4,9 @@ int var: a, b, c
 = c 1
 while: < a 100
 do:
+  int var: dado = 10
+  = dado + dado 10
   = a + + a b c
 $ R: a = 106
+$ R: dado = ?
 

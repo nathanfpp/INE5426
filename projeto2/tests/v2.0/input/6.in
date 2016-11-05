@@ -3,6 +3,9 @@ a = 4
 b = 2
 c = 1
 while a < 100 {
+  int dado = 10
+  dado = dado + 10
   a = a + b + c
 }
 $a
+$dado

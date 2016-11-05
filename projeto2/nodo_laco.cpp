@@ -76,8 +76,12 @@ Tipo Laco::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool ana
              while(teste->boolean) {
                  iteracao->analisar(tabelaDeSimbolos, linha, true);
                  teste->analisar(tabelaDeSimbolos, linha, true);
-		 if(laco != NULL)
-	         laco->analisar(tabelaDeSimbolos, linha, analisador);
+	         TabelaDeSimbolos *novoEscopo;
+		 if(laco != NULL){
+		    novoEscopo = tabelaDeSimbolos->novoEscopo(tabelaDeSimbolos);
+        	    laco->analisar(novoEscopo, linha, analisador);
+	            novoEscopo->retornarEscopo(linha);
+		}
              }
         }
 
@@ -85,30 +89,41 @@ Tipo Laco::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool ana
         else {
             iteracao->analisar(tabelaDeSimbolos, linha, false);
         }
-    }
- }
+     }
+   }
     else if(tipo == Tipo::while_laco){
          if(analisador) {
 	      while(teste->boolean) {
                  teste->analisar(tabelaDeSimbolos, linha, true);
-		 if(laco != NULL)
-	         laco->analisar(tabelaDeSimbolos, linha, analisador);
+	         TabelaDeSimbolos *novoEscopo;
+		 if(laco != NULL){
+		    novoEscopo = tabelaDeSimbolos->novoEscopo(tabelaDeSimbolos);
+        	    laco->analisar(novoEscopo, linha, analisador);
+	            novoEscopo->retornarEscopo(linha);
+		}
              }
        }
- }
+  }
 
   else if(tipo == Tipo::do_while_laco){
          if(analisador) {
 	     do{
                  teste->analisar(tabelaDeSimbolos, linha, true);
-		 if(laco != NULL)
-	         laco->analisar(tabelaDeSimbolos, linha, analisador);
+	         TabelaDeSimbolos *novoEscopo;
+		 if(laco != NULL){
+		    novoEscopo = tabelaDeSimbolos->novoEscopo(tabelaDeSimbolos);
+        	    laco->analisar(novoEscopo, linha, analisador);
+	            novoEscopo->retornarEscopo(linha);
+		}
        	     } while(teste->boolean);
- }
-}
+        }
+  }
 
 
   // Se o conteúdo do laço não for vazio, também deve ser verificado
+ /* INTERPRETADOR: Como eu executo um teste de condição acima no imprimir erro, devo executar o laço mais uma vez para compensar.
+    INTERPRETADOR DESATIVADO: Devo executar.
+ */
     TabelaDeSimbolos *novoEscopo;
     if(laco != NULL) {
         novoEscopo = tabelaDeSimbolos->novoEscopo(tabelaDeSimbolos);
