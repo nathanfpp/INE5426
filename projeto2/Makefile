@@ -73,6 +73,9 @@ test:
 	./${OUTPUT} < tests/v2.0/input/6.in > tests/v2.0/output/6.out
 	./${OUTPUT} < tests/v2.0/input/7.in > tests/v2.0/output/7.out
 	./${OUTPUT} < tests/v2.0/input/8.in > tests/v2.0/output/8.out
+	./${OUTPUT} < tests/v2.0/input/9.in > tests/v2.0/output/9.out
+	./${OUTPUT} < tests/v2.0/input/9.in > tests/v2.0/output/9.out
+	./${OUTPUT} < tests/v2.0/input/10.in > tests/v2.0/output/10.out
 
 compare_test:
 	diff tests/v0.1/expected/1.ex tests/v0.1/output/1.out  || exit 0

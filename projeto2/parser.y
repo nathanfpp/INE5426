@@ -225,7 +225,7 @@ arg_null :
  
 argumentos:
             argumento                     { $$ = $1;                   }
-          | argumentos T_COMMA argumento  { $$ = $1; $$->proximo = $3; }
+          | argumentos T_COMMA argumentos  { $$ = $1; $$->proximo = $3; }
           ;
 
 argumento:
