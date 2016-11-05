@@ -56,6 +56,7 @@ Tipo Laco::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool ana
 
 Tipo Laco::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool analisador) {
 
+
   // Analisa-se a inicialização do Laço, caso ela exista
     if(inicializacao != NULL) {
         inicializacao->analisar(tabelaDeSimbolos, linha, analisador);
@@ -68,7 +69,8 @@ Tipo Laco::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool ana
     }
 
   // Analisa-se a iteração do Laço, caso ela exista
-    if(iteracao != NULL) { //NAO RECONHECE tipo = for_laco
+  if(tipo == Tipo::for_laco){
+    if(iteracao != NULL) { 
        // Caso o código esteja sendo executado, e a condição do teste for verdadeira, ocorre uma iteração
          if(analisador) { //SE EU CRIO UM NOVO ESCOPO NÃO FUNCIONA
              while(teste->boolean) {
@@ -84,7 +86,8 @@ Tipo Laco::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool ana
             iteracao->analisar(tabelaDeSimbolos, linha, false);
         }
     }
-    else{
+ }
+    else if(tipo == Tipo::while_laco){
          if(analisador) {
 	      while(teste->boolean) {
                  teste->analisar(tabelaDeSimbolos, linha, true);
@@ -92,8 +95,18 @@ Tipo Laco::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool ana
 	         laco->analisar(tabelaDeSimbolos, linha, analisador);
              }
        }
-       //NESSE ESQUEMA BIZONHO, NÃO TENHO COMO INTERPRETAR O DO_WHILE, APENAS INTERPRETAR
  }
+
+  else if(tipo == Tipo::do_while_laco){
+         if(analisador) {
+	     do{
+                 teste->analisar(tabelaDeSimbolos, linha, true);
+		 if(laco != NULL)
+	         laco->analisar(tabelaDeSimbolos, linha, analisador);
+       	     } while(teste->boolean);
+ }
+}
+
 
   // Se o conteúdo do laço não for vazio, também deve ser verificado
     TabelaDeSimbolos *novoEscopo;
