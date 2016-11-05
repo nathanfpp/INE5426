@@ -1,4 +1,6 @@
-**************int fun: f1 (params: int p)
+int var: c = 10
+int fun: f1 (params: int p)
+  = c 5
   int var: k = + 1000 p
   ret k
 int fun: f2 (params: int p)
@@ -13,5 +15,5 @@ int fun: f (params: int x, int y)
   ret + + x y a
 int var: b = 9
 = b f[2 params] + 33 3 * b + b 2
-$ R: b = 270
+$ R: c = 5
 

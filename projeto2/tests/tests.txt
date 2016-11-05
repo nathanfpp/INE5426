@@ -69,3 +69,14 @@ v1.4
  3 : ok
  4 : ok
  5 : ok
+
+v2.0
+
+ 1 : ok
+ 2 : ok
+ 3 : ok
+ 4 : não reconhece variaveis em chamadas de função dentro da função, MAS retorno valor certo.
+ 5 : teste de função recursiva: não reconhece variaveis em chamadas de função dentro da função MAS retorno valor certo de uma chamada equivalente mas não recursiva.
+ 6 : ok
+ 7 : ok
+ 8 : não reconhece variaveis em chamadas de função dentro da função MAS retorno valor certo..

@@ -66,7 +66,7 @@ Tipo Chamada::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool 
 
                   // Caso a função não tenha sido definida, e o analisador estiver ativo, uma mensagem de erro é emitida
                     else {
-                        std::cout << "$ Undefined function " << f->id << ", the result below should not be trusted\n";                        
+                        std::cerr <<"[Line "<<linha<<"]"<< " $ Undefined function " << f->id << ", the result below should not be trusted\n";                        
                     }
                 }
 

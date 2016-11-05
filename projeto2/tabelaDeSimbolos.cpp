@@ -52,9 +52,9 @@ bool TabelaDeSimbolos::retornarEscopo(int linha) {
 
 bool TabelaDeSimbolos::adicionar(AST::Nodo *v, int linha, bool variavel) {
 
-//std::cerr << "@tabelaDeSimbolos::adicionar " << v->id << " " << v->inteiro << " " << v->imprimirTipoPorExtenso(((Variavel*)v)->tipo) << " " << v->imprimirTipoPorExtenso(((Variavel*)v)->tipoDeVariavel) << "\n";
-
-  // Se a Variável ou Função não foi declarada, ela é adicionada ao map
+//std::cerr << "\n@ " << v->id<<"\n";
+  
+// Se a Variável ou Função não foi declarada, ela é adicionada ao map
     std::map<std::string, AST::Nodo*>::const_iterator it;
     it = simbolos.find(v->id);
     if (it == simbolos.end()) {
@@ -74,7 +74,6 @@ bool TabelaDeSimbolos::adicionar(AST::Nodo *v, int linha, bool variavel) {
 
 Nodo* TabelaDeSimbolos::recuperar(std::string id, int linha, bool variavel) {
 
-//std::cout<<".";
   // Variável ou Função encontrada no escopo atual
     std::map<std::string, AST::Nodo*>::const_iterator it;
     it = simbolos.find(id);

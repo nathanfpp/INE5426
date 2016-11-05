@@ -2,10 +2,8 @@ int a, b, c
 a = 4
 b = 2
 c = 1
-while a < 100 {
-  int dado = 10
-  dado = dado + 10
-  a = a + b + c
+int i
+for i = 0, i < 100 , i = i + 1 {
+  a = a + 10
 }
 $a
-$dado

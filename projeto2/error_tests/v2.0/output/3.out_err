@@ -1,0 +1,15 @@
+[Line 2] semantic error: operation addition expected integer but received address
+[Line 3] semantic error: operation addition expected integer but received address
+[Line 2] semantic error: undeclared variable k
+[Line 2] semantic error: undeclared variable r
+[Line 2] semantic error: undeclared variable k
+[Line 2] semantic error: undeclared variable r
+[Line 2] semantic error: undeclared variable q
+[Line 2] semantic error: undeclared variable q
+[Line 4] semantic error: operation addition expected integer but received address
+[Line 3] semantic error: undeclared variable k
+[Line 3] semantic error: undeclared variable r
+[Line 3] semantic error: undeclared variable k
+[Line 3] semantic error: undeclared variable r
+[Line 3] semantic error: undeclared variable q
+[Line 3] semantic error: undeclared variable q

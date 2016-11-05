@@ -1,4 +1,6 @@
+int c = 10
 int fun f1(int p) {
+  c = 5
   int k = 1000 + p
   ret k
 }
@@ -17,4 +19,4 @@ int fun f(int x, int y){
 }  
 int b = 9
 b = f(33 + 3, b*(b+2))
-$b
+$c

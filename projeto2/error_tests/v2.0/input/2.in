@@ -1,0 +1,3 @@
+int fun nonGrata(int d)
+int a = nonGrata(10)
+$a

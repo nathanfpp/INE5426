@@ -8,52 +8,6 @@
 
 using namespace AST;
 
-/* MÉTODO DEFAULT
-
-Tipo Laco::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool analisador) {
-
-  // Analisa-se a inicialização do Laço, caso ela exista
-    if(inicializacao != NULL) {
-        inicializacao->analisar(tabelaDeSimbolos, linha, analisador);
-    }
-
-  // O teste de um Laço deve ser Booleano
-    Tipo esperado = teste->analisar(tabelaDeSimbolos, linha, analisador);
-    if(esperado != Tipo::boolean) {
-        imprimirErroDeOperacao(Tipo::teste, Tipo::boolean, esperado, linha);
-    }
-
-  // Analisa-se a iteração do Laço, caso ela exista
-    if(iteracao != NULL) {
-       // Caso o código esteja sendo executado, e a condição do teste for verdadeira, ocorre uma iteração
-         if(analisador) {
-             while(teste->boolean) {
-                 iteracao->analisar(tabelaDeSimbolos, linha, true);
-                 teste->analisar(tabelaDeSimbolos, linha, true);
-             }
-        }
-
-      // Caso contrário, a iteração é analisada apenas uma vez
-        else {
-            iteracao->analisar(tabelaDeSimbolos, linha, false);
-        }
-    }
-
-  // Se o conteúdo do laço não for vazio, também deve ser verificado
-    TabelaDeSimbolos *novoEscopo;
-    if(laco != NULL) {
-        novoEscopo = tabelaDeSimbolos->novoEscopo(tabelaDeSimbolos);
-        laco->analisar(novoEscopo, linha, analisador);
-        novoEscopo->retornarEscopo(linha);
-    }
-
-  // Retorna o tipo do nodo
-    return tipo;
-}
-
-*/
-
-
 Tipo Laco::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool analisador) {
 
 

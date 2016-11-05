@@ -1,4 +1,4 @@
-******int fun: somatorio (params: int p)
+int fun: somatorio (params: int p)
   int var: r = 1
   if: > p 1
   then:

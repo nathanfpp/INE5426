@@ -127,7 +127,6 @@ Tipo DefinicaoDeFuncao::executar(AST::TabelaDeSimbolos *tabelaDeSimbolos, Parame
     if(definida) {
 
       // Cria um novo escopo para a execução da função
-        std::cout << "*";
         TabelaDeSimbolos *novoEscopo = tabelaDeSimbolos->novoEscopo(tabelaDeSimbolos);
 
       // Acrescenta os valores dos parâmetros à chamada da função
@@ -137,9 +136,9 @@ Tipo DefinicaoDeFuncao::executar(AST::TabelaDeSimbolos *tabelaDeSimbolos, Parame
 
       // Obtém o retorno da função
         if(corpo != NULL) {
-            corpo->analisar(novoEscopo, linha, true);
+            corpo->analisar(novoEscopo, linha, true); // valores estão certos, mas dá "undeclared variable " apenas com nome do parametro
         }
-        retorno->analisar(novoEscopo, linha, true);
+        retorno->analisar(novoEscopo, linha, true);  // valores estão certos, mas dá "undeclared variable " apenas com nome do parametro
         boolean = retorno->boolean;
         inteiro = retorno->inteiro;
         real    = retorno->real;             
@@ -147,7 +146,6 @@ Tipo DefinicaoDeFuncao::executar(AST::TabelaDeSimbolos *tabelaDeSimbolos, Parame
         //tabelaDeSimbolos->modificar(this, id);
 
       // Retorna ao escopo anterior a Função
-        std::cout << "*";
         novoEscopo->retornarEscopo(linha);
     }
 
