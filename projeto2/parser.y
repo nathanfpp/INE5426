@@ -68,7 +68,7 @@ extern void yyerror(const char* s, ...);
 
 // %type
 // Define o tipo de Símbolos Não-Terminais
-%type <nodo> expressao linha linha_i primitiva var retorno arranjo var_arranjo arranjo_duplo hash
+%type <nodo> expressao linha /*linha_i*/ primitiva var retorno arranjo var_arranjo arranjo_duplo hash
 %type <variavel> dec_arranjo
 %type <declaracao> declaracao
 %type <definicao> variaveis variavel def_arranjo  hashes def_hash 
@@ -77,7 +77,7 @@ extern void yyerror(const char* s, ...);
 %type <laco> for_laco do_while_laco while_laco
 %type <funcao> dec_funcao def_funcao
 %type <parametro> parametros parametro argumentos argumento param_null arg_null
-%type <bloco> programa linhas linhas_i linhas_null linhas_funcao senao
+%type <bloco> programa linhas /*linhas_i*/ linhas_null linhas_funcao senao
 %type <tipo> tipo
 %type <nodo> chamada interpretacao
 %type <num_ref> referencia
@@ -102,7 +102,7 @@ extern void yyerror(const char* s, ...);
 
 // $$ = $1 por padrão
 programa: 
-          linhas_i { std::cerr<<"";
+          linhas { std::cerr<<"";
                    arvoreSintatica = $1;
                    $$->analisar(escopoPrincipal, 0, analisador);
                    $$->imprimir(0, true);
@@ -110,9 +110,9 @@ programa:
                   }
         ;
 
-linhas_i: 
+/*linhas_i: 
         linha_i           { $$ = new AST::Bloco( AST::Tipo::bloco );  $$->novaLinha($1); }
-      | linhas_i linha_i  { $$ = $1;                                  $1->novaLinha($2); }
+      | linhas_i linha  { $$ = $1;                                  $1->novaLinha($2); }
       ;
 
 linha_i: 
@@ -129,7 +129,7 @@ linha_i:
      | interpretacao T_NL   { $$ = $1;   }
      | T_NL                 { $$ = NULL; }
      ;
-
+*/
 
 linhas: 
         linha         { $$ = new AST::Bloco( AST::Tipo::bloco );  $$->novaLinha($1); }
@@ -147,6 +147,7 @@ linha:
      | do_while_laco T_NL   { $$ = $1;   }
      | while_laco T_NL      { $$ = $1;   }
      | chamada T_NL         { $$ = $1;   }
+     | interpretacao T_NL   { $$ = $1;   }
      | T_NL                 { $$ = NULL; }
      ;
 

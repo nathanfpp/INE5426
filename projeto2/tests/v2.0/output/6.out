@@ -1,0 +1,9 @@
+int var: a, b, c
+= a 4
+= b 2
+= c 1
+while: < a 100
+do:
+  = a + + a b c
+$ R: a = 7
+
