@@ -22,8 +22,6 @@ Tipo Chamada::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool 
             case Tipo::funcao_dec:
             case Tipo::funcao_def: {
 
-//std::cerr << "chamada::analisar " << id << " 1\n";
-
               // Define o tipo desta Chamada como Chamada de Função
                 tipo = Tipo::funcao_cha;
 
@@ -79,7 +77,7 @@ Tipo Chamada::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool 
 
               // Define o tipo desta Chamada como ArranjoDuplo
                 tipo = Tipo::arranjo_duplo;
-
+		
               // Recupera o Arranjo 
                 ArranjoDuplo *d = ((ArranjoDuplo*) n);
 
@@ -96,8 +94,22 @@ Tipo Chamada::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool 
                     } else if(indice2 != Tipo::inteiro) {
                         std::cerr << "[Line " << linha << "] semantic error: index operator expects integer but received " << imprimirTipoPorExtenso(indice2) << "\n";
                     }
-                }
-
+		
+		     /*else if (analisador){
+			int i = (((Parametro*)parametros)->parametro)->inteiro; //não é com o parametro o problema
+			int j = (((Parametro*)((Parametro*)parametros)->proximo)->parametro)->inteiro;
+			d->inteiro_d[i][j] = 3;
+			   if(i >= 0 && i < d->tamanho->inteiro && j >= 0 && j < d->tamanho2->inteiro){
+                               inteiro = d->inteiro_d[i][j];
+			       boolean = d->boolean_d[i][j];
+			       real = d->real_d[i][j];
+			      }
+			   else{
+	                      std::cerr << "[Line " << linha << "] $ intepreter error:  index-out of bounds"<< "\n";
+			   }
+			}*/
+	           }
+        
               // Retorna-se o tipo da variável do arranjo
                 tipoDoRetorno = d->tipoDeVariavel;
                 return tipoDoRetorno;
@@ -122,11 +134,24 @@ Tipo Chamada::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool 
                     if(indice != Tipo::inteiro) {
                       std::cerr << "[Line " << linha << "] semantic error: index operator expects integer but received " << imprimirTipoPorExtenso(indice) << "\n";
                     }
+                  /*  else if (analisador){
+			int i = ((Parametro*)((Parametro*)parametros)->parametro)->inteiro; //não é com o parametro o problema
+		 	if(i>= 0 && i <= a->tamanho->inteiro){
+                           inteiro = a->inteiro_a[i];
+			   boolean = a->boolean_a[i];
+			   real = a->real_a[i];
+			}
+			else{
+	                   std::cerr << "[Line " << linha << "] $ intepreter error:  index-out of bounds"<< "\n";
+			}
+
+		    }*/
+
                 }
 
               // Retorna o tipo da variável do arranjo
                  tipoDoRetorno = a->tipoDeVariavel;
-//std::cerr << "@chamada : " << imprimirTipoPorExtenso(tipoDoRetorno) << "\n";
+
                  return tipoDoRetorno;
             }
 
@@ -167,7 +192,7 @@ Tipo Chamada::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool 
 
   // A Chamada de Função ou Arranjo não foi declarada
     std::cerr << "[Line " << linha << "] semantic error: undeclared array, function or hash " << id << "\n";
-    //std::cerr << "[Line " << linha << "] semantic error: undeclared function " << id << "\n";
+
     return tipo;
 }
 

@@ -107,7 +107,6 @@ void TabelaDeSimbolos::modificar(Nodo *novoValor, std::string id) {
     it = simbolos.find(id);
     if (it != simbolos.end()) {
         it->second = novoValor;
-//std::cout << "@tabelaDeSimbolos::modificar " << it->second->id << " " << it->second->inteiro << "\n";
         return;
     }
 

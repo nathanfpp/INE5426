@@ -1,6 +1,5 @@
-**int fun: f1 (params: int p, int r, int q)
-  int var: k = + 1000 p
-  ret + + k r q
-int var: a = f1[3 params] 1000 1000 1000
-$ R: a = 4000
+int array: a (size: 11, 11)
+= [index][index] a 10 10 9
+= [index][index] a 10 10 [index][index] a 10 10
+$ R: 1077
 

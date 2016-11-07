@@ -1,8 +1,4 @@
-int fun f1(int p, int r, int q) {
-  int k = 1000 + p
-  ret k + r + q
-}
-int a = f1(1000,1000,1000)
-$a
-
-
+int a(11,11)
+a(10,10) = 9
+a(10,10) = a(10,10)
+$989 + 88

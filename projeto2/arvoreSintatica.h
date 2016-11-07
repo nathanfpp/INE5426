@@ -235,6 +235,9 @@ class DefinicaoDeFuncao : public Funcao {
 
 class Arranjo : public Variavel {
     public:
+	int inteiro_a[1000]  = {};
+        double real_a[1000]  = {};
+        bool boolean_a[1000] = {};
         Nodo *tamanho;
     Arranjo(Tipo t, Tipo v, atributo_nodo an, Nodo *p, int ponteiros) : Variavel(t, v, an, ponteiros), tamanho(p) {};
     Tipo analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool analisador);
@@ -243,6 +246,10 @@ class Arranjo : public Variavel {
 
 class ArranjoDuplo : public Arranjo {
     public:
+	
+	int inteiro_d[1000][1000]  = {};
+        double real_d[1000][1000]  = {};
+        bool boolean_d[1000][1000] = {};
         Nodo *tamanho2;
     ArranjoDuplo(Tipo t, Tipo v, atributo_nodo an, Nodo *p, Nodo *q, int ponteiros) : Arranjo(t, v, an, p, ponteiros), tamanho2(q) {};
     Tipo analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool analisador);

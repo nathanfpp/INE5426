@@ -46,6 +46,7 @@ Tipo OperacaoBinaria::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linh
 
   // A Atribuição recebe "int","float" ou "bool" e retorna "int", "float" ou "bool"
         case Tipo::atribuicao:
+
           // O nodo à esquerda não pode ser uma função
             if(esquerda->tipo == Tipo::funcao_cha) {
                 std::cerr << "[Line " << linha << "] semantic error: attribution operation expects a variable on the left side not a function" <<"\n";
@@ -74,6 +75,33 @@ Tipo OperacaoBinaria::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linh
               // Realiza-se a atribuicao de todos os valores, independente do tipo da variável
                 esquerda->inteiro = direita->inteiro; esquerda->real = direita->real; esquerda->boolean = direita->boolean;
                 inteiro = direita->inteiro; real = direita->real; boolean = direita->boolean;
+
+	      switch (esquerda->tipo){
+		 case Tipo::arranjo:			    	
+		     switch(e){
+			case Tipo::inteiro:
+	     		 // ((Chamada*)esquerda)->inteiro_a["preciso saber o indice"] = direita->inteiro
+			case Tipo::boolean:
+	      		// ((Chamada*)esquerda)->boolean_a["preciso saber o indice"] = direita->boolean;
+			case Tipo::real:
+		 	// ((Chamada*)esquerda)->real_a["preciso saber o indice"] = direita->real;
+			default: break;
+		    }
+		    break;
+	      	 case Tipo::arranjo_duplo:
+		     switch(e){
+			case Tipo::inteiro:
+	     		 // ((Chamada*)esquerda)->inteiro_d["preciso saber os indices"] = direita->inteiro
+			case Tipo::boolean:
+	      		// ((Chamada*)esquerda)->boolean_d["preciso saber os indices"] = direita->boolean;
+			case Tipo::real:
+		 	// ((Chamada*)esquerda)->real_d["preciso saber os indices"] = direita->real;
+			default: break;
+		     }
+		default: break;
+	   
+	      } 
+
               // Substitui-se o nodo da tabela de símbolos por este com os valores atualizados
                 tabelaDeSimbolos->modificar(esquerda, esquerda->id);
             }

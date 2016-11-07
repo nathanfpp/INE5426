@@ -15,7 +15,7 @@ Tipo Variavel::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool
 
   // Caso a variável seja encontrada, ela pode ser de diferentes tipos
     if(v != NULL) {
-       // tipo = v->tipo;
+       //tipo = v->tipo;
         tipoDeVariavel = v->tipoDeVariavel;
         boolean = v->boolean;
         inteiro = v->inteiro;

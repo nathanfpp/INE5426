@@ -10,7 +10,7 @@ using namespace AST;
 
 Tipo Parametro::analisar(TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool analisador) {
 
-  // Tipos de paraâmetros diferentes possuem tratamento diferenciado
+  // Tipos de parâmetros diferentes possuem tratamento diferenciado
     if(parametro != NULL) {
         switch(parametro->tipo) {
             case Tipo::variavel:
@@ -24,12 +24,7 @@ Tipo Parametro::analisar(TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool ana
 
         }
     }
-/*
-    parametro->analisar(tabelaDeSimbolos, linha, analisador);
-    boolean = parametro->boolean;
-    inteiro = parametro->inteiro;
-    real    = parametro->real;
-*/
+
   // Analisa o próximo parâmetro, caso ele exista
     if(proximo != NULL) {
         proximo->analisar(tabelaDeSimbolos, linha, analisador);
@@ -181,6 +176,16 @@ void Parametro::acrescentarComValoresAoEscopo(TabelaDeSimbolos *tabelaDeSimbolos
         if(parametro->tipo == Tipo::hash) {
             ((Hash*)parametro)->tipoDeChave = tipoReserva;
         }
+	if(parametro->tipo == Tipo::arranjo && valores->tipo == Tipo::arranjo){
+            memcpy(((Arranjo*)parametro)->inteiro_a,((Arranjo*)valores)->inteiro_a,sizeof(int)*1000);
+            memcpy(((Arranjo*)parametro)->boolean_a,((Arranjo*)valores)->boolean_a,sizeof(bool)*1000);
+            memcpy(((Arranjo*)parametro)->real_a,((Arranjo*)valores)->real_a,sizeof(double)*1000);
+	}
+	if(parametro->tipo == Tipo::arranjo_duplo && valores->tipo == Tipo::arranjo_duplo){
+   	   memcpy(((ArranjoDuplo*)parametro)->inteiro_d,((ArranjoDuplo*)valores)->inteiro_d,sizeof(int)*1000*1000);
+           memcpy(((ArranjoDuplo*)parametro)->boolean_d,((ArranjoDuplo*)valores)->boolean_d,sizeof(bool)*1000*1000);
+           memcpy(((ArranjoDuplo*)parametro)->real_d,((ArranjoDuplo*)valores)->real_d,sizeof(double)*1000*1000);
+	}
         parametro->boolean = valores->parametro->boolean;
         parametro->inteiro = valores->parametro->inteiro;
         parametro->real    = valores->parametro->real;   

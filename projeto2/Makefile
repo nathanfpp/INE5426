@@ -73,6 +73,7 @@ test:
 	./${OUTPUT} < tests/v2.0/input/4.in > tests/v2.0/output/4.out
 	./${OUTPUT} < tests/v2.0/input/5.in > tests/v2.0/output/5.out
 	./${OUTPUT} < tests/v2.0/input/8.in > tests/v2.0/output/8.out
+	./${OUTPUT} < tests/v2.0/input/9.in > tests/v2.0/output/9.out
 
 
 compare_test:
