@@ -40,7 +40,7 @@
 extern int yydebug;
 #endif
 /* "%code requires" blocks.  */
-#line 16 "parser.y" /* yacc.c:1909  */
+#line 9 "parser.y" /* yacc.c:1909  */
 
     #include "arvoreSintatica.h"
 
@@ -107,7 +107,7 @@ extern int yydebug;
 typedef union YYSTYPE YYSTYPE;
 union YYSTYPE
 {
-#line 35 "parser.y" /* yacc.c:1909  */
+#line 28 "parser.y" /* yacc.c:1909  */
 
     AST::atributo_nodo valores;
     AST::Nodo *nodo;

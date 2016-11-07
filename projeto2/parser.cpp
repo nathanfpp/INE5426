@@ -64,18 +64,11 @@
 /* Copy the first part of user declarations.  */
 #line 1 "parser.y" /* yacc.c:339  */
 
-#include <iostream>
-#include <map>
-#include <vector>
-#include <string.h>
-#include <string>
-#include <cstdio>
-#include <fstream>
-
+#include "arvoreSintatica.h"
 extern int yylex();
 extern void yyerror(const char* s, ...);
 
-#line 79 "parser.cpp" /* yacc.c:339  */
+#line 72 "parser.cpp" /* yacc.c:339  */
 
 # ifndef YY_NULLPTR
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -105,12 +98,12 @@ extern void yyerror(const char* s, ...);
 extern int yydebug;
 #endif
 /* "%code requires" blocks.  */
-#line 16 "parser.y" /* yacc.c:355  */
+#line 9 "parser.y" /* yacc.c:355  */
 
     #include "arvoreSintatica.h"
 
 
-#line 114 "parser.cpp" /* yacc.c:355  */
+#line 107 "parser.cpp" /* yacc.c:355  */
 
 /* Token type.  */
 #ifndef YYTOKENTYPE
@@ -172,7 +165,7 @@ extern int yydebug;
 typedef union YYSTYPE YYSTYPE;
 union YYSTYPE
 {
-#line 35 "parser.y" /* yacc.c:355  */
+#line 28 "parser.y" /* yacc.c:355  */
 
     AST::atributo_nodo valores;
     AST::Nodo *nodo;
@@ -194,7 +187,7 @@ union YYSTYPE
     AST::Tipo tipo;
     int num_ref;
 
-#line 198 "parser.cpp" /* yacc.c:355  */
+#line 191 "parser.cpp" /* yacc.c:355  */
 };
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1
@@ -209,16 +202,16 @@ int yyparse (void);
 
 /* Copy the second part of user declarations.  */
 
-#line 213 "parser.cpp" /* yacc.c:358  */
+#line 206 "parser.cpp" /* yacc.c:358  */
 /* Unqualified %code blocks.  */
-#line 23 "parser.y" /* yacc.c:359  */
+#line 16 "parser.y" /* yacc.c:359  */
 
     AST::Bloco *arvoreSintatica;
     AST::Tipo ultimoTipo;
     AST::TabelaDeSimbolos *escopoPrincipal = new AST::TabelaDeSimbolos();
     bool analisador = false;
 
-#line 222 "parser.cpp" /* yacc.c:359  */
+#line 215 "parser.cpp" /* yacc.c:359  */
 
 #ifdef short
 # undef short
@@ -520,18 +513,18 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,   105,   105,   135,   136,   140,   141,   142,   143,   144,
-     145,   146,   147,   148,   149,   150,   151,   155,   165,   166,
-     170,   174,   175,   176,   177,   181,   182,   186,   190,   192,
-     194,   196,   201,   203,   208,   210,   215,   217,   222,   223,
-     227,   228,   232,   236,   240,   241,   245,   249,   254,   255,
-     259,   264,   265,   269,   274,   279,   280,   284,   286,   288,
-     290,   295,   298,   302,   305,   311,   312,   316,   317,   321,
-     322,   326,   327,   328,   329,   333,   337,   338,   339,   340,
-     341,   342,   343,   344,   345,   346,   347,   348,   349,   350,
-     351,   352,   353,   354,   355,   356,   357,   358,   359,   363,
-     364,   365,   369,   370,   371,   372,   376,   377,   381,   382,
-     386,   386,   390
+       0,    98,    98,   128,   129,   133,   134,   135,   136,   137,
+     138,   139,   140,   141,   142,   143,   144,   148,   158,   159,
+     163,   167,   168,   169,   170,   174,   175,   179,   183,   185,
+     187,   189,   194,   196,   201,   203,   208,   210,   215,   216,
+     220,   221,   225,   229,   233,   234,   238,   242,   247,   248,
+     252,   257,   258,   262,   267,   272,   273,   277,   279,   281,
+     283,   288,   291,   295,   298,   304,   305,   309,   310,   314,
+     315,   319,   320,   321,   322,   326,   330,   331,   332,   333,
+     334,   335,   336,   337,   338,   339,   340,   341,   342,   343,
+     344,   345,   346,   347,   348,   349,   350,   351,   352,   356,
+     357,   358,   362,   363,   364,   365,   369,   370,   374,   375,
+     379,   379,   383
 };
 #endif
 
@@ -1531,676 +1524,676 @@ yyreduce:
   switch (yyn)
     {
         case 2:
-#line 105 "parser.y" /* yacc.c:1646  */
+#line 98 "parser.y" /* yacc.c:1646  */
     { std::cerr<<"";
                    arvoreSintatica = (yyvsp[0].bloco);
                    (yyval.bloco)->analisar(escopoPrincipal, 0, analisador);
                    (yyval.bloco)->imprimir(0, true);
 		   std::cout <<"\n";
                   }
-#line 1542 "parser.cpp" /* yacc.c:1646  */
+#line 1535 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 3:
-#line 135 "parser.y" /* yacc.c:1646  */
+#line 128 "parser.y" /* yacc.c:1646  */
     { (yyval.bloco) = new AST::Bloco( AST::Tipo::bloco );  (yyval.bloco)->novaLinha((yyvsp[0].nodo)); }
-#line 1548 "parser.cpp" /* yacc.c:1646  */
+#line 1541 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 4:
-#line 136 "parser.y" /* yacc.c:1646  */
+#line 129 "parser.y" /* yacc.c:1646  */
     { (yyval.bloco) = (yyvsp[-1].bloco);                                  (yyvsp[-1].bloco)->novaLinha((yyvsp[0].nodo)); }
-#line 1554 "parser.cpp" /* yacc.c:1646  */
+#line 1547 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 5:
-#line 140 "parser.y" /* yacc.c:1646  */
+#line 133 "parser.y" /* yacc.c:1646  */
     { (yyval.nodo) = (yyvsp[-1].opBinaria);   }
-#line 1560 "parser.cpp" /* yacc.c:1646  */
+#line 1553 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 6:
-#line 141 "parser.y" /* yacc.c:1646  */
+#line 134 "parser.y" /* yacc.c:1646  */
     { (yyval.nodo) = (yyvsp[-1].declaracao);   }
-#line 1566 "parser.cpp" /* yacc.c:1646  */
+#line 1559 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 7:
-#line 142 "parser.y" /* yacc.c:1646  */
+#line 135 "parser.y" /* yacc.c:1646  */
     { (yyval.nodo) = (yyvsp[0].declaracao_hash);   }
-#line 1572 "parser.cpp" /* yacc.c:1646  */
+#line 1565 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 8:
-#line 143 "parser.y" /* yacc.c:1646  */
+#line 136 "parser.y" /* yacc.c:1646  */
     { (yyval.nodo) = (yyvsp[-1].funcao);   }
-#line 1578 "parser.cpp" /* yacc.c:1646  */
+#line 1571 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 9:
-#line 144 "parser.y" /* yacc.c:1646  */
+#line 137 "parser.y" /* yacc.c:1646  */
     { (yyval.nodo) = (yyvsp[-1].funcao);   }
-#line 1584 "parser.cpp" /* yacc.c:1646  */
+#line 1577 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 10:
-#line 145 "parser.y" /* yacc.c:1646  */
+#line 138 "parser.y" /* yacc.c:1646  */
     { (yyval.nodo) = (yyvsp[-1].condicao);   }
-#line 1590 "parser.cpp" /* yacc.c:1646  */
+#line 1583 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 11:
-#line 146 "parser.y" /* yacc.c:1646  */
+#line 139 "parser.y" /* yacc.c:1646  */
     { (yyval.nodo) = (yyvsp[-1].laco);   }
-#line 1596 "parser.cpp" /* yacc.c:1646  */
+#line 1589 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 12:
-#line 147 "parser.y" /* yacc.c:1646  */
+#line 140 "parser.y" /* yacc.c:1646  */
     { (yyval.nodo) = (yyvsp[-1].laco);   }
-#line 1602 "parser.cpp" /* yacc.c:1646  */
+#line 1595 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 13:
-#line 148 "parser.y" /* yacc.c:1646  */
+#line 141 "parser.y" /* yacc.c:1646  */
     { (yyval.nodo) = (yyvsp[-1].laco);   }
-#line 1608 "parser.cpp" /* yacc.c:1646  */
+#line 1601 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 14:
-#line 149 "parser.y" /* yacc.c:1646  */
+#line 142 "parser.y" /* yacc.c:1646  */
     { (yyval.nodo) = (yyvsp[-1].nodo);   }
-#line 1614 "parser.cpp" /* yacc.c:1646  */
+#line 1607 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 15:
-#line 150 "parser.y" /* yacc.c:1646  */
+#line 143 "parser.y" /* yacc.c:1646  */
     { (yyval.nodo) = (yyvsp[-1].nodo);   }
-#line 1620 "parser.cpp" /* yacc.c:1646  */
+#line 1613 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 16:
-#line 151 "parser.y" /* yacc.c:1646  */
+#line 144 "parser.y" /* yacc.c:1646  */
     { (yyval.nodo) = NULL; }
-#line 1626 "parser.cpp" /* yacc.c:1646  */
+#line 1619 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 17:
-#line 156 "parser.y" /* yacc.c:1646  */
+#line 149 "parser.y" /* yacc.c:1646  */
     { 
                 if(((AST::Variavel*)(yyvsp[-2].nodo))->ponteiros > 0) {
                     ((AST::Variavel*)(yyvsp[-2].nodo))->ponteiroEsqAtribuicao = true;
                 }
                 (yyval.opBinaria) = new AST::OperacaoBinaria( AST::Tipo::opBinaria , AST::Tipo::atribuicao, (yyvsp[-2].nodo), (yyvsp[0].nodo) ); 
             }
-#line 1637 "parser.cpp" /* yacc.c:1646  */
+#line 1630 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 18:
-#line 165 "parser.y" /* yacc.c:1646  */
+#line 158 "parser.y" /* yacc.c:1646  */
     { (yyval.nodo) = (yyvsp[0].nodo); }
-#line 1643 "parser.cpp" /* yacc.c:1646  */
+#line 1636 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 19:
-#line 166 "parser.y" /* yacc.c:1646  */
+#line 159 "parser.y" /* yacc.c:1646  */
     { (yyval.nodo) = (yyvsp[0].nodo); }
-#line 1649 "parser.cpp" /* yacc.c:1646  */
+#line 1642 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 20:
-#line 170 "parser.y" /* yacc.c:1646  */
+#line 163 "parser.y" /* yacc.c:1646  */
     { (yyval.declaracao) = new AST::Declaracao( AST::Tipo::declaracao , (yyvsp[-1].tipo), (yyvsp[0].definicao) ); }
-#line 1655 "parser.cpp" /* yacc.c:1646  */
+#line 1648 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 21:
-#line 174 "parser.y" /* yacc.c:1646  */
+#line 167 "parser.y" /* yacc.c:1646  */
     { (yyval.definicao) = (yyvsp[0].definicao);                          }
-#line 1661 "parser.cpp" /* yacc.c:1646  */
+#line 1654 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 22:
-#line 175 "parser.y" /* yacc.c:1646  */
+#line 168 "parser.y" /* yacc.c:1646  */
     { (yyval.definicao) = (yyvsp[-2].definicao);  (yyvsp[-2].definicao)->ajustarProxima((yyvsp[0].definicao)); }
-#line 1667 "parser.cpp" /* yacc.c:1646  */
+#line 1660 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 23:
-#line 176 "parser.y" /* yacc.c:1646  */
+#line 169 "parser.y" /* yacc.c:1646  */
     { (yyval.definicao) = (yyvsp[0].definicao);                          }
-#line 1673 "parser.cpp" /* yacc.c:1646  */
+#line 1666 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 24:
-#line 177 "parser.y" /* yacc.c:1646  */
+#line 170 "parser.y" /* yacc.c:1646  */
     { (yyval.definicao) = (yyvsp[-2].definicao);  (yyvsp[-2].definicao)->ajustarProxima((yyvsp[0].definicao)); }
-#line 1679 "parser.cpp" /* yacc.c:1646  */
+#line 1672 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 25:
-#line 181 "parser.y" /* yacc.c:1646  */
+#line 174 "parser.y" /* yacc.c:1646  */
     { (yyval.definicao) = new AST::Definicao( AST::Tipo::definicao   , ((AST::Variavel*)(yyvsp[0].opBinaria)->esquerda) , (yyvsp[0].opBinaria)->direita , NULL ); }
-#line 1685 "parser.cpp" /* yacc.c:1646  */
+#line 1678 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 26:
-#line 182 "parser.y" /* yacc.c:1646  */
+#line 175 "parser.y" /* yacc.c:1646  */
     { (yyval.definicao) = new AST::Definicao( AST::Tipo::definicao   , ((AST::Variavel*)(yyvsp[0].nodo))           , NULL        , NULL ); }
-#line 1691 "parser.cpp" /* yacc.c:1646  */
+#line 1684 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 27:
-#line 186 "parser.y" /* yacc.c:1646  */
+#line 179 "parser.y" /* yacc.c:1646  */
     { (yyval.definicao) = new AST::DefinicaoDeArranjo( AST::Tipo::definicao_arranjo, (yyvsp[0].variavel), NULL , NULL ); }
-#line 1697 "parser.cpp" /* yacc.c:1646  */
+#line 1690 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 28:
-#line 191 "parser.y" /* yacc.c:1646  */
+#line 184 "parser.y" /* yacc.c:1646  */
     { (yyval.variavel) = new AST::ArranjoDuplo( AST::Tipo::arranjo_duplo, AST::Tipo::nulo ,(yyvsp[-5].valores), (yyvsp[-3].nodo), (yyvsp[-1].nodo), 0 ); }
-#line 1703 "parser.cpp" /* yacc.c:1646  */
+#line 1696 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 29:
-#line 193 "parser.y" /* yacc.c:1646  */
+#line 186 "parser.y" /* yacc.c:1646  */
     { (yyval.variavel) = new AST::ArranjoDuplo( AST::Tipo::arranjo_duplo, AST::Tipo::nulo ,(yyvsp[-5].valores), (yyvsp[-3].nodo), (yyvsp[-1].nodo), (yyvsp[-6].num_ref) ); }
-#line 1709 "parser.cpp" /* yacc.c:1646  */
+#line 1702 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 30:
-#line 195 "parser.y" /* yacc.c:1646  */
+#line 188 "parser.y" /* yacc.c:1646  */
     { (yyval.variavel) = new AST::Arranjo( AST::Tipo::arranjo, AST::Tipo::nulo ,(yyvsp[-3].valores), (yyvsp[-1].nodo),0 ); }
-#line 1715 "parser.cpp" /* yacc.c:1646  */
+#line 1708 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 31:
-#line 197 "parser.y" /* yacc.c:1646  */
+#line 190 "parser.y" /* yacc.c:1646  */
     { (yyval.variavel) = new AST::Arranjo( AST::Tipo::arranjo, AST::Tipo::nulo ,(yyvsp[-3].valores), (yyvsp[-1].nodo), (yyvsp[-4].num_ref) ); }
-#line 1721 "parser.cpp" /* yacc.c:1646  */
+#line 1714 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 32:
-#line 202 "parser.y" /* yacc.c:1646  */
+#line 195 "parser.y" /* yacc.c:1646  */
     {  (yyval.nodo) = new AST::Arranjo( AST::Tipo::arranjo, AST::Tipo::nulo, (yyvsp[-3].valores), (yyvsp[-1].nodo), 0  );}
-#line 1727 "parser.cpp" /* yacc.c:1646  */
+#line 1720 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 33:
-#line 204 "parser.y" /* yacc.c:1646  */
+#line 197 "parser.y" /* yacc.c:1646  */
     {  (yyval.nodo) = new AST::Arranjo( AST::Tipo::arranjo, AST::Tipo::nulo, (yyvsp[-3].valores), (yyvsp[-1].nodo), (yyvsp[-4].num_ref) ); }
-#line 1733 "parser.cpp" /* yacc.c:1646  */
+#line 1726 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 34:
-#line 209 "parser.y" /* yacc.c:1646  */
+#line 202 "parser.y" /* yacc.c:1646  */
     {  (yyval.nodo) = new AST::ArranjoDuplo( AST::Tipo::arranjo_duplo, AST::Tipo::nulo , (yyvsp[-5].valores), (yyvsp[-3].nodo), (yyvsp[-1].nodo), 0 ); }
-#line 1739 "parser.cpp" /* yacc.c:1646  */
+#line 1732 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 35:
-#line 211 "parser.y" /* yacc.c:1646  */
+#line 204 "parser.y" /* yacc.c:1646  */
     {  (yyval.nodo) = new AST::ArranjoDuplo( AST::Tipo::arranjo_duplo, AST::Tipo::nulo , (yyvsp[-5].valores), (yyvsp[-3].nodo), (yyvsp[-1].nodo), (yyvsp[-6].num_ref) ); }
-#line 1745 "parser.cpp" /* yacc.c:1646  */
+#line 1738 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 36:
-#line 216 "parser.y" /* yacc.c:1646  */
+#line 209 "parser.y" /* yacc.c:1646  */
     {  (yyval.nodo) = new AST::Chamada ( AST::Tipo::nulo , AST::Tipo::chamada , (yyvsp[-3].valores) , (yyvsp[-1].parametro) , NULL, 0);}
-#line 1751 "parser.cpp" /* yacc.c:1646  */
+#line 1744 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 37:
-#line 218 "parser.y" /* yacc.c:1646  */
+#line 211 "parser.y" /* yacc.c:1646  */
     {  (yyval.nodo) = new AST::Chamada ( AST::Tipo::nulo , AST::Tipo::chamada , (yyvsp[-3].valores) , (yyvsp[-1].parametro) , NULL, (yyvsp[-4].num_ref));}
-#line 1757 "parser.cpp" /* yacc.c:1646  */
+#line 1750 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 38:
-#line 222 "parser.y" /* yacc.c:1646  */
+#line 215 "parser.y" /* yacc.c:1646  */
     { (yyval.parametro) = (yyvsp[0].parametro);   }
-#line 1763 "parser.cpp" /* yacc.c:1646  */
+#line 1756 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 39:
-#line 223 "parser.y" /* yacc.c:1646  */
+#line 216 "parser.y" /* yacc.c:1646  */
     { (yyval.parametro) = NULL; }
-#line 1769 "parser.cpp" /* yacc.c:1646  */
+#line 1762 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 40:
-#line 227 "parser.y" /* yacc.c:1646  */
+#line 220 "parser.y" /* yacc.c:1646  */
     { (yyval.parametro) = (yyvsp[0].parametro);                   }
-#line 1775 "parser.cpp" /* yacc.c:1646  */
+#line 1768 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 41:
-#line 228 "parser.y" /* yacc.c:1646  */
+#line 221 "parser.y" /* yacc.c:1646  */
     { (yyval.parametro) = (yyvsp[-2].parametro); (yyval.parametro)->proximo = (yyvsp[0].parametro); }
-#line 1781 "parser.cpp" /* yacc.c:1646  */
+#line 1774 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 42:
-#line 232 "parser.y" /* yacc.c:1646  */
+#line 225 "parser.y" /* yacc.c:1646  */
     { (yyval.parametro) = new AST::Parametro( AST::Tipo::parametro, AST::Tipo::nulo, AST::Tipo::nulo, (yyvsp[0].nodo), NULL );  }
-#line 1787 "parser.cpp" /* yacc.c:1646  */
+#line 1780 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 43:
-#line 236 "parser.y" /* yacc.c:1646  */
+#line 229 "parser.y" /* yacc.c:1646  */
     { (yyval.declaracao_hash) = new AST::DeclaracaoDeHash( AST::Tipo::declaracao_hash, (yyvsp[-3].tipo), (yyvsp[-1].tipo), (yyvsp[0].definicao) ); }
-#line 1793 "parser.cpp" /* yacc.c:1646  */
+#line 1786 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 44:
-#line 240 "parser.y" /* yacc.c:1646  */
+#line 233 "parser.y" /* yacc.c:1646  */
     { (yyval.definicao) = (yyvsp[0].definicao);                          }
-#line 1799 "parser.cpp" /* yacc.c:1646  */
+#line 1792 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 45:
-#line 241 "parser.y" /* yacc.c:1646  */
+#line 234 "parser.y" /* yacc.c:1646  */
     { (yyval.definicao) = (yyvsp[-2].definicao);  (yyvsp[-2].definicao)->ajustarProxima((yyvsp[0].definicao)); }
-#line 1805 "parser.cpp" /* yacc.c:1646  */
+#line 1798 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 46:
-#line 245 "parser.y" /* yacc.c:1646  */
+#line 238 "parser.y" /* yacc.c:1646  */
     { (yyval.definicao) = new AST::DefinicaoDeHash( AST::Tipo::definicao_hash, ((AST::Variavel*)(yyvsp[0].nodo)), NULL, NULL); }
-#line 1811 "parser.cpp" /* yacc.c:1646  */
+#line 1804 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 47:
-#line 250 "parser.y" /* yacc.c:1646  */
+#line 243 "parser.y" /* yacc.c:1646  */
     { (yyval.condicao) = new AST::Condicao( AST::Tipo::condicao , (yyvsp[-7].nodo), (yyvsp[-2].bloco), (yyvsp[0].bloco) ); }
-#line 1817 "parser.cpp" /* yacc.c:1646  */
+#line 1810 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 48:
-#line 254 "parser.y" /* yacc.c:1646  */
+#line 247 "parser.y" /* yacc.c:1646  */
     { (yyval.bloco) = (yyvsp[-1].bloco);   }
-#line 1823 "parser.cpp" /* yacc.c:1646  */
+#line 1816 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 49:
-#line 255 "parser.y" /* yacc.c:1646  */
+#line 248 "parser.y" /* yacc.c:1646  */
     { (yyval.bloco) = NULL; }
-#line 1829 "parser.cpp" /* yacc.c:1646  */
+#line 1822 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 50:
-#line 260 "parser.y" /* yacc.c:1646  */
+#line 253 "parser.y" /* yacc.c:1646  */
     { (yyval.laco) = new AST::Laco( AST::Tipo::for_laco , (yyvsp[-8].opBinaria) , (yyvsp[-6].nodo) , (yyvsp[-4].opBinaria) , (yyvsp[-1].bloco) ); }
-#line 1835 "parser.cpp" /* yacc.c:1646  */
+#line 1828 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 51:
-#line 264 "parser.y" /* yacc.c:1646  */
+#line 257 "parser.y" /* yacc.c:1646  */
     { (yyval.bloco) = (yyvsp[0].bloco);   }
-#line 1841 "parser.cpp" /* yacc.c:1646  */
+#line 1834 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 52:
-#line 265 "parser.y" /* yacc.c:1646  */
+#line 258 "parser.y" /* yacc.c:1646  */
     { (yyval.bloco) = NULL; }
-#line 1847 "parser.cpp" /* yacc.c:1646  */
+#line 1840 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 53:
-#line 270 "parser.y" /* yacc.c:1646  */
+#line 263 "parser.y" /* yacc.c:1646  */
     { (yyval.laco) = new AST::Laco( AST::Tipo::do_while_laco , NULL , (yyvsp[0].nodo) , NULL , (yyvsp[-3].bloco) ); }
-#line 1853 "parser.cpp" /* yacc.c:1646  */
+#line 1846 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 54:
-#line 275 "parser.y" /* yacc.c:1646  */
+#line 268 "parser.y" /* yacc.c:1646  */
     { (yyval.laco) = new AST::Laco( AST::Tipo::while_laco , NULL , (yyvsp[-4].nodo) , NULL , (yyvsp[-1].bloco) ); }
-#line 1859 "parser.cpp" /* yacc.c:1646  */
+#line 1852 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 55:
-#line 279 "parser.y" /* yacc.c:1646  */
+#line 272 "parser.y" /* yacc.c:1646  */
     { (yyval.opBinaria) = (yyvsp[0].opBinaria);   }
-#line 1865 "parser.cpp" /* yacc.c:1646  */
+#line 1858 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 56:
-#line 280 "parser.y" /* yacc.c:1646  */
+#line 273 "parser.y" /* yacc.c:1646  */
     { (yyval.opBinaria) = NULL; }
-#line 1871 "parser.cpp" /* yacc.c:1646  */
+#line 1864 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 57:
-#line 285 "parser.y" /* yacc.c:1646  */
+#line 278 "parser.y" /* yacc.c:1646  */
     { (yyval.funcao) = new AST::Funcao( AST::Tipo::funcao_dec, (yyvsp[-5].tipo) , (yyvsp[-3].valores) , (yyvsp[-1].parametro)); }
-#line 1877 "parser.cpp" /* yacc.c:1646  */
+#line 1870 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 58:
-#line 287 "parser.y" /* yacc.c:1646  */
+#line 280 "parser.y" /* yacc.c:1646  */
     { (yyval.funcao) = new AST::Funcao( AST::Tipo::funcao_dec, escopoPrincipal->tipoDeArranjo((yyvsp[-7].tipo)) , (yyvsp[-3].valores) , (yyvsp[-1].parametro)); }
-#line 1883 "parser.cpp" /* yacc.c:1646  */
+#line 1876 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 59:
-#line 289 "parser.y" /* yacc.c:1646  */
+#line 282 "parser.y" /* yacc.c:1646  */
     { (yyval.funcao) = new AST::Funcao( AST::Tipo::funcao_dec, escopoPrincipal->tipoDeArranjoDuplo((yyvsp[-9].tipo)) , (yyvsp[-3].valores) , (yyvsp[-1].parametro)); }
-#line 1889 "parser.cpp" /* yacc.c:1646  */
+#line 1882 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 60:
-#line 291 "parser.y" /* yacc.c:1646  */
+#line 284 "parser.y" /* yacc.c:1646  */
     { (yyval.funcao) = new AST::Funcao( AST::Tipo::funcao_dec, escopoPrincipal->tipoDeHash((yyvsp[-7].tipo),(yyvsp[-5].tipo)) , (yyvsp[-3].valores) , (yyvsp[-1].parametro)); }
-#line 1895 "parser.cpp" /* yacc.c:1646  */
+#line 1888 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 61:
-#line 296 "parser.y" /* yacc.c:1646  */
+#line 289 "parser.y" /* yacc.c:1646  */
     {  (yyvsp[-4].bloco)->novaLinha((yyvsp[-2].nodo)); 
                  (yyval.funcao) = new AST::DefinicaoDeFuncao( AST::Tipo::funcao_def, (yyvsp[-12].tipo) , (yyvsp[-10].valores) , (yyvsp[-8].parametro) , (yyvsp[-4].bloco), (yyvsp[-2].nodo)); }
-#line 1902 "parser.cpp" /* yacc.c:1646  */
+#line 1895 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 62:
-#line 299 "parser.y" /* yacc.c:1646  */
+#line 292 "parser.y" /* yacc.c:1646  */
     {  (yyvsp[-4].bloco)->novaLinha((yyvsp[-2].nodo));
                  (yyval.funcao) = new AST::DefinicaoDeFuncao( AST::Tipo::funcao_def, escopoPrincipal->tipoDeArranjo((yyvsp[-14].tipo)) , (yyvsp[-10].valores) , (yyvsp[-8].parametro) , (yyvsp[-4].bloco), (yyvsp[-2].nodo)); 
               }
-#line 1910 "parser.cpp" /* yacc.c:1646  */
+#line 1903 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 63:
-#line 303 "parser.y" /* yacc.c:1646  */
+#line 296 "parser.y" /* yacc.c:1646  */
     {  (yyvsp[-4].bloco)->novaLinha((yyvsp[-2].nodo));
                  (yyval.funcao) = new AST::DefinicaoDeFuncao( AST::Tipo::funcao_def, escopoPrincipal->tipoDeArranjoDuplo((yyvsp[-16].tipo)) , (yyvsp[-10].valores) , (yyvsp[-8].parametro) , (yyvsp[-4].bloco), (yyvsp[-2].nodo) ); }
-#line 1917 "parser.cpp" /* yacc.c:1646  */
+#line 1910 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 64:
-#line 306 "parser.y" /* yacc.c:1646  */
+#line 299 "parser.y" /* yacc.c:1646  */
     {  (yyvsp[-4].bloco)->novaLinha((yyvsp[-2].nodo));
                  (yyval.funcao) = new AST::DefinicaoDeFuncao( AST::Tipo::funcao_def, escopoPrincipal->tipoDeHash((yyvsp[-14].tipo),(yyvsp[-12].tipo)) , (yyvsp[-10].valores) , (yyvsp[-8].parametro) , (yyvsp[-4].bloco), (yyvsp[-2].nodo) );  }
-#line 1924 "parser.cpp" /* yacc.c:1646  */
+#line 1917 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 65:
-#line 311 "parser.y" /* yacc.c:1646  */
+#line 304 "parser.y" /* yacc.c:1646  */
     { (yyval.bloco) = (yyvsp[0].bloco);                                 }
-#line 1930 "parser.cpp" /* yacc.c:1646  */
+#line 1923 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 66:
-#line 312 "parser.y" /* yacc.c:1646  */
+#line 305 "parser.y" /* yacc.c:1646  */
     { (yyval.bloco) = new AST::Bloco( AST::Tipo::bloco ); }
-#line 1936 "parser.cpp" /* yacc.c:1646  */
+#line 1929 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 67:
-#line 316 "parser.y" /* yacc.c:1646  */
+#line 309 "parser.y" /* yacc.c:1646  */
     { (yyval.parametro) = (yyvsp[0].parametro);   }
-#line 1942 "parser.cpp" /* yacc.c:1646  */
+#line 1935 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 68:
-#line 317 "parser.y" /* yacc.c:1646  */
+#line 310 "parser.y" /* yacc.c:1646  */
     { (yyval.parametro) = NULL; }
-#line 1948 "parser.cpp" /* yacc.c:1646  */
+#line 1941 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 69:
-#line 321 "parser.y" /* yacc.c:1646  */
+#line 314 "parser.y" /* yacc.c:1646  */
     { (yyval.parametro) = (yyvsp[0].parametro); }
-#line 1954 "parser.cpp" /* yacc.c:1646  */
+#line 1947 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 70:
-#line 322 "parser.y" /* yacc.c:1646  */
+#line 315 "parser.y" /* yacc.c:1646  */
     { (yyval.parametro) = (yyvsp[-2].parametro); (yyval.parametro)->proximo = (yyvsp[0].parametro); }
-#line 1960 "parser.cpp" /* yacc.c:1646  */
+#line 1953 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 71:
-#line 326 "parser.y" /* yacc.c:1646  */
+#line 319 "parser.y" /* yacc.c:1646  */
     { (yyval.parametro) = new AST::Parametro( AST::Tipo::parametro, (yyvsp[-1].tipo), AST::Tipo::nulo, (yyvsp[0].nodo), NULL );  }
-#line 1966 "parser.cpp" /* yacc.c:1646  */
+#line 1959 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 72:
-#line 327 "parser.y" /* yacc.c:1646  */
+#line 320 "parser.y" /* yacc.c:1646  */
     { (yyval.parametro) = new AST::Parametro( AST::Tipo::parametro, (yyvsp[-1].tipo), AST::Tipo::nulo, (yyvsp[0].nodo), NULL );  }
-#line 1972 "parser.cpp" /* yacc.c:1646  */
+#line 1965 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 73:
-#line 328 "parser.y" /* yacc.c:1646  */
+#line 321 "parser.y" /* yacc.c:1646  */
     { (yyval.parametro) = new AST::Parametro( AST::Tipo::parametro, (yyvsp[-1].tipo), AST::Tipo::nulo, (yyvsp[0].nodo), NULL );  }
-#line 1978 "parser.cpp" /* yacc.c:1646  */
+#line 1971 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 74:
-#line 329 "parser.y" /* yacc.c:1646  */
+#line 322 "parser.y" /* yacc.c:1646  */
     { (yyval.parametro) = new AST::Parametro( AST::Tipo::parametro, (yyvsp[-1].tipo), (yyvsp[-3].tipo)             , (yyvsp[0].nodo), NULL );  }
-#line 1984 "parser.cpp" /* yacc.c:1646  */
+#line 1977 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 75:
-#line 333 "parser.y" /* yacc.c:1646  */
+#line 326 "parser.y" /* yacc.c:1646  */
     { (yyval.nodo) = new AST::Retorno( AST::Tipo::retorno, (yyvsp[0].nodo)); }
-#line 1990 "parser.cpp" /* yacc.c:1646  */
+#line 1983 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 76:
-#line 337 "parser.y" /* yacc.c:1646  */
+#line 330 "parser.y" /* yacc.c:1646  */
     { (yyval.nodo) = (yyvsp[0].nodo); }
-#line 1996 "parser.cpp" /* yacc.c:1646  */
+#line 1989 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 77:
-#line 338 "parser.y" /* yacc.c:1646  */
+#line 331 "parser.y" /* yacc.c:1646  */
     { (yyval.nodo) = (yyvsp[0].nodo); }
-#line 2002 "parser.cpp" /* yacc.c:1646  */
+#line 1995 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 78:
-#line 339 "parser.y" /* yacc.c:1646  */
+#line 332 "parser.y" /* yacc.c:1646  */
     { (yyval.nodo) = new AST::OperacaoUnaria( AST::Tipo::opUnaria , AST::Tipo::negacao         , (yyvsp[0].nodo) ); }
-#line 2008 "parser.cpp" /* yacc.c:1646  */
+#line 2001 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 79:
-#line 340 "parser.y" /* yacc.c:1646  */
+#line 333 "parser.y" /* yacc.c:1646  */
     { (yyval.nodo) = new AST::OperacaoUnaria( AST::Tipo::opUnaria , AST::Tipo::inversao        , (yyvsp[0].nodo) ); }
-#line 2014 "parser.cpp" /* yacc.c:1646  */
+#line 2007 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 80:
-#line 341 "parser.y" /* yacc.c:1646  */
+#line 334 "parser.y" /* yacc.c:1646  */
     { (yyval.nodo) = new AST::OperacaoUnaria( AST::Tipo::opUnaria , AST::Tipo::conversao_int   , (yyvsp[0].nodo) ); }
-#line 2020 "parser.cpp" /* yacc.c:1646  */
+#line 2013 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 81:
-#line 342 "parser.y" /* yacc.c:1646  */
+#line 335 "parser.y" /* yacc.c:1646  */
     { (yyval.nodo) = new AST::OperacaoUnaria( AST::Tipo::opUnaria , AST::Tipo::conversao_float , (yyvsp[0].nodo) ); }
-#line 2026 "parser.cpp" /* yacc.c:1646  */
+#line 2019 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 82:
-#line 343 "parser.y" /* yacc.c:1646  */
+#line 336 "parser.y" /* yacc.c:1646  */
     { (yyval.nodo) = new AST::OperacaoUnaria( AST::Tipo::opUnaria , AST::Tipo::conversao_bool  , (yyvsp[0].nodo) ); }
-#line 2032 "parser.cpp" /* yacc.c:1646  */
+#line 2025 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 83:
-#line 344 "parser.y" /* yacc.c:1646  */
+#line 337 "parser.y" /* yacc.c:1646  */
     { (yyval.nodo) = new AST::OperacaoUnaria( AST::Tipo::opUnaria , AST::Tipo::parenteses      , (yyvsp[-1].nodo) ); }
-#line 2038 "parser.cpp" /* yacc.c:1646  */
+#line 2031 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 84:
-#line 345 "parser.y" /* yacc.c:1646  */
+#line 338 "parser.y" /* yacc.c:1646  */
     { (yyval.nodo) = new AST::OperacaoUnaria( AST::Tipo::opUnaria , AST::Tipo::referencia      , (yyvsp[0].nodo) ); }
-#line 2044 "parser.cpp" /* yacc.c:1646  */
+#line 2037 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 85:
-#line 346 "parser.y" /* yacc.c:1646  */
+#line 339 "parser.y" /* yacc.c:1646  */
     { (yyval.nodo) = new AST::OperacaoUnaria( AST::Tipo::opUnaria , AST::Tipo::endereco        , (yyvsp[0].nodo) ); }
-#line 2050 "parser.cpp" /* yacc.c:1646  */
+#line 2043 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 86:
-#line 347 "parser.y" /* yacc.c:1646  */
+#line 340 "parser.y" /* yacc.c:1646  */
     { (yyval.nodo) = new AST::OperacaoBinaria( AST::Tipo::opBinaria , AST::Tipo::adicao        , (yyvsp[-2].nodo), (yyvsp[0].nodo) ); }
-#line 2056 "parser.cpp" /* yacc.c:1646  */
+#line 2049 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 87:
-#line 348 "parser.y" /* yacc.c:1646  */
+#line 341 "parser.y" /* yacc.c:1646  */
     { (yyval.nodo) = new AST::OperacaoBinaria( AST::Tipo::opBinaria , AST::Tipo::subtracao     , (yyvsp[-2].nodo), (yyvsp[0].nodo) ); }
-#line 2062 "parser.cpp" /* yacc.c:1646  */
+#line 2055 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 88:
-#line 349 "parser.y" /* yacc.c:1646  */
+#line 342 "parser.y" /* yacc.c:1646  */
     { (yyval.nodo) = new AST::OperacaoBinaria( AST::Tipo::opBinaria , AST::Tipo::multiplicacao , (yyvsp[-2].nodo), (yyvsp[0].nodo) ); }
-#line 2068 "parser.cpp" /* yacc.c:1646  */
+#line 2061 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 89:
-#line 350 "parser.y" /* yacc.c:1646  */
+#line 343 "parser.y" /* yacc.c:1646  */
     { (yyval.nodo) = new AST::OperacaoBinaria( AST::Tipo::opBinaria , AST::Tipo::divisao       , (yyvsp[-2].nodo), (yyvsp[0].nodo) ); }
-#line 2074 "parser.cpp" /* yacc.c:1646  */
+#line 2067 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 90:
-#line 351 "parser.y" /* yacc.c:1646  */
+#line 344 "parser.y" /* yacc.c:1646  */
     { (yyval.nodo) = new AST::OperacaoBinaria( AST::Tipo::opBinaria , AST::Tipo::e             , (yyvsp[-2].nodo), (yyvsp[0].nodo) ); }
-#line 2080 "parser.cpp" /* yacc.c:1646  */
+#line 2073 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 91:
-#line 352 "parser.y" /* yacc.c:1646  */
+#line 345 "parser.y" /* yacc.c:1646  */
     { (yyval.nodo) = new AST::OperacaoBinaria( AST::Tipo::opBinaria , AST::Tipo::ou            , (yyvsp[-2].nodo), (yyvsp[0].nodo) ); }
-#line 2086 "parser.cpp" /* yacc.c:1646  */
+#line 2079 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 92:
-#line 353 "parser.y" /* yacc.c:1646  */
+#line 346 "parser.y" /* yacc.c:1646  */
     { (yyval.nodo) = new AST::OperacaoBinaria( AST::Tipo::opBinaria , AST::Tipo::igual         , (yyvsp[-2].nodo), (yyvsp[0].nodo) ); }
-#line 2092 "parser.cpp" /* yacc.c:1646  */
+#line 2085 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 93:
-#line 354 "parser.y" /* yacc.c:1646  */
+#line 347 "parser.y" /* yacc.c:1646  */
     { (yyval.nodo) = new AST::OperacaoBinaria( AST::Tipo::opBinaria , AST::Tipo::diferente     , (yyvsp[-2].nodo), (yyvsp[0].nodo) ); }
-#line 2098 "parser.cpp" /* yacc.c:1646  */
+#line 2091 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 94:
-#line 355 "parser.y" /* yacc.c:1646  */
+#line 348 "parser.y" /* yacc.c:1646  */
     { (yyval.nodo) = new AST::OperacaoBinaria( AST::Tipo::opBinaria , AST::Tipo::maior         , (yyvsp[-2].nodo), (yyvsp[0].nodo) ); }
-#line 2104 "parser.cpp" /* yacc.c:1646  */
+#line 2097 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 95:
-#line 356 "parser.y" /* yacc.c:1646  */
+#line 349 "parser.y" /* yacc.c:1646  */
     { (yyval.nodo) = new AST::OperacaoBinaria( AST::Tipo::opBinaria , AST::Tipo::maior_igual   , (yyvsp[-2].nodo), (yyvsp[0].nodo) ); }
-#line 2110 "parser.cpp" /* yacc.c:1646  */
+#line 2103 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 96:
-#line 357 "parser.y" /* yacc.c:1646  */
+#line 350 "parser.y" /* yacc.c:1646  */
     { (yyval.nodo) = new AST::OperacaoBinaria( AST::Tipo::opBinaria , AST::Tipo::menor         , (yyvsp[-2].nodo), (yyvsp[0].nodo) ); }
-#line 2116 "parser.cpp" /* yacc.c:1646  */
+#line 2109 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 97:
-#line 358 "parser.y" /* yacc.c:1646  */
+#line 351 "parser.y" /* yacc.c:1646  */
     { (yyval.nodo) = new AST::OperacaoBinaria( AST::Tipo::opBinaria , AST::Tipo::menor_igual   , (yyvsp[-2].nodo), (yyvsp[0].nodo) ); }
-#line 2122 "parser.cpp" /* yacc.c:1646  */
+#line 2115 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 98:
-#line 359 "parser.y" /* yacc.c:1646  */
+#line 352 "parser.y" /* yacc.c:1646  */
     { (yyval.nodo) = new AST::OperacaoTernaria(AST::Tipo::opTernaria, new AST::OperacaoUnaria( AST::Tipo::opUnaria , AST::Tipo::condicao_atribuicao, (yyvsp[-5].nodo) ),  new AST::OperacaoBinaria( AST::Tipo::opBinaria , AST::Tipo::atribuicao_condicional, (yyvsp[-3].nodo), (yyvsp[-1].nodo))); }
-#line 2128 "parser.cpp" /* yacc.c:1646  */
+#line 2121 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 99:
-#line 363 "parser.y" /* yacc.c:1646  */
+#line 356 "parser.y" /* yacc.c:1646  */
     { (yyval.tipo) = AST::Tipo::inteiro;  ultimoTipo = (yyvsp[0].tipo); }
-#line 2134 "parser.cpp" /* yacc.c:1646  */
+#line 2127 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 100:
-#line 364 "parser.y" /* yacc.c:1646  */
+#line 357 "parser.y" /* yacc.c:1646  */
     { (yyval.tipo) = AST::Tipo::real;     ultimoTipo = (yyvsp[0].tipo); }
-#line 2140 "parser.cpp" /* yacc.c:1646  */
+#line 2133 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 101:
-#line 365 "parser.y" /* yacc.c:1646  */
+#line 358 "parser.y" /* yacc.c:1646  */
     { (yyval.tipo) = AST::Tipo::boolean;  ultimoTipo = (yyvsp[0].tipo); }
-#line 2146 "parser.cpp" /* yacc.c:1646  */
+#line 2139 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 103:
-#line 370 "parser.y" /* yacc.c:1646  */
+#line 363 "parser.y" /* yacc.c:1646  */
     { (yyval.nodo) = new AST::Boolean  ( (yyvsp[0].valores) ); }
-#line 2152 "parser.cpp" /* yacc.c:1646  */
+#line 2145 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 104:
-#line 371 "parser.y" /* yacc.c:1646  */
+#line 364 "parser.y" /* yacc.c:1646  */
     { (yyval.nodo) = new AST::Inteiro  ( (yyvsp[0].valores) ); }
-#line 2158 "parser.cpp" /* yacc.c:1646  */
+#line 2151 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 105:
-#line 372 "parser.y" /* yacc.c:1646  */
+#line 365 "parser.y" /* yacc.c:1646  */
     { (yyval.nodo) = new AST::Real     ( (yyvsp[0].valores) ); }
-#line 2164 "parser.cpp" /* yacc.c:1646  */
+#line 2157 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 106:
-#line 376 "parser.y" /* yacc.c:1646  */
+#line 369 "parser.y" /* yacc.c:1646  */
     { (yyval.nodo) = new AST::Variavel( AST::Tipo::variavel, AST::Tipo::nulo , (yyvsp[0].valores), 0 ); }
-#line 2170 "parser.cpp" /* yacc.c:1646  */
+#line 2163 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 107:
-#line 377 "parser.y" /* yacc.c:1646  */
+#line 370 "parser.y" /* yacc.c:1646  */
     { (yyval.nodo) = new AST::Variavel( AST::Tipo::variavel, AST::Tipo::nulo, (yyvsp[0].valores), (yyvsp[-1].num_ref) ); }
-#line 2176 "parser.cpp" /* yacc.c:1646  */
+#line 2169 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 108:
-#line 381 "parser.y" /* yacc.c:1646  */
+#line 374 "parser.y" /* yacc.c:1646  */
     { (yyval.nodo) = new AST::Hash( AST::Tipo::hash, AST::Tipo::nulo , (yyvsp[0].valores), 0 ); }
-#line 2182 "parser.cpp" /* yacc.c:1646  */
+#line 2175 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 109:
-#line 382 "parser.y" /* yacc.c:1646  */
+#line 375 "parser.y" /* yacc.c:1646  */
     { (yyval.nodo) = new AST::Hash( AST::Tipo::hash, AST::Tipo::nulo, (yyvsp[0].valores), (yyvsp[-1].num_ref) ); }
-#line 2188 "parser.cpp" /* yacc.c:1646  */
+#line 2181 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 111:
-#line 386 "parser.y" /* yacc.c:1646  */
+#line 379 "parser.y" /* yacc.c:1646  */
     {(yyval.num_ref) = (yyval.num_ref) + 1;}
-#line 2194 "parser.cpp" /* yacc.c:1646  */
+#line 2187 "parser.cpp" /* yacc.c:1646  */
     break;
 
   case 112:
-#line 390 "parser.y" /* yacc.c:1646  */
+#line 383 "parser.y" /* yacc.c:1646  */
     { analisador = true; (yyval.nodo) = new AST::Interpretador(AST::Tipo::interpretador, (yyvsp[0].nodo)); }
-#line 2200 "parser.cpp" /* yacc.c:1646  */
+#line 2193 "parser.cpp" /* yacc.c:1646  */
     break;
 
 
-#line 2204 "parser.cpp" /* yacc.c:1646  */
+#line 2197 "parser.cpp" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -2428,5 +2421,5 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 392 "parser.y" /* yacc.c:1906  */
+#line 385 "parser.y" /* yacc.c:1906  */
 

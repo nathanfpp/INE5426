@@ -1,10 +1,4 @@
 #include "arvoreSintatica.h"
-#include <iostream>
-#include <string>
-#include <map>
-#include <stdio.h>
-#include <string.h>
-#include <fstream>
 
 using namespace AST;
 
@@ -24,6 +18,20 @@ Tipo OperacaoBinaria::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linh
                 if(e != d) {
                     imprimirErroDeOperacao(operacao, e, d, linha);
                 }
+		else{// Segmentation fault também, mas a estrutura deveria ser essa na teoria
+			/*if(tipoDeVariavel == Tipo::arranjo){
+			    memcpy(esquerda->inteiro_a, direita->inteiro_a,sizeof(int)*1000);
+			    memcpy(esquerda->boolean_a, direita->boolean_a,sizeof(bool)*1000);
+			    memcpy(esquerda->real_a, direita->real_a,sizeof(double)*1000);
+			}
+			if(tipoDeVariavel == Tipo::arranjo_duplo){
+		   	   memcpy(esquerda->inteiro_d, direita->inteiro_d,sizeof(int)*1000*1000);
+			   memcpy(esquerda->boolean_d, direita->boolean_d,sizeof(bool)*1000*1000);
+			   memcpy(esquerda->real_d,    direita->real_d,sizeof(double)*1000*1000);
+			}
+			*/
+		}
+
             } else {
 		    std::cerr << "[Line " << linha << "] semantic error: arrays or hashes can only be part of a simple attribution" <<"\n";
             }

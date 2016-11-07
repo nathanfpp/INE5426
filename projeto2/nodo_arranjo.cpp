@@ -1,10 +1,4 @@
 #include "arvoreSintatica.h"
-#include <iostream>
-#include <string>
-#include <map>
-#include <stdio.h>
-#include <string.h>
-#include <fstream>
 
 using namespace AST;
 
@@ -20,6 +14,16 @@ Tipo Arranjo::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool 
   // O arranjo foi declarado?
     Arranjo *v = ((Arranjo*) tabelaDeSimbolos->recuperar(id, linha, true));
     if(v != NULL) {
+/*
+	memcpy(inteiro_a, v->inteiro_a,sizeof(int)*1000);
+	memcpy(boolean_a, v->boolean_a,sizeof(bool)*1000);
+	memcpy(real_a, v->real_a,sizeof(double)*1000);
+	tamanho = v->tamanho;
+        tipoDeVariavel = v->tipoDeVariavel;
+        boolean = v->boolean;
+        inteiro = v->inteiro;
+        real = v->real;        
+*/
         return v->tipoDeVariavel;
     } else {
         std::cerr << "[Line " << linha << "] semantic error: undeclared variable " << id << "\n";

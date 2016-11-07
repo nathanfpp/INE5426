@@ -7,10 +7,15 @@
 #include "arvoreSintatica.h"
 #include <iostream>
 #include <vector>
-#include <iostream>
 #include <string>
 #include "string.h"
 #include <map>
+#include <fstream>
+#include <algorithm>
+#include <stdio.h>
+#include <cstdio>
+
+
 extern void yyerror(const char *s, ...);
 
 namespace AST {
@@ -109,7 +114,7 @@ class Declaracao : public Nodo {
     public:
         Tipo tipoDeVariavel;
         Definicao *variaveis;
-    Declaracao(Tipo t, Tipo v, Definicao *d) : Nodo(t,vazio), tipoDeVariavel(v), variaveis(d) { };
+    Declaracao(Tipo t, Tipo v, Definicao *d) : Nodo(t,""), tipoDeVariavel(v), variaveis(d) { };
     Tipo analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool analisador);
     void imprimir(int espaco, bool novaLinha);
 };
@@ -128,7 +133,7 @@ class Definicao : public Nodo {
         Variavel *variavel;
         Nodo *valor;
         Definicao *proxima;
-    Definicao(Tipo t, Variavel *v, Nodo *c, Definicao *p) : Nodo(t,vazio), variavel(v), valor(c), proxima(p) { };
+    Definicao(Tipo t, Variavel *v, Nodo *c, Definicao *p) : Nodo(t,""), variavel(v), valor(c), proxima(p) { };
     Tipo analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool analisador);
     void imprimir(int espaco, bool novaLinha);
     void ajustarProxima(Definicao *p);
@@ -155,7 +160,7 @@ class OperacaoUnaria : public Nodo {
         Tipo tipoDoRetorno;
         Nodo *filho;
 	int ponteiros; //uma operacao unaria pode conter uma referencia ao lado direito, portanto deve ser passado para cima
-    OperacaoUnaria(Tipo t, Tipo o, Nodo *f) : Nodo(t,vazio), operacao(o), tipoDoRetorno(Tipo::nulo), filho(f) { };
+    OperacaoUnaria(Tipo t, Tipo o, Nodo *f) : Nodo(t,""), operacao(o), tipoDoRetorno(Tipo::nulo), filho(f) { };
     Tipo analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool analisador);
     int recuperarPonteiros(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha){return ponteiros;}
     void imprimir(int espaco, bool novaLinha);
@@ -167,7 +172,7 @@ class OperacaoBinaria : public Nodo {
         Tipo tipoDoRetorno;
         Nodo *esquerda;
         Nodo *direita;
-    OperacaoBinaria(Tipo t, Tipo o, Nodo *e, Nodo *d) : Nodo(t,vazio), operacao(o), tipoDoRetorno(Tipo::nulo), esquerda(e), direita(d) { };
+    OperacaoBinaria(Tipo t, Tipo o, Nodo *e, Nodo *d) : Nodo(t,""), operacao(o), tipoDoRetorno(Tipo::nulo), esquerda(e), direita(d) { };
     Tipo analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool analisador);
     void imprimir(int espaco, bool novaLinha);
 };
@@ -176,7 +181,7 @@ class OperacaoTernaria : public Nodo {
     public:
         OperacaoUnaria *esquerda; 
         OperacaoBinaria *direita;
-    OperacaoTernaria(Tipo t, OperacaoUnaria *e, OperacaoBinaria *d) : Nodo(t,vazio), esquerda(e), direita(d) { };
+    OperacaoTernaria(Tipo t, OperacaoUnaria *e, OperacaoBinaria *d) : Nodo(t,""), esquerda(e), direita(d) { };
     Tipo analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool analisador);
     void imprimir(int espaco, bool novaLinha);
 };
@@ -186,7 +191,7 @@ class Condicao : public Nodo {
         Nodo *teste;
         Bloco *se;
         Bloco *senao;
-    Condicao(Tipo t, Nodo *a,  Bloco *b,  Bloco *c) : Nodo(t,vazio), teste(a), se(b), senao(c) {  };
+    Condicao(Tipo t, Nodo *a,  Bloco *b,  Bloco *c) : Nodo(t,""), teste(a), se(b), senao(c) {  };
     Tipo analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool analisador);
     void imprimir(int espaco, bool novaLinha);
 };
@@ -197,7 +202,7 @@ class Laco : public Nodo {
         Nodo *teste;
         Nodo *iteracao;
         Bloco *laco;
-    Laco(Tipo t, Nodo *a, Nodo *b, Nodo *c, Bloco *d) : Nodo(t,vazio), inicializacao(a), teste(b), iteracao(c), laco(d) { };
+    Laco(Tipo t, Nodo *a, Nodo *b, Nodo *c, Bloco *d) : Nodo(t,""), inicializacao(a), teste(b), iteracao(c), laco(d) { };
     Tipo analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool analisador);
     void imprimir(int espaco, bool novaLinha);
 };
@@ -217,7 +222,7 @@ class Funcao : public Variavel {
 class Retorno : public Nodo {
     public:
         Nodo *retorno;
-    Retorno(Tipo t, Nodo *r) : Nodo(t,vazio), retorno(r) {};
+    Retorno(Tipo t, Nodo *r) : Nodo(t,""), retorno(r) {};
     Tipo analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool analisador);
     void imprimir(int espaco, bool novaLinha);
 };
@@ -279,7 +284,7 @@ class Parametro : public Nodo {
         Tipo tipoReserva;
         Nodo *parametro;
         Nodo *proximo;
-    Parametro(Tipo t, Tipo k, Tipo v, Nodo *p, Nodo *r) : Nodo(t,vazio), tipoDoParametro(k), tipoReserva(v), parametro(p), proximo(r) { };
+    Parametro(Tipo t, Tipo k, Tipo v, Nodo *p, Nodo *r) : Nodo(t,""), tipoDoParametro(k), tipoReserva(v), parametro(p), proximo(r) { };
     Tipo analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool analisador);
     void imprimir(int espaco, bool naoArgumento);
     void comparar(TabelaDeSimbolos *tabelaDeSimbolos, Parametro *comparado, int linha, bool definicao, bool analisador);
@@ -293,8 +298,8 @@ class Bloco : public Nodo {
     public:
         listaDeNodos linhas;
         TabelaDeSimbolos *escopo;
-    Bloco(Tipo t) : Nodo(t,vazio) {} ; // Construtor para um Bloco de linhas comum
-    Bloco(Tipo t, TabelaDeSimbolos *s) : Nodo(t,vazio), escopo(s) { }; // Construtor para o Bloco principal, a Árvore Sintática
+    Bloco(Tipo t) : Nodo(t,"") {} ; // Construtor para um Bloco de linhas comum
+    Bloco(Tipo t, TabelaDeSimbolos *s) : Nodo(t,""), escopo(s) { }; // Construtor para o Bloco principal, a Árvore Sintática
     Tipo analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool analisador);
     void imprimir(int espaco, bool novaLinha);
     void novaLinha(Nodo *linha);
@@ -303,7 +308,7 @@ class Bloco : public Nodo {
 class Interpretador : public Nodo {
     public:
         Nodo* raiz;
-    Interpretador(Tipo t, Nodo* r) : Nodo(t,vazio), raiz(r) { };
+    Interpretador(Tipo t, Nodo* r) : Nodo(t,""), raiz(r) { };
     Tipo analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool analisador);
     void imprimir(int espaco, bool novaLinha);
 };

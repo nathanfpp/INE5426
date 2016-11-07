@@ -1,12 +1,5 @@
 %{
-#include <iostream>
-#include <map>
-#include <vector>
-#include <string.h>
-#include <string>
-#include <cstdio>
-#include <fstream>
-
+#include "arvoreSintatica.h"
 extern int yylex();
 extern void yyerror(const char* s, ...);
 %}
