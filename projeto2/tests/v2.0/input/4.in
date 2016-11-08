@@ -13,6 +13,7 @@ int fun f3(int p) {
   ret k
 }
 $f3(1)
+
 int fun f(int x, int y){
   int a = x + y
   ret x + y + a

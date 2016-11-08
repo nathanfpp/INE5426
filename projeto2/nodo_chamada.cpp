@@ -89,19 +89,19 @@ Tipo Chamada::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool 
                         std::cerr << "[Line " << linha << "] semantic error: index operator expects integer but received " << imprimirTipoPorExtenso(indice2) << "\n";
                     }
 		
-		     /*else if (analisador){
+		     else if (analisador){
 			int i = (((Parametro*)parametros)->parametro)->inteiro; //não é com o parametro o problema
 			int j = (((Parametro*)((Parametro*)parametros)->proximo)->parametro)->inteiro;
-			d->inteiro_d[i][j] = 3;
-			   if(i >= 0 && i < d->tamanho->inteiro && j >= 0 && j < d->tamanho2->inteiro){
+
+			   if(i >= 0 && i < d->tamanho->inteiro && j >= 0 && j < d->tamanho2->inteiro ){
                                inteiro = d->inteiro_d[i][j];
 			       boolean = d->boolean_d[i][j];
 			       real = d->real_d[i][j];
 			      }
-			   else{
+			   else {
 	                      std::cerr << "[Line " << linha << "] $ intepreter error:  index-out of bounds"<< "\n";
 			   }
-			}*/
+			}
 	           }
         
               // Retorna-se o tipo da variável do arranjo
@@ -128,7 +128,7 @@ Tipo Chamada::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool 
                     if(indice != Tipo::inteiro) {
                       std::cerr << "[Line " << linha << "] semantic error: index operator expects integer but received " << imprimirTipoPorExtenso(indice) << "\n";
                     }
-                  /*  else if (analisador){
+                    else if (analisador){
 			int i = ((Parametro*)((Parametro*)parametros)->parametro)->inteiro; //não é com o parametro o problema
 		 	if(i>= 0 && i <= a->tamanho->inteiro){
                            inteiro = a->inteiro_a[i];
@@ -139,7 +139,7 @@ Tipo Chamada::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool 
 	                   std::cerr << "[Line " << linha << "] $ intepreter error:  index-out of bounds"<< "\n";
 			}
 
-		    }*/
+		    }
 
                 }
 

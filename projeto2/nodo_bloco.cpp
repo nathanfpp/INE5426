@@ -36,7 +36,10 @@ Tipo Bloco::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool an
 
   // Desempilha-se este escopo, removendo seu endereçamento da tabela de símbolos ...
   // ... sendo o ponteiro para o escopo guardado apenas no Nodo::Bloco
-    escopo->retornarEscopo(linha);
+
+    if(tabelaDeSimbolos->escopoPrincipal()) {
+        escopo->retornarEscopo(linha);
+    }
 
   // Retorna-se o retorno obtido, ou o Tipo::bloco
     return retorno;

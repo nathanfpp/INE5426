@@ -67,14 +67,14 @@ test:
 	./${OUTPUT} < tests/v2.0/input/1.in > tests/v2.0/output/1.out
 	./${OUTPUT} < tests/v2.0/input/2.in > tests/v2.0/output/2.out
 	./${OUTPUT} < tests/v2.0/input/3.in > tests/v2.0/output/3.out
+	./${OUTPUT} < tests/v2.0/input/4.in > tests/v2.0/output/4.out
+#	./${OUTPUT} < tests/v2.0/input/5.in > tests/v2.0/output/5.out
 	./${OUTPUT} < tests/v2.0/input/6.in > tests/v2.0/output/6.out
 	./${OUTPUT} < tests/v2.0/input/7.in > tests/v2.0/output/7.out
-
-	./${OUTPUT} < tests/v2.0/input/4.in > tests/v2.0/output/4.out
-	./${OUTPUT} < tests/v2.0/input/5.in > tests/v2.0/output/5.out
 	./${OUTPUT} < tests/v2.0/input/8.in > tests/v2.0/output/8.out
-	./${OUTPUT} < tests/v2.0/input/9.in > tests/v2.0/output/9.out
-
+	./${OUTPUT} < tests/v2.1/input/1.in > tests/v2.1/output/1.out
+	./${OUTPUT} < tests/v2.1/input/2.in > tests/v2.1/output/2.out
+#	./${OUTPUT} < tests/v2.1/input/3.in > tests/v2.1/output/3.out
 
 compare_test:
 	diff tests/v0.1/expected/1.ex tests/v0.1/output/1.out  || exit 0
@@ -122,8 +122,12 @@ compare_test:
 	diff tests/v2.0/expected/1.ex tests/v2.0/output/1.out
 	diff tests/v2.0/expected/2.ex tests/v2.0/output/2.out
 	diff tests/v2.0/expected/3.ex tests/v2.0/output/3.out
+	diff tests/v2.0/expected/4.ex tests/v2.0/output/4.out
 	diff tests/v2.0/expected/6.ex tests/v2.0/output/6.out
 	diff tests/v2.0/expected/7.ex tests/v2.0/output/7.out
+	diff tests/v2.0/expected/8.ex tests/v2.0/output/8.out
+	diff tests/v2.1/expected/1.ex tests/v2.1/output/1.out
+	diff tests/v2.1/expected/2.ex tests/v2.1/output/2.out
 
 ##Testes de erro
 
@@ -189,6 +193,9 @@ error_test:
 	./${OUTPUT} < error_tests/v2.0/input/1.in > error_tests/v2.0/output/1.out 2> error_tests/v2.0/output/1.out_err
 	./${OUTPUT} < error_tests/v2.0/input/2.in > error_tests/v2.0/output/2.out 2> error_tests/v2.0/output/2.out_err
 	./${OUTPUT} < error_tests/v2.0/input/3.in > error_tests/v2.0/output/3.out 2> error_tests/v2.0/output/3.out_err
+	./${OUTPUT} < error_tests/v2.1/input/1.in > error_tests/v2.1/output/1.out 2> error_tests/v2.1/output/1.out_err
+	./${OUTPUT} < error_tests/v2.1/input/2.in > error_tests/v2.1/output/2.out 2> error_tests/v2.1/output/2.out_err
+	./${OUTPUT} < error_tests/v2.1/input/3.in > error_tests/v2.1/output/3.out 2> error_tests/v2.1/output/3.out_err
 
 compare_error_test:
 	diff error_tests/v0.1/expected/1.ex     error_tests/v0.1/output/1.out 
@@ -304,5 +311,11 @@ compare_error_test:
 	diff error_tests/v2.0/expected/1.ex_err error_tests/v2.0/output/1.out_err  
 	diff error_tests/v2.0/expected/2.ex     error_tests/v2.0/output/2.out 
 	diff error_tests/v2.0/expected/2.ex_err error_tests/v2.0/output/2.out_err  
-#	diff error_tests/v2.0/expected/3.ex     error_tests/v2.0/output/3.out 
-#	diff error_tests/v2.0/expected/3.ex_err error_tests/v2.0/output/3.out_err  
+	diff error_tests/v2.0/expected/3.ex     error_tests/v2.0/output/3.out 
+	diff error_tests/v2.0/expected/3.ex_err error_tests/v2.0/output/3.out_err  
+	diff error_tests/v2.1/expected/1.ex     error_tests/v2.1/output/1.out 
+	diff error_tests/v2.1/expected/1.ex_err error_tests/v2.1/output/1.out_err  
+	diff error_tests/v2.1/expected/2.ex     error_tests/v2.1/output/2.out 
+	diff error_tests/v2.1/expected/2.ex_err error_tests/v2.1/output/2.out_err  
+	diff error_tests/v2.1/expected/3.ex     error_tests/v2.1/output/3.out 
+	diff error_tests/v2.1/expected/3.ex_err error_tests/v2.1/output/3.out_err 

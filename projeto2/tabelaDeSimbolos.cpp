@@ -50,6 +50,11 @@ bool TabelaDeSimbolos::retornarEscopo(int linha) {
 }
 
 
+bool TabelaDeSimbolos::escopoPrincipal(){
+    return (anterior == NULL);
+}
+
+
 bool TabelaDeSimbolos::adicionar(AST::Nodo *v, int linha, bool variavel) {
 
 //std::cerr << "\n@ " << v->id<<"\n";

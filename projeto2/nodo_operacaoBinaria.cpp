@@ -12,24 +12,26 @@ Tipo OperacaoBinaria::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linh
 
 // Arranjos e Hashes, quando o operando é a variável em si e não seus itens, devem apresentar erro
    if(esquerda->tipo == Tipo::variavel) {
-        Tipo tipoDeVariavel = ((Variavel*)esquerda)->obterTipoDaTabela(tabelaDeSimbolos);
-        if(tipoDeVariavel == Tipo::arranjo || tipoDeVariavel == Tipo::arranjo_duplo || tipoDeVariavel == Tipo::hash) {
+        Tipo tipoDeVariavel_e = ((Variavel*)esquerda)->obterTipoDaTabela(tabelaDeSimbolos);
+        Tipo tipoDeVariavel_d = ((Variavel*)direita)->obterTipoDaTabela(tabelaDeSimbolos);
+        if(tipoDeVariavel_e == Tipo::arranjo || tipoDeVariavel_e == Tipo::arranjo_duplo || tipoDeVariavel_e == Tipo::hash
+	   || tipoDeVariavel_d == Tipo::arranjo || tipoDeVariavel_d == Tipo::arranjo_duplo || tipoDeVariavel_d == Tipo::hash) {
             if(operacao == Tipo::atribuicao) {
                 if(e != d) {
                     imprimirErroDeOperacao(operacao, e, d, linha);
                 }
-		else{// Segmentation fault também, mas a estrutura deveria ser essa na teoria
-			/*if(tipoDeVariavel == Tipo::arranjo){
-			    memcpy(esquerda->inteiro_a, direita->inteiro_a,sizeof(int)*1000);
-			    memcpy(esquerda->boolean_a, direita->boolean_a,sizeof(bool)*1000);
-			    memcpy(esquerda->real_a, direita->real_a,sizeof(double)*1000);
+		else{
+			if(analisador && tipoDeVariavel_e == Tipo::arranjo){
+			 //   memcpy(((Arranjo*)esquerda)->inteiro_a, ((Arranjo*)direita)->inteiro_a,sizeof(int)*100);
+			 //   memcpy(((Arranjo*)esquerda)->boolean_a, ((Arranjo*)direita)->boolean_a,sizeof(bool)*100);
+			 //   memcpy(((Arranjo*)esquerda)->real_a, ((Arranjo*)direita)->real_a,sizeof(double)*100);
 			}
-			if(tipoDeVariavel == Tipo::arranjo_duplo){
-		   	   memcpy(esquerda->inteiro_d, direita->inteiro_d,sizeof(int)*1000*1000);
-			   memcpy(esquerda->boolean_d, direita->boolean_d,sizeof(bool)*1000*1000);
-			   memcpy(esquerda->real_d,    direita->real_d,sizeof(double)*1000*1000);
+			if(analisador && tipoDeVariavel_e == Tipo::arranjo_duplo){
+		   	 //  memcpy(((ArranjoDuplo*)esquerda)->inteiro_d, ((ArranjoDuplo*)direita)->inteiro_d,sizeof(int)*100*100);
+			 //  memcpy(((ArranjoDuplo*)esquerda)->boolean_d, ((ArranjoDuplo*)direita)->boolean_d,sizeof(bool)*100*100);
+			 //  memcpy(((ArranjoDuplo*)esquerda)->real_d, ((ArranjoDuplo*)direita)->real_d,sizeof(double)*100*100);
 			}
-			*/
+			
 		}
 
             } else {
@@ -84,34 +86,47 @@ Tipo OperacaoBinaria::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linh
                 esquerda->inteiro = direita->inteiro; esquerda->real = direita->real; esquerda->boolean = direita->boolean;
                 inteiro = direita->inteiro; real = direita->real; boolean = direita->boolean;
 
-	      switch (esquerda->tipo){
-		 case Tipo::arranjo:			    	
+	      switch (esquerda->tipo) {
+		 case Tipo::arranjo: {
+                     Arranjo *a = (Arranjo*) tabelaDeSimbolos->recuperar(esquerda->id, linha, true);
+		     int i = ((Parametro*)((Chamada*)esquerda)->parametros)->parametro->inteiro;
 		     switch(e){
 			case Tipo::inteiro:
-	     		 // ((Chamada*)esquerda)->inteiro_a["preciso saber o indice"] = direita->inteiro
+	     		    a->inteiro_a[i] = direita->inteiro;
 			case Tipo::boolean:
-	      		// ((Chamada*)esquerda)->boolean_a["preciso saber o indice"] = direita->boolean;
+	     		    a->boolean_a[i] = direita->boolean;
 			case Tipo::real:
-		 	// ((Chamada*)esquerda)->real_a["preciso saber o indice"] = direita->real;
+	     		    a->real_a[i] = direita->real;
 			default: break;
 		    }
-		    break;
-	      	 case Tipo::arranjo_duplo:
-		     switch(e){
+                    tabelaDeSimbolos->modificar(a, esquerda->id); 
+		 } break;
+
+	      	 case Tipo::arranjo_duplo: {
+                     ArranjoDuplo *d = (ArranjoDuplo*) tabelaDeSimbolos->recuperar(esquerda->id, linha, true);
+		     int i = ((Parametro*)((Chamada*)esquerda)->parametros)->parametro->inteiro;
+		     int j = (((Parametro*)((Parametro*)((Chamada*)esquerda)->parametros)->proximo)->parametro)->inteiro;
+
+		     switch(e) {
 			case Tipo::inteiro:
-	     		 // ((Chamada*)esquerda)->inteiro_d["preciso saber os indices"] = direita->inteiro
+	     		    d->inteiro_d[i][j] = direita->inteiro;
 			case Tipo::boolean:
-	      		// ((Chamada*)esquerda)->boolean_d["preciso saber os indices"] = direita->boolean;
+	     		    d->boolean_d[i][j] = direita->boolean;
 			case Tipo::real:
-		 	// ((Chamada*)esquerda)->real_d["preciso saber os indices"] = direita->real;
+	     		    d->real_d[i][j] = direita->real;
 			default: break;
 		     }
-		default: break;
-	   
-	      } 
+                    tabelaDeSimbolos->modificar(d, esquerda->id); 
+                 } break;
 
               // Substitui-se o nodo da tabela de símbolos por este com os valores atualizados
-                tabelaDeSimbolos->modificar(esquerda, esquerda->id);
+		default: {
+                        tabelaDeSimbolos->modificar(esquerda, esquerda->id); 
+                } break;	   
+	      } 
+
+
+                
             }
 
           // Retorna-se o tipo da esquerda

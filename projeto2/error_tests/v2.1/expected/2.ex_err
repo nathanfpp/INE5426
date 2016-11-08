@@ -1,0 +1,4 @@
+[Line 2] semantic error: index operator expects integer but received bool
+[Line 3] $ intepreter error:  index-out of bounds
+[Line 4] semantic error: index operator expects integer but received bool
+[Line 4] $ intepreter error:  index-out of bounds
