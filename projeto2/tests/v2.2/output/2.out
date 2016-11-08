@@ -1,0 +1,11 @@
+float:float hash: a
+int:float hash: b
+= [key] a 10.0 1.001
+$ R: 1.901
+= [key] b 33 + * [float] 22 [key] a 10.0 [float] 8
+$ R: 10
+$ R: 0
+= [key] a [float] 10 2
+int var: i = 5
+$ R: 10
+

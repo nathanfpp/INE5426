@@ -262,6 +262,15 @@ class ArranjoDuplo : public Arranjo {
 
 class Hash : public Variavel {
     public:
+	std::map<int, int> int_int;
+	std::map<int, bool> int_bool;
+	std::map<int, double> int_real;
+	std::map<bool, bool> bool_bool;
+	std::map<bool, int> bool_int;
+	std::map<bool, double> bool_real;
+	std::map<double, double> real_real;
+	std::map<double, int> real_int;
+	std::map<double, bool> real_bool;
         Tipo tipoDeChave;
     Hash(Tipo t, Tipo v, atributo_nodo an, int ponteiros) : Variavel(t, v, an, ponteiros), tipoDeChave(Tipo::nulo) {};
     Tipo analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool analisador);

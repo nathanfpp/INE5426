@@ -170,6 +170,7 @@ void Parametro::acrescentarComValoresAoEscopo(TabelaDeSimbolos *tabelaDeSimbolos
         ((Variavel*)parametro)->tipoDeVariavel = tipoDoParametro; 
         if(parametro->tipo == Tipo::hash) {
             ((Hash*)parametro)->tipoDeChave = tipoReserva;
+	    //fazer memcpy com hash e pegar o seu tamanho, algo assim
         }
 	if(parametro->tipo == Tipo::arranjo && valores->tipo == Tipo::arranjo){
             memcpy(((Arranjo*)parametro)->inteiro_a,((Arranjo*)valores)->inteiro_a,sizeof(int)*100);
@@ -181,6 +182,7 @@ void Parametro::acrescentarComValoresAoEscopo(TabelaDeSimbolos *tabelaDeSimbolos
            memcpy(((ArranjoDuplo*)parametro)->boolean_d,((ArranjoDuplo*)valores)->boolean_d,sizeof(bool)*100*100);
            memcpy(((ArranjoDuplo*)parametro)->real_d,((ArranjoDuplo*)valores)->real_d,sizeof(double)*100*100);
 	}
+
         parametro->boolean = valores->parametro->boolean;
         parametro->inteiro = valores->parametro->inteiro;
         parametro->real    = valores->parametro->real;   

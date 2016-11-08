@@ -24,12 +24,12 @@ Tipo OperacaoBinaria::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linh
 			if(analisador && tipoDeVariavel_e == Tipo::arranjo){
 			 //   memcpy(((Arranjo*)esquerda)->inteiro_a, ((Arranjo*)direita)->inteiro_a,sizeof(int)*100);
 			 //   memcpy(((Arranjo*)esquerda)->boolean_a, ((Arranjo*)direita)->boolean_a,sizeof(bool)*100);
-			 //   memcpy(((Arranjo*)esquerda)->real_a, ((Arranjo*)direita)->real_a,sizeof(double)*100);
+			 //   memcpy(((Arranjo*)esquerda)->h->real_a, ((Arranjo*)direita)->h->real_a,sizeof(double)*100);
 			}
 			if(analisador && tipoDeVariavel_e == Tipo::arranjo_duplo){
 		   	 //  memcpy(((ArranjoDuplo*)esquerda)->inteiro_d, ((ArranjoDuplo*)direita)->inteiro_d,sizeof(int)*100*100);
 			 //  memcpy(((ArranjoDuplo*)esquerda)->boolean_d, ((ArranjoDuplo*)direita)->boolean_d,sizeof(bool)*100*100);
-			 //  memcpy(((ArranjoDuplo*)esquerda)->real_d, ((ArranjoDuplo*)direita)->real_d,sizeof(double)*100*100);
+			 //  memcpy(((ArranjoDuplo*)esquerda)->h->real_d, ((ArranjoDuplo*)direita)->h->real_d,sizeof(double)*100*100);
 			}
 			
 		}
@@ -119,13 +119,61 @@ Tipo OperacaoBinaria::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linh
                     tabelaDeSimbolos->modificar(d, esquerda->id); 
                  } break;
 
+		case Tipo::hash: {
+                     Hash *h = (Hash*) tabelaDeSimbolos->recuperar(esquerda->id, linha, true);
+		     int chave_i = ((Parametro*)((Chamada*)esquerda)->parametros)->parametro->inteiro;
+		     bool chave_b = ((Parametro*)((Chamada*)esquerda)->parametros)->parametro->real;
+		     double chave_r = ((Parametro*)((Chamada*)esquerda)->parametros)->parametro->boolean;
+		     switch (h->tipoDeHash(tabelaDeSimbolos)){
+		    
+			    case hash_bb:
+			    h->bool_bool[chave_b] = direita->boolean;
+			    break;
+			    
+			    case hash_bf:
+			    h->bool_real[chave_b] = direita->real;
+			    break;
+
+			    case hash_bi:
+			    h->bool_int[chave_b] = direita->inteiro;
+			    break;
+
+			    case hash_ib:
+			    h->int_bool[chave_i] = direita->boolean;
+			    break;
+			    
+			    case hash_if:
+			    h->int_real[chave_i] = direita->real;
+			    break;
+
+			    case hash_ii:
+			    h->int_int[chave_i] = direita->inteiro;
+			    break;
+
+			    case hash_fb:
+			    h->real_bool[chave_r] = direita->boolean;
+			    break;
+			    
+			    case hash_ff:
+			    h->real_real[chave_r] = direita->real;
+			    break;
+
+			    case hash_fi:
+			    h->real_int[chave_r] = direita->inteiro;
+			    break;
+
+			    default: break;
+
+			  }
+                    tabelaDeSimbolos->modificar(h, esquerda->id); 
+                 } break;
+		
+
               // Substitui-se o nodo da tabela de símbolos por este com os valores atualizados
 		default: {
                         tabelaDeSimbolos->modificar(esquerda, esquerda->id); 
                 } break;	   
 	      } 
-
-
                 
             }
 
