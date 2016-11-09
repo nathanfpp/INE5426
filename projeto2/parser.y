@@ -156,7 +156,7 @@ atribuicao:
 
 var_arranjo:
              var     { $$ = $1; }
-           | chamada { $$ = $1; }
+           | chamada { $$ = $1; ((AST::Chamada*)$$)->read_hash = false; }
            ;
 
 declaracao:

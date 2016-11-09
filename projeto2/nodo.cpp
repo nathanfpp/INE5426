@@ -132,7 +132,7 @@ bool Nodo::coercao(OperacaoBinaria *coagido, Tipo e, Tipo d, Tipo operacao ,int 
                     if(coagido->direita->inteiro != 0) {
                         coagido->real = coagido->esquerda->real / coagido->direita->real;
                     } else {
-                        std::cerr << "DIVIDED BY ZERO! =0";
+                        std::cerr << "[Line "<<linha<<"] $ Interpreter Error: Divided by Zero.";
                     }
                     break;
                 case Tipo::igual:

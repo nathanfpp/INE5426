@@ -1,5 +1,8 @@
 float : float a
 int : float b
+bool : int c
+c(false) = 1
+$c(false)
 a(10.0) = 1.001
 $a(10.0)+0.9
 b(33) = [float] 22 * a(10.0) + 8

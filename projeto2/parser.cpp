@@ -1637,7 +1637,7 @@ yyreduce:
 
   case 19:
 #line 159 "parser.y" /* yacc.c:1646  */
-    { (yyval.nodo) = (yyvsp[0].nodo); }
+    { (yyval.nodo) = (yyvsp[0].nodo); ((AST::Chamada*)(yyval.nodo))->read_hash = false; }
 #line 1642 "parser.cpp" /* yacc.c:1646  */
     break;
 

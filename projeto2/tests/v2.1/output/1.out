@@ -3,5 +3,5 @@ int fun: f1 (params: int p, int r, int q)
   ret + + k r q
 int array: a (size: 10)
 = [index] a 9 f1[3 params] 1000 1000 1000
-$ R: a = ?
+$ R: a(9) = 4000
 

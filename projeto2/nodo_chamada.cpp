@@ -171,7 +171,7 @@ Tipo Chamada::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool 
                         std::cerr << imprimirTipoPorExtenso(chave) << " but received " << imprimirTipoPorExtenso(recebido) << "\n";
                     }
 		   
- 		    else if(analisador){
+ 		    else if(analisador && read_hash){
 
 		     int chave_i = ((Parametro*)((Parametro*)parametros)->parametro)->inteiro;	
 		     bool chave_b = ((Parametro*)((Parametro*)parametros)->parametro)->boolean;
@@ -180,56 +180,57 @@ Tipo Chamada::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool 
 		     switch (h->tipoDeHash(tabelaDeSimbolos)){
 		    
 			    case hash_bb:
-				if(h->bool_bool[chave_b] != NULL)   
+
+				if(h->bool_bool.find(chave_b) != h->bool_bool.end())   
 			    	boolean = h->bool_bool[chave_b];
 				else std::cerr << "[Line " << linha << "] $ intepreter error: the key doesn't exist"<< "\n";
 			    break;
 			    
 			    case hash_bf:
-				if(h->bool_real[chave_b] != NULL)   
+				if(h->bool_real.find(chave_b) != h->bool_real.end())   
 			  	real = h->bool_real[chave_b];
 				else std::cerr << "[Line " << linha << "] $ intepreter error: the key doesn't exist"<< "\n";
 			    break;
 
 			    case hash_bi:
-				if(h->bool_int[chave_b] != NULL)   
+				if(h->bool_int.find(chave_b) != h->bool_int.end())   
 			  	inteiro = h->bool_int[chave_b];
 				else std::cerr << "[Line " << linha << "] $ intepreter error: the key doesn't exist"<< "\n";
 			    break;
 
 			    case hash_ib:
-				if(h->int_bool[chave_i] != NULL)   
+				if(h->int_bool.find(chave_i) != h->int_bool.end())   
 			  	boolean = h->int_bool[chave_i];
 				else std::cerr << "[Line " << linha << "] $ intepreter error: the key doesn't exist"<< "\n";
 			    break;
 			    
 			    case hash_if:
-				if(h->int_real[chave_i] != NULL)   
+				if(h->int_real.find(chave_i) != h->int_real.end())   
 			    	real = h->int_real[chave_i];
 				else std::cerr << "[Line " << linha << "] $ intepreter error: the key doesn't exist"<< "\n";
 			    break;
 
 			    case hash_ii:
-			//	if(h->int_int[chave_i] != NULL)   
-			    	inteiro = h->int_int[chave_i]+0;
-			//	else std::cerr << "[Line " << linha << "] $ intepreter error: the key doesn't exist"<< "\n";
+				if(h->int_int.find(chave_i) != h->int_int.end())   
+			    	inteiro = h->int_int[chave_i];
+				else std::cerr << "[Line " << linha << "] $ intepreter error: the key doesn't exist"<< "\n";
 			    break;
 
 			    case hash_fb:
-				if(h->real_bool[chave_r] != NULL)   
+				if(h->real_bool.find(chave_r) != h->real_bool.end())   
 			    	boolean = h->real_bool[chave_r];
 				else std::cerr << "[Line " << linha << "] $ intepreter error: the key doesn't exist"<< "\n";
 			    break;
 			    
 			    case hash_ff:
-				if(h->real_real[chave_r] != NULL)   
+				if(h->real_real.find(chave_r) != h->real_real.end())   
 			    	real = h->real_real[chave_r];
 				else std::cerr << "[Line " << linha << "] $ intepreter error: the key doesn't exist"<< "\n";
 
 			    break;
 
 			    case hash_fi:
-				if(h->real_int[chave_r] != NULL)   
+				if(h->real_int.find(chave_r) != h->real_int.end())   
 			    	inteiro = h->real_int[chave_r];
 				else std::cerr << "[Line " << linha << "] $ intepreter error: the key doesn't exist"<< "\n";
 			    break;

@@ -280,6 +280,7 @@ class Hash : public Variavel {
 
 class Chamada : public Funcao {
     public:
+    bool read_hash = true;
     Chamada(Tipo t, Tipo d, atributo_nodo an, Nodo *p, Bloco *c, int ref) : Funcao(t,d,an,p) {ponteiros = ref; definida = false; };
     Tipo analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool analisador);
     void imprimir(int espaco, bool novaLinha);
