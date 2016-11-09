@@ -1,0 +1,2 @@
+[Line 2] semantic error: key operator expects integer but received bool
+[Line 3] $ intepreter error: the key doesn't exist

@@ -90,6 +90,19 @@
 
    1: ok
    2: ok
+   3: ok
+
+  v2.1: arranjos
+
+   1: ok
+   2: ok
+   3: ok
+
+  v2.2: hash
+
+   1: ok
+   2: não
+   3: ok
 
 Notas:
 

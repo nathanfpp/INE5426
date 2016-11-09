@@ -1,0 +1,6 @@
+int : int b
+bool : float c
+b(10) = [float] 2
+$b(10)
+c(false) = [float] true
+$c(false)

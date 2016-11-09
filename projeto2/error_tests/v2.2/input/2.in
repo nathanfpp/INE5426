@@ -1,0 +1,6 @@
+int : int a
+int : bool b
+b(1) = [int] false
+$b(1)
+a(10) = b(1)
+$a(10)

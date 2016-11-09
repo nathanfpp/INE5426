@@ -87,6 +87,10 @@ v2.1: arranjos
 
  1 : ok
  2 : ok
- 3 : ok
+ 3 : não
 
+v2.2: hash
 
+ 1: ok
+ 2: ok
+ 3: não

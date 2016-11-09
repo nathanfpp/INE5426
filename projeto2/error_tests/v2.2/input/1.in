@@ -1,0 +1,3 @@
+int : int b
+b(false) = 8
+$b(10)
