@@ -58,6 +58,8 @@ class Nodo {
         int inteiro;
         double real;
         bool boolean;
+  
+
         Nodo(Tipo t, atributo_nodo an) : tipo(t), id( an.valor == NULL ? "" : std::string(an.valor)), inteiro(an.i), real(an.f), boolean(an.b) {};
      	Nodo(Tipo t, std::string i) : tipo(t), id(i) {};
         virtual ~Nodo() {};
@@ -262,6 +264,9 @@ class ArranjoDuplo : public Arranjo {
 
 class Hash : public Variavel {
     public:
+        std::vector<int> inteiro_a;
+        std::vector<bool> boolean_a;
+        std::vector<double> real_a;
 	std::map<int, int> int_int;
 	std::map<int, bool> int_bool;
 	std::map<int, double> int_real;
@@ -280,6 +285,7 @@ class Hash : public Variavel {
 
 class Chamada : public Funcao {
     public:
+
     bool read_hash = true;
     Chamada(Tipo t, Tipo d, atributo_nodo an, Nodo *p, Bloco *c, int ref) : Funcao(t,d,an,p) {ponteiros = ref; definida = false; };
     Tipo analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool analisador);
@@ -299,6 +305,7 @@ class Parametro : public Nodo {
     void comparar(TabelaDeSimbolos *tabelaDeSimbolos, Parametro *comparado, int linha, bool definicao, bool analisador);
     void acrescentarAoEscopo(TabelaDeSimbolos *tabelaDeSimbolos, int linha);
     void acrescentarComValoresAoEscopo(TabelaDeSimbolos *tabelaDeSimbolos, Parametro *valores, int linha);
+    void recuperarEstruturaDeDados(TabelaDeSimbolos *tabelaDeSimbolos, Parametro *p, int linha);
     void ajustarPonteiroImpressao(Parametro *p);
     int contar();
 };

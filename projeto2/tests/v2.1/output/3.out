@@ -1,9 +1,15 @@
-int array fun: f1 (params: int array [index] b 10)
-  int var: i, j = 0
-  for: = i 0, < i 10, = i + i 1
-  do:
-    = [index] b i i
-  ret b
+int fun: f1 (params: int array [index] b 10)
+  ret [index] b 7
 int array: a (size: 10)
-= a f1[1 params] a
+= [index] a 0 0
+= [index] a 1 10
+= [index] a 2 20
+= [index] a 3 30
+= [index] a 4 40
+= [index] a 5 50
+= [index] a 6 60
+= [index] a 7 70
+= [index] a 8 80
+= [index] a 9 90
+$ R: 70
 

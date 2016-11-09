@@ -49,11 +49,20 @@ Tipo Chamada::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool 
               // Executa a função e armazena o retorno na Chamada, caso ela tenha sido definida
                 if(analisador) {
                     if(f->definida) {
+                        
+			/* navego entre parametros, aqueles que forem estrutura de dados, preciso recuperar
+                           estrutura da tabela e atualizo o parametro.*/
+                      
+			if(((Parametro*)parametros)->parametro != NULL){
+                          ((Parametro*)parametros)->recuperarEstruturaDeDados(tabelaDeSimbolos,((Parametro*)parametros),linha);
+			 }
+
                         ((DefinicaoDeFuncao*)f)->executar(tabelaDeSimbolos, ((Parametro*)parametros), linha, analisador);
                         boolean = f->boolean;
                         inteiro = f->inteiro;
                         real    = f->real;
-//std::cout << "@chamada: " << id << " " << inteiro << "\n";
+
+                        //retornar estrutura de dados.
                     }
 
                   // Caso a função não tenha sido definida, e o analisador estiver ativo, uma mensagem de erro é emitida

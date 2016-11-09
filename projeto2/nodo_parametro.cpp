@@ -170,18 +170,43 @@ void Parametro::acrescentarComValoresAoEscopo(TabelaDeSimbolos *tabelaDeSimbolos
         ((Variavel*)parametro)->tipoDeVariavel = tipoDoParametro; 
         if(parametro->tipo == Tipo::hash) {
             ((Hash*)parametro)->tipoDeChave = tipoReserva;
-	    //fazer memcpy com hash e pegar o seu tamanho, algo assim
+            
+           if (((Hash*)parametro)->int_int.size() > 0)
+     	   ((Hash*)parametro)->int_int.insert(((Hash*)(valores->parametro))->int_int.begin(),((Hash*)(valores->parametro))->int_int.end());
+
+	   if (((Hash*)parametro)->int_bool.size() > 0)
+           ((Hash*)parametro)->int_bool.insert(((Hash*)(valores->parametro))->int_bool.begin(),((Hash*)(valores->parametro))->int_bool.end());
+           if (((Hash*)parametro)->int_real.size() > 0)
+           ((Hash*)parametro)->int_real.insert(((Hash*)(valores->parametro))->int_real.begin(),((Hash*)(valores->parametro))->int_real.end());
+           if (((Hash*)parametro)->bool_bool.size() > 0)
+   	   ((Hash*)parametro)->bool_bool.insert(((Hash*)(valores->parametro))->bool_bool.begin(),((Hash*)(valores->parametro))->bool_bool.end());
+           if (((Hash*)parametro)->bool_int.size() > 0)
+           ((Hash*)parametro)->bool_int.insert(((Hash*)(valores->parametro))->bool_int.begin(),((Hash*)(valores->parametro))->bool_int.end());
+           if (((Hash*)parametro)->bool_real.size() > 0)
+           ((Hash*)parametro)->bool_real.insert(((Hash*)(valores->parametro))->bool_real.begin(),((Hash*)(valores->parametro))->bool_real.end());
+           if (((Hash*)parametro)->real_real.size() > 0)
+   	   ((Hash*)parametro)->real_real.insert(((Hash*)(valores->parametro))->real_int.begin(),((Hash*)(valores->parametro))->real_int.end());
+           if (((Hash*)parametro)->real_int.size() > 0)
+           ((Hash*)parametro)->real_int.insert(((Hash*)(valores->parametro))->real_bool.begin(),((Hash*)(valores->parametro))->real_bool.end());
+           if (((Hash*)parametro)->real_bool.size() > 0)
+           ((Hash*)parametro)->real_bool.insert(((Hash*)(valores->parametro))->real_real.begin(),((Hash*)(valores->parametro))->real_real.end());
+           
         }
-	if(parametro->tipo == Tipo::arranjo && valores->tipo == Tipo::arranjo){
-            memcpy(((Arranjo*)parametro)->inteiro_a,((Arranjo*)valores)->inteiro_a,sizeof(int)*100);
-            memcpy(((Arranjo*)parametro)->boolean_a,((Arranjo*)valores)->boolean_a,sizeof(bool)*100);
-            memcpy(((Arranjo*)parametro)->real_a,((Arranjo*)valores)->real_a,sizeof(double)*100);
+
+	if(parametro->tipo == Tipo::arranjo){
+
+            memcpy(((Arranjo*)parametro)->inteiro_a,((Arranjo*)(valores->parametro))->inteiro_a,sizeof(((Arranjo*)(valores->parametro))->inteiro_a));
+            memcpy(((Arranjo*)parametro)->boolean_a,((Arranjo*)(valores->parametro))->boolean_a,sizeof(((Arranjo*)(valores->parametro))->boolean_a));
+            memcpy(((Arranjo*)parametro)->real_a,((Arranjo*)(valores->parametro))->real_a,sizeof(((Arranjo*)(valores->parametro))->real_a));
 	}
-	if(parametro->tipo == Tipo::arranjo_duplo && valores->tipo == Tipo::arranjo_duplo){
-   	   memcpy(((ArranjoDuplo*)parametro)->inteiro_d,((ArranjoDuplo*)valores)->inteiro_d,sizeof(int)*100*100);
-           memcpy(((ArranjoDuplo*)parametro)->boolean_d,((ArranjoDuplo*)valores)->boolean_d,sizeof(bool)*100*100);
-           memcpy(((ArranjoDuplo*)parametro)->real_d,((ArranjoDuplo*)valores)->real_d,sizeof(double)*100*100);
+
+	if(parametro->tipo == Tipo::arranjo_duplo){
+
+   	   memcpy(((ArranjoDuplo*)parametro)->inteiro_d,((ArranjoDuplo*)(valores->parametro))->inteiro_d,sizeof(((ArranjoDuplo*)(valores->parametro))->inteiro_d));
+           memcpy(((ArranjoDuplo*)parametro)->boolean_d,((ArranjoDuplo*)(valores->parametro))->boolean_d,sizeof(((ArranjoDuplo*)(valores->parametro))->boolean_d));
+           memcpy(((ArranjoDuplo*)parametro)->real_d,((ArranjoDuplo*)(valores->parametro))->real_d,sizeof(((ArranjoDuplo*)(valores->parametro))->real_d));
 	}
+	
 
         parametro->boolean = valores->parametro->boolean;
         parametro->inteiro = valores->parametro->inteiro;
@@ -191,6 +216,23 @@ void Parametro::acrescentarComValoresAoEscopo(TabelaDeSimbolos *tabelaDeSimbolos
     if(proximo != NULL) {
         return ((Parametro*)proximo)->acrescentarComValoresAoEscopo(tabelaDeSimbolos, ((Parametro*)valores->proximo), linha);
     }
+}
+
+
+void Parametro::recuperarEstruturaDeDados(TabelaDeSimbolos *tabelaDeSimbolos, Parametro *p, int linha){
+
+     if (p->parametro->tipo == Tipo::variavel){
+	 Nodo *ed = tabelaDeSimbolos->recuperar(p->parametro->id, linha, true);
+	 if (ed != NULL){
+	   if(ed->tipo == arranjo || ed->tipo == arranjo_duplo || ed->tipo == hash){
+		//ed->tipo = Tipo::variavel;
+	 	p->parametro = ed;
+	   }
+        }
+     }
+    
+     if ( ((Parametro*)(p->proximo)) != NULL)
+	p->recuperarEstruturaDeDados(tabelaDeSimbolos, ((Parametro*)(p->proximo)), linha);	
 }
 
 

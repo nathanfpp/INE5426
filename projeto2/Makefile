@@ -74,7 +74,8 @@ test:
 	./${OUTPUT} < tests/v2.0/input/8.in > tests/v2.0/output/8.out
 	./${OUTPUT} < tests/v2.1/input/1.in > tests/v2.1/output/1.out
 	./${OUTPUT} < tests/v2.1/input/2.in > tests/v2.1/output/2.out
-#	./${OUTPUT} < tests/v2.1/input/3.in > tests/v2.1/output/3.out
+	./${OUTPUT} < tests/v2.1/input/3.in > tests/v2.1/output/3.out
+	./${OUTPUT} < tests/v2.1/input/4.in > tests/v2.1/output/4.out
 	./${OUTPUT} < tests/v2.2/input/1.in > tests/v2.2/output/1.out
 	./${OUTPUT} < tests/v2.2/input/2.in > tests/v2.2/output/2.out
 	./${OUTPUT} < tests/v2.2/input/3.in > tests/v2.2/output/3.out
