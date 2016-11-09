@@ -15,6 +15,9 @@ bool Nodo::coercaoDaDefinicao(Definicao *coagido, Tipo esperado, Tipo recebido, 
       // ... a não ser que possa ocorrer coerção de int para float
         if(esperado == Tipo::real && recebido == Tipo::inteiro) {
             OperacaoUnaria *coercao = new OperacaoUnaria(Tipo::opUnaria, Tipo::conversao_float, coagido->valor);
+	    coercao->boolean = coagido->valor->boolean;
+	    coercao->inteiro = coagido->valor->inteiro;
+	    coercao->real = coagido->valor->real;
             coagido->valor = ((Nodo*) coercao);
             coagido->valor->real = ((double) coagido->valor->inteiro);
         }
@@ -31,9 +34,9 @@ bool Nodo::coercaoDaDefinicao(Definicao *coagido, Tipo esperado, Tipo recebido, 
 }
 
 
-bool Nodo::coercao(OperacaoBinaria *coagido, Tipo e, Tipo d, Tipo operacao, int linha, bool analisador) {
+bool Nodo::coercao(OperacaoBinaria *coagido, Tipo e, Tipo d, Tipo operacao ,int linha, bool analisador) {
 
-    bool operando_inteiros = true;
+    bool operando_inteiros = true; 
     bool ocorreu = false;
 
   // A operação realizada é sobre inteiros?
@@ -46,9 +49,12 @@ bool Nodo::coercao(OperacaoBinaria *coagido, Tipo e, Tipo d, Tipo operacao, int 
 
       // Acrescenta-se um nodo com a operação de coerção entre o filho da esquerda e a operação binária
         OperacaoUnaria *coercao = new OperacaoUnaria(Tipo::opUnaria, Tipo::conversao_float, coagido->direita);
+	coercao->inteiro = coagido->direita->inteiro;
+	coercao->real = coagido->direita->real;
         coagido->direita = ((Nodo*) coercao);
         ocorreu = true;
         coagido->direita->real = ((double) coagido->direita->inteiro);
+
     }
 
   // Se o tipo da esquerda for int e o da direita float, o da esquerda sofre coerção e retorna-se Tipo::real
@@ -56,9 +62,12 @@ bool Nodo::coercao(OperacaoBinaria *coagido, Tipo e, Tipo d, Tipo operacao, int 
 
       // Acrescenta-se um nodo com a operação de coerção entre o filho da esquerda e a operação binária
         OperacaoUnaria *coercao = new OperacaoUnaria(Tipo::opUnaria, Tipo::conversao_float, coagido->esquerda);
-        coagido->esquerda = ((Nodo*) coercao);
+	coercao->inteiro = coagido->esquerda->inteiro;
+ 	coercao->real = coagido->esquerda->real;
+	coagido->esquerda = ((Nodo*) coercao);
         ocorreu = true;
         coagido->esquerda->real = ((double) coagido->esquerda->inteiro);
+
     }
 
 //std::cout << coagido->esquerda->inteiro << " " << imprimirTipoPorExtenso(operacao) << " " << coagido->direita->inteiro << "\n";
@@ -71,14 +80,12 @@ bool Nodo::coercao(OperacaoBinaria *coagido, Tipo e, Tipo d, Tipo operacao, int 
             switch(operacao) {
                 case Tipo::adicao:
                     coagido->inteiro = coagido->esquerda->inteiro + coagido->direita->inteiro;
-//std::cout << coagido->inteiro <<  " = " << coagido->esquerda->inteiro << " + " << coagido->direita->inteiro << "\n";
                     break;
                 case Tipo::subtracao:
                     coagido->inteiro = coagido->esquerda->inteiro - coagido->direita->inteiro;
                     break;
                 case Tipo::multiplicacao:
                     coagido->inteiro = coagido->esquerda->inteiro * coagido->direita->inteiro;
-//std::cout << coagido->inteiro <<  " = " << coagido->esquerda->inteiro << " * " << coagido->direita->inteiro << "\n";
                     break;
                 case Tipo::divisao:
                     if(coagido->direita->inteiro != 0) {
@@ -114,6 +121,7 @@ bool Nodo::coercao(OperacaoBinaria *coagido, Tipo e, Tipo d, Tipo operacao, int 
             switch(operacao) {
                 case Tipo::adicao:
                     coagido->real = coagido->esquerda->real + coagido->direita->real;
+		    std::cerr << coagido->real <<  " = " << coagido->esquerda->real << " + " << coagido->direita->inteiro << "\n";
                     break;
                 case Tipo::subtracao:
                     coagido->real = coagido->esquerda->real - coagido->direita->real;

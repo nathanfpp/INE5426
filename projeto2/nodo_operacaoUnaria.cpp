@@ -52,6 +52,7 @@ Tipo OperacaoUnaria::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha
             boolean = ! filho->boolean;
 
           // A inversão só retorna boolean
+	    tipoDoRetorno = Tipo::boolean;
             return Tipo::boolean;
 
       // Conversões retornam o tipo convertido, independente da entrada
@@ -65,6 +66,7 @@ Tipo OperacaoUnaria::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha
                     break;
                 default: break;
             } 
+	    tipoDoRetorno = Tipo::inteiro;
             return Tipo::inteiro;
 
         case Tipo::conversao_float:
@@ -77,6 +79,7 @@ Tipo OperacaoUnaria::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha
                     break;
                 default: break;
             }
+	    tipoDoRetorno = Tipo::real;
             return Tipo::real;   
 
         case Tipo::conversao_bool:
@@ -89,6 +92,7 @@ Tipo OperacaoUnaria::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha
                     break;
                 default: break;
             }
+	    tipoDoRetorno = Tipo::boolean;
             return Tipo::boolean;
 
       // Parênteses apenas retornam o tipo contido
@@ -103,6 +107,7 @@ Tipo OperacaoUnaria::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha
             if (filho->id == "") {
 	        std::cerr<<"[Line " << linha << "] semantic error: address operation expects a variable or array item\n";
             }
+	    tipoDoRetorno = Tipo::endereco;
             return Tipo::endereco;
 
       // Referencia de variavel retorna o tipo dela

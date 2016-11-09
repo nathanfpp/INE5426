@@ -74,7 +74,7 @@ Tipo OperacaoBinaria::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linh
             }
 
             else {
-                coercao(this, e, d, operacao,linha, analisador);
+                coercao(this, e, d, operacao, linha, analisador);
             } //não faz sentido realizar coercao, se há erro acima
 
 	    if(e_ponteiros > 0 && d_ponteiros == 0 && d!=Tipo::endereco) { 

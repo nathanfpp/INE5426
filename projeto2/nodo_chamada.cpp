@@ -176,6 +176,7 @@ Tipo Chamada::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool 
 		     int chave_i = ((Parametro*)((Parametro*)parametros)->parametro)->inteiro;	
 		     bool chave_b = ((Parametro*)((Parametro*)parametros)->parametro)->boolean;
 		     double chave_r = ((Parametro*)((Parametro*)parametros)->parametro)->real;
+
 		     switch (h->tipoDeHash(tabelaDeSimbolos)){
 		    
 			    case hash_bb:
