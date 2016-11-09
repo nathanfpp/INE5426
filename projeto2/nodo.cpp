@@ -121,7 +121,6 @@ bool Nodo::coercao(OperacaoBinaria *coagido, Tipo e, Tipo d, Tipo operacao ,int 
             switch(operacao) {
                 case Tipo::adicao:
                     coagido->real = coagido->esquerda->real + coagido->direita->real;
-		    std::cerr << coagido->real <<  " = " << coagido->esquerda->real << " + " << coagido->direita->inteiro << "\n";
                     break;
                 case Tipo::subtracao:
                     coagido->real = coagido->esquerda->real - coagido->direita->real;

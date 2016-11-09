@@ -3,17 +3,15 @@ int:int fun: f1 (params: int:int b)
   for: = i 0, < i 10, = i + i 1
   do:
     = [key] b i i
+$ R: 0
+$ R: 1
+$ R: 2
+$ R: 3
+$ R: 4
+$ R: 5
+$ R: 6
+$ R: 7
+$ R: 8
+$ R: 9
   ret b
-int:int hash: a
-= a f1[1 params] a
-$ R: 0
-$ R: 0
-$ R: 0
-$ R: 0
-$ R: 0
-$ R: 0
-$ R: 0
-$ R: 0
-$ R: 0
-$ R: 0
 

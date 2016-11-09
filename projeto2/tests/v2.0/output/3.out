@@ -2,7 +2,7 @@ int var: i, j = 0
 for: = i 0, < i 10, = i + i 1
 do:
   = j + j i
-$ R: j = 55
+$ R: j = 45
 bool var: a, b
 = a true
 = b ! a

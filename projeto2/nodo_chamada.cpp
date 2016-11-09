@@ -210,9 +210,9 @@ Tipo Chamada::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool 
 			    break;
 
 			    case hash_ii:
-				if(h->int_int[chave_i] != NULL)   
-			    	inteiro = h->int_int[chave_i];
-				else std::cerr << "[Line " << linha << "] $ intepreter error: the key doesn't exist"<< "\n";
+			//	if(h->int_int[chave_i] != NULL)   
+			    	inteiro = h->int_int[chave_i]+0;
+			//	else std::cerr << "[Line " << linha << "] $ intepreter error: the key doesn't exist"<< "\n";
 			    break;
 
 			    case hash_fb:

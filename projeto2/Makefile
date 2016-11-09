@@ -77,7 +77,7 @@ test:
 #	./${OUTPUT} < tests/v2.1/input/3.in > tests/v2.1/output/3.out
 	./${OUTPUT} < tests/v2.2/input/1.in > tests/v2.2/output/1.out
 	./${OUTPUT} < tests/v2.2/input/2.in > tests/v2.2/output/2.out
-#	./${OUTPUT} < tests/v2.2/input/3.in > tests/v2.2/output/3.out
+	./${OUTPUT} < tests/v2.2/input/3.in > tests/v2.2/output/3.out
 
 compare_test:
 	diff tests/v0.1/expected/1.ex tests/v0.1/output/1.out  || exit 0
