@@ -9,7 +9,7 @@ $ R: 1.901
 $ R: 27.8
 $ R: 228
 $ R: 32.2
-= [key] a [float] 10 2
+= [key] a [float] 10 [float] 2
 int var: i = 5
 $ R: 28.9
 

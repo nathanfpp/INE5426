@@ -62,7 +62,8 @@ Tipo Chamada::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool 
                         inteiro = f->inteiro;
                         real    = f->real;
 
-                        //retornar estrutura de dados.
+                        //retornar em caso estrutura de dados
+		      //  retornoEstruturaDados = ((DefinicaoDeFuncao*)f)->retorno;
                     }
 
                   // Caso a função não tenha sido definida, e o analisador estiver ativo, uma mensagem de erro é emitida

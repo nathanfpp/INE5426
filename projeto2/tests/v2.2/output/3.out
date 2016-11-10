@@ -14,4 +14,9 @@ $ R: 7
 $ R: 8
 $ R: 9
   ret b
+int:int hash: b
+int:int hash: c
+= [key] b 1 9
+= c b
+$ R: c(1) = 9
 

@@ -17,3 +17,8 @@ $b(9) + 0
   ret b
 }
 
+int:int b
+int:int c
+b(1) = 9
+c = b
+$c(1)

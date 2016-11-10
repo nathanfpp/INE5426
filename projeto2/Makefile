@@ -68,7 +68,7 @@ test:
 	./${OUTPUT} < tests/v2.0/input/2.in > tests/v2.0/output/2.out
 	./${OUTPUT} < tests/v2.0/input/3.in > tests/v2.0/output/3.out
 	./${OUTPUT} < tests/v2.0/input/4.in > tests/v2.0/output/4.out
-#	./${OUTPUT} < tests/v2.0/input/5.in > tests/v2.0/output/5.out
+#	./${OUTPUT} < tests/v2.0/input/5.in > tests/v2.0/output/5.out 
 	./${OUTPUT} < tests/v2.0/input/6.in > tests/v2.0/output/6.out
 	./${OUTPUT} < tests/v2.0/input/7.in > tests/v2.0/output/7.out
 	./${OUTPUT} < tests/v2.0/input/8.in > tests/v2.0/output/8.out
@@ -76,6 +76,7 @@ test:
 	./${OUTPUT} < tests/v2.1/input/2.in > tests/v2.1/output/2.out
 	./${OUTPUT} < tests/v2.1/input/3.in > tests/v2.1/output/3.out
 	./${OUTPUT} < tests/v2.1/input/4.in > tests/v2.1/output/4.out
+#	./${OUTPUT} < tests/v2.1/input/5.in > tests/v2.1/output/5.out
 	./${OUTPUT} < tests/v2.2/input/1.in > tests/v2.2/output/1.out
 	./${OUTPUT} < tests/v2.2/input/2.in > tests/v2.2/output/2.out
 	./${OUTPUT} < tests/v2.2/input/3.in > tests/v2.2/output/3.out

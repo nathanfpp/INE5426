@@ -20,16 +20,46 @@ Tipo OperacaoBinaria::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linh
                 if(e != d) {
                     imprimirErroDeOperacao(operacao, e, d, linha);
                 }
-		else{
-			if(analisador && tipoDeVariavel_e == Tipo::arranjo){
-			 //   memcpy(((Arranjo*)esquerda)->inteiro_a, ((Arranjo*)direita)->inteiro_a,sizeof(int)*100);
-			 //   memcpy(((Arranjo*)esquerda)->boolean_a, ((Arranjo*)direita)->boolean_a,sizeof(bool)*100);
-			 //   memcpy(((Arranjo*)esquerda)->h->real_a, ((Arranjo*)direita)->h->real_a,sizeof(double)*100);
+		else if(analisador){ 
+ 			  esquerda = tabelaDeSimbolos->recuperar(esquerda->id, linha, true);
+		  /*   if(direita->tipo == Tipo::funcao_cha)
+ 			  direita = ((Chamada*)direita)->retornoEstruturaDados;
+		       else*/
+ 			  direita = tabelaDeSimbolos->recuperar(direita->id, linha, true);
+
+			if(tipoDeVariavel_e == Tipo::arranjo){
+			  memcpy(((Arranjo*)esquerda)->inteiro_a, ((Arranjo*)direita)->inteiro_a,sizeof(((Arranjo*)direita)->inteiro_a));
+			  memcpy(((Arranjo*)esquerda)->boolean_a, ((Arranjo*)direita)->boolean_a,sizeof(((Arranjo*)direita)->boolean_a));
+			  memcpy(((Arranjo*)esquerda)->real_a, ((Arranjo*)direita)->real_a,sizeof(((Arranjo*)direita)->real_a));
 			}
-			if(analisador && tipoDeVariavel_e == Tipo::arranjo_duplo){
-		   	 //  memcpy(((ArranjoDuplo*)esquerda)->inteiro_d, ((ArranjoDuplo*)direita)->inteiro_d,sizeof(int)*100*100);
-			 //  memcpy(((ArranjoDuplo*)esquerda)->boolean_d, ((ArranjoDuplo*)direita)->boolean_d,sizeof(bool)*100*100);
-			 //  memcpy(((ArranjoDuplo*)esquerda)->h->real_d, ((ArranjoDuplo*)direita)->h->real_d,sizeof(double)*100*100);
+			if(tipoDeVariavel_e == Tipo::arranjo_duplo){
+ 			  direita = tabelaDeSimbolos->recuperar(direita->id, linha, true);
+		   	  memcpy(((ArranjoDuplo*)esquerda)->inteiro_d, ((ArranjoDuplo*)direita)->inteiro_d,sizeof(((ArranjoDuplo*)direita)->inteiro_d));
+			  memcpy(((ArranjoDuplo*)esquerda)->boolean_d, ((ArranjoDuplo*)direita)->boolean_d,sizeof(((ArranjoDuplo*)direita)->boolean_d));		  memcpy(((ArranjoDuplo*)esquerda)->real_d, ((ArranjoDuplo*)direita)->real_d,sizeof(((ArranjoDuplo*)direita)->real_d));
+			}
+
+			if(tipoDeVariavel_e == Tipo::hash){
+			   if (((Hash*)esquerda)->int_int.size() > 0)
+		     	   ((Hash*)esquerda)->int_int.insert(((Hash*) direita)->int_int.begin(),((Hash*) direita)->int_int.end());
+
+			   if (((Hash*)esquerda)->int_bool.size() > 0)
+			   ((Hash*)esquerda)->int_bool.insert(((Hash*) direita)->int_bool.begin(),((Hash*) direita)->int_bool.end());
+			   if (((Hash*)esquerda)->int_real.size() > 0)
+			   ((Hash*)esquerda)->int_real.insert(((Hash*) direita)->int_real.begin(),((Hash*) direita)->int_real.end());
+			   if (((Hash*)esquerda)->bool_bool.size() > 0)
+		   	   ((Hash*)esquerda)->bool_bool.insert(((Hash*) direita)->bool_bool.begin(),((Hash*) direita)->bool_bool.end());
+			   if (((Hash*)esquerda)->bool_int.size() > 0)
+			   ((Hash*)esquerda)->bool_int.insert(((Hash*) direita)->bool_int.begin(),((Hash*) direita)->bool_int.end());
+			   if (((Hash*)esquerda)->bool_real.size() > 0)
+			   ((Hash*)esquerda)->bool_real.insert(((Hash*) direita)->bool_real.begin(),((Hash*) direita)->bool_real.end());
+			   if (((Hash*)esquerda)->real_real.size() > 0)
+		   	   ((Hash*)esquerda)->real_real.insert(((Hash*) direita)->real_int.begin(),((Hash*) direita)->real_int.end());
+			   if (((Hash*)esquerda)->real_int.size() > 0)
+			   ((Hash*)esquerda)->real_int.insert(((Hash*) direita)->real_bool.begin(),((Hash*) direita)->real_bool.end());
+			   if (((Hash*)esquerda)->real_bool.size() > 0)
+			   ((Hash*)esquerda)->real_bool.insert(((Hash*) direita)->real_real.begin(),((Hash*) direita)->real_real.end());
+
+
 			}
 			
 		}
@@ -69,13 +99,12 @@ Tipo OperacaoBinaria::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linh
             	imprimirErroDeOperacao(operacao, e, d, linha);
             }
 
-            if(e == Tipo::real || d == Tipo::real) {
-                tipoDoRetorno = Tipo::real;
-            }
-
-            else {
+            else { //não faz sentido realizar coercao, se há erro acima
                 coercao(this, e, d, operacao, linha, analisador);
-            } //não faz sentido realizar coercao, se há erro acima
+		if(e == Tipo::real || d == Tipo::real) {
+                   tipoDoRetorno = Tipo::real;
+                }
+            } 
 
 	    if(e_ponteiros > 0 && d_ponteiros == 0 && d!=Tipo::endereco) { 
 		std::cerr << "[Line " << linha << "] semantic error: attribution operation expects "<<imprimirTipoPorExtenso(e)<<" pointer but received "<<imprimirTipoPorExtenso(d) <<"\n";

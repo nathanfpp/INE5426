@@ -225,7 +225,6 @@ void Parametro::recuperarEstruturaDeDados(TabelaDeSimbolos *tabelaDeSimbolos, Pa
 	 Nodo *ed = tabelaDeSimbolos->recuperar(p->parametro->id, linha, true);
 	 if (ed != NULL){
 	   if(ed->tipo == arranjo || ed->tipo == arranjo_duplo || ed->tipo == hash){
-		//ed->tipo = Tipo::variavel;
 	 	p->parametro = ed;
 	   }
         }
