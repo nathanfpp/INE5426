@@ -1,0 +1,6 @@
+[Line 5] semantic error: arrays or hashes can only be part of a simple attribution
+[Line 5] semantic error: operation attribution expected int:int but received null
+[Line 6] $ intepreter error: the key doesn't exist
+[Line 8] semantic error: operation and expected bool but received int:int
+[Line 8] semantic error: operation attribution expected int:int but received bool
+[Line 9] $ intepreter error: the key doesn't exist

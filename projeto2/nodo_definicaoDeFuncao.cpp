@@ -116,7 +116,6 @@ Tipo DefinicaoDeFuncao::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int li
 
 Tipo DefinicaoDeFuncao::executar(AST::TabelaDeSimbolos *tabelaDeSimbolos, Parametro *valores, int linha, bool analisador) {
 
-//std::cout << "\n@defFuncao:executar: " << id << ", p = " << ((Parametro*)valores)->parametro->inteiro << "\n";
 
 // Não é possível executar função que não foi definida
     if(definida) {
@@ -131,14 +130,20 @@ Tipo DefinicaoDeFuncao::executar(AST::TabelaDeSimbolos *tabelaDeSimbolos, Parame
 
       // Obtém o retorno da função
         if(corpo != NULL) {
-            corpo->analisar(novoEscopo, linha, true); // valores estão certos, mas dá "undeclared variable " apenas com nome do parametro
+            corpo->analisar(novoEscopo, linha, true);
         }
-        retorno->analisar(novoEscopo, linha, true);  // valores estão certos, mas dá "undeclared variable " apenas com nome do parametro
+
+        retorno->analisar(novoEscopo, linha, true); 
+	
+	// Recupero estrutura de dados se for o caso
+	if((((Retorno*)retorno)->retorno)->tipo == Tipo::variavel){
+	  Nodo *ed = novoEscopo->recuperar((((Retorno*)retorno)->retorno)->id,linha,true);
+	  if (ed != NULL)
+	    ((Retorno*)retorno)->retorno = ed;
+	}
         boolean = retorno->boolean;
         inteiro = retorno->inteiro;
         real    = retorno->real;             
-        
-        //tabelaDeSimbolos->modificar(this, id);
 
       // Retorna ao escopo anterior a Função
         novoEscopo->retornarEscopo(linha);

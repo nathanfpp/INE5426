@@ -97,12 +97,15 @@
    1: ok
    2: ok
    3: ok
+   4: ok
+   5: não, aprovação sobre estudo
 
   v2.2: hash
 
    1: ok
-   2: não
+   2: ok
    3: ok
+   4: ok
 
 Notas:
 

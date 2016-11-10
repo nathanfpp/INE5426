@@ -171,24 +171,24 @@ void Parametro::acrescentarComValoresAoEscopo(TabelaDeSimbolos *tabelaDeSimbolos
         if(parametro->tipo == Tipo::hash) {
             ((Hash*)parametro)->tipoDeChave = tipoReserva;
             
-           if (((Hash*)parametro)->int_int.size() > 0)
+           if (((Hash*)(valores->parametro))->int_int.size() > 0)
      	   ((Hash*)parametro)->int_int.insert(((Hash*)(valores->parametro))->int_int.begin(),((Hash*)(valores->parametro))->int_int.end());
 
-	   if (((Hash*)parametro)->int_bool.size() > 0)
+	   if (((Hash*)(valores->parametro))->int_bool.size() > 0)
            ((Hash*)parametro)->int_bool.insert(((Hash*)(valores->parametro))->int_bool.begin(),((Hash*)(valores->parametro))->int_bool.end());
-           if (((Hash*)parametro)->int_real.size() > 0)
+           if (((Hash*)(valores->parametro))->int_real.size() > 0)
            ((Hash*)parametro)->int_real.insert(((Hash*)(valores->parametro))->int_real.begin(),((Hash*)(valores->parametro))->int_real.end());
-           if (((Hash*)parametro)->bool_bool.size() > 0)
+           if (((Hash*)(valores->parametro))->bool_bool.size() > 0)
    	   ((Hash*)parametro)->bool_bool.insert(((Hash*)(valores->parametro))->bool_bool.begin(),((Hash*)(valores->parametro))->bool_bool.end());
-           if (((Hash*)parametro)->bool_int.size() > 0)
+           if (((Hash*)(valores->parametro))->bool_int.size() > 0)
            ((Hash*)parametro)->bool_int.insert(((Hash*)(valores->parametro))->bool_int.begin(),((Hash*)(valores->parametro))->bool_int.end());
-           if (((Hash*)parametro)->bool_real.size() > 0)
+           if (((Hash*)(valores->parametro))->bool_real.size() > 0)
            ((Hash*)parametro)->bool_real.insert(((Hash*)(valores->parametro))->bool_real.begin(),((Hash*)(valores->parametro))->bool_real.end());
-           if (((Hash*)parametro)->real_real.size() > 0)
+           if (((Hash*)(valores->parametro))->real_real.size() > 0)
    	   ((Hash*)parametro)->real_real.insert(((Hash*)(valores->parametro))->real_int.begin(),((Hash*)(valores->parametro))->real_int.end());
-           if (((Hash*)parametro)->real_int.size() > 0)
+           if (((Hash*)(valores->parametro))->real_int.size() > 0)
            ((Hash*)parametro)->real_int.insert(((Hash*)(valores->parametro))->real_bool.begin(),((Hash*)(valores->parametro))->real_bool.end());
-           if (((Hash*)parametro)->real_bool.size() > 0)
+           if (((Hash*)(valores->parametro))->real_bool.size() > 0)
            ((Hash*)parametro)->real_bool.insert(((Hash*)(valores->parametro))->real_real.begin(),((Hash*)(valores->parametro))->real_real.end());
            
         }
