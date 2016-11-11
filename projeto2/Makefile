@@ -64,6 +64,9 @@ test:
 	./${OUTPUT} < tests/v1.4/input/3.in > tests/v1.4/output/3.out
 	./${OUTPUT} < tests/v1.4/input/4.in > tests/v1.4/output/4.out
 	./${OUTPUT} < tests/v1.4/input/5.in > tests/v1.4/output/5.out
+	./${OUTPUT} < tests/v1.5/input/1.in > tests/v1.5/output/1.out
+	./${OUTPUT} < tests/v1.5/input/2.in > tests/v1.5/output/2.out
+	./${OUTPUT} < tests/v1.5/input/3.in > tests/v1.5/output/3.out
 	./${OUTPUT} < tests/v2.0/input/1.in > tests/v2.0/output/1.out
 	./${OUTPUT} < tests/v2.0/input/2.in > tests/v2.0/output/2.out
 	./${OUTPUT} < tests/v2.0/input/3.in > tests/v2.0/output/3.out
@@ -80,6 +83,9 @@ test:
 	./${OUTPUT} < tests/v2.2/input/1.in > tests/v2.2/output/1.out
 	./${OUTPUT} < tests/v2.2/input/2.in > tests/v2.2/output/2.out
 	./${OUTPUT} < tests/v2.2/input/3.in > tests/v2.2/output/3.out
+	./${OUTPUT} < tests/v2.3/input/1.in > tests/v2.3/output/1.out
+	./${OUTPUT} < tests/v2.3/input/2.in > tests/v2.3/output/2.out
+	./${OUTPUT} < tests/v2.3/input/3.in > tests/v2.3/output/3.out
 
 compare_test:
 	diff tests/v0.1/expected/1.ex tests/v0.1/output/1.out  || exit 0
@@ -122,6 +128,9 @@ compare_test:
 	diff tests/v1.4/expected/1.ex tests/v1.4/output/1.out
 	diff tests/v1.4/expected/2.ex tests/v1.4/output/2.out
 	diff tests/v1.4/expected/3.ex tests/v1.4/output/3.out
+	diff tests/v1.5/expected/1.ex tests/v1.5/output/1.out
+	diff tests/v1.5/expected/2.ex tests/v1.5/output/2.out
+	diff tests/v1.5/expected/3.ex tests/v1.5/output/3.out
 	diff tests/v1.4/expected/4.ex tests/v1.4/output/4.out
 	diff tests/v1.4/expected/5.ex tests/v1.4/output/5.out
 	diff tests/v2.0/expected/1.ex tests/v2.0/output/1.out
@@ -139,6 +148,9 @@ compare_test:
 	diff tests/v2.2/expected/1.ex tests/v2.2/output/1.out
 	diff tests/v2.2/expected/2.ex tests/v2.2/output/2.out
 	diff tests/v2.2/expected/3.ex tests/v2.2/output/3.out
+	diff tests/v2.3/expected/1.ex tests/v2.3/output/1.out
+	diff tests/v2.3/expected/2.ex tests/v2.3/output/2.out
+	diff tests/v2.3/expected/3.ex tests/v2.3/output/3.out
 
 ##Testes de erro
 

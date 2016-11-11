@@ -70,6 +70,13 @@ v1.4
  4 : ok
  5 : ok
 
+v1.5 
+
+ 1 : ok
+ 2 : ok
+ 3 : ok
+
+
 Interpretador em diante:
 
 v2.0: funções, condições, laços e expressões (exceto ponteiros, arranjos e hashes).
@@ -97,3 +104,9 @@ v2.2: hash
  2: ok
  3: ok
 
+
+v2.3: switch-case
+
+ 1: ok
+ 2: ok
+ 3: ok

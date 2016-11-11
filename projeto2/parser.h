@@ -88,17 +88,20 @@ extern int yydebug;
     T_IF = 291,
     T_THEN = 292,
     T_ELSE = 293,
-    T_FOR = 294,
-    T_FUN = 295,
-    T_RET = 296,
-    T_ATRIB_ASK = 297,
-    T_DO = 298,
-    T_WHILE = 299,
-    T_REF = 300,
-    T_CALC = 301,
-    UMINUS = 302,
-    T_CAST = 303,
-    INT = 304
+    T_SWITCH = 294,
+    T_CASE = 295,
+    T_DEFAULT = 296,
+    T_FOR = 297,
+    T_FUN = 298,
+    T_RET = 299,
+    T_ATRIB_ASK = 300,
+    T_DO = 301,
+    T_WHILE = 302,
+    T_REF = 303,
+    T_CALC = 304,
+    UMINUS = 305,
+    T_CAST = 306,
+    INT = 307
   };
 #endif
 
@@ -122,6 +125,7 @@ union YYSTYPE
     AST::OperacaoBinaria *opBinaria;
     AST::DeclaracaoDeHash *declaracao_hash;
     AST::Condicao *condicao;
+    AST::Switch *selecionador;
     AST::Laco *laco;
     AST::Funcao *funcao;
     AST::Parametro *parametro;
@@ -129,7 +133,7 @@ union YYSTYPE
     AST::Tipo tipo;
     int num_ref;
 
-#line 133 "parser.h" /* yacc.c:1909  */
+#line 137 "parser.h" /* yacc.c:1909  */
 };
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1

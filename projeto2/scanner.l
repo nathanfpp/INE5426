@@ -8,7 +8,7 @@ void yyerror(const char* s, ...);
 
 %}
 
-%option noyywrap nodefault yylineno
+%option noyywrap nodefault yylineno nounput noinput
 
 valor_int       [0-9]+
 valor_float     ({valor_int}\.{valor_int})|(\.{valor_int})|({valor_int}\.)
@@ -28,6 +28,9 @@ rejeite         [^0-9a-zA-Z\(\)\,\{\}\_\+\=\/\>\<\*\-\!\&\|\t" "\n]+
 "if"                { return T_IF;                                            }
 "then"              { return T_THEN;                                          }
 "else"              { return T_ELSE;                                          }
+"switch"            { return T_SWITCH;                                        }
+"case"              { return T_CASE;                                          }
+"default"           { return T_DEFAULT;                                       }
 "for"               { return T_FOR;                                           }
 "do"                { return T_DO;                                            }
 "while"             { return T_WHILE;                                         }

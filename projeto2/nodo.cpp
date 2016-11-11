@@ -259,6 +259,9 @@ std::string Nodo::imprimirTipoPorExtenso(Tipo t) {
         case Tipo::conversao_bool:   	   return "[bool] ";         
         case Tipo::parenteses:             return "()";
         case Tipo::teste:                  return "test";    
+	case Tipo::seleciona:		   return "switch";
+	case Tipo::caso:		   return "case";
+	case Tipo::padrao:		   return "default";
         case Tipo::nulo:                   return "null";          
         case Tipo::endereco:               return "address";
         case Tipo::referencia: 		   return "reference";
@@ -268,7 +271,7 @@ std::string Nodo::imprimirTipoPorExtenso(Tipo t) {
         case Tipo::arranjo_duplo:          return "double array";
         case Tipo::parametro:              return "parameter";
         case Tipo::variavel:               return "variable";
-        default:                	   return "default";            
+        default:                	   return "some_default_type";            
     }
 }
 

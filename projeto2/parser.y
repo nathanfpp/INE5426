@@ -39,6 +39,7 @@ extern void yyerror(const char* s, ...);
     AST::OperacaoBinaria *opBinaria;
     AST::DeclaracaoDeHash *declaracao_hash;
     AST::Condicao *condicao;
+    AST::Switch *selecionador;
     AST::Laco *laco;
     AST::Funcao *funcao;
     AST::Parametro *parametro;
@@ -55,22 +56,23 @@ extern void yyerror(const char* s, ...);
 %token T_NL T_OPEN T_CLOSE  T_OPEN_KEY T_CLOSE_KEY T_EQUAL T_COMMA T_SEMICOLON T_COLON T_PLUS T_MINUS T_TIMES T_DIV T_NOT T_AND T_OR 
 %token T_EQUAL2 T_DIF T_HIGHER T_HIGH T_LOWER T_LOW
 %token T_CAST_INT T_CAST_FLOAT T_CAST_BOOL T_ADDR
-%token T_IF T_THEN T_ELSE T_FOR T_FUN T_RET T_ATRIB_ASK T_DO T_WHILE
+%token T_IF T_THEN T_ELSE T_SWITCH T_CASE T_DEFAULT T_FOR T_FUN T_RET T_ATRIB_ASK T_DO T_WHILE
 %token <num_ref> T_REF
 %token T_CALC
 
 // %type
 // Define o tipo de Símbolos Não-Terminais
-%type <nodo> expressao linha /*linha_i*/ primitiva var retorno arranjo var_arranjo arranjo_duplo hash
+%type <nodo> expressao linha primitiva var retorno arranjo var_arranjo arranjo_duplo hash
 %type <variavel> dec_arranjo
 %type <declaracao> declaracao
 %type <definicao> variaveis variavel def_arranjo  hashes def_hash 
 %type <opBinaria> atribuicao atrib_null
-%type <condicao> condicao
+%type <selecionador> seleciona
+%type <condicao> condicao caso
 %type <laco> for_laco do_while_laco while_laco
 %type <funcao> dec_funcao def_funcao
 %type <parametro> parametros parametro argumentos argumento param_null arg_null
-%type <bloco> programa linhas /*linhas_i*/ linhas_null linhas_funcao senao
+%type <bloco> programa linhas linhas_null linhas_funcao senao
 %type <tipo> tipo
 %type <nodo> chamada interpretacao
 %type <num_ref> referencia
@@ -103,26 +105,6 @@ programa:
                   }
         ;
 
-/*linhas_i: 
-        linha_i           { $$ = new AST::Bloco( AST::Tipo::bloco );  $$->novaLinha($1); }
-      | linhas_i linha  { $$ = $1;                                  $1->novaLinha($2); }
-      ;
-
-linha_i: 
-       atribuicao T_NL      { $$ = $1;   }
-     | declaracao T_NL      { $$ = $1;   }
-     | dec_hashes           { $$ = $1;   }
-     | dec_funcao T_NL      { $$ = $1;   }
-     | def_funcao T_NL      { $$ = $1;   }
-     | condicao T_NL        { $$ = $1;   }
-     | for_laco T_NL        { $$ = $1;   }
-     | do_while_laco T_NL   { $$ = $1;   }
-     | while_laco T_NL      { $$ = $1;   }
-     | chamada T_NL         { $$ = $1;   }
-     | interpretacao T_NL   { $$ = $1;   }
-     | T_NL                 { $$ = NULL; }
-     ;
-*/
 
 linhas: 
         linha         { $$ = new AST::Bloco( AST::Tipo::bloco );  $$->novaLinha($1); }
@@ -136,6 +118,7 @@ linha:
      | dec_funcao T_NL      { $$ = $1;   }
      | def_funcao T_NL      { $$ = $1;   }
      | condicao T_NL        { $$ = $1;   }
+     | seleciona T_NL       { $$ = $1;   }
      | for_laco T_NL        { $$ = $1;   }
      | do_while_laco T_NL   { $$ = $1;   }
      | while_laco T_NL      { $$ = $1;   }
@@ -247,6 +230,26 @@ senao:
        T_ELSE T_OPEN_KEY T_NL linhas_null T_CLOSE_KEY  { $$ = $4;   }
      |                                                 { $$ = NULL; }
      ;
+
+
+seleciona:  
+	  T_SWITCH T_OPEN expressao T_CLOSE T_OPEN_KEY T_NL caso T_NL T_CLOSE_KEY 
+	     {$$ = new AST::Switch(AST::Tipo::seleciona, $3, $7); }
+
+	 ;
+
+caso:  
+	 T_CASE expressao T_OPEN_KEY linhas_null T_CLOSE_KEY T_NL caso
+	 {$$ = new AST::Condicao(AST::Tipo::caso, $2, $4, NULL); $$->proximo = $7; }
+      |
+	T_CASE expressao T_NL caso 
+	{ $$ = new AST::Condicao(AST::Tipo::caso, $2, $4->se, NULL); $$->proximo = $4; }
+
+      |
+	T_DEFAULT T_OPEN_KEY linhas_null T_CLOSE_KEY 
+	{ $$ = new AST::Condicao(AST::Tipo::padrao, NULL, $3, NULL); $$->proximo = NULL;} 
+      ;
+
 
 for_laco:
           T_FOR atrib_null T_COMMA expressao T_COMMA atrib_null T_OPEN_KEY T_NL linhas_null T_CLOSE_KEY

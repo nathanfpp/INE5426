@@ -4,6 +4,8 @@ using namespace AST;
 
 Tipo Condicao::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool analisador) {
 
+  if(tipo == Tipo::condicao){
+
   // O teste de uma Condição deve ser Booleano
     Tipo esperado = teste->analisar(tabelaDeSimbolos, linha, analisador);
     if(esperado != Tipo::boolean) {
@@ -43,6 +45,29 @@ Tipo Condicao::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool
         novoEscopo->retornarEscopo(linha);  
     }
 
+ }
+
+ else if (tipo == Tipo::caso){ //trato caso de um switch
+
+    teste->analisar(tabelaDeSimbolos, linha, analisador); //retorno tipo do teste no nodo teste.
+    	if(se != NULL) {
+    	    TabelaDeSimbolos *novoEscopo = tabelaDeSimbolos->novoEscopo(tabelaDeSimbolos);
+    	    se->analisar(novoEscopo, linha, analisador);
+    	    novoEscopo->retornarEscopo(linha);
+    	}
+    }
+
+ else if (tipo == Tipo::padrao){
+
+        if(se != NULL) {
+    	    TabelaDeSimbolos *novoEscopo = tabelaDeSimbolos->novoEscopo(tabelaDeSimbolos);
+    	    se->analisar(novoEscopo, linha, analisador);
+    	    novoEscopo->retornarEscopo(linha);
+    	}
+
+ }
+
+
   // Retorna o tipo do nodo
     return tipo;
 }
@@ -50,20 +75,41 @@ Tipo Condicao::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool
 
 void Condicao::imprimir(int espaco, bool novaLinha) {
     imprimirEspaco(espaco);
-    std::cout << "if: ";
-    teste->imprimir(0, false);
-    if(se != NULL) {
-        std::cout << "\n";
-        imprimirEspaco(espaco);
-        std::cout << "then:\n";
-        se->imprimir(espaco+2, false);
+    if(tipo == Tipo::condicao){
+       std::cout << "if: ";
+       teste->imprimir(0, false);
+       if(se != NULL) {
+           std::cout << "\n";
+           imprimirEspaco(espaco);
+           std::cout << "then:\n";
+           se->imprimir(espaco+2, false);
+       }
+       if(senao != NULL) {        
+          imprimirEspaco(espaco);
+          std::cout << "else:\n";
+          senao->imprimir(espaco+2, false);
+       }
+       if(se == NULL && senao == NULL) {
+          std::cout << "\n";
+       }
+       return;
     }
-    if(senao != NULL) {        
-        imprimirEspaco(espaco);
-        std::cout << "else:\n";
-        senao->imprimir(espaco+2, false);
+    
+    if (tipo == Tipo::caso){
+        std::cout << "case: ";
+        teste->imprimir(0, false);
     }
-    if(se == NULL && senao == NULL) {
-        std::cout << "\n";
-    }
+    else if(tipo == Tipo::padrao)
+        std::cout << "default: ";
+        if(se != NULL) {
+           std::cout << "\n";
+           imprimirEspaco(espaco);
+           std::cout << "then:\n";
+           se->imprimir(espaco+2, false);
+        }
+        else {
+          std::cout << "\n";
+        }
+   
+
 }

@@ -28,7 +28,7 @@ enum Tipo { inteiro, real, boolean, variavel, hash, arranjo_b, arranjo_i, arranj
             funcao_dec, funcao_def, funcao_cha, bloco, arranjo, arranjo_duplo, parametro,
             negacao, inversao, conversao_int, conversao_float, conversao_bool, parenteses, referencia, endereco,
             atribuicao, adicao, subtracao, multiplicacao, divisao, e, ou, igual, diferente, maior, maior_igual, menor, menor_igual,
-            teste, condicao_atribuicao, atribuicao_condicional, interpretador, nulo };
+            teste, seleciona, caso, padrao,condicao_atribuicao, atribuicao_condicional, interpretador, nulo };
 
 typedef struct {       
     int i;
@@ -47,6 +47,7 @@ class Funcao;
 class Parametro;
 class Arranjo;
 class Retorno;
+class Switch;
 
 typedef std::vector<Nodo*> listaDeNodos;
 
@@ -193,10 +194,22 @@ class Condicao : public Nodo {
         Nodo *teste;
         Bloco *se;
         Bloco *senao;
+	Condicao *proximo; //usado no switch
     Condicao(Tipo t, Nodo *a,  Bloco *b,  Bloco *c) : Nodo(t,""), teste(a), se(b), senao(c) {  };
     Tipo analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool analisador);
     void imprimir(int espaco, bool novaLinha);
 };
+
+class Switch : public Nodo{
+    public :
+        Nodo* casoTratado;
+        Condicao *casos;
+	bool match = false;
+    Switch(Tipo t, Nodo *ct, Condicao *cs) : Nodo(t, ""), casoTratado(ct), casos(cs) { };
+    Tipo analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool analisador);
+    void imprimir(int espaco, bool novaLinha);
+};
+
 
 class Laco : public Nodo {
     public:

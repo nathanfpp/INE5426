@@ -1,0 +1,9 @@
+int c = 2
+switch (c){
+ case 2 {
+   c = 9
+ }
+ default {
+  int b = 9
+ }
+}

@@ -1,0 +1,20 @@
+int a
+int fun thisIsFun (int n, bool c) {
+int i = 0
+ switch (c){
+  case false{
+  n = n + 1 
+  }
+  case true{
+  n = n + 3 
+  }
+  default{
+  n = n*n
+  }
+}
+ret n
+}
+
+a = thisIsFun(2, true)
+$a
+$thisIsFun(233, false)
