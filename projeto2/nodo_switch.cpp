@@ -18,13 +18,14 @@ Tipo Switch::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool a
 	   	Tipo esperado_caso = atual->teste->analisar(tabelaDeSimbolos, linha, analisador); 
  	   	if (esperado != esperado_caso){
            		imprimirErroDeOperacao(Tipo::seleciona, esperado, esperado_caso, linha);
-	   	}		
+	   	}
+                else {		
 		int i = atual->teste->inteiro;
 		bool b = atual->teste->boolean;
 		double r = atual->teste->real;
 
 		switch (esperado){
-		   
+		 
  		   case Tipo::inteiro:
 		   if (casoTratado->inteiro == i){
 			match = true;
@@ -45,8 +46,9 @@ Tipo Switch::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool a
 		   break;
 		   default: break;
 		 }
-		
+	      }
 	   }
+
 	else if(match == false)
 	     atual->analisar(tabelaDeSimbolos, linha, analisador); 
 	atual = atual->proximo;

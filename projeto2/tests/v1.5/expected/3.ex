@@ -17,5 +17,4 @@ then:
   end switch 
   ret n
 = a thisIsFun[1 params] 2
-$ R: a = 4
 
