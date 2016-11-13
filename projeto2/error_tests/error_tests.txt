@@ -57,18 +57,18 @@
    5: ok
    6: ok
   
-  v1.1:
+  v1.1: atribuição condicional
 
    1: ok
    2: ok
    3: ok
   
-  v1.2:
+  v1.2: do-while, while
 
    1: ok
    2: ok
 
-  v1.3:
+  v1.3: arranjos duplos
 
    1: ok
    2: ok
@@ -77,22 +77,24 @@
    5: ok
    6: ok
 
-  v1.4:
+  v1.4: hashes
 
    1: ok
    2: ok
    3: ok
-   4: em processo de validação
+   4: ok
    5: ok
    6: ok
 
-  v2.0:
+  v1.5: switch-case
+
+  v2.0: interpretador: operações aritiméticas em números e variaveis simples, interpreta execução de funções, condições e laços.
 
    1: ok
    2: ok
    3: ok
 
-  v2.1: arranjos
+  v2.1: interpreta arranjos
 
    1: ok
    2: ok
@@ -100,12 +102,18 @@
    4: ok
    5: não, aprovação sobre estudo
 
-  v2.2: hash
+  v2.2: interpreta hash
 
    1: ok
    2: ok
    3: ok
    4: ok
+
+  v2.3: interpreta switch-case
+
+   1: ok
+   2: ok
+   3: ok
 
 Notas:
 

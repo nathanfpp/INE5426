@@ -5,6 +5,7 @@ using namespace AST;
 
 Tipo DefinicaoDeFuncao::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool analisador) {
 
+
   // Conta a quantidade de parâmetros: se não houver parâmetros a quantidade é 0
     definida = true;
     Funcao::contarParametros();

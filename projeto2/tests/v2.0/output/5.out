@@ -1,10 +1,10 @@
 int fun: somatorio (params: int p)
   int var: r = 1
-  if: > p 1
+  if: > p 0
   then:
     = r + p somatorio[1 params] - p 1
   ret r
-$ R: 5
+$ R: 4
 int var: a
 = a + ? > 4 0:  4 0 8
 $ R: a = 12

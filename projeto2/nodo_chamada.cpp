@@ -53,7 +53,7 @@ Tipo Chamada::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool 
 			/* navego entre parametros, aqueles que forem estrutura de dados, preciso recuperar
                            estrutura da tabela e atualizo o parametro.*/
                       
-			if(((Parametro*)parametros)->parametro != NULL){
+			if(parametros != NULL){
                           ((Parametro*)parametros)->recuperarEstruturaDeDados(tabelaDeSimbolos,((Parametro*)parametros),linha);
 			 }
 
@@ -63,7 +63,7 @@ Tipo Chamada::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool 
                         real    = f->real;
 
                         //retornar em caso estrutura de dados
-		        retornoEstruturaDados = ((Retorno*)((DefinicaoDeFuncao*)f)->retorno)->retorno; //problema com o retorno
+		        retornoEstruturaDados = ((Retorno*)((DefinicaoDeFuncao*)f)->retorno)->retorno; 
 		
                     }
 
@@ -230,20 +230,23 @@ Tipo Chamada::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool 
 			    case hash_fb:
 				if(h->real_bool.find(chave_r) != h->real_bool.end())   
 			    	boolean = h->real_bool[chave_r];
-				else std::cerr << "[Line " << linha << "] $ intepreter error: the key doesn't exist"<< "\n";
+				else
+				std::cerr << "[Line " << linha << "] $ intepreter error: the key doesn't exist"<< "\n";
 			    break;
 			    
 			    case hash_ff:
 				if(h->real_real.find(chave_r) != h->real_real.end())   
 			    	real = h->real_real[chave_r];
-				else std::cerr << "[Line " << linha << "] $ intepreter error: the key doesn't exist"<< "\n";
+				else
+				std::cerr << "[Line " << linha << "] $ intepreter error: the key doesn't exist"<< "\n";
 
 			    break;
 
 			    case hash_fi:
 				if(h->real_int.find(chave_r) != h->real_int.end())   
 			    	inteiro = h->real_int[chave_r];
-				else std::cerr << "[Line " << linha << "] $ intepreter error: the key doesn't exist"<< "\n";
+				else
+				std::cerr << "[Line " << linha << "] $ intepreter error: the key doesn't exist"<< "\n";
 			    break;
 
 			    default: break;

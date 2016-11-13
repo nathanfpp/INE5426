@@ -20,7 +20,8 @@ Tipo OperacaoBinaria::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linh
                 if(e != d) {
                     imprimirErroDeOperacao(operacao, e, d, linha);
                 }
-		else if(analisador){ 
+		else if(analisador && (tipoDeVariavel_e == Tipo::arranjo || tipoDeVariavel_e == Tipo::arranjo_duplo 
+			|| tipoDeVariavel_e == Tipo::hash)){ 
  			  esquerda = tabelaDeSimbolos->recuperar(esquerda->id, linha, true);
 		       if(direita->tipo == Tipo::funcao_cha){
  			   direita = ((Retorno*)((Chamada*)direita)->retornoEstruturaDados);
