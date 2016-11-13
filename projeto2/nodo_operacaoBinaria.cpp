@@ -30,19 +30,21 @@ Tipo OperacaoBinaria::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linh
  			  direita = tabelaDeSimbolos->recuperar(direita->id, linha, true);
 			}
 			if(tipoDeVariavel_e == Tipo::arranjo){
-			  memcpy(((Arranjo*)esquerda)->inteiro_a, ((Arranjo*)direita)->inteiro_a,sizeof(((Arranjo*)direita)->inteiro_a));
-			  memcpy(((Arranjo*)esquerda)->boolean_a, ((Arranjo*)direita)->boolean_a,sizeof(((Arranjo*)direita)->boolean_a));
-			  memcpy(((Arranjo*)esquerda)->real_a, ((Arranjo*)direita)->real_a,sizeof(((Arranjo*)direita)->real_a));
+			 memcpy(((Arranjo*)esquerda)->inteiro_a, ((Arranjo*)direita)->inteiro_a, ((Arranjo*)direita)->tamanho->inteiro*sizeof(int));   
+                         memcpy(((Arranjo*)esquerda)->boolean_a, ((Arranjo*)direita)->real_a, ((Arranjo*)direita)->tamanho->inteiro*sizeof(bool));
+ 			 memcpy(((Arranjo*)esquerda)->real_a, ((Arranjo*)direita)->real_a, ((Arranjo*)direita)->tamanho->inteiro*sizeof(double));
 			  tabelaDeSimbolos->modificar(esquerda, esquerda->id); 
 			   return e;
 			}
+
 			if(tipoDeVariavel_e == Tipo::arranjo_duplo){
-                          memcpy(((ArranjoDuplo*)esquerda)->inteiro_d, ((ArranjoDuplo*)direita)->inteiro_d,sizeof(((ArranjoDuplo*)direita)->inteiro_d));
-			  memcpy(((ArranjoDuplo*)esquerda)->boolean_d, ((ArranjoDuplo*)direita)->boolean_d,sizeof(((ArranjoDuplo*)direita)->boolean_d));
-    		          memcpy(((ArranjoDuplo*)esquerda)->real_d, ((ArranjoDuplo*)direita)->real_d,sizeof(((ArranjoDuplo*)direita)->real_d));
+			 memcpy(((Arranjo*)esquerda)->inteiro_a, ((Arranjo*)direita)->inteiro_a, ((Arranjo*)direita)->tamanho->inteiro*((ArranjoDuplo*)direita)->tamanho2->inteiro*sizeof(int));
+			 memcpy(((Arranjo*)esquerda)->boolean_a, ((Arranjo*)direita)->real_a, ((Arranjo*)direita)->tamanho->inteiro*((ArranjoDuplo*)direita)->tamanho2->inteiro*sizeof(bool));
+ 			 memcpy(((Arranjo*)esquerda)->real_a, ((Arranjo*)direita)->real_a, ((Arranjo*)direita)->tamanho->inteiro*((ArranjoDuplo*)direita)->tamanho2->inteiro*sizeof(double));
 			  tabelaDeSimbolos->modificar(esquerda, esquerda->id); 
 			   return e;
 			}
+
 
 			if(tipoDeVariavel_e == Tipo::hash){
 			   if (((Hash*)direita)->int_int.size() > 0)
@@ -143,11 +145,11 @@ Tipo OperacaoBinaria::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linh
 
 		     switch(e) {
 			case Tipo::inteiro:
-	     		    d->inteiro_d[i][j] = direita->inteiro;
+	     		    d->inteiro_a[i*d->tamanho2->inteiro + j] = direita->inteiro;
 			case Tipo::boolean:
-	     		    d->boolean_d[i][j] = direita->boolean;
+	     		    d->boolean_a[i*d->tamanho2->inteiro + j]  = direita->boolean;
 			case Tipo::real:
-	     		    d->real_d[i][j] = direita->real;
+	     		    d->real_a[i*d->tamanho2->inteiro + j]  = direita->real;
 			default: break;
 		     }
                     tabelaDeSimbolos->modificar(d, esquerda->id); 

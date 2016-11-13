@@ -255,22 +255,31 @@ class DefinicaoDeFuncao : public Funcao {
 
 class Arranjo : public Variavel {
     public:
-	int inteiro_a[100]  = {};
-        double real_a[100]  = {};
-        bool boolean_a[100] = {};
+	int *inteiro_a;
+        double *real_a;
+        bool *boolean_a;
         Nodo *tamanho;
-    Arranjo(Tipo t, Tipo v, atributo_nodo an, Nodo *p, int ponteiros) : Variavel(t, v, an, ponteiros), tamanho(p) {};
+    Arranjo(Tipo t, Tipo v, atributo_nodo an, Nodo *p, int ponteiros) : Variavel(t, v, an, ponteiros), tamanho(p) {
+     
+     inteiro_a = new int [tamanho->inteiro];
+     boolean_a = new bool [tamanho->inteiro];
+     real_a = new double [tamanho->inteiro];
+   };
     Tipo analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool analisador);
     void imprimir(int espaco, bool novaLinha);
 };
 
 class ArranjoDuplo : public Arranjo {
     public:
-	int inteiro_d[100][100]  = {};
-        double real_d[100][100]  = {};
-        bool boolean_d[100][100] = {};
+
         Nodo *tamanho2;
-    ArranjoDuplo(Tipo t, Tipo v, atributo_nodo an, Nodo *p, Nodo *q, int ponteiros) : Arranjo(t, v, an, p, ponteiros), tamanho2(q) {};
+    ArranjoDuplo(Tipo t, Tipo v, atributo_nodo an, Nodo *p, Nodo *q, int ponteiros) : Arranjo(t, v, an, p, ponteiros), tamanho2(q) {
+
+     inteiro_a = new int [tamanho->inteiro * tamanho2->inteiro];
+     boolean_a = new bool [tamanho->inteiro * tamanho2->inteiro];
+     real_a = new double [tamanho->inteiro * tamanho2->inteiro];
+
+    };
     Tipo analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool analisador);
     void imprimir(int espaco, bool novaLinha);
 };

@@ -198,17 +198,19 @@ void Parametro::acrescentarComValoresAoEscopo(TabelaDeSimbolos *tabelaDeSimbolos
         }
 
 	if(parametro->tipo == Tipo::arranjo){ // copia valores de arranjo simples
-
-            memcpy(((Arranjo*)parametro)->inteiro_a,((Arranjo*)(valores->parametro))->inteiro_a,sizeof(((Arranjo*)(valores->parametro))->inteiro_a));
-            memcpy(((Arranjo*)parametro)->boolean_a,((Arranjo*)(valores->parametro))->boolean_a,sizeof(((Arranjo*)(valores->parametro))->boolean_a));
-            memcpy(((Arranjo*)parametro)->real_a,((Arranjo*)(valores->parametro))->real_a,sizeof(((Arranjo*)(valores->parametro))->real_a));
+	
+	 memcpy(((Arranjo*)parametro)->inteiro_a, ((Arranjo*)valores->parametro)->inteiro_a, ((Arranjo*)valores->parametro)->tamanho->inteiro*sizeof(int));   
+         memcpy(((Arranjo*)parametro)->boolean_a, ((Arranjo*)valores->parametro)->real_a, ((Arranjo*)valores->parametro)->tamanho->inteiro*sizeof(bool));
+	 memcpy(((Arranjo*)parametro)->real_a, ((Arranjo*)valores->parametro)->real_a, ((Arranjo*)valores->parametro)->tamanho->inteiro*sizeof(double));
+           
 	}
 
-	if(parametro->tipo == Tipo::arranjo_duplo){ // copia valores de arranjo duplo.
+	if(parametro->tipo == Tipo::arranjo_duplo){ // copia valores de arranjo duplo
 
-   	   memcpy(((ArranjoDuplo*)parametro)->inteiro_d,((ArranjoDuplo*)(valores->parametro))->inteiro_d,sizeof(((ArranjoDuplo*)(valores->parametro))->inteiro_d));
-           memcpy(((ArranjoDuplo*)parametro)->boolean_d,((ArranjoDuplo*)(valores->parametro))->boolean_d,sizeof(((ArranjoDuplo*)(valores->parametro))->boolean_d));
-           memcpy(((ArranjoDuplo*)parametro)->real_d,((ArranjoDuplo*)(valores->parametro))->real_d,sizeof(((ArranjoDuplo*)(valores->parametro))->real_d));
+	memcpy(((Arranjo*)parametro)->inteiro_a, ((Arranjo*)valores->parametro)->inteiro_a, ((Arranjo*)valores->parametro)->tamanho->inteiro*((ArranjoDuplo*)valores->parametro)->tamanho2->inteiro*sizeof(int));
+	memcpy(((Arranjo*)parametro)->boolean_a, ((Arranjo*)valores->parametro)->real_a, ((Arranjo*)valores->parametro)->tamanho->inteiro*((ArranjoDuplo*)valores->parametro)->tamanho2->inteiro*sizeof(bool));
+ 	memcpy(((Arranjo*)parametro)->real_a, ((Arranjo*)valores->parametro)->real_a, ((Arranjo*)valores->parametro)->tamanho->inteiro*((ArranjoDuplo*)valores->parametro)->tamanho2->inteiro*sizeof(double));
+	
 	}
 	
 	// tratamento default, copio valores booleanos, inteiros e floats.

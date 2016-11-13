@@ -105,9 +105,9 @@ Tipo Chamada::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool 
 			int j = (((Parametro*)((Parametro*)parametros)->proximo)->parametro)->inteiro;
 
 			   if(i >= 0 && i < d->tamanho->inteiro && j >= 0 && j < d->tamanho2->inteiro ){
-                               inteiro = d->inteiro_d[i][j];
-			       boolean = d->boolean_d[i][j];
-			       real = d->real_d[i][j];
+                               inteiro = d->inteiro_a[i*d->tamanho2->inteiro + j];
+			       boolean = d->boolean_a[i*d->tamanho2->inteiro + j];
+			       real = d->real_a[i*d->tamanho2->inteiro + j];
 			      }
 			   else { //se um dos indices < 0 ou > tamanho
 	                      std::cerr << "[Line " << linha << "] $ intepreter error:  index-out of bounds"<< "\n";
