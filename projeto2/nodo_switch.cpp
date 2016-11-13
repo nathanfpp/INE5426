@@ -24,10 +24,12 @@ Tipo Switch::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool a
 		bool b = atual->teste->boolean;
 		double r = atual->teste->real;
 
-		switch (esperado){
-		 
+		switch (esperado){ //verfico tipo do switch vs tipo do caso
+
+		 //se tipo do switch == tipo do caso e valor for igual do switch, então executo
+
  		   case Tipo::inteiro:
-		   if (casoTratado->inteiro == i){
+		   if (casoTratado->inteiro == i){ 
 			match = true;
 			atual->analisar(tabelaDeSimbolos, linha, analisador); 
 		   }
@@ -49,9 +51,9 @@ Tipo Switch::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool a
 	      }
 	   }
 
-	else if(match == false)
+	else if(match == false) // caso nao haja "match" em nenhum caso, seja por diferença de tipo ou valor, caso default é executado.
 	     atual->analisar(tabelaDeSimbolos, linha, analisador); 
-	atual = atual->proximo;
+	atual = atual->proximo; // mesmo que um caso tenha sido executado, preciso seguir compilando os demais sem executar.
       	}
 
       

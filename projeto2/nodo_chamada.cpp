@@ -47,29 +47,28 @@ Tipo Chamada::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool 
                 tipoDoRetorno = f->tipoDoRetorno;
 
               // Executa a função e armazena o retorno na Chamada, caso ela tenha sido definida
-                if(analisador) {
+                if(analisador) { //Entro na interpretação
                     if(f->definida) {
                         
-			/* navego entre parametros, aqueles que forem estrutura de dados, preciso recuperar
-                           estrutura da tabela e atualizo o parametro.*/
-                      
+			/* se parametro for uma de estrutura de dados completa, preciso recuperar ela e atualizar o parametro.*/
 			if(parametros != NULL){
                           ((Parametro*)parametros)->recuperarEstruturaDeDados(tabelaDeSimbolos,((Parametro*)parametros),linha);
 			 }
 
+			//executo chamada de função.
                         ((DefinicaoDeFuncao*)f)->executar(tabelaDeSimbolos, ((Parametro*)parametros), linha, analisador);
                         boolean = f->boolean;
                         inteiro = f->inteiro;
                         real    = f->real;
 
-                        //retornar em caso estrutura de dados
+                        //se retorno for uma estrutra de dados.
 		        retornoEstruturaDados = ((Retorno*)((DefinicaoDeFuncao*)f)->retorno)->retorno; 
 		
                     }
 
                   // Caso a função não tenha sido definida, e o analisador estiver ativo, uma mensagem de erro é emitida
                     else {
-                        std::cerr <<"[Line "<<linha<<"]"<< " $ Undefined function " << f->id << ", the result below should not be trusted\n";                        
+                        std::cerr <<"[Line "<<linha<<"]"<< " $ interpreter error:  undefined function " << f->id << ", the result below should not be trusted\n";                        
                     }
                 }
 
@@ -91,7 +90,7 @@ Tipo Chamada::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool 
                     std::cerr << "[Line " << linha << "] semantic error: array double requires exactly two parameters\n";
                 } else {
 
-                  // O tipo usado como índice é válido? parametros = tamanho
+                  // O tipo usado como índice é válido? parametros = tamanho do arranjo
                     Tipo indice1 = (((Parametro*)parametros)->parametro)->analisar(tabelaDeSimbolos, linha, analisador);
                     Tipo indice2 = (((Parametro*)((Parametro*)parametros)->proximo)->parametro)->analisar(tabelaDeSimbolos, linha, analisador);
                     if(indice1 != Tipo::inteiro) {
@@ -100,8 +99,9 @@ Tipo Chamada::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool 
                         std::cerr << "[Line " << linha << "] semantic error: index operator expects integer but received " << imprimirTipoPorExtenso(indice2) << "\n";
                     }
 		
-		     else if (analisador){
-			int i = (((Parametro*)parametros)->parametro)->inteiro; //não é com o parametro o problema
+		     else if (analisador){ //Interpreto a leitura de um item de arranjo passada por parametro
+		        //pego indices do arranjo
+			int i = (((Parametro*)parametros)->parametro)->inteiro; 
 			int j = (((Parametro*)((Parametro*)parametros)->proximo)->parametro)->inteiro;
 
 			   if(i >= 0 && i < d->tamanho->inteiro && j >= 0 && j < d->tamanho2->inteiro ){
@@ -109,7 +109,7 @@ Tipo Chamada::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool 
 			       boolean = d->boolean_d[i][j];
 			       real = d->real_d[i][j];
 			      }
-			   else {
+			   else { //se um dos indices < 0 ou > tamanho
 	                      std::cerr << "[Line " << linha << "] $ intepreter error:  index-out of bounds"<< "\n";
 			   }
 			}
@@ -139,14 +139,15 @@ Tipo Chamada::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool 
                     if(indice != Tipo::inteiro) {
                       std::cerr << "[Line " << linha << "] semantic error: index operator expects integer but received " << imprimirTipoPorExtenso(indice) << "\n";
                     }
-                    else if (analisador){
+                    else if (analisador){ //Interpreto a leitura de um item de arranjo passada por parametro
+		        //pego indices do arranjo
 			int i = ((Parametro*)((Parametro*)parametros)->parametro)->inteiro; //não é com o parametro o problema
 		 	if(i>= 0 && i <= a->tamanho->inteiro){
                            inteiro = a->inteiro_a[i];
 			   boolean = a->boolean_a[i];
 			   real = a->real_a[i];
 			}
-			else{
+			else{ //se indice < 0 ou > tamanho
 	                   std::cerr << "[Line " << linha << "] $ intepreter error:  index-out of bounds"<< "\n";
 			}
 
@@ -182,14 +183,15 @@ Tipo Chamada::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool 
                         std::cerr << imprimirTipoPorExtenso(chave) << " but received " << imprimirTipoPorExtenso(recebido) << "\n";
                     }
 		   
- 		    else if(analisador && read_hash){
+ 		    else if(analisador && read_hash){ //se eu estiver na condição de leitura do hash para leitura.
 
+		     // chave pela qual quero ler
 		     int chave_i = ((Parametro*)((Parametro*)parametros)->parametro)->inteiro;	
 		     bool chave_b = ((Parametro*)((Parametro*)parametros)->parametro)->boolean;
 		     double chave_r = ((Parametro*)((Parametro*)parametros)->parametro)->real;
 
 		     switch (h->tipoDeHash(tabelaDeSimbolos)){
-		    
+		     //associo leitura da chave pelo tipo hash, se chave não existir um erro é emitido.
 			    case hash_bb:
 
 				if(h->bool_bool.find(chave_b) != h->bool_bool.end())   

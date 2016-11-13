@@ -1,2 +1,2 @@
-[Line 2] $ Undefined function nonGrata, the result below should not be trusted
+[Line 2] $ interpreter error:  undefined function nonGrata, the result below should not be trusted
 [Line 3] semantic error: function nonGrata is declared but never defined

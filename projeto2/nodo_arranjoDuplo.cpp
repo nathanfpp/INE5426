@@ -24,9 +24,9 @@ Tipo ArranjoDuplo::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, 
     ArranjoDuplo *v = ((ArranjoDuplo*) tabelaDeSimbolos->recuperar(id, linha, true));
     if(v != NULL) {
 /*
-	memcpy(inteiro_d, v->inteiro_d,sizeof(int)*1000);
-	memcpy(boolean_d, v->boolean_d,sizeof(bool)*1000);
-	memcpy(real_d, v->real_d,sizeof(double)*1000);
+	memcpy(inteiro_d, v->inteiro_d,sizeof(v->inteiro_d));
+	memcpy(boolean_d, v->boolean_d,sizeof(v->boolean_d));
+	memcpy(real_d, v->real_d,sizeof(v->real_d));
 	tamanho = v->tamanho;
 	tamanho2 = v->tamanho2;
         tipoDeVariavel = v->tipoDeVariavel;

@@ -161,7 +161,7 @@ void DefinicaoDeFuncao::imprimir(int espaco, bool novaLinha) {
         imprimirEspaco(espaco);
         imprimirTipo(tipoDoRetorno);
         std::cout << " fun: " << id << " (params: ";
-        if(parametros != NULL) {
+        if(parametros != NULL) { // se parametro for ponteiro, sofre ajuste para imprimi-lo
             ((Parametro*)parametros)->ajustarPonteiroImpressao(((Parametro*)parametros));
             parametros->imprimir(0, true);
         }

@@ -26,14 +26,7 @@ Tipo Funcao::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool a
 
 }
 
-/*
-Tipo DefinicaoDeFuncao::executar(AST::TabelaDeSimbolos *tabelaDeSimbolos, Parametro *valores, int linha, bool analisador) {
-    boolean = false; 
-    inteiro = 0; 
-    real = 0.0; 
-    return tipoDoRetorno;
-}
-*/
+
 
 int Funcao::contarParametros() {
     if(parametros == NULL) {

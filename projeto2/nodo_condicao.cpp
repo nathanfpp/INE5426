@@ -50,14 +50,14 @@ Tipo Condicao::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool
  else if (tipo == Tipo::caso){ //trato caso de um switch
 
     teste->analisar(tabelaDeSimbolos, linha, analisador); //retorno tipo do teste no nodo teste.
-    	if(se != NULL) {
+    	if(se != NULL) { //nodo "se" é o corpo do caso que possui escopo próprio.
     	    TabelaDeSimbolos *novoEscopo = tabelaDeSimbolos->novoEscopo(tabelaDeSimbolos);
     	    se->analisar(novoEscopo, linha, analisador);
     	    novoEscopo->retornarEscopo(linha);
     	}
     }
 
- else if (tipo == Tipo::padrao){
+ else if (tipo == Tipo::padrao){ //trato caso default que não possui teste.
 
         if(se != NULL) {
     	    TabelaDeSimbolos *novoEscopo = tabelaDeSimbolos->novoEscopo(tabelaDeSimbolos);
@@ -75,6 +75,7 @@ Tipo Condicao::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool
 
 void Condicao::imprimir(int espaco, bool novaLinha) {
     imprimirEspaco(espaco);
+    // impressao para if-then-else
     if(tipo == Tipo::condicao){
        std::cout << "if: ";
        teste->imprimir(0, false);
@@ -94,12 +95,12 @@ void Condicao::imprimir(int espaco, bool novaLinha) {
        }
        return;
     }
-    
+    //impressao para casos de switch (casos ou default)
     if (tipo == Tipo::caso){
         std::cout << "case: ";
         teste->imprimir(0, false);
     }
-    else if(tipo == Tipo::padrao)
+    else if(tipo == Tipo::padrao) 
         std::cout << "default: ";
         if(se != NULL) {
            std::cout << "\n";

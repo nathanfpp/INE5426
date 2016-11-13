@@ -15,9 +15,9 @@ Tipo Arranjo::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool 
     Arranjo *v = ((Arranjo*) tabelaDeSimbolos->recuperar(id, linha, true));
     if(v != NULL) {
 /*
-	memcpy(inteiro_a, v->inteiro_a,sizeof(int)*1000);
-	memcpy(boolean_a, v->boolean_a,sizeof(bool)*1000);
-	memcpy(real_a, v->real_a,sizeof(double)*1000);
+	memcpy(inteiro_a, v->inteiro_a,sizeof(v->inteiro_a));
+	memcpy(boolean_a, v->boolean_a,sizeof(v->boolean_a));
+	memcpy(real_a, v->real_a,sizeof((v->real_a));
 	tamanho = v->tamanho;
         tipoDeVariavel = v->tipoDeVariavel;
         boolean = v->boolean;

@@ -151,9 +151,10 @@ void Parametro::comparar(TabelaDeSimbolos *tabelaDeSimbolos, Parametro *comparad
 
 
 void Parametro::acrescentarAoEscopo(TabelaDeSimbolos *tabelaDeSimbolos, int linha) {
+  // Enquanto houver parametros acrescento-os recursivamente ao escopo
     if(parametro != NULL) {
         ((Variavel*)parametro)->tipoDeVariavel = tipoDoParametro; 
-        if(parametro->tipo == Tipo::hash) {
+        if(parametro->tipo == Tipo::hash) { // Hashes por ter um tipo chave, tem tratamento diferencial
             ((Hash*)parametro)->tipoDeChave = tipoReserva;
         }
     }
@@ -166,9 +167,12 @@ void Parametro::acrescentarAoEscopo(TabelaDeSimbolos *tabelaDeSimbolos, int linh
 
 void Parametro::acrescentarComValoresAoEscopo(TabelaDeSimbolos *tabelaDeSimbolos, Parametro *valores, int linha) {
 
+  // Semelhante ao método acima só que para o interpretador.
+  // Enquanto houver parametros acrescento-os recursivamente ao escopo e copiando os seus valores
+
     if(parametro != NULL && valores != NULL) {
-        ((Variavel*)parametro)->tipoDeVariavel = tipoDoParametro; 
-        if(parametro->tipo == Tipo::hash) {
+        ((Variavel*)parametro)->tipoDeVariavel = tipoDoParametro; //copio o tipo do parametro
+        if(parametro->tipo == Tipo::hash) { //recebe tipo chave e copia de valores para hash
             ((Hash*)parametro)->tipoDeChave = tipoReserva;
             
            if (((Hash*)(valores->parametro))->int_int.size() > 0)
@@ -193,33 +197,36 @@ void Parametro::acrescentarComValoresAoEscopo(TabelaDeSimbolos *tabelaDeSimbolos
            
         }
 
-	if(parametro->tipo == Tipo::arranjo){
+	if(parametro->tipo == Tipo::arranjo){ // copia valores de arranjo simples
 
             memcpy(((Arranjo*)parametro)->inteiro_a,((Arranjo*)(valores->parametro))->inteiro_a,sizeof(((Arranjo*)(valores->parametro))->inteiro_a));
             memcpy(((Arranjo*)parametro)->boolean_a,((Arranjo*)(valores->parametro))->boolean_a,sizeof(((Arranjo*)(valores->parametro))->boolean_a));
             memcpy(((Arranjo*)parametro)->real_a,((Arranjo*)(valores->parametro))->real_a,sizeof(((Arranjo*)(valores->parametro))->real_a));
 	}
 
-	if(parametro->tipo == Tipo::arranjo_duplo){
+	if(parametro->tipo == Tipo::arranjo_duplo){ // copia valores de arranjo duplo.
 
    	   memcpy(((ArranjoDuplo*)parametro)->inteiro_d,((ArranjoDuplo*)(valores->parametro))->inteiro_d,sizeof(((ArranjoDuplo*)(valores->parametro))->inteiro_d));
            memcpy(((ArranjoDuplo*)parametro)->boolean_d,((ArranjoDuplo*)(valores->parametro))->boolean_d,sizeof(((ArranjoDuplo*)(valores->parametro))->boolean_d));
            memcpy(((ArranjoDuplo*)parametro)->real_d,((ArranjoDuplo*)(valores->parametro))->real_d,sizeof(((ArranjoDuplo*)(valores->parametro))->real_d));
 	}
 	
+	// tratamento default, copio valores booleanos, inteiros e floats.
 
         parametro->boolean = valores->parametro->boolean;
         parametro->inteiro = valores->parametro->inteiro;
         parametro->real    = valores->parametro->real;   
         tabelaDeSimbolos->adicionar(parametro, linha, variavel);
     }
-    if(proximo != NULL) {
+    if(proximo != NULL) { //navego recursivamente para o proximo parametro se houver
         return ((Parametro*)proximo)->acrescentarComValoresAoEscopo(tabelaDeSimbolos, ((Parametro*)valores->proximo), linha);
     }
 }
 
 
 void Parametro::recuperarEstruturaDeDados(TabelaDeSimbolos *tabelaDeSimbolos, Parametro *p, int linha){
+
+     // Quando estou interpretando o codigo preciso recuperar a estrutura de dados passada por parametro e armazenar no mesmo. 
 
      if (p->parametro->tipo == Tipo::variavel){
 	 Nodo *ed = tabelaDeSimbolos->recuperar(p->parametro->id, linha, true);
@@ -230,12 +237,12 @@ void Parametro::recuperarEstruturaDeDados(TabelaDeSimbolos *tabelaDeSimbolos, Pa
         }
      }
     
-     if ( ((Parametro*)(p->proximo)) != NULL)
+     if ( ((Parametro*)(p->proximo)) != NULL) //navego recursivamente a cada parametro, enquanto houver um proximo
 	p->recuperarEstruturaDeDados(tabelaDeSimbolos, ((Parametro*)(p->proximo)), linha);	
 }
 
 
-int Parametro::contar() {
+int Parametro::contar() { //conta o numero de parametros.
     if(proximo == NULL) {
         return 1;
     } else {
@@ -244,10 +251,10 @@ int Parametro::contar() {
 }
 
 void Parametro::ajustarPonteiroImpressao(Parametro *p) {
-   
-	if(((Variavel*)(p->parametro))->ponteiros > 0)
-	((Variavel*)(p->parametro))->ponteiroParametro = true;
-	if ( ((Parametro*)(p->proximo)) != NULL)
+
+	if(((Variavel*)(p->parametro))->ponteiros > 0)    
+	((Variavel*)(p->parametro))->ponteiroParametro = true; //insiro no parametro uma flag para impressao, caso seja um ponteiro.
+	if ( ((Parametro*)(p->proximo)) != NULL) //navego recursivamente entre os parametros.
 	p->ajustarPonteiroImpressao(((Parametro*)(p->proximo)));	
 }    
 
@@ -255,9 +262,9 @@ void Parametro::ajustarPonteiroImpressao(Parametro *p) {
 
 void Parametro::imprimir(int espaco, bool naoArgumento) {
     imprimirEspaco(espaco);
-    if(naoArgumento) {
+    if(naoArgumento) { 
 
-	if (parametro->tipo == hash){
+	if (parametro->tipo == hash){ // tratamento especial para impressao, caso tipo do parametro seja um hash
 	Tipo tipoHashImpressao = Tipo::nulo;
 	 switch(tipoReserva) {
         case Tipo::boolean:
@@ -287,13 +294,13 @@ void Parametro::imprimir(int espaco, bool naoArgumento) {
         imprimirTipo(tipoHashImpressao);
 
     }
-	else
+	else  //impressao default para tipos inteiros, booleanos, floats e arranjos
         imprimirTipo(tipoDoParametro);
     }
     
     std::cout << " ";
     parametro->imprimir(0,false);
-    if(proximo != NULL) {
+    if(proximo != NULL) { //Se houver um proximo parametro, ele será imprimimido.
        if(naoArgumento) {
            std::cout << ", ";
        }
