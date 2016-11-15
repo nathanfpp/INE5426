@@ -56,10 +56,10 @@ Tipo DefinicaoDeFuncao::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int li
 
       // Se o corpo da Função não for nulo, ele deve ser analisado
         if(corpo != NULL) {                  
-            tipoRetornado = corpo->analisar(novoEscopo, linha, analisador);
+            tipoRetornado = corpo->analisar(novoEscopo, linha, false);
         }
 	else{
-	    tipoRetornado = retorno->analisar(novoEscopo, linha, analisador);
+	    tipoRetornado = retorno->analisar(novoEscopo, linha, false);
 	}
 
       // Compara o retorno do bloco com o tipo do retorno da Função
@@ -92,10 +92,10 @@ Tipo DefinicaoDeFuncao::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int li
   // Se o corpo da Função não for nulo, ele deve ser analisado
     Tipo tipoRetornado;
     if(corpo != NULL) {                  
-        tipoRetornado = corpo->analisar(novoEscopo, linha, analisador);
+        tipoRetornado = corpo->analisar(novoEscopo, linha, false);
      }
     else{
-	tipoRetornado = retorno->analisar(novoEscopo, linha, analisador);
+	tipoRetornado = retorno->analisar(novoEscopo, linha, false);
      }
 
         

@@ -1,8 +1,11 @@
+int var: a = 3
 int:int fun: f1 (params: int:int b)
   int var: i, j = 0
   for: = i 0, < i 10, = i + i 1
   do:
     = [key] b i * i 111
+  = a + a a
+$ R: a = 6
 $ R: 0
 $ R: 111
 $ R: 222
