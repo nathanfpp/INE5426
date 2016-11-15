@@ -4,6 +4,7 @@
 using namespace AST;
 
 Tipo Interpretador::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool analisador) {
+    if (analisador)
     raiz->analisar(tabelaDeSimbolos, linha, true);
     inteiro = raiz->inteiro;
     real = raiz->real;
