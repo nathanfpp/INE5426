@@ -71,7 +71,7 @@ test:
 	./${OUTPUT} < tests/v2.0/input/2.in > tests/v2.0/output/2.out
 	./${OUTPUT} < tests/v2.0/input/3.in > tests/v2.0/output/3.out
 	./${OUTPUT} < tests/v2.0/input/4.in > tests/v2.0/output/4.out
-#	./${OUTPUT} < tests/v2.0/input/5.in > tests/v2.0/output/5.out funcao recursiva, mas que apenas invoca ela mesma uma vez
+	./${OUTPUT} < tests/v2.0/input/5.in > tests/v2.0/output/5.out
 	./${OUTPUT} < tests/v2.0/input/6.in > tests/v2.0/output/6.out
 	./${OUTPUT} < tests/v2.0/input/7.in > tests/v2.0/output/7.out
 	./${OUTPUT} < tests/v2.0/input/8.in > tests/v2.0/output/8.out

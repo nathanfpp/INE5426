@@ -68,11 +68,11 @@ void Switch::imprimir(int espaco, bool novaLinha) {
 
     imprimirEspaco(espaco);
     std::cout << "switch: ";
-    casoTratado->imprimir(0, false);  
+    casoTratado->imprimir(espaco+2, false);  
     std::cout << "\n";
     Condicao *atual = casos;
     while (atual != NULL){
-	atual->imprimir(0,false);	
+	atual->imprimir(espaco+2,false);	
 	atual = atual->proximo;
     }
     imprimirEspaco(espaco);

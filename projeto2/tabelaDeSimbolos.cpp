@@ -14,6 +14,7 @@ TabelaDeSimbolos* TabelaDeSimbolos::novoEscopo(TabelaDeSimbolos *a) {
     novoEscopo->anterior = a;
     novoEscopo->proximo = NULL;
     a->proximo = novoEscopo;
+    novoEscopo->id = a->id; //permite a recursão em múltiplos escopos
     return novoEscopo;
 }
 
@@ -56,8 +57,6 @@ bool TabelaDeSimbolos::escopoPrincipal(){
 
 
 bool TabelaDeSimbolos::adicionar(AST::Nodo *v, int linha, bool variavel) {
-
-//std::cerr << "\n@ " << v->id<<"\n";
   
 // Se a Variável ou Função não foi declarada, ela é adicionada ao map
     std::map<std::string, AST::Nodo*>::const_iterator it;
@@ -84,8 +83,6 @@ Nodo* TabelaDeSimbolos::recuperar(std::string id, int linha, bool variavel) {
     it = simbolos.find(id);
     if (it != simbolos.end()) {
 
-//std::cout << "@tabelaDeSimbolos::recuperar " << id << " " << it->second->inteiro << "\n";
-
         return it->second;
     }
 
@@ -106,7 +103,7 @@ Nodo* TabelaDeSimbolos::recuperar(std::string id, int linha, bool variavel) {
 }
 
 void TabelaDeSimbolos::modificar(Nodo *novoValor, std::string id) {
-//std::cout<<".";
+
   // Variável ou Função encontrada no escopo atual
     std::map<std::string, AST::Nodo*>::iterator it;
     it = simbolos.find(id);

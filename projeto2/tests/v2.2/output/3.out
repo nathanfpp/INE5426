@@ -5,17 +5,17 @@ int:int fun: f1 (params: int:int b)
   do:
     = [key] b i * i 111
   = a + a a
-$ R: a = 6
-$ R: 0
-$ R: 111
-$ R: 222
-$ R: 333
-$ R: 444
-$ R: 555
-$ R: 666
-$ R: 777
-$ R: 888
-$ R: 999
+  $ R: a = 6
+  $ R: 0
+  $ R: 111
+  $ R: 222
+  $ R: 333
+  $ R: 444
+  $ R: 555
+  $ R: 666
+  $ R: 777
+  $ R: 888
+  $ R: 999
   ret b
 int:int hash: b
 int:int hash: c

@@ -1,12 +1,12 @@
+int a = 0
 int fun somatorio(int p) {
   int r = 1
+  a = a + 1
   if p > 1
   then {
     r = p + somatorio(p-1)
   }
   ret r
 }
-$somatorio(3)
-int a
-a = (4 > 0 ? 4 : 0) + 8
+$somatorio(5)
 $a

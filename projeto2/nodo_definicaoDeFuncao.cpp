@@ -123,7 +123,7 @@ Tipo DefinicaoDeFuncao::executar(AST::TabelaDeSimbolos *tabelaDeSimbolos, Parame
 
       // Cria um novo escopo para a execução da função
         TabelaDeSimbolos *novoEscopo = tabelaDeSimbolos->novoEscopo(tabelaDeSimbolos);
-
+	novoEscopo->id = id;	
       // Acrescenta os valores dos parâmetros à chamada da função
         if(parametros != NULL) {
             ((Parametro*)parametros)->acrescentarComValoresAoEscopo(novoEscopo, valores, linha);
@@ -134,6 +134,48 @@ Tipo DefinicaoDeFuncao::executar(AST::TabelaDeSimbolos *tabelaDeSimbolos, Parame
             corpo->analisar(novoEscopo, linha, true);
         }
 
+        retorno->analisar(novoEscopo, linha, true); 
+	
+	// Recupero estrutura de dados se for o caso
+	if((((Retorno*)retorno)->retorno)->tipo == Tipo::variavel){
+	  Nodo *ed = novoEscopo->recuperar((((Retorno*)retorno)->retorno)->id,linha,true);
+	  if (ed != NULL)
+	    ((Retorno*)retorno)->retorno = ed;
+	}
+        boolean = retorno->boolean;
+        inteiro = retorno->inteiro;
+        real    = retorno->real;             
+
+      // Retorna ao escopo anterior a Função
+        novoEscopo->retornarEscopo(linha);
+    }
+
+ // Retorna o tipo da variável retornada pela função
+  return tipoDoRetorno;
+
+};
+
+
+Tipo DefinicaoDeFuncao::executarRecursao(AST::TabelaDeSimbolos *tabelaDeSimbolos, Parametro *valores, int linha, bool analisador) {
+
+
+// Não é possível executar função que não foi definida
+    if(definida) {
+
+      // Cria um novo escopo para a execução da função
+        TabelaDeSimbolos *novoEscopo = tabelaDeSimbolos->novoEscopo(tabelaDeSimbolos);
+	novoEscopo->id = id;	
+      // Acrescenta os valores dos parâmetros à chamada da função
+        if(parametros != NULL) {
+            ((Parametro*)parametros)->acrescentarComValoresAoEscopo(novoEscopo, valores, linha);
+        }
+
+      // Obtém o retorno da função
+        if(corpo != NULL) {
+            corpo->analisar(novoEscopo, linha, true);
+        }
+
+	novoEscopo->id = ""; //evita executar recursão no retorno, causando loop infinito.	
         retorno->analisar(novoEscopo, linha, true); 
 	
 	// Recupero estrutura de dados se for o caso

@@ -13,7 +13,8 @@ Tipo Definicao::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, boo
   // Caso a Definição atribua um valor à Variável, realizando coerção se necessário
     if(valor != NULL) {
         Tipo tipoDoValor = valor->analisar(tabelaDeSimbolos, linha, analisador); // anteriormente após a coerção
-        coercaoDaDefinicao(this, tipoDeVariavel, tipoDoValor, linha);        
+	if((variavel->ponteiros > 0 && tipoDoValor == Tipo::endereco)==false)
+             coercaoDaDefinicao(this, tipoDeVariavel, tipoDoValor, linha);        
         variavel->boolean = valor->boolean; variavel->inteiro = valor->inteiro; variavel->real = valor->real;
         boolean = valor->boolean; inteiro = valor->inteiro; real = valor->real;
     } else {

@@ -4,14 +4,14 @@ int var: a, b, c
 = c 1
 if: > a 0
 then:
-$ R: a = 4
+  $ R: a = 4
 else:
   = b 20
-$ R: b = ?
+  $ R: b = ?
 if: & < a 0 > c 0
 then:
   = b 20
-$ R: a = ?
+  $ R: a = ?
 else:
-$ R: b = 2
+  $ R: b = 2
 

@@ -55,11 +55,19 @@ Tipo Chamada::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool 
                           ((Parametro*)parametros)->recuperarEstruturaDeDados(tabelaDeSimbolos,((Parametro*)parametros),linha);
 			 }
 
-			//executo chamada de função.
-                        ((DefinicaoDeFuncao*)f)->executar(tabelaDeSimbolos, ((Parametro*)parametros), linha, analisador);
-                        boolean = f->boolean;
-                        inteiro = f->inteiro;
-                        real    = f->real;
+			//executo chamada de função ou uma chamada recursiva se o id do escopo == id da chamada
+                        if(tabelaDeSimbolos->id != f->id){
+	                        ((DefinicaoDeFuncao*)f)->executar(tabelaDeSimbolos, ((Parametro*)parametros), linha, analisador);
+				boolean = f->boolean;
+ 	                        inteiro = f->inteiro;
+        	                real    = f->real;
+			}
+			else { 
+				((DefinicaoDeFuncao*)f)->executarRecursao(tabelaDeSimbolos, ((Parametro*)parametros), linha, analisador);
+				boolean = f->boolean;
+ 	                        inteiro = f->inteiro;
+        	                real    = f->real;
+			}        
 
                         //se retorno for uma estrutra de dados.
 		        retornoEstruturaDados = ((Retorno*)((DefinicaoDeFuncao*)f)->retorno)->retorno; 

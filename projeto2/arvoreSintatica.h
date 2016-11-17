@@ -249,6 +249,7 @@ class DefinicaoDeFuncao : public Funcao {
     DefinicaoDeFuncao(Tipo t, Tipo d, atributo_nodo an, Nodo *p, Bloco *c, Nodo *r) : Funcao(t,d,an,p), corpo(c), retorno(r) { definida = false; };
     Tipo analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool analisador);
     Tipo executar(AST::TabelaDeSimbolos *tabelaDeSimbolos, Parametro *valores, int linha, bool analisador);
+    Tipo executarRecursao(AST::TabelaDeSimbolos *tabelaDeSimbolos, Parametro *valores, int linha, bool analisador);
     void imprimir(int espaco, bool novaLinha);
     int contarParametros();
 };
@@ -338,7 +339,7 @@ class Bloco : public Nodo {
         listaDeNodos linhas;
         TabelaDeSimbolos *escopo;
     Bloco(Tipo t) : Nodo(t,"") { } ; // Construtor para um Bloco de linhas comum
-    Bloco(Tipo t, TabelaDeSimbolos *s) : Nodo(t,""), escopo(s) { }; // Construtor para o Bloco principal, a √Årvore Sint√°tica
+    Bloco(Tipo t, TabelaDeSimbolos *s) : Nodo(t,""), escopo(s) { }; // Construtor para o Bloco principal, a ¡rvore Sint·tica
     Tipo analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool analisador);
     void imprimir(int espaco, bool novaLinha);
     void novaLinha(Nodo *linha);
@@ -354,6 +355,7 @@ class Interpretador : public Nodo {
 
 class TabelaDeSimbolos {
     public:
+	std::string id = ""; //usado para identificar funÁıes recursivas
         std::map<std::string, AST::Nodo*> simbolos;
         std::vector<atributo_nodo*> parametros;
         TabelaDeSimbolos *anterior, *proximo;
