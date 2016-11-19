@@ -1,6 +1,6 @@
 # My Little Makefile
 FLEX=flex
-BISON=bison
+BISON=bison -v
 CC=clang++
 PARAM=-std=c++11 -fcxx-exceptions -Wno-deprecated-register -Wall 
 OUTPUT=lukacompiler
