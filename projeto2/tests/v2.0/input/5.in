@@ -10,3 +10,5 @@ int fun somatorio(int p) {
 }
 $somatorio(5)
 $a
+
+

@@ -123,6 +123,7 @@ Tipo DefinicaoDeFuncao::executar(AST::TabelaDeSimbolos *tabelaDeSimbolos, Parame
 
       // Cria um novo escopo para a execução da função
         TabelaDeSimbolos *novoEscopo = tabelaDeSimbolos->novoEscopo(tabelaDeSimbolos);
+      //novo escopo recebe id da função atual, permitindo identificar recursoes
 	novoEscopo->id = id;	
       // Acrescenta os valores dos parâmetros à chamada da função
         if(parametros != NULL) {
@@ -164,6 +165,7 @@ Tipo DefinicaoDeFuncao::executarRecursao(AST::TabelaDeSimbolos *tabelaDeSimbolos
 
       // Cria um novo escopo para a execução da função
         TabelaDeSimbolos *novoEscopo = tabelaDeSimbolos->novoEscopo(tabelaDeSimbolos);
+      //novo escopo recebe id da função atual, permitindo identificar recursoes
 	novoEscopo->id = id;	
       // Acrescenta os valores dos parâmetros à chamada da função
         if(parametros != NULL) {

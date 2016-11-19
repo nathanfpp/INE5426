@@ -76,7 +76,7 @@ Tipo Chamada::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool 
 
                   // Caso a função não tenha sido definida, e o analisador estiver ativo, uma mensagem de erro é emitida
                     else {
-                        std::cerr <<"[Line "<<linha<<"]"<< " $ interpreter error:  undefined function " << f->id << ", the result below should not be trusted\n";                        
+                        std::cerr <<"[Line "<<linha<<"]"<< " $ interpreter error: undefined function " << f->id << ", the result below should not be trusted\n";                        
                     }
                 }
 
@@ -118,7 +118,7 @@ Tipo Chamada::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool 
 			       real = d->real_a[i*d->tamanho2->inteiro + j];
 			      }
 			   else { //se um dos indices < 0 ou > tamanho
-	                      std::cerr << "[Line " << linha << "] $ intepreter error:  index-out of bounds"<< "\n";
+	                      std::cerr << "[Line " << linha << "] $ interpreter error: index-out of bounds"<< "\n";
 			   }
 			}
 	           }
@@ -156,9 +156,8 @@ Tipo Chamada::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool 
 			   real = a->real_a[i];
 			}
 			else{ //se indice < 0 ou > tamanho
-	                   std::cerr << "[Line " << linha << "] $ intepreter error:  index-out of bounds"<< "\n";
+	                   std::cerr << "[Line " << linha << "] $ interpreter error: index-out of bounds"<< "\n";
 			}
-
 		    }
 
                 }
@@ -204,51 +203,51 @@ Tipo Chamada::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool 
 
 				if(h->bool_bool.find(chave_b) != h->bool_bool.end())   
 			    	boolean = h->bool_bool[chave_b];
-				else std::cerr << "[Line " << linha << "] $ intepreter error: the key doesn't exist"<< "\n";
+				else std::cerr << "[Line " << linha << "] $ interpreter error: the key doesn't exist"<< "\n";
 			    break;
 			    
 			    case hash_bf:
 				if(h->bool_real.find(chave_b) != h->bool_real.end())   
 			  	real = h->bool_real[chave_b];
-				else std::cerr << "[Line " << linha << "] $ intepreter error: the key doesn't exist"<< "\n";
+				else std::cerr << "[Line " << linha << "] $ interpreter error: the key doesn't exist"<< "\n";
 			    break;
 
 			    case hash_bi:
 				if(h->bool_int.find(chave_b) != h->bool_int.end())   
 			  	inteiro = h->bool_int[chave_b];
-				else std::cerr << "[Line " << linha << "] $ intepreter error: the key doesn't exist"<< "\n";
+				else std::cerr << "[Line " << linha << "] $ interpreter error: the key doesn't exist"<< "\n";
 			    break;
 
 			    case hash_ib:
 				if(h->int_bool.find(chave_i) != h->int_bool.end())   
 			  	boolean = h->int_bool[chave_i];
-				else std::cerr << "[Line " << linha << "] $ intepreter error: the key doesn't exist"<< "\n";
+				else std::cerr << "[Line " << linha << "] $ interpreter error: the key doesn't exist"<< "\n";
 			    break;
 			    
 			    case hash_if:
 				if(h->int_real.find(chave_i) != h->int_real.end())   
 			    	real = h->int_real[chave_i];
-				else std::cerr << "[Line " << linha << "] $ intepreter error: the key doesn't exist"<< "\n";
+				else std::cerr << "[Line " << linha << "] $ interpreter error: the key doesn't exist"<< "\n";
 			    break;
 
 			    case hash_ii:
 				if(h->int_int.find(chave_i) != h->int_int.end())   
 			    	inteiro = h->int_int[chave_i];
-				else std::cerr << "[Line " << linha << "] $ intepreter error: the key doesn't exist"<< "\n";
+				else std::cerr << "[Line " << linha << "] $ interpreter error: the key doesn't exist"<< "\n";
 			    break;
 
 			    case hash_fb:
 				if(h->real_bool.find(chave_r) != h->real_bool.end())   
 			    	boolean = h->real_bool[chave_r];
 				else
-				std::cerr << "[Line " << linha << "] $ intepreter error: the key doesn't exist"<< "\n";
+				std::cerr << "[Line " << linha << "] $ interpreter error: the key doesn't exist"<< "\n";
 			    break;
 			    
 			    case hash_ff:
 				if(h->real_real.find(chave_r) != h->real_real.end())   
 			    	real = h->real_real[chave_r];
 				else
-				std::cerr << "[Line " << linha << "] $ intepreter error: the key doesn't exist"<< "\n";
+				std::cerr << "[Line " << linha << "] $ interpreter error: the key doesn't exist"<< "\n";
 
 			    break;
 
@@ -256,7 +255,7 @@ Tipo Chamada::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool 
 				if(h->real_int.find(chave_r) != h->real_int.end())   
 			    	inteiro = h->real_int[chave_r];
 				else
-				std::cerr << "[Line " << linha << "] $ intepreter error: the key doesn't exist"<< "\n";
+				std::cerr << "[Line " << linha << "] $ interpreter error: the key doesn't exist"<< "\n";
 			    break;
 
 			    default: break;

@@ -339,7 +339,7 @@ class Bloco : public Nodo {
         listaDeNodos linhas;
         TabelaDeSimbolos *escopo;
     Bloco(Tipo t) : Nodo(t,"") { } ; // Construtor para um Bloco de linhas comum
-    Bloco(Tipo t, TabelaDeSimbolos *s) : Nodo(t,""), escopo(s) { }; // Construtor para o Bloco principal, a Árvore Sintática
+    Bloco(Tipo t, TabelaDeSimbolos *s) : Nodo(t,""), escopo(s) { }; // Construtor para o Bloco principal, a Arvore Sintatica
     Tipo analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool analisador);
     void imprimir(int espaco, bool novaLinha);
     void novaLinha(Nodo *linha);
@@ -355,7 +355,7 @@ class Interpretador : public Nodo {
 
 class TabelaDeSimbolos {
     public:
-	std::string id = ""; //usado para identificar funções recursivas
+	std::string id = ""; //usado para identificar funcoes recursivas
         std::map<std::string, AST::Nodo*> simbolos;
         std::vector<atributo_nodo*> parametros;
         TabelaDeSimbolos *anterior, *proximo;
