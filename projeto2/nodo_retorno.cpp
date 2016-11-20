@@ -4,11 +4,12 @@
 using namespace AST;
 
 Tipo Retorno::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool analisador) {
+    //std::cerr << "r "; 
     Tipo analise = retorno->analisar(tabelaDeSimbolos, linha, analisador);
     boolean = retorno->boolean;
     inteiro = retorno->inteiro;
     real    = retorno->real;
-//std::cout << "@return: " << inteiro << "\n";
+  //5  std::cerr << "@Retorno : analisar : " << inteiro << "\n";
     return analise;
 }
 

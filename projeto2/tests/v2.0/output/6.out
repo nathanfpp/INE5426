@@ -2,9 +2,16 @@ int var: a, b, c
 = a 4
 = b 2
 = c 1
-int var: i
-for: = i 0, < i 100, = i + i 1
-do:
-  = a + a 10
-$ R: a = 1004
+if: > a 0
+then:
+  $ R: a = 4
+else:
+  = b 20
+  $ R: b = ?
+if: & < a 0 > c 0
+then:
+  = b 20
+  $ R: a = ?
+else:
+  $ R: b = 2
 

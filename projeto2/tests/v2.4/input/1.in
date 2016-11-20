@@ -1,0 +1,11 @@
+int fun somatorio(int p)
+int fun somatorio(int p) {
+  int r = 1
+  if p > 1
+  then {
+    r = somatorio(p-1) + p
+  }
+  ret r
+}
+$somatorio(3)
+$somatorio(4)

@@ -1,14 +1,9 @@
-int a = 0
-int fun somatorio(int p) {
-  int r = 1
-  a = a + 1
-  if p > 1
-  then {
-    r = p + somatorio(p-1)
-  }
-  ret r
+int a, b, c
+a = 4
+b = 2
+c = 1
+int i
+for i = 0, i < 100 , i = i + 1 {
+  a = a + 10
 }
-$somatorio(5)
 $a
-
-

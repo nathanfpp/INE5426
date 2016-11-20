@@ -2,8 +2,17 @@ int a, b, c
 a = 4
 b = 2
 c = 1
-int i
-for i = 0, i < 100 , i = i + 1 {
-  a = a + 10
+if (a > 0)
+then {
+  $a
+} else {
+  b = 20
+  $b
 }
-$a
+if (a < 0 & c > 0)
+then {
+  b = 20
+  $a
+} else {
+  $b
+}

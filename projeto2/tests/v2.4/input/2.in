@@ -1,0 +1,14 @@
+int fun fibonacci(int p)
+int a = 0
+int fun fibonacci(int p) {
+  a = a + 1
+  int r = 1
+  if p > 1
+  then {
+    r = fibonacci(p-1) + fibonacci(p-2)    
+  }
+  ret r
+}
+$fibonacci(4)
+$a
+

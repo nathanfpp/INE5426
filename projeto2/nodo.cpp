@@ -157,6 +157,10 @@ bool Nodo::coercao(OperacaoBinaria *coagido, Tipo e, Tipo d, Tipo operacao ,int 
             }
         }
     }
+
+//4 std::cerr << "@Nodo::coercao : " << coagido->id << " = " << coagido->esquerda->id << " " << imprimirTipoPorExtenso(operacao) << " " << coagido->direita->id << "\n";
+//5 std::cerr << "               : " << coagido->inteiro << " = " << coagido->esquerda->inteiro << " " << imprimirTipoPorExtenso(operacao) << " " << coagido->direita->inteiro << "\n";
+
   // Se não ocorreu coerção, retorna-se false
     return ocorreu;  
 }
@@ -271,6 +275,9 @@ std::string Nodo::imprimirTipoPorExtenso(Tipo t) {
         case Tipo::arranjo_duplo:          return "double array";
         case Tipo::parametro:              return "parameter";
         case Tipo::variavel:               return "variable";
+        case Tipo::funcao_dec:             return "funcao_dec";
+        case Tipo::funcao_def:             return "funcao_def";
+        case Tipo::funcao_cha:             return "funcao_cha";
         default:                	   return "some_default_type";            
     }
 }

@@ -4,9 +4,6 @@ using namespace AST;
 
 Tipo Bloco::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool analisador) {
 
-  // Associa o escopo ao Bloco
-    escopo = tabelaDeSimbolos;  
-
   // Tipo encontrado após cada linha
     Tipo analise = Tipo::nulo;
 
@@ -17,7 +14,8 @@ Tipo Bloco::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool an
     for (Nodo *l : linhas) {    
         if(l != NULL) {
             linha++;
-            analise = l->analisar(escopo, linha, analisador);
+//if(l->tipo == Tipo::retorno) std::cerr << "@bloco:retorno ";
+            analise = l->analisar(tabelaDeSimbolos, linha, analisador);
             if(l->tipo == Tipo::retorno) {
                 if(retorno == Tipo::bloco) {
                     retorno = analise;
@@ -38,7 +36,7 @@ Tipo Bloco::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool an
   // ... sendo o ponteiro para o escopo guardado apenas no Nodo::Bloco
 
     if(tabelaDeSimbolos->escopoPrincipal()) {
-        escopo->retornarEscopo(linha);
+        tabelaDeSimbolos->retornarEscopo(linha);
     }
 
   // Retorna-se o retorno obtido, ou o Tipo::bloco

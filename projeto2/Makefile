@@ -1,6 +1,6 @@
 # My Little Makefile
 FLEX=flex
-BISON=bison -v
+BISON=bison
 CC=clang++
 PARAM=-std=c++11 -fcxx-exceptions -Wno-deprecated-register -Wall 
 OUTPUT=lukacompiler
@@ -75,7 +75,6 @@ test:
 	./${OUTPUT} < tests/v2.0/input/6.in > tests/v2.0/output/6.out
 	./${OUTPUT} < tests/v2.0/input/7.in > tests/v2.0/output/7.out
 	./${OUTPUT} < tests/v2.0/input/8.in > tests/v2.0/output/8.out
-	./${OUTPUT} < tests/v2.0/input/9.in > tests/v2.0/output/9.out
 	./${OUTPUT} < tests/v2.1/input/1.in > tests/v2.1/output/1.out
 	./${OUTPUT} < tests/v2.1/input/2.in > tests/v2.1/output/2.out
 	./${OUTPUT} < tests/v2.1/input/3.in > tests/v2.1/output/3.out
@@ -88,6 +87,8 @@ test:
 	./${OUTPUT} < tests/v2.3/input/1.in > tests/v2.3/output/1.out
 	./${OUTPUT} < tests/v2.3/input/2.in > tests/v2.3/output/2.out
 	./${OUTPUT} < tests/v2.3/input/3.in > tests/v2.3/output/3.out
+	./${OUTPUT} < tests/v2.4/input/1.in > tests/v2.4/output/1.out
+	./${OUTPUT} < tests/v2.4/input/2.in > tests/v2.4/output/2.out
 
 
 
@@ -144,7 +145,6 @@ compare_test:
 	diff tests/v2.0/expected/6.ex tests/v2.0/output/6.out
 	diff tests/v2.0/expected/7.ex tests/v2.0/output/7.out
 	diff tests/v2.0/expected/8.ex tests/v2.0/output/8.out
-	diff tests/v2.0/expected/9.ex tests/v2.0/output/9.out
 	diff tests/v2.1/expected/1.ex tests/v2.1/output/1.out
 	diff tests/v2.1/expected/2.ex tests/v2.1/output/2.out
 	diff tests/v2.1/expected/3.ex tests/v2.1/output/3.out

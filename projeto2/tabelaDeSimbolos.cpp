@@ -9,17 +9,23 @@
 using namespace AST;
 
 TabelaDeSimbolos* TabelaDeSimbolos::novoEscopo(TabelaDeSimbolos *a) {
+
+//std::cerr << "@TabelaDeSimbolos::novoEscopo" << id << "'\n";
+
   // Cria o novo escopo, ajustando os ponteiros de *anterior e *proximo
     TabelaDeSimbolos *novoEscopo = new TabelaDeSimbolos(); 
     novoEscopo->anterior = a;
     novoEscopo->proximo = NULL;
     a->proximo = novoEscopo;
-    novoEscopo->id = a->id; //permite a recursão em múltiplos escopos
+    //novoEscopo->id = a->id + "'"; //permite a recursão em múltiplos escopos
     return novoEscopo;
 }
 
 
 bool TabelaDeSimbolos::retornarEscopo(int linha) {
+
+//std::cerr << "@TabelaDeSimbolos::retornarEscopo : " << id << "\n";
+
  // Procura-se entre as funções declaradas...
     typedef std::map<std::string, Nodo*>::iterator it;
     for(it iterator = simbolos.begin(); iterator != simbolos.end(); iterator++) {
@@ -43,8 +49,9 @@ bool TabelaDeSimbolos::retornarEscopo(int linha) {
     else {
       // Isto só é viável pois cada Nodo::Bloco possui uma referência para a TabelDeSimbolos de seu escopo
         simbolos.clear();
-        anterior->proximo = NULL;
-        anterior = NULL;
+        //anterior->proximo = NULL;
+        //anterior = NULL;
+        id = "retornado";
 //std::cout << "<-\n";
         return true;
     }    
@@ -58,11 +65,27 @@ bool TabelaDeSimbolos::escopoPrincipal(){
 
 bool TabelaDeSimbolos::adicionar(AST::Nodo *v, int linha, bool variavel) {
   
+//2 std::cerr << "@TabelaDeSimbolos::adicionar : " << id << " : " << v->id << " " << v->inteiro << " " << v->imprimirTipoPorExtenso(v->tipo) << "\n";
+
+    Nodo* novo = v;
+    switch(v->tipo){
+        case Tipo::variavel:
+            novo = new Variavel(v->tipo, ((Variavel*)v)->tipoDeVariavel, v->vazio, ((Variavel*)v)->ponteiros);
+            novo->id = v->id;
+            novo->boolean = v->boolean;
+            novo->inteiro = v->inteiro;
+            novo->real = v->real;
+            break;
+        default:
+            novo = v;
+            break;
+    }
+
 // Se a Variável ou Função não foi declarada, ela é adicionada ao map
     std::map<std::string, AST::Nodo*>::const_iterator it;
-    it = simbolos.find(v->id);
+    it = simbolos.find(novo->id);
     if (it == simbolos.end()) {
-        simbolos.insert ( std::pair< std::string, AST::Nodo*> (v->id,v) );
+        simbolos.insert ( std::pair< std::string, AST::Nodo*> (v->id,novo) );
         return true;
 
   // Caso a Variável ou Função já tenha sido declarada, ocorre um erro semântico
@@ -76,50 +99,55 @@ bool TabelaDeSimbolos::adicionar(AST::Nodo *v, int linha, bool variavel) {
 }
 
 
-Nodo* TabelaDeSimbolos::recuperar(std::string id, int linha, bool variavel) {
+Nodo* TabelaDeSimbolos::recuperar(std::string simbolo, int linha, bool variavel) {
+
+//3 std::cerr << "@TabelaDeSimbolos::recuperar : " << id << " ";
 
   // Variável ou Função encontrada no escopo atual
     std::map<std::string, AST::Nodo*>::const_iterator it;
-    it = simbolos.find(id);
+    it = simbolos.find(simbolo);
     if (it != simbolos.end()) {
-
+        //7 std::cerr << "@ " << it->second->id << " " << it->second->inteiro << "\n";
         return it->second;
     }
 
   // Variavel ou Função não encontrada, procurar no escopo anterior
     else if (anterior != NULL) {
-        return anterior->recuperar(id, linha, variavel);
+        return anterior->recuperar(simbolo, linha, variavel);
     }
 
   // Variável ou Função não encontrada em nenhum escopo
    else if (linha >= 0) {
         if(variavel) {
-            std::cerr << "[Line " << linha << "] semantic error: undeclared variable " << id << "\n";
+            std::cerr << "[Line " << linha << "] semantic error: undeclared variable " << simbolo << "\n";
         } else {
-            std::cerr << "[Line " << linha << "] semantic error: undeclared function " << id << "\n";
+            std::cerr << "[Line " << linha << "] semantic error: undeclared function " << simbolo << "\n";
         }
     }
     return NULL;
 }
 
-void TabelaDeSimbolos::modificar(Nodo *novoValor, std::string id) {
+void TabelaDeSimbolos::modificar(Nodo *novoValor, std::string simbolo) {
+
+//std::cerr << "@TabelaDeSimbolos::modificar : " << id << " ";
 
   // Variável ou Função encontrada no escopo atual
     std::map<std::string, AST::Nodo*>::iterator it;
-    it = simbolos.find(id);
+    it = simbolos.find(simbolo);
     if (it != simbolos.end()) {
         it->second = novoValor;
+//std::cerr << "@TabelaDeSimbolos::modificar : " << simbolo << " " << novoValor->id << " " << novoValor->inteiro << "\n";
         return;
     }
 
   // Variavel ou Função não encontrada, procurar no escopo anterior
     else if (anterior != NULL) {
-        return anterior->modificar(novoValor, id);
+        return anterior->modificar(novoValor, simbolo);
     }
 }
 
-void TabelaDeSimbolos::remover(std::string id) {
-    simbolos.erase(id);
+void TabelaDeSimbolos::remover(std::string simbolo) {
+    simbolos.erase(simbolo);
 }
 
 Tipo TabelaDeSimbolos::tipoDeArranjo(Tipo tipo) {

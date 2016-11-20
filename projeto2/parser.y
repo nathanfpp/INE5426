@@ -163,13 +163,13 @@ def_arranjo:
            ;
 
 dec_arranjo:
-             T_VAR T_OPEN expressao T_COMMA expressao T_CLOSE
+             T_VAR T_OPEN primitiva T_COMMA primitiva T_CLOSE
               { $$ = new AST::ArranjoDuplo( AST::Tipo::arranjo_duplo, AST::Tipo::nulo ,$1, $3, $5, 0 ); }
-           | referencia T_VAR T_OPEN expressao T_COMMA expressao T_CLOSE  
+           | referencia T_VAR T_OPEN primitiva T_COMMA primitiva T_CLOSE  
                { $$ = new AST::ArranjoDuplo( AST::Tipo::arranjo_duplo, AST::Tipo::nulo ,$2, $4, $6, $1 ); }
-           |  T_VAR T_OPEN expressao T_CLOSE  
+           |  T_VAR T_OPEN primitiva T_CLOSE  
                { $$ = new AST::Arranjo( AST::Tipo::arranjo, AST::Tipo::nulo ,$1, $3,0 ); }
-           | referencia T_VAR T_OPEN expressao T_CLOSE  
+           | referencia T_VAR T_OPEN primitiva T_CLOSE  
                { $$ = new AST::Arranjo( AST::Tipo::arranjo, AST::Tipo::nulo ,$2, $4, $1 ); }           
            ;
 
@@ -315,7 +315,7 @@ param_null:
 
 parametros:
             parametro                      { $$ = $1; }
-          | parametro T_COMMA parametros   { $$ = $1; $$->proximo = $3; }
+          | parametro T_COMMA parametros  { $$ = $1; $$->proximo = $3; }
           ;
 
 parametro:
