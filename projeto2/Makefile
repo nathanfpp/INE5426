@@ -1,6 +1,6 @@
 # My Little Makefile
 FLEX=flex
-BISON=bison
+BISON=bison -v
 CC=clang++
 PARAM=-std=c++11 -fcxx-exceptions -Wno-deprecated-register -Wall 
 OUTPUT=lukacompiler
@@ -89,6 +89,8 @@ test:
 	./${OUTPUT} < tests/v2.3/input/3.in > tests/v2.3/output/3.out
 	./${OUTPUT} < tests/v2.4/input/1.in > tests/v2.4/output/1.out
 	./${OUTPUT} < tests/v2.4/input/2.in > tests/v2.4/output/2.out
+	./${OUTPUT} < tests/v2.4/input/3.in > tests/v2.4/output/3.out
+	./${OUTPUT} < tests/v2.4/input/4.in > tests/v2.4/output/4.out
 
 
 
@@ -157,6 +159,7 @@ compare_test:
 	diff tests/v2.3/expected/1.ex tests/v2.3/output/1.out
 	diff tests/v2.3/expected/2.ex tests/v2.3/output/2.out
 	diff tests/v2.3/expected/3.ex tests/v2.3/output/3.out
+	diff tests/v2.4/expected/1.ex tests/v2.4/output/1.out
 
 ##Testes de erro
 

@@ -153,6 +153,7 @@ void Parametro::comparar(TabelaDeSimbolos *tabelaDeSimbolos, Parametro *comparad
 void Parametro::acrescentarAoEscopo(TabelaDeSimbolos *tabelaDeSimbolos, int linha) {
   // Enquanto houver parametros acrescento-os recursivamente ao escopo
     if(parametro != NULL) {
+	((Variavel*)parametro)->parametro = true;
         ((Variavel*)parametro)->tipoDeVariavel = tipoDoParametro; 
         if(parametro->tipo == Tipo::hash) { // Hashes por ter um tipo chave, tem tratamento diferencial
             ((Hash*)parametro)->tipoDeChave = tipoReserva;
@@ -171,6 +172,7 @@ void Parametro::acrescentarComValoresAoEscopo(TabelaDeSimbolos *tabelaDeSimbolos
   // Enquanto houver parametros acrescento-os recursivamente ao escopo e copiando os seus valores
 
     if(parametro != NULL && valores != NULL) {
+	((Variavel*)parametro)->parametro = true;
         ((Variavel*)parametro)->tipoDeVariavel = tipoDoParametro; //copio o tipo do parametro
         if(parametro->tipo == Tipo::hash) { //recebe tipo chave e copia de valores para hash
             ((Hash*)parametro)->tipoDeChave = tipoReserva;
@@ -218,7 +220,9 @@ void Parametro::acrescentarComValoresAoEscopo(TabelaDeSimbolos *tabelaDeSimbolos
         parametro->boolean = valores->parametro->boolean;
         parametro->inteiro = valores->parametro->inteiro;
         parametro->real    = valores->parametro->real;   
+//	std::cerr << "@ Parametro: "<< parametro->id << " "<<parametro->inteiro<<"\n";
         tabelaDeSimbolos->adicionar(parametro, linha, variavel);
+
     }
     if(proximo != NULL) { //navego recursivamente para o proximo parametro se houver
         return ((Parametro*)proximo)->acrescentarComValoresAoEscopo(tabelaDeSimbolos, ((Parametro*)valores->proximo), linha);

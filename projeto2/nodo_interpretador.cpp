@@ -58,6 +58,10 @@ void Interpretador::imprimir(int espaco, bool novaLinha) {
             break;
         case Tipo::variavel:       tipoDeVariavel = ((Variavel*)raiz)->tipoDeVariavel;       
                                    std::cout << raiz->id << " = ";                            break;
+        case Tipo::boolean:
+	case Tipo::inteiro:
+	case Tipo::real:
+				   tipoDeVariavel = raiz->tipo;                        	      break;
         default:                   tipoDeVariavel = Tipo::nulo;                               break;
     }
 

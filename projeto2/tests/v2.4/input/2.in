@@ -1,14 +1,12 @@
-int fun fibonacci(int p)
-int a = 0
-int fun fibonacci(int p) {
-  a = a + 1
+int fun fatorial(int p)
+int fun fatorial(int p) {
   int r = 1
   if p > 1
   then {
-    r = fibonacci(p-1) + fibonacci(p-2)    
+    r = fatorial(p-1) * p
   }
   ret r
 }
-$fibonacci(4)
-$a
-
+$fatorial(7)
+$fatorial(6)
+$fatorial(5)

@@ -53,7 +53,7 @@ extern void yyerror(const char* s, ...);
 // Símbolos Terminais (tokens)
 %token <valores> T_FLOAT T_INT T_BOOL T_VAR
 %token <tipo> T_TYPE_INT T_TYPE_FLOAT T_TYPE_BOOL
-%token T_NL T_OPEN T_CLOSE  T_OPEN_KEY T_CLOSE_KEY T_EQUAL T_COMMA T_SEMICOLON T_COLON T_PLUS T_MINUS T_TIMES T_DIV T_NOT T_AND T_OR 
+%token T_NL T_OPEN T_CLOSE  T_OPEN_KEY T_CLOSE_KEY T_EQUAL T_COMMA T_COLON T_PLUS T_MINUS T_TIMES T_DIV T_NOT T_AND T_OR 
 %token T_EQUAL2 T_DIF T_HIGHER T_HIGH T_LOWER T_LOW
 %token T_CAST_INT T_CAST_FLOAT T_CAST_BOOL T_ADDR
 %token T_IF T_THEN T_ELSE T_SWITCH T_CASE T_DEFAULT T_FOR T_FUN T_RET T_ATRIB_ASK T_DO T_WHILE
@@ -80,14 +80,14 @@ extern void yyerror(const char* s, ...);
 
 // %left, %right, %nonassoc
 // Precedência de operadores matemáticos, os últimos listados possuem maior procedência.
-%left T_AND T_OR T_ATRIB_ASK
+%left T_AND T_OR T_ATRIB_ASK T_CAST_INT
 %left T_EQUAL2 T_DIF T_HIGHER T_HIGH T_LOWER T_LOW
 %left T_PLUS T_MINUS
 %left T_DIV
 %left T_TIMES
-%left T_OPEN T_CLOSE
+%left T_OPEN T_CLOSE 
 %left T_NOT UMINUS // UMINUS: http://www.gnu.org/software/bison/manual/html_node/Contextual-Precedence.html
-%left T_CAST INT T_CAST_FLOAT T_CAST_BOOL T_REF T_ADDR T_COLON
+%left T_CAST_FLOAT T_CAST_BOOL T_REF T_ADDR T_COLON
 
 
 // %start
@@ -163,13 +163,13 @@ def_arranjo:
            ;
 
 dec_arranjo:
-             T_VAR T_OPEN primitiva T_COMMA primitiva T_CLOSE
+             T_VAR T_OPEN expressao T_COMMA expressao T_CLOSE
               { $$ = new AST::ArranjoDuplo( AST::Tipo::arranjo_duplo, AST::Tipo::nulo ,$1, $3, $5, 0 ); }
-           | referencia T_VAR T_OPEN primitiva T_COMMA primitiva T_CLOSE  
+           | referencia T_VAR T_OPEN expressao T_COMMA expressao T_CLOSE  
                { $$ = new AST::ArranjoDuplo( AST::Tipo::arranjo_duplo, AST::Tipo::nulo ,$2, $4, $6, $1 ); }
-           |  T_VAR T_OPEN primitiva T_CLOSE  
+           |  T_VAR T_OPEN expressao T_CLOSE  
                { $$ = new AST::Arranjo( AST::Tipo::arranjo, AST::Tipo::nulo ,$1, $3,0 ); }
-           | referencia T_VAR T_OPEN primitiva T_CLOSE  
+           | referencia T_VAR T_OPEN expressao T_CLOSE  
                { $$ = new AST::Arranjo( AST::Tipo::arranjo, AST::Tipo::nulo ,$2, $4, $1 ); }           
            ;
 

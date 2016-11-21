@@ -10,14 +10,14 @@ using namespace AST;
 
 TabelaDeSimbolos* TabelaDeSimbolos::novoEscopo(TabelaDeSimbolos *a) {
 
-//std::cerr << "@TabelaDeSimbolos::novoEscopo" << id << "'\n";
+//std::cerr << "@TabelaDeSimbolos::novoEscopo" << id << "\n";
 
   // Cria o novo escopo, ajustando os ponteiros de *anterior e *proximo
     TabelaDeSimbolos *novoEscopo = new TabelaDeSimbolos(); 
     novoEscopo->anterior = a;
     novoEscopo->proximo = NULL;
     a->proximo = novoEscopo;
-    //novoEscopo->id = a->id + "'"; //permite a recursão em múltiplos escopos
+    novoEscopo->id = a->id + "@"; //permite a recursão em múltiplos escopos
     return novoEscopo;
 }
 
@@ -83,9 +83,9 @@ bool TabelaDeSimbolos::adicionar(AST::Nodo *v, int linha, bool variavel) {
 
 // Se a Variável ou Função não foi declarada, ela é adicionada ao map
     std::map<std::string, AST::Nodo*>::const_iterator it;
-    it = simbolos.find(novo->id);
+    it = simbolos.find(novo->id+id);
     if (it == simbolos.end()) {
-        simbolos.insert ( std::pair< std::string, AST::Nodo*> (v->id,novo) );
+        simbolos.insert ( std::pair< std::string, AST::Nodo*> (v->id+id,novo) );
         return true;
 
   // Caso a Variável ou Função já tenha sido declarada, ocorre um erro semântico
@@ -105,7 +105,7 @@ Nodo* TabelaDeSimbolos::recuperar(std::string simbolo, int linha, bool variavel)
 
   // Variável ou Função encontrada no escopo atual
     std::map<std::string, AST::Nodo*>::const_iterator it;
-    it = simbolos.find(simbolo);
+    it = simbolos.find(simbolo+id);
     if (it != simbolos.end()) {
         //7 std::cerr << "@ " << it->second->id << " " << it->second->inteiro << "\n";
         return it->second;
@@ -133,7 +133,7 @@ void TabelaDeSimbolos::modificar(Nodo *novoValor, std::string simbolo) {
 
   // Variável ou Função encontrada no escopo atual
     std::map<std::string, AST::Nodo*>::iterator it;
-    it = simbolos.find(simbolo);
+    it = simbolos.find(simbolo+id);
     if (it != simbolos.end()) {
         it->second = novoValor;
 //std::cerr << "@TabelaDeSimbolos::modificar : " << simbolo << " " << novoValor->id << " " << novoValor->inteiro << "\n";
@@ -147,7 +147,7 @@ void TabelaDeSimbolos::modificar(Nodo *novoValor, std::string simbolo) {
 }
 
 void TabelaDeSimbolos::remover(std::string simbolo) {
-    simbolos.erase(simbolo);
+    simbolos.erase(simbolo+id);
 }
 
 Tipo TabelaDeSimbolos::tipoDeArranjo(Tipo tipo) {

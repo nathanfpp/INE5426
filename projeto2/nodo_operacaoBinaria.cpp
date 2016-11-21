@@ -7,7 +7,7 @@ Tipo OperacaoBinaria::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linh
   // Os tipos dos filhos à esquerda e à direita da OperacaoBinaria
     Tipo e, d;
     e = esquerda->analisar(tabelaDeSimbolos, linha, analisador);
-    d = direita->analisar(tabelaDeSimbolos, linha, analisador);
+    d = direita->analisar(tabelaDeSimbolos, linha, analisador); 
     tipoDoRetorno = e;
 
 // Arranjos e Hashes, quando o operando é a variável em si e não seus itens, devem apresentar erro

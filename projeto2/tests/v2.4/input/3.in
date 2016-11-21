@@ -1,0 +1,20 @@
+int fun somatorio(int p)
+int fun soma(int c)
+
+int fun somatorio(int p) {
+  int r = 1
+  if p > 1
+  then {
+    r = soma(p-1) + p
+  }
+  ret r
+}
+
+int fun soma(int c) {
+  int r = 1
+  if c > 1
+  then {
+    r = c + somatorio(c-1)
+  }
+  ret r
+}

@@ -71,7 +71,6 @@ rejeite         [^0-9a-zA-Z\(\)\,\{\}\_\+\=\/\>\<\*\-\!\&\|\t" "\n]+
 "}"                 { return T_CLOSE_KEY; }
 "="                 { return T_EQUAL;     }
 ","                 { return T_COMMA;     }
-";"                 { return T_SEMICOLON; }
 
 \n                  { return T_NL; }
 

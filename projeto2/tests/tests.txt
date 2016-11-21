@@ -112,3 +112,8 @@ v2.3: switch-case
  3: ok
 
 v2.4: funções recursivas
+
+ 1: ok
+ 2: 
+ 3: ok
+ 4: 

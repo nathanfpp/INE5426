@@ -1,0 +1,4721 @@
+Estado 43 conflitos: 1 de deslocamento/redução
+Estado 140 conflitos: 2 de deslocamento/redução
+Estado 172 conflitos: 2 de deslocamento/redução
+
+
+Gramática
+
+    0 $accept: programa $end
+
+    1 programa: linhas
+
+    2 linhas: linha
+    3       | linhas linha
+
+    4 linha: atribuicao T_NL
+    5      | declaracao T_NL
+    6      | dec_hashes
+    7      | dec_funcao T_NL
+    8      | def_funcao T_NL
+    9      | condicao T_NL
+   10      | seleciona T_NL
+   11      | for_laco T_NL
+   12      | do_while_laco T_NL
+   13      | while_laco T_NL
+   14      | chamada T_NL
+   15      | interpretacao T_NL
+   16      | T_NL
+
+   17 atribuicao: var_arranjo T_EQUAL expressao
+
+   18 var_arranjo: var
+   19            | chamada
+
+   20 declaracao: tipo variaveis
+
+   21 variaveis: variavel
+   22          | variaveis T_COMMA variavel
+   23          | def_arranjo
+   24          | variaveis T_COMMA def_arranjo
+
+   25 variavel: atribuicao
+   26         | var
+
+   27 def_arranjo: dec_arranjo
+
+   28 dec_arranjo: T_VAR T_OPEN expressao T_COMMA expressao T_CLOSE
+   29            | referencia T_VAR T_OPEN expressao T_COMMA expressao T_CLOSE
+   30            | T_VAR T_OPEN expressao T_CLOSE
+   31            | referencia T_VAR T_OPEN expressao T_CLOSE
+
+   32 arranjo: T_VAR T_OPEN expressao T_CLOSE
+   33        | referencia T_VAR T_OPEN expressao T_CLOSE
+
+   34 arranjo_duplo: T_VAR T_OPEN expressao T_COMMA expressao T_CLOSE
+   35              | referencia T_VAR T_OPEN expressao T_COMMA expressao T_CLOSE
+
+   36 chamada: T_VAR T_OPEN arg_null T_CLOSE
+   37        | referencia T_VAR T_OPEN arg_null T_CLOSE
+
+   38 arg_null: argumentos
+   39         | %empty
+
+   40 argumentos: argumento
+   41           | argumento T_COMMA argumentos
+
+   42 argumento: expressao
+
+   43 dec_hashes: tipo T_COLON tipo hashes
+
+   44 hashes: def_hash
+   45       | hashes T_COMMA def_hash
+
+   46 def_hash: hash
+
+   47 condicao: T_IF expressao T_NL T_THEN T_OPEN_KEY T_NL linhas_null T_CLOSE_KEY senao
+
+   48 senao: T_ELSE T_OPEN_KEY T_NL linhas_null T_CLOSE_KEY
+   49      | %empty
+
+   50 seleciona: T_SWITCH T_OPEN expressao T_CLOSE T_OPEN_KEY T_NL caso T_NL T_CLOSE_KEY
+
+   51 caso: T_CASE expressao T_OPEN_KEY linhas_null T_CLOSE_KEY T_NL caso
+   52     | T_CASE expressao T_NL caso
+   53     | T_DEFAULT T_OPEN_KEY linhas_null T_CLOSE_KEY
+
+   54 for_laco: T_FOR atrib_null T_COMMA expressao T_COMMA atrib_null T_OPEN_KEY T_NL linhas_null T_CLOSE_KEY
+
+   55 linhas_null: linhas
+   56            | %empty
+
+   57 do_while_laco: T_DO T_OPEN_KEY T_NL linhas T_CLOSE_KEY T_WHILE expressao
+
+   58 while_laco: T_WHILE expressao T_OPEN_KEY T_NL linhas T_CLOSE_KEY
+
+   59 atrib_null: atribuicao
+   60           | %empty
+
+   61 dec_funcao: tipo T_FUN T_VAR T_OPEN param_null T_CLOSE
+   62           | tipo T_OPEN T_CLOSE T_FUN T_VAR T_OPEN param_null T_CLOSE
+   63           | tipo T_OPEN T_CLOSE T_OPEN T_CLOSE T_FUN T_VAR T_OPEN param_null T_CLOSE
+   64           | tipo T_COLON tipo T_FUN T_VAR T_OPEN param_null T_CLOSE
+
+   65 def_funcao: tipo T_FUN T_VAR T_OPEN param_null T_CLOSE T_OPEN_KEY T_NL linhas_funcao T_RET retorno T_NL T_CLOSE_KEY
+   66           | tipo T_OPEN T_CLOSE T_FUN T_VAR T_OPEN param_null T_CLOSE T_OPEN_KEY T_NL linhas_funcao T_RET retorno T_NL T_CLOSE_KEY
+   67           | tipo T_OPEN T_CLOSE T_OPEN T_CLOSE T_FUN T_VAR T_OPEN param_null T_CLOSE T_OPEN_KEY T_NL linhas_funcao T_RET retorno T_NL T_CLOSE_KEY
+   68           | tipo T_COLON tipo T_FUN T_VAR T_OPEN param_null T_CLOSE T_OPEN_KEY T_NL linhas_funcao T_RET retorno T_NL T_CLOSE_KEY
+
+   69 linhas_funcao: linhas
+   70              | %empty
+
+   71 param_null: parametros
+   72           | %empty
+
+   73 parametros: parametro
+   74           | parametro T_COMMA parametros
+
+   75 parametro: tipo var
+   76          | tipo arranjo
+   77          | tipo arranjo_duplo
+   78          | tipo T_COLON tipo hash
+
+   79 retorno: expressao
+
+   80 expressao: primitiva
+   81          | chamada
+   82          | T_MINUS expressao
+   83          | T_NOT expressao
+   84          | T_CAST_INT expressao
+   85          | T_CAST_FLOAT expressao
+   86          | T_CAST_BOOL expressao
+   87          | T_OPEN expressao T_CLOSE
+   88          | T_REF expressao
+   89          | T_ADDR expressao
+   90          | expressao T_PLUS expressao
+   91          | expressao T_MINUS expressao
+   92          | expressao T_TIMES expressao
+   93          | expressao T_DIV expressao
+   94          | expressao T_AND expressao
+   95          | expressao T_OR expressao
+   96          | expressao T_EQUAL2 expressao
+   97          | expressao T_DIF expressao
+   98          | expressao T_HIGHER expressao
+   99          | expressao T_HIGH expressao
+  100          | expressao T_LOWER expressao
+  101          | expressao T_LOW expressao
+  102          | T_OPEN expressao T_ATRIB_ASK expressao T_COLON expressao T_CLOSE
+
+  103 tipo: T_TYPE_INT
+  104     | T_TYPE_FLOAT
+  105     | T_TYPE_BOOL
+
+  106 primitiva: var
+  107          | T_BOOL
+  108          | T_INT
+  109          | T_FLOAT
+
+  110 var: T_VAR
+  111    | referencia T_VAR
+
+  112 hash: T_VAR
+  113     | referencia T_VAR
+
+  114 referencia: T_REF
+  115           | referencia T_REF
+
+  116 interpretacao: T_CALC expressao
+
+
+Terminais, com as regras onde eles aparecem
+
+$end (0) 0
+error (256)
+T_FLOAT (258) 109
+T_INT (259) 108
+T_BOOL (260) 107
+T_VAR (261) 28 29 30 31 32 33 34 35 36 37 61 62 63 64 65 66 67 68 110
+    111 112 113
+T_TYPE_INT (262) 103
+T_TYPE_FLOAT (263) 104
+T_TYPE_BOOL (264) 105
+T_NL (265) 4 5 7 8 9 10 11 12 13 14 15 16 47 48 50 51 52 54 57 58 65
+    66 67 68
+T_OPEN (266) 28 29 30 31 32 33 34 35 36 37 50 61 62 63 64 65 66 67
+    68 87 102
+T_CLOSE (267) 28 29 30 31 32 33 34 35 36 37 50 61 62 63 64 65 66 67
+    68 87 102
+T_OPEN_KEY (268) 47 48 50 51 53 54 57 58 65 66 67 68
+T_CLOSE_KEY (269) 47 48 50 51 53 54 57 58 65 66 67 68
+T_EQUAL (270) 17
+T_COMMA (271) 22 24 28 29 34 35 41 45 54 74
+T_COLON (272) 43 64 68 78 102
+T_PLUS (273) 90
+T_MINUS (274) 82 91
+T_TIMES (275) 92
+T_DIV (276) 93
+T_NOT (277) 83
+T_AND (278) 94
+T_OR (279) 95
+T_EQUAL2 (280) 96
+T_DIF (281) 97
+T_HIGHER (282) 98
+T_HIGH (283) 99
+T_LOWER (284) 100
+T_LOW (285) 101
+T_CAST_INT (286) 84
+T_CAST_FLOAT (287) 85
+T_CAST_BOOL (288) 86
+T_ADDR (289) 89
+T_IF (290) 47
+T_THEN (291) 47
+T_ELSE (292) 48
+T_SWITCH (293) 50
+T_CASE (294) 51 52
+T_DEFAULT (295) 53
+T_FOR (296) 54
+T_FUN (297) 61 62 63 64 65 66 67 68
+T_RET (298) 65 66 67 68
+T_ATRIB_ASK (299) 102
+T_DO (300) 57
+T_WHILE (301) 57 58
+T_REF (302) 88 114 115
+T_CALC (303) 116
+UMINUS (304)
+
+
+Não terminais com as regras onde eles aparecem
+
+$accept (50)
+    à esquerda: 0
+programa (51)
+    à esquerda: 1, à direita: 0
+linhas (52)
+    à esquerda: 2 3, à direita: 1 3 55 57 58 69
+linha (53)
+    à esquerda: 4 5 6 7 8 9 10 11 12 13 14 15 16, à direita: 2 3
+atribuicao (54)
+    à esquerda: 17, à direita: 4 25 59
+var_arranjo (55)
+    à esquerda: 18 19, à direita: 17
+declaracao (56)
+    à esquerda: 20, à direita: 5
+variaveis (57)
+    à esquerda: 21 22 23 24, à direita: 20 22 24
+variavel (58)
+    à esquerda: 25 26, à direita: 21 22
+def_arranjo (59)
+    à esquerda: 27, à direita: 23 24
+dec_arranjo (60)
+    à esquerda: 28 29 30 31, à direita: 27
+arranjo (61)
+    à esquerda: 32 33, à direita: 76
+arranjo_duplo (62)
+    à esquerda: 34 35, à direita: 77
+chamada (63)
+    à esquerda: 36 37, à direita: 14 19 81
+arg_null (64)
+    à esquerda: 38 39, à direita: 36 37
+argumentos (65)
+    à esquerda: 40 41, à direita: 38 41
+argumento (66)
+    à esquerda: 42, à direita: 40 41
+dec_hashes (67)
+    à esquerda: 43, à direita: 6
+hashes (68)
+    à esquerda: 44 45, à direita: 43 45
+def_hash (69)
+    à esquerda: 46, à direita: 44 45
+condicao (70)
+    à esquerda: 47, à direita: 9
+senao (71)
+    à esquerda: 48 49, à direita: 47
+seleciona (72)
+    à esquerda: 50, à direita: 10
+caso (73)
+    à esquerda: 51 52 53, à direita: 50 51 52
+for_laco (74)
+    à esquerda: 54, à direita: 11
+linhas_null (75)
+    à esquerda: 55 56, à direita: 47 48 51 53 54
+do_while_laco (76)
+    à esquerda: 57, à direita: 12
+while_laco (77)
+    à esquerda: 58, à direita: 13
+atrib_null (78)
+    à esquerda: 59 60, à direita: 54
+dec_funcao (79)
+    à esquerda: 61 62 63 64, à direita: 7
+def_funcao (80)
+    à esquerda: 65 66 67 68, à direita: 8
+linhas_funcao (81)
+    à esquerda: 69 70, à direita: 65 66 67 68
+param_null (82)
+    à esquerda: 71 72, à direita: 61 62 63 64 65 66 67 68
+parametros (83)
+    à esquerda: 73 74, à direita: 71 74
+parametro (84)
+    à esquerda: 75 76 77 78, à direita: 73 74
+retorno (85)
+    à esquerda: 79, à direita: 65 66 67 68
+expressao (86)
+    à esquerda: 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96
+    97 98 99 100 101 102, à direita: 17 28 29 30 31 32 33 34 35 42
+    47 50 51 52 54 57 58 79 82 83 84 85 86 87 88 89 90 91 92 93 94
+    95 96 97 98 99 100 101 102 116
+tipo (87)
+    à esquerda: 103 104 105, à direita: 20 43 61 62 63 64 65 66 67
+    68 75 76 77 78
+primitiva (88)
+    à esquerda: 106 107 108 109, à direita: 80
+var (89)
+    à esquerda: 110 111, à direita: 18 26 75 106
+hash (90)
+    à esquerda: 112 113, à direita: 46 78
+referencia (91)
+    à esquerda: 114 115, à direita: 29 31 33 35 37 111 113 115
+interpretacao (92)
+    à esquerda: 116, à direita: 15
+
+
+Estado 0
+
+    0 $accept: . programa $end
+
+    T_VAR         deslocar, e ir ao estado 1
+    T_TYPE_INT    deslocar, e ir ao estado 2
+    T_TYPE_FLOAT  deslocar, e ir ao estado 3
+    T_TYPE_BOOL   deslocar, e ir ao estado 4
+    T_NL          deslocar, e ir ao estado 5
+    T_IF          deslocar, e ir ao estado 6
+    T_SWITCH      deslocar, e ir ao estado 7
+    T_FOR         deslocar, e ir ao estado 8
+    T_DO          deslocar, e ir ao estado 9
+    T_WHILE       deslocar, e ir ao estado 10
+    T_REF         deslocar, e ir ao estado 11
+    T_CALC        deslocar, e ir ao estado 12
+
+    programa       ir ao estado 13
+    linhas         ir ao estado 14
+    linha          ir ao estado 15
+    atribuicao     ir ao estado 16
+    var_arranjo    ir ao estado 17
+    declaracao     ir ao estado 18
+    chamada        ir ao estado 19
+    dec_hashes     ir ao estado 20
+    condicao       ir ao estado 21
+    seleciona      ir ao estado 22
+    for_laco       ir ao estado 23
+    do_while_laco  ir ao estado 24
+    while_laco     ir ao estado 25
+    dec_funcao     ir ao estado 26
+    def_funcao     ir ao estado 27
+    tipo           ir ao estado 28
+    var            ir ao estado 29
+    referencia     ir ao estado 30
+    interpretacao  ir ao estado 31
+
+
+Estado 1
+
+   36 chamada: T_VAR . T_OPEN arg_null T_CLOSE
+  110 var: T_VAR .
+
+    T_OPEN  deslocar, e ir ao estado 32
+
+    $padrão  reduzir usando a regra 110 (var)
+
+
+Estado 2
+
+  103 tipo: T_TYPE_INT .
+
+    $padrão  reduzir usando a regra 103 (tipo)
+
+
+Estado 3
+
+  104 tipo: T_TYPE_FLOAT .
+
+    $padrão  reduzir usando a regra 104 (tipo)
+
+
+Estado 4
+
+  105 tipo: T_TYPE_BOOL .
+
+    $padrão  reduzir usando a regra 105 (tipo)
+
+
+Estado 5
+
+   16 linha: T_NL .
+
+    $padrão  reduzir usando a regra 16 (linha)
+
+
+Estado 6
+
+   47 condicao: T_IF . expressao T_NL T_THEN T_OPEN_KEY T_NL linhas_null T_CLOSE_KEY senao
+
+    T_FLOAT       deslocar, e ir ao estado 33
+    T_INT         deslocar, e ir ao estado 34
+    T_BOOL        deslocar, e ir ao estado 35
+    T_VAR         deslocar, e ir ao estado 1
+    T_OPEN        deslocar, e ir ao estado 36
+    T_MINUS       deslocar, e ir ao estado 37
+    T_NOT         deslocar, e ir ao estado 38
+    T_CAST_INT    deslocar, e ir ao estado 39
+    T_CAST_FLOAT  deslocar, e ir ao estado 40
+    T_CAST_BOOL   deslocar, e ir ao estado 41
+    T_ADDR        deslocar, e ir ao estado 42
+    T_REF         deslocar, e ir ao estado 43
+
+    chamada     ir ao estado 44
+    expressao   ir ao estado 45
+    primitiva   ir ao estado 46
+    var         ir ao estado 47
+    referencia  ir ao estado 30
+
+
+Estado 7
+
+   50 seleciona: T_SWITCH . T_OPEN expressao T_CLOSE T_OPEN_KEY T_NL caso T_NL T_CLOSE_KEY
+
+    T_OPEN  deslocar, e ir ao estado 48
+
+
+Estado 8
+
+   54 for_laco: T_FOR . atrib_null T_COMMA expressao T_COMMA atrib_null T_OPEN_KEY T_NL linhas_null T_CLOSE_KEY
+
+    T_VAR  deslocar, e ir ao estado 1
+    T_REF  deslocar, e ir ao estado 11
+
+    $padrão  reduzir usando a regra 60 (atrib_null)
+
+    atribuicao   ir ao estado 49
+    var_arranjo  ir ao estado 17
+    chamada      ir ao estado 50
+    atrib_null   ir ao estado 51
+    var          ir ao estado 29
+    referencia   ir ao estado 30
+
+
+Estado 9
+
+   57 do_while_laco: T_DO . T_OPEN_KEY T_NL linhas T_CLOSE_KEY T_WHILE expressao
+
+    T_OPEN_KEY  deslocar, e ir ao estado 52
+
+
+Estado 10
+
+   58 while_laco: T_WHILE . expressao T_OPEN_KEY T_NL linhas T_CLOSE_KEY
+
+    T_FLOAT       deslocar, e ir ao estado 33
+    T_INT         deslocar, e ir ao estado 34
+    T_BOOL        deslocar, e ir ao estado 35
+    T_VAR         deslocar, e ir ao estado 1
+    T_OPEN        deslocar, e ir ao estado 36
+    T_MINUS       deslocar, e ir ao estado 37
+    T_NOT         deslocar, e ir ao estado 38
+    T_CAST_INT    deslocar, e ir ao estado 39
+    T_CAST_FLOAT  deslocar, e ir ao estado 40
+    T_CAST_BOOL   deslocar, e ir ao estado 41
+    T_ADDR        deslocar, e ir ao estado 42
+    T_REF         deslocar, e ir ao estado 43
+
+    chamada     ir ao estado 44
+    expressao   ir ao estado 53
+    primitiva   ir ao estado 46
+    var         ir ao estado 47
+    referencia  ir ao estado 30
+
+
+Estado 11
+
+  114 referencia: T_REF .
+
+    $padrão  reduzir usando a regra 114 (referencia)
+
+
+Estado 12
+
+  116 interpretacao: T_CALC . expressao
+
+    T_FLOAT       deslocar, e ir ao estado 33
+    T_INT         deslocar, e ir ao estado 34
+    T_BOOL        deslocar, e ir ao estado 35
+    T_VAR         deslocar, e ir ao estado 1
+    T_OPEN        deslocar, e ir ao estado 36
+    T_MINUS       deslocar, e ir ao estado 37
+    T_NOT         deslocar, e ir ao estado 38
+    T_CAST_INT    deslocar, e ir ao estado 39
+    T_CAST_FLOAT  deslocar, e ir ao estado 40
+    T_CAST_BOOL   deslocar, e ir ao estado 41
+    T_ADDR        deslocar, e ir ao estado 42
+    T_REF         deslocar, e ir ao estado 43
+
+    chamada     ir ao estado 44
+    expressao   ir ao estado 54
+    primitiva   ir ao estado 46
+    var         ir ao estado 47
+    referencia  ir ao estado 30
+
+
+Estado 13
+
+    0 $accept: programa . $end
+
+    $end  deslocar, e ir ao estado 55
+
+
+Estado 14
+
+    1 programa: linhas .
+    3 linhas: linhas . linha
+
+    T_VAR         deslocar, e ir ao estado 1
+    T_TYPE_INT    deslocar, e ir ao estado 2
+    T_TYPE_FLOAT  deslocar, e ir ao estado 3
+    T_TYPE_BOOL   deslocar, e ir ao estado 4
+    T_NL          deslocar, e ir ao estado 5
+    T_IF          deslocar, e ir ao estado 6
+    T_SWITCH      deslocar, e ir ao estado 7
+    T_FOR         deslocar, e ir ao estado 8
+    T_DO          deslocar, e ir ao estado 9
+    T_WHILE       deslocar, e ir ao estado 10
+    T_REF         deslocar, e ir ao estado 11
+    T_CALC        deslocar, e ir ao estado 12
+
+    $padrão  reduzir usando a regra 1 (programa)
+
+    linha          ir ao estado 56
+    atribuicao     ir ao estado 16
+    var_arranjo    ir ao estado 17
+    declaracao     ir ao estado 18
+    chamada        ir ao estado 19
+    dec_hashes     ir ao estado 20
+    condicao       ir ao estado 21
+    seleciona      ir ao estado 22
+    for_laco       ir ao estado 23
+    do_while_laco  ir ao estado 24
+    while_laco     ir ao estado 25
+    dec_funcao     ir ao estado 26
+    def_funcao     ir ao estado 27
+    tipo           ir ao estado 28
+    var            ir ao estado 29
+    referencia     ir ao estado 30
+    interpretacao  ir ao estado 31
+
+
+Estado 15
+
+    2 linhas: linha .
+
+    $padrão  reduzir usando a regra 2 (linhas)
+
+
+Estado 16
+
+    4 linha: atribuicao . T_NL
+
+    T_NL  deslocar, e ir ao estado 57
+
+
+Estado 17
+
+   17 atribuicao: var_arranjo . T_EQUAL expressao
+
+    T_EQUAL  deslocar, e ir ao estado 58
+
+
+Estado 18
+
+    5 linha: declaracao . T_NL
+
+    T_NL  deslocar, e ir ao estado 59
+
+
+Estado 19
+
+   14 linha: chamada . T_NL
+   19 var_arranjo: chamada .
+
+    T_NL  deslocar, e ir ao estado 60
+
+    $padrão  reduzir usando a regra 19 (var_arranjo)
+
+
+Estado 20
+
+    6 linha: dec_hashes .
+
+    $padrão  reduzir usando a regra 6 (linha)
+
+
+Estado 21
+
+    9 linha: condicao . T_NL
+
+    T_NL  deslocar, e ir ao estado 61
+
+
+Estado 22
+
+   10 linha: seleciona . T_NL
+
+    T_NL  deslocar, e ir ao estado 62
+
+
+Estado 23
+
+   11 linha: for_laco . T_NL
+
+    T_NL  deslocar, e ir ao estado 63
+
+
+Estado 24
+
+   12 linha: do_while_laco . T_NL
+
+    T_NL  deslocar, e ir ao estado 64
+
+
+Estado 25
+
+   13 linha: while_laco . T_NL
+
+    T_NL  deslocar, e ir ao estado 65
+
+
+Estado 26
+
+    7 linha: dec_funcao . T_NL
+
+    T_NL  deslocar, e ir ao estado 66
+
+
+Estado 27
+
+    8 linha: def_funcao . T_NL
+
+    T_NL  deslocar, e ir ao estado 67
+
+
+Estado 28
+
+   20 declaracao: tipo . variaveis
+   43 dec_hashes: tipo . T_COLON tipo hashes
+   61 dec_funcao: tipo . T_FUN T_VAR T_OPEN param_null T_CLOSE
+   62           | tipo . T_OPEN T_CLOSE T_FUN T_VAR T_OPEN param_null T_CLOSE
+   63           | tipo . T_OPEN T_CLOSE T_OPEN T_CLOSE T_FUN T_VAR T_OPEN param_null T_CLOSE
+   64           | tipo . T_COLON tipo T_FUN T_VAR T_OPEN param_null T_CLOSE
+   65 def_funcao: tipo . T_FUN T_VAR T_OPEN param_null T_CLOSE T_OPEN_KEY T_NL linhas_funcao T_RET retorno T_NL T_CLOSE_KEY
+   66           | tipo . T_OPEN T_CLOSE T_FUN T_VAR T_OPEN param_null T_CLOSE T_OPEN_KEY T_NL linhas_funcao T_RET retorno T_NL T_CLOSE_KEY
+   67           | tipo . T_OPEN T_CLOSE T_OPEN T_CLOSE T_FUN T_VAR T_OPEN param_null T_CLOSE T_OPEN_KEY T_NL linhas_funcao T_RET retorno T_NL T_CLOSE_KEY
+   68           | tipo . T_COLON tipo T_FUN T_VAR T_OPEN param_null T_CLOSE T_OPEN_KEY T_NL linhas_funcao T_RET retorno T_NL T_CLOSE_KEY
+
+    T_VAR    deslocar, e ir ao estado 68
+    T_OPEN   deslocar, e ir ao estado 69
+    T_COLON  deslocar, e ir ao estado 70
+    T_FUN    deslocar, e ir ao estado 71
+    T_REF    deslocar, e ir ao estado 11
+
+    atribuicao   ir ao estado 72
+    var_arranjo  ir ao estado 17
+    variaveis    ir ao estado 73
+    variavel     ir ao estado 74
+    def_arranjo  ir ao estado 75
+    dec_arranjo  ir ao estado 76
+    chamada      ir ao estado 50
+    var          ir ao estado 77
+    referencia   ir ao estado 78
+
+
+Estado 29
+
+   18 var_arranjo: var .
+
+    $padrão  reduzir usando a regra 18 (var_arranjo)
+
+
+Estado 30
+
+   37 chamada: referencia . T_VAR T_OPEN arg_null T_CLOSE
+  111 var: referencia . T_VAR
+  115 referencia: referencia . T_REF
+
+    T_VAR  deslocar, e ir ao estado 79
+    T_REF  deslocar, e ir ao estado 80
+
+
+Estado 31
+
+   15 linha: interpretacao . T_NL
+
+    T_NL  deslocar, e ir ao estado 81
+
+
+Estado 32
+
+   36 chamada: T_VAR T_OPEN . arg_null T_CLOSE
+
+    T_FLOAT       deslocar, e ir ao estado 33
+    T_INT         deslocar, e ir ao estado 34
+    T_BOOL        deslocar, e ir ao estado 35
+    T_VAR         deslocar, e ir ao estado 1
+    T_OPEN        deslocar, e ir ao estado 36
+    T_MINUS       deslocar, e ir ao estado 37
+    T_NOT         deslocar, e ir ao estado 38
+    T_CAST_INT    deslocar, e ir ao estado 39
+    T_CAST_FLOAT  deslocar, e ir ao estado 40
+    T_CAST_BOOL   deslocar, e ir ao estado 41
+    T_ADDR        deslocar, e ir ao estado 42
+    T_REF         deslocar, e ir ao estado 43
+
+    $padrão  reduzir usando a regra 39 (arg_null)
+
+    chamada     ir ao estado 44
+    arg_null    ir ao estado 82
+    argumentos  ir ao estado 83
+    argumento   ir ao estado 84
+    expressao   ir ao estado 85
+    primitiva   ir ao estado 46
+    var         ir ao estado 47
+    referencia  ir ao estado 30
+
+
+Estado 33
+
+  109 primitiva: T_FLOAT .
+
+    $padrão  reduzir usando a regra 109 (primitiva)
+
+
+Estado 34
+
+  108 primitiva: T_INT .
+
+    $padrão  reduzir usando a regra 108 (primitiva)
+
+
+Estado 35
+
+  107 primitiva: T_BOOL .
+
+    $padrão  reduzir usando a regra 107 (primitiva)
+
+
+Estado 36
+
+   87 expressao: T_OPEN . expressao T_CLOSE
+  102          | T_OPEN . expressao T_ATRIB_ASK expressao T_COLON expressao T_CLOSE
+
+    T_FLOAT       deslocar, e ir ao estado 33
+    T_INT         deslocar, e ir ao estado 34
+    T_BOOL        deslocar, e ir ao estado 35
+    T_VAR         deslocar, e ir ao estado 1
+    T_OPEN        deslocar, e ir ao estado 36
+    T_MINUS       deslocar, e ir ao estado 37
+    T_NOT         deslocar, e ir ao estado 38
+    T_CAST_INT    deslocar, e ir ao estado 39
+    T_CAST_FLOAT  deslocar, e ir ao estado 40
+    T_CAST_BOOL   deslocar, e ir ao estado 41
+    T_ADDR        deslocar, e ir ao estado 42
+    T_REF         deslocar, e ir ao estado 43
+
+    chamada     ir ao estado 44
+    expressao   ir ao estado 86
+    primitiva   ir ao estado 46
+    var         ir ao estado 47
+    referencia  ir ao estado 30
+
+
+Estado 37
+
+   82 expressao: T_MINUS . expressao
+
+    T_FLOAT       deslocar, e ir ao estado 33
+    T_INT         deslocar, e ir ao estado 34
+    T_BOOL        deslocar, e ir ao estado 35
+    T_VAR         deslocar, e ir ao estado 1
+    T_OPEN        deslocar, e ir ao estado 36
+    T_MINUS       deslocar, e ir ao estado 37
+    T_NOT         deslocar, e ir ao estado 38
+    T_CAST_INT    deslocar, e ir ao estado 39
+    T_CAST_FLOAT  deslocar, e ir ao estado 40
+    T_CAST_BOOL   deslocar, e ir ao estado 41
+    T_ADDR        deslocar, e ir ao estado 42
+    T_REF         deslocar, e ir ao estado 43
+
+    chamada     ir ao estado 44
+    expressao   ir ao estado 87
+    primitiva   ir ao estado 46
+    var         ir ao estado 47
+    referencia  ir ao estado 30
+
+
+Estado 38
+
+   83 expressao: T_NOT . expressao
+
+    T_FLOAT       deslocar, e ir ao estado 33
+    T_INT         deslocar, e ir ao estado 34
+    T_BOOL        deslocar, e ir ao estado 35
+    T_VAR         deslocar, e ir ao estado 1
+    T_OPEN        deslocar, e ir ao estado 36
+    T_MINUS       deslocar, e ir ao estado 37
+    T_NOT         deslocar, e ir ao estado 38
+    T_CAST_INT    deslocar, e ir ao estado 39
+    T_CAST_FLOAT  deslocar, e ir ao estado 40
+    T_CAST_BOOL   deslocar, e ir ao estado 41
+    T_ADDR        deslocar, e ir ao estado 42
+    T_REF         deslocar, e ir ao estado 43
+
+    chamada     ir ao estado 44
+    expressao   ir ao estado 88
+    primitiva   ir ao estado 46
+    var         ir ao estado 47
+    referencia  ir ao estado 30
+
+
+Estado 39
+
+   84 expressao: T_CAST_INT . expressao
+
+    T_FLOAT       deslocar, e ir ao estado 33
+    T_INT         deslocar, e ir ao estado 34
+    T_BOOL        deslocar, e ir ao estado 35
+    T_VAR         deslocar, e ir ao estado 1
+    T_OPEN        deslocar, e ir ao estado 36
+    T_MINUS       deslocar, e ir ao estado 37
+    T_NOT         deslocar, e ir ao estado 38
+    T_CAST_INT    deslocar, e ir ao estado 39
+    T_CAST_FLOAT  deslocar, e ir ao estado 40
+    T_CAST_BOOL   deslocar, e ir ao estado 41
+    T_ADDR        deslocar, e ir ao estado 42
+    T_REF         deslocar, e ir ao estado 43
+
+    chamada     ir ao estado 44
+    expressao   ir ao estado 89
+    primitiva   ir ao estado 46
+    var         ir ao estado 47
+    referencia  ir ao estado 30
+
+
+Estado 40
+
+   85 expressao: T_CAST_FLOAT . expressao
+
+    T_FLOAT       deslocar, e ir ao estado 33
+    T_INT         deslocar, e ir ao estado 34
+    T_BOOL        deslocar, e ir ao estado 35
+    T_VAR         deslocar, e ir ao estado 1
+    T_OPEN        deslocar, e ir ao estado 36
+    T_MINUS       deslocar, e ir ao estado 37
+    T_NOT         deslocar, e ir ao estado 38
+    T_CAST_INT    deslocar, e ir ao estado 39
+    T_CAST_FLOAT  deslocar, e ir ao estado 40
+    T_CAST_BOOL   deslocar, e ir ao estado 41
+    T_ADDR        deslocar, e ir ao estado 42
+    T_REF         deslocar, e ir ao estado 43
+
+    chamada     ir ao estado 44
+    expressao   ir ao estado 90
+    primitiva   ir ao estado 46
+    var         ir ao estado 47
+    referencia  ir ao estado 30
+
+
+Estado 41
+
+   86 expressao: T_CAST_BOOL . expressao
+
+    T_FLOAT       deslocar, e ir ao estado 33
+    T_INT         deslocar, e ir ao estado 34
+    T_BOOL        deslocar, e ir ao estado 35
+    T_VAR         deslocar, e ir ao estado 1
+    T_OPEN        deslocar, e ir ao estado 36
+    T_MINUS       deslocar, e ir ao estado 37
+    T_NOT         deslocar, e ir ao estado 38
+    T_CAST_INT    deslocar, e ir ao estado 39
+    T_CAST_FLOAT  deslocar, e ir ao estado 40
+    T_CAST_BOOL   deslocar, e ir ao estado 41
+    T_ADDR        deslocar, e ir ao estado 42
+    T_REF         deslocar, e ir ao estado 43
+
+    chamada     ir ao estado 44
+    expressao   ir ao estado 91
+    primitiva   ir ao estado 46
+    var         ir ao estado 47
+    referencia  ir ao estado 30
+
+
+Estado 42
+
+   89 expressao: T_ADDR . expressao
+
+    T_FLOAT       deslocar, e ir ao estado 33
+    T_INT         deslocar, e ir ao estado 34
+    T_BOOL        deslocar, e ir ao estado 35
+    T_VAR         deslocar, e ir ao estado 1
+    T_OPEN        deslocar, e ir ao estado 36
+    T_MINUS       deslocar, e ir ao estado 37
+    T_NOT         deslocar, e ir ao estado 38
+    T_CAST_INT    deslocar, e ir ao estado 39
+    T_CAST_FLOAT  deslocar, e ir ao estado 40
+    T_CAST_BOOL   deslocar, e ir ao estado 41
+    T_ADDR        deslocar, e ir ao estado 42
+    T_REF         deslocar, e ir ao estado 43
+
+    chamada     ir ao estado 44
+    expressao   ir ao estado 92
+    primitiva   ir ao estado 46
+    var         ir ao estado 47
+    referencia  ir ao estado 30
+
+
+Estado 43
+
+   88 expressao: T_REF . expressao
+  114 referencia: T_REF .
+
+    T_FLOAT       deslocar, e ir ao estado 33
+    T_INT         deslocar, e ir ao estado 34
+    T_BOOL        deslocar, e ir ao estado 35
+    T_VAR         deslocar, e ir ao estado 1
+    T_OPEN        deslocar, e ir ao estado 36
+    T_MINUS       deslocar, e ir ao estado 37
+    T_NOT         deslocar, e ir ao estado 38
+    T_CAST_INT    deslocar, e ir ao estado 39
+    T_CAST_FLOAT  deslocar, e ir ao estado 40
+    T_CAST_BOOL   deslocar, e ir ao estado 41
+    T_ADDR        deslocar, e ir ao estado 42
+
+    T_VAR     [reduzir usando a regra 114 (referencia)]
+    $padrão  reduzir usando a regra 114 (referencia)
+
+    chamada     ir ao estado 44
+    expressao   ir ao estado 93
+    primitiva   ir ao estado 46
+    var         ir ao estado 47
+    referencia  ir ao estado 30
+
+
+Estado 44
+
+   81 expressao: chamada .
+
+    $padrão  reduzir usando a regra 81 (expressao)
+
+
+Estado 45
+
+   47 condicao: T_IF expressao . T_NL T_THEN T_OPEN_KEY T_NL linhas_null T_CLOSE_KEY senao
+   90 expressao: expressao . T_PLUS expressao
+   91          | expressao . T_MINUS expressao
+   92          | expressao . T_TIMES expressao
+   93          | expressao . T_DIV expressao
+   94          | expressao . T_AND expressao
+   95          | expressao . T_OR expressao
+   96          | expressao . T_EQUAL2 expressao
+   97          | expressao . T_DIF expressao
+   98          | expressao . T_HIGHER expressao
+   99          | expressao . T_HIGH expressao
+  100          | expressao . T_LOWER expressao
+  101          | expressao . T_LOW expressao
+
+    T_NL      deslocar, e ir ao estado 94
+    T_PLUS    deslocar, e ir ao estado 95
+    T_MINUS   deslocar, e ir ao estado 96
+    T_TIMES   deslocar, e ir ao estado 97
+    T_DIV     deslocar, e ir ao estado 98
+    T_AND     deslocar, e ir ao estado 99
+    T_OR      deslocar, e ir ao estado 100
+    T_EQUAL2  deslocar, e ir ao estado 101
+    T_DIF     deslocar, e ir ao estado 102
+    T_HIGHER  deslocar, e ir ao estado 103
+    T_HIGH    deslocar, e ir ao estado 104
+    T_LOWER   deslocar, e ir ao estado 105
+    T_LOW     deslocar, e ir ao estado 106
+
+
+Estado 46
+
+   80 expressao: primitiva .
+
+    $padrão  reduzir usando a regra 80 (expressao)
+
+
+Estado 47
+
+  106 primitiva: var .
+
+    $padrão  reduzir usando a regra 106 (primitiva)
+
+
+Estado 48
+
+   50 seleciona: T_SWITCH T_OPEN . expressao T_CLOSE T_OPEN_KEY T_NL caso T_NL T_CLOSE_KEY
+
+    T_FLOAT       deslocar, e ir ao estado 33
+    T_INT         deslocar, e ir ao estado 34
+    T_BOOL        deslocar, e ir ao estado 35
+    T_VAR         deslocar, e ir ao estado 1
+    T_OPEN        deslocar, e ir ao estado 36
+    T_MINUS       deslocar, e ir ao estado 37
+    T_NOT         deslocar, e ir ao estado 38
+    T_CAST_INT    deslocar, e ir ao estado 39
+    T_CAST_FLOAT  deslocar, e ir ao estado 40
+    T_CAST_BOOL   deslocar, e ir ao estado 41
+    T_ADDR        deslocar, e ir ao estado 42
+    T_REF         deslocar, e ir ao estado 43
+
+    chamada     ir ao estado 44
+    expressao   ir ao estado 107
+    primitiva   ir ao estado 46
+    var         ir ao estado 47
+    referencia  ir ao estado 30
+
+
+Estado 49
+
+   59 atrib_null: atribuicao .
+
+    $padrão  reduzir usando a regra 59 (atrib_null)
+
+
+Estado 50
+
+   19 var_arranjo: chamada .
+
+    $padrão  reduzir usando a regra 19 (var_arranjo)
+
+
+Estado 51
+
+   54 for_laco: T_FOR atrib_null . T_COMMA expressao T_COMMA atrib_null T_OPEN_KEY T_NL linhas_null T_CLOSE_KEY
+
+    T_COMMA  deslocar, e ir ao estado 108
+
+
+Estado 52
+
+   57 do_while_laco: T_DO T_OPEN_KEY . T_NL linhas T_CLOSE_KEY T_WHILE expressao
+
+    T_NL  deslocar, e ir ao estado 109
+
+
+Estado 53
+
+   58 while_laco: T_WHILE expressao . T_OPEN_KEY T_NL linhas T_CLOSE_KEY
+   90 expressao: expressao . T_PLUS expressao
+   91          | expressao . T_MINUS expressao
+   92          | expressao . T_TIMES expressao
+   93          | expressao . T_DIV expressao
+   94          | expressao . T_AND expressao
+   95          | expressao . T_OR expressao
+   96          | expressao . T_EQUAL2 expressao
+   97          | expressao . T_DIF expressao
+   98          | expressao . T_HIGHER expressao
+   99          | expressao . T_HIGH expressao
+  100          | expressao . T_LOWER expressao
+  101          | expressao . T_LOW expressao
+
+    T_OPEN_KEY  deslocar, e ir ao estado 110
+    T_PLUS      deslocar, e ir ao estado 95
+    T_MINUS     deslocar, e ir ao estado 96
+    T_TIMES     deslocar, e ir ao estado 97
+    T_DIV       deslocar, e ir ao estado 98
+    T_AND       deslocar, e ir ao estado 99
+    T_OR        deslocar, e ir ao estado 100
+    T_EQUAL2    deslocar, e ir ao estado 101
+    T_DIF       deslocar, e ir ao estado 102
+    T_HIGHER    deslocar, e ir ao estado 103
+    T_HIGH      deslocar, e ir ao estado 104
+    T_LOWER     deslocar, e ir ao estado 105
+    T_LOW       deslocar, e ir ao estado 106
+
+
+Estado 54
+
+   90 expressao: expressao . T_PLUS expressao
+   91          | expressao . T_MINUS expressao
+   92          | expressao . T_TIMES expressao
+   93          | expressao . T_DIV expressao
+   94          | expressao . T_AND expressao
+   95          | expressao . T_OR expressao
+   96          | expressao . T_EQUAL2 expressao
+   97          | expressao . T_DIF expressao
+   98          | expressao . T_HIGHER expressao
+   99          | expressao . T_HIGH expressao
+  100          | expressao . T_LOWER expressao
+  101          | expressao . T_LOW expressao
+  116 interpretacao: T_CALC expressao .
+
+    T_PLUS    deslocar, e ir ao estado 95
+    T_MINUS   deslocar, e ir ao estado 96
+    T_TIMES   deslocar, e ir ao estado 97
+    T_DIV     deslocar, e ir ao estado 98
+    T_AND     deslocar, e ir ao estado 99
+    T_OR      deslocar, e ir ao estado 100
+    T_EQUAL2  deslocar, e ir ao estado 101
+    T_DIF     deslocar, e ir ao estado 102
+    T_HIGHER  deslocar, e ir ao estado 103
+    T_HIGH    deslocar, e ir ao estado 104
+    T_LOWER   deslocar, e ir ao estado 105
+    T_LOW     deslocar, e ir ao estado 106
+
+    $padrão  reduzir usando a regra 116 (interpretacao)
+
+
+Estado 55
+
+    0 $accept: programa $end .
+
+    $padrão  aceitar
+
+
+Estado 56
+
+    3 linhas: linhas linha .
+
+    $padrão  reduzir usando a regra 3 (linhas)
+
+
+Estado 57
+
+    4 linha: atribuicao T_NL .
+
+    $padrão  reduzir usando a regra 4 (linha)
+
+
+Estado 58
+
+   17 atribuicao: var_arranjo T_EQUAL . expressao
+
+    T_FLOAT       deslocar, e ir ao estado 33
+    T_INT         deslocar, e ir ao estado 34
+    T_BOOL        deslocar, e ir ao estado 35
+    T_VAR         deslocar, e ir ao estado 1
+    T_OPEN        deslocar, e ir ao estado 36
+    T_MINUS       deslocar, e ir ao estado 37
+    T_NOT         deslocar, e ir ao estado 38
+    T_CAST_INT    deslocar, e ir ao estado 39
+    T_CAST_FLOAT  deslocar, e ir ao estado 40
+    T_CAST_BOOL   deslocar, e ir ao estado 41
+    T_ADDR        deslocar, e ir ao estado 42
+    T_REF         deslocar, e ir ao estado 43
+
+    chamada     ir ao estado 44
+    expressao   ir ao estado 111
+    primitiva   ir ao estado 46
+    var         ir ao estado 47
+    referencia  ir ao estado 30
+
+
+Estado 59
+
+    5 linha: declaracao T_NL .
+
+    $padrão  reduzir usando a regra 5 (linha)
+
+
+Estado 60
+
+   14 linha: chamada T_NL .
+
+    $padrão  reduzir usando a regra 14 (linha)
+
+
+Estado 61
+
+    9 linha: condicao T_NL .
+
+    $padrão  reduzir usando a regra 9 (linha)
+
+
+Estado 62
+
+   10 linha: seleciona T_NL .
+
+    $padrão  reduzir usando a regra 10 (linha)
+
+
+Estado 63
+
+   11 linha: for_laco T_NL .
+
+    $padrão  reduzir usando a regra 11 (linha)
+
+
+Estado 64
+
+   12 linha: do_while_laco T_NL .
+
+    $padrão  reduzir usando a regra 12 (linha)
+
+
+Estado 65
+
+   13 linha: while_laco T_NL .
+
+    $padrão  reduzir usando a regra 13 (linha)
+
+
+Estado 66
+
+    7 linha: dec_funcao T_NL .
+
+    $padrão  reduzir usando a regra 7 (linha)
+
+
+Estado 67
+
+    8 linha: def_funcao T_NL .
+
+    $padrão  reduzir usando a regra 8 (linha)
+
+
+Estado 68
+
+   28 dec_arranjo: T_VAR . T_OPEN expressao T_COMMA expressao T_CLOSE
+   30            | T_VAR . T_OPEN expressao T_CLOSE
+   36 chamada: T_VAR . T_OPEN arg_null T_CLOSE
+  110 var: T_VAR .
+
+    T_OPEN  deslocar, e ir ao estado 112
+
+    $padrão  reduzir usando a regra 110 (var)
+
+
+Estado 69
+
+   62 dec_funcao: tipo T_OPEN . T_CLOSE T_FUN T_VAR T_OPEN param_null T_CLOSE
+   63           | tipo T_OPEN . T_CLOSE T_OPEN T_CLOSE T_FUN T_VAR T_OPEN param_null T_CLOSE
+   66 def_funcao: tipo T_OPEN . T_CLOSE T_FUN T_VAR T_OPEN param_null T_CLOSE T_OPEN_KEY T_NL linhas_funcao T_RET retorno T_NL T_CLOSE_KEY
+   67           | tipo T_OPEN . T_CLOSE T_OPEN T_CLOSE T_FUN T_VAR T_OPEN param_null T_CLOSE T_OPEN_KEY T_NL linhas_funcao T_RET retorno T_NL T_CLOSE_KEY
+
+    T_CLOSE  deslocar, e ir ao estado 113
+
+
+Estado 70
+
+   43 dec_hashes: tipo T_COLON . tipo hashes
+   64 dec_funcao: tipo T_COLON . tipo T_FUN T_VAR T_OPEN param_null T_CLOSE
+   68 def_funcao: tipo T_COLON . tipo T_FUN T_VAR T_OPEN param_null T_CLOSE T_OPEN_KEY T_NL linhas_funcao T_RET retorno T_NL T_CLOSE_KEY
+
+    T_TYPE_INT    deslocar, e ir ao estado 2
+    T_TYPE_FLOAT  deslocar, e ir ao estado 3
+    T_TYPE_BOOL   deslocar, e ir ao estado 4
+
+    tipo  ir ao estado 114
+
+
+Estado 71
+
+   61 dec_funcao: tipo T_FUN . T_VAR T_OPEN param_null T_CLOSE
+   65 def_funcao: tipo T_FUN . T_VAR T_OPEN param_null T_CLOSE T_OPEN_KEY T_NL linhas_funcao T_RET retorno T_NL T_CLOSE_KEY
+
+    T_VAR  deslocar, e ir ao estado 115
+
+
+Estado 72
+
+   25 variavel: atribuicao .
+
+    $padrão  reduzir usando a regra 25 (variavel)
+
+
+Estado 73
+
+   20 declaracao: tipo variaveis .
+   22 variaveis: variaveis . T_COMMA variavel
+   24          | variaveis . T_COMMA def_arranjo
+
+    T_COMMA  deslocar, e ir ao estado 116
+
+    $padrão  reduzir usando a regra 20 (declaracao)
+
+
+Estado 74
+
+   21 variaveis: variavel .
+
+    $padrão  reduzir usando a regra 21 (variaveis)
+
+
+Estado 75
+
+   23 variaveis: def_arranjo .
+
+    $padrão  reduzir usando a regra 23 (variaveis)
+
+
+Estado 76
+
+   27 def_arranjo: dec_arranjo .
+
+    $padrão  reduzir usando a regra 27 (def_arranjo)
+
+
+Estado 77
+
+   18 var_arranjo: var .
+   26 variavel: var .
+
+    T_EQUAL   reduzir usando a regra 18 (var_arranjo)
+    $padrão  reduzir usando a regra 26 (variavel)
+
+
+Estado 78
+
+   29 dec_arranjo: referencia . T_VAR T_OPEN expressao T_COMMA expressao T_CLOSE
+   31            | referencia . T_VAR T_OPEN expressao T_CLOSE
+   37 chamada: referencia . T_VAR T_OPEN arg_null T_CLOSE
+  111 var: referencia . T_VAR
+  115 referencia: referencia . T_REF
+
+    T_VAR  deslocar, e ir ao estado 117
+    T_REF  deslocar, e ir ao estado 80
+
+
+Estado 79
+
+   37 chamada: referencia T_VAR . T_OPEN arg_null T_CLOSE
+  111 var: referencia T_VAR .
+
+    T_OPEN  deslocar, e ir ao estado 118
+
+    $padrão  reduzir usando a regra 111 (var)
+
+
+Estado 80
+
+  115 referencia: referencia T_REF .
+
+    $padrão  reduzir usando a regra 115 (referencia)
+
+
+Estado 81
+
+   15 linha: interpretacao T_NL .
+
+    $padrão  reduzir usando a regra 15 (linha)
+
+
+Estado 82
+
+   36 chamada: T_VAR T_OPEN arg_null . T_CLOSE
+
+    T_CLOSE  deslocar, e ir ao estado 119
+
+
+Estado 83
+
+   38 arg_null: argumentos .
+
+    $padrão  reduzir usando a regra 38 (arg_null)
+
+
+Estado 84
+
+   40 argumentos: argumento .
+   41           | argumento . T_COMMA argumentos
+
+    T_COMMA  deslocar, e ir ao estado 120
+
+    $padrão  reduzir usando a regra 40 (argumentos)
+
+
+Estado 85
+
+   42 argumento: expressao .
+   90 expressao: expressao . T_PLUS expressao
+   91          | expressao . T_MINUS expressao
+   92          | expressao . T_TIMES expressao
+   93          | expressao . T_DIV expressao
+   94          | expressao . T_AND expressao
+   95          | expressao . T_OR expressao
+   96          | expressao . T_EQUAL2 expressao
+   97          | expressao . T_DIF expressao
+   98          | expressao . T_HIGHER expressao
+   99          | expressao . T_HIGH expressao
+  100          | expressao . T_LOWER expressao
+  101          | expressao . T_LOW expressao
+
+    T_PLUS    deslocar, e ir ao estado 95
+    T_MINUS   deslocar, e ir ao estado 96
+    T_TIMES   deslocar, e ir ao estado 97
+    T_DIV     deslocar, e ir ao estado 98
+    T_AND     deslocar, e ir ao estado 99
+    T_OR      deslocar, e ir ao estado 100
+    T_EQUAL2  deslocar, e ir ao estado 101
+    T_DIF     deslocar, e ir ao estado 102
+    T_HIGHER  deslocar, e ir ao estado 103
+    T_HIGH    deslocar, e ir ao estado 104
+    T_LOWER   deslocar, e ir ao estado 105
+    T_LOW     deslocar, e ir ao estado 106
+
+    $padrão  reduzir usando a regra 42 (argumento)
+
+
+Estado 86
+
+   87 expressao: T_OPEN expressao . T_CLOSE
+   90          | expressao . T_PLUS expressao
+   91          | expressao . T_MINUS expressao
+   92          | expressao . T_TIMES expressao
+   93          | expressao . T_DIV expressao
+   94          | expressao . T_AND expressao
+   95          | expressao . T_OR expressao
+   96          | expressao . T_EQUAL2 expressao
+   97          | expressao . T_DIF expressao
+   98          | expressao . T_HIGHER expressao
+   99          | expressao . T_HIGH expressao
+  100          | expressao . T_LOWER expressao
+  101          | expressao . T_LOW expressao
+  102          | T_OPEN expressao . T_ATRIB_ASK expressao T_COLON expressao T_CLOSE
+
+    T_CLOSE      deslocar, e ir ao estado 121
+    T_PLUS       deslocar, e ir ao estado 95
+    T_MINUS      deslocar, e ir ao estado 96
+    T_TIMES      deslocar, e ir ao estado 97
+    T_DIV        deslocar, e ir ao estado 98
+    T_AND        deslocar, e ir ao estado 99
+    T_OR         deslocar, e ir ao estado 100
+    T_EQUAL2     deslocar, e ir ao estado 101
+    T_DIF        deslocar, e ir ao estado 102
+    T_HIGHER     deslocar, e ir ao estado 103
+    T_HIGH       deslocar, e ir ao estado 104
+    T_LOWER      deslocar, e ir ao estado 105
+    T_LOW        deslocar, e ir ao estado 106
+    T_ATRIB_ASK  deslocar, e ir ao estado 122
+
+
+Estado 87
+
+   82 expressao: T_MINUS expressao .
+   90          | expressao . T_PLUS expressao
+   91          | expressao . T_MINUS expressao
+   92          | expressao . T_TIMES expressao
+   93          | expressao . T_DIV expressao
+   94          | expressao . T_AND expressao
+   95          | expressao . T_OR expressao
+   96          | expressao . T_EQUAL2 expressao
+   97          | expressao . T_DIF expressao
+   98          | expressao . T_HIGHER expressao
+   99          | expressao . T_HIGH expressao
+  100          | expressao . T_LOWER expressao
+  101          | expressao . T_LOW expressao
+
+    $padrão  reduzir usando a regra 82 (expressao)
+
+
+Estado 88
+
+   83 expressao: T_NOT expressao .
+   90          | expressao . T_PLUS expressao
+   91          | expressao . T_MINUS expressao
+   92          | expressao . T_TIMES expressao
+   93          | expressao . T_DIV expressao
+   94          | expressao . T_AND expressao
+   95          | expressao . T_OR expressao
+   96          | expressao . T_EQUAL2 expressao
+   97          | expressao . T_DIF expressao
+   98          | expressao . T_HIGHER expressao
+   99          | expressao . T_HIGH expressao
+  100          | expressao . T_LOWER expressao
+  101          | expressao . T_LOW expressao
+
+    $padrão  reduzir usando a regra 83 (expressao)
+
+
+Estado 89
+
+   84 expressao: T_CAST_INT expressao .
+   90          | expressao . T_PLUS expressao
+   91          | expressao . T_MINUS expressao
+   92          | expressao . T_TIMES expressao
+   93          | expressao . T_DIV expressao
+   94          | expressao . T_AND expressao
+   95          | expressao . T_OR expressao
+   96          | expressao . T_EQUAL2 expressao
+   97          | expressao . T_DIF expressao
+   98          | expressao . T_HIGHER expressao
+   99          | expressao . T_HIGH expressao
+  100          | expressao . T_LOWER expressao
+  101          | expressao . T_LOW expressao
+
+    T_PLUS    deslocar, e ir ao estado 95
+    T_MINUS   deslocar, e ir ao estado 96
+    T_TIMES   deslocar, e ir ao estado 97
+    T_DIV     deslocar, e ir ao estado 98
+    T_EQUAL2  deslocar, e ir ao estado 101
+    T_DIF     deslocar, e ir ao estado 102
+    T_HIGHER  deslocar, e ir ao estado 103
+    T_HIGH    deslocar, e ir ao estado 104
+    T_LOWER   deslocar, e ir ao estado 105
+    T_LOW     deslocar, e ir ao estado 106
+
+    $padrão  reduzir usando a regra 84 (expressao)
+
+
+Estado 90
+
+   85 expressao: T_CAST_FLOAT expressao .
+   90          | expressao . T_PLUS expressao
+   91          | expressao . T_MINUS expressao
+   92          | expressao . T_TIMES expressao
+   93          | expressao . T_DIV expressao
+   94          | expressao . T_AND expressao
+   95          | expressao . T_OR expressao
+   96          | expressao . T_EQUAL2 expressao
+   97          | expressao . T_DIF expressao
+   98          | expressao . T_HIGHER expressao
+   99          | expressao . T_HIGH expressao
+  100          | expressao . T_LOWER expressao
+  101          | expressao . T_LOW expressao
+
+    $padrão  reduzir usando a regra 85 (expressao)
+
+
+Estado 91
+
+   86 expressao: T_CAST_BOOL expressao .
+   90          | expressao . T_PLUS expressao
+   91          | expressao . T_MINUS expressao
+   92          | expressao . T_TIMES expressao
+   93          | expressao . T_DIV expressao
+   94          | expressao . T_AND expressao
+   95          | expressao . T_OR expressao
+   96          | expressao . T_EQUAL2 expressao
+   97          | expressao . T_DIF expressao
+   98          | expressao . T_HIGHER expressao
+   99          | expressao . T_HIGH expressao
+  100          | expressao . T_LOWER expressao
+  101          | expressao . T_LOW expressao
+
+    $padrão  reduzir usando a regra 86 (expressao)
+
+
+Estado 92
+
+   89 expressao: T_ADDR expressao .
+   90          | expressao . T_PLUS expressao
+   91          | expressao . T_MINUS expressao
+   92          | expressao . T_TIMES expressao
+   93          | expressao . T_DIV expressao
+   94          | expressao . T_AND expressao
+   95          | expressao . T_OR expressao
+   96          | expressao . T_EQUAL2 expressao
+   97          | expressao . T_DIF expressao
+   98          | expressao . T_HIGHER expressao
+   99          | expressao . T_HIGH expressao
+  100          | expressao . T_LOWER expressao
+  101          | expressao . T_LOW expressao
+
+    $padrão  reduzir usando a regra 89 (expressao)
+
+
+Estado 93
+
+   88 expressao: T_REF expressao .
+   90          | expressao . T_PLUS expressao
+   91          | expressao . T_MINUS expressao
+   92          | expressao . T_TIMES expressao
+   93          | expressao . T_DIV expressao
+   94          | expressao . T_AND expressao
+   95          | expressao . T_OR expressao
+   96          | expressao . T_EQUAL2 expressao
+   97          | expressao . T_DIF expressao
+   98          | expressao . T_HIGHER expressao
+   99          | expressao . T_HIGH expressao
+  100          | expressao . T_LOWER expressao
+  101          | expressao . T_LOW expressao
+
+    $padrão  reduzir usando a regra 88 (expressao)
+
+
+Estado 94
+
+   47 condicao: T_IF expressao T_NL . T_THEN T_OPEN_KEY T_NL linhas_null T_CLOSE_KEY senao
+
+    T_THEN  deslocar, e ir ao estado 123
+
+
+Estado 95
+
+   90 expressao: expressao T_PLUS . expressao
+
+    T_FLOAT       deslocar, e ir ao estado 33
+    T_INT         deslocar, e ir ao estado 34
+    T_BOOL        deslocar, e ir ao estado 35
+    T_VAR         deslocar, e ir ao estado 1
+    T_OPEN        deslocar, e ir ao estado 36
+    T_MINUS       deslocar, e ir ao estado 37
+    T_NOT         deslocar, e ir ao estado 38
+    T_CAST_INT    deslocar, e ir ao estado 39
+    T_CAST_FLOAT  deslocar, e ir ao estado 40
+    T_CAST_BOOL   deslocar, e ir ao estado 41
+    T_ADDR        deslocar, e ir ao estado 42
+    T_REF         deslocar, e ir ao estado 43
+
+    chamada     ir ao estado 44
+    expressao   ir ao estado 124
+    primitiva   ir ao estado 46
+    var         ir ao estado 47
+    referencia  ir ao estado 30
+
+
+Estado 96
+
+   91 expressao: expressao T_MINUS . expressao
+
+    T_FLOAT       deslocar, e ir ao estado 33
+    T_INT         deslocar, e ir ao estado 34
+    T_BOOL        deslocar, e ir ao estado 35
+    T_VAR         deslocar, e ir ao estado 1
+    T_OPEN        deslocar, e ir ao estado 36
+    T_MINUS       deslocar, e ir ao estado 37
+    T_NOT         deslocar, e ir ao estado 38
+    T_CAST_INT    deslocar, e ir ao estado 39
+    T_CAST_FLOAT  deslocar, e ir ao estado 40
+    T_CAST_BOOL   deslocar, e ir ao estado 41
+    T_ADDR        deslocar, e ir ao estado 42
+    T_REF         deslocar, e ir ao estado 43
+
+    chamada     ir ao estado 44
+    expressao   ir ao estado 125
+    primitiva   ir ao estado 46
+    var         ir ao estado 47
+    referencia  ir ao estado 30
+
+
+Estado 97
+
+   92 expressao: expressao T_TIMES . expressao
+
+    T_FLOAT       deslocar, e ir ao estado 33
+    T_INT         deslocar, e ir ao estado 34
+    T_BOOL        deslocar, e ir ao estado 35
+    T_VAR         deslocar, e ir ao estado 1
+    T_OPEN        deslocar, e ir ao estado 36
+    T_MINUS       deslocar, e ir ao estado 37
+    T_NOT         deslocar, e ir ao estado 38
+    T_CAST_INT    deslocar, e ir ao estado 39
+    T_CAST_FLOAT  deslocar, e ir ao estado 40
+    T_CAST_BOOL   deslocar, e ir ao estado 41
+    T_ADDR        deslocar, e ir ao estado 42
+    T_REF         deslocar, e ir ao estado 43
+
+    chamada     ir ao estado 44
+    expressao   ir ao estado 126
+    primitiva   ir ao estado 46
+    var         ir ao estado 47
+    referencia  ir ao estado 30
+
+
+Estado 98
+
+   93 expressao: expressao T_DIV . expressao
+
+    T_FLOAT       deslocar, e ir ao estado 33
+    T_INT         deslocar, e ir ao estado 34
+    T_BOOL        deslocar, e ir ao estado 35
+    T_VAR         deslocar, e ir ao estado 1
+    T_OPEN        deslocar, e ir ao estado 36
+    T_MINUS       deslocar, e ir ao estado 37
+    T_NOT         deslocar, e ir ao estado 38
+    T_CAST_INT    deslocar, e ir ao estado 39
+    T_CAST_FLOAT  deslocar, e ir ao estado 40
+    T_CAST_BOOL   deslocar, e ir ao estado 41
+    T_ADDR        deslocar, e ir ao estado 42
+    T_REF         deslocar, e ir ao estado 43
+
+    chamada     ir ao estado 44
+    expressao   ir ao estado 127
+    primitiva   ir ao estado 46
+    var         ir ao estado 47
+    referencia  ir ao estado 30
+
+
+Estado 99
+
+   94 expressao: expressao T_AND . expressao
+
+    T_FLOAT       deslocar, e ir ao estado 33
+    T_INT         deslocar, e ir ao estado 34
+    T_BOOL        deslocar, e ir ao estado 35
+    T_VAR         deslocar, e ir ao estado 1
+    T_OPEN        deslocar, e ir ao estado 36
+    T_MINUS       deslocar, e ir ao estado 37
+    T_NOT         deslocar, e ir ao estado 38
+    T_CAST_INT    deslocar, e ir ao estado 39
+    T_CAST_FLOAT  deslocar, e ir ao estado 40
+    T_CAST_BOOL   deslocar, e ir ao estado 41
+    T_ADDR        deslocar, e ir ao estado 42
+    T_REF         deslocar, e ir ao estado 43
+
+    chamada     ir ao estado 44
+    expressao   ir ao estado 128
+    primitiva   ir ao estado 46
+    var         ir ao estado 47
+    referencia  ir ao estado 30
+
+
+Estado 100
+
+   95 expressao: expressao T_OR . expressao
+
+    T_FLOAT       deslocar, e ir ao estado 33
+    T_INT         deslocar, e ir ao estado 34
+    T_BOOL        deslocar, e ir ao estado 35
+    T_VAR         deslocar, e ir ao estado 1
+    T_OPEN        deslocar, e ir ao estado 36
+    T_MINUS       deslocar, e ir ao estado 37
+    T_NOT         deslocar, e ir ao estado 38
+    T_CAST_INT    deslocar, e ir ao estado 39
+    T_CAST_FLOAT  deslocar, e ir ao estado 40
+    T_CAST_BOOL   deslocar, e ir ao estado 41
+    T_ADDR        deslocar, e ir ao estado 42
+    T_REF         deslocar, e ir ao estado 43
+
+    chamada     ir ao estado 44
+    expressao   ir ao estado 129
+    primitiva   ir ao estado 46
+    var         ir ao estado 47
+    referencia  ir ao estado 30
+
+
+Estado 101
+
+   96 expressao: expressao T_EQUAL2 . expressao
+
+    T_FLOAT       deslocar, e ir ao estado 33
+    T_INT         deslocar, e ir ao estado 34
+    T_BOOL        deslocar, e ir ao estado 35
+    T_VAR         deslocar, e ir ao estado 1
+    T_OPEN        deslocar, e ir ao estado 36
+    T_MINUS       deslocar, e ir ao estado 37
+    T_NOT         deslocar, e ir ao estado 38
+    T_CAST_INT    deslocar, e ir ao estado 39
+    T_CAST_FLOAT  deslocar, e ir ao estado 40
+    T_CAST_BOOL   deslocar, e ir ao estado 41
+    T_ADDR        deslocar, e ir ao estado 42
+    T_REF         deslocar, e ir ao estado 43
+
+    chamada     ir ao estado 44
+    expressao   ir ao estado 130
+    primitiva   ir ao estado 46
+    var         ir ao estado 47
+    referencia  ir ao estado 30
+
+
+Estado 102
+
+   97 expressao: expressao T_DIF . expressao
+
+    T_FLOAT       deslocar, e ir ao estado 33
+    T_INT         deslocar, e ir ao estado 34
+    T_BOOL        deslocar, e ir ao estado 35
+    T_VAR         deslocar, e ir ao estado 1
+    T_OPEN        deslocar, e ir ao estado 36
+    T_MINUS       deslocar, e ir ao estado 37
+    T_NOT         deslocar, e ir ao estado 38
+    T_CAST_INT    deslocar, e ir ao estado 39
+    T_CAST_FLOAT  deslocar, e ir ao estado 40
+    T_CAST_BOOL   deslocar, e ir ao estado 41
+    T_ADDR        deslocar, e ir ao estado 42
+    T_REF         deslocar, e ir ao estado 43
+
+    chamada     ir ao estado 44
+    expressao   ir ao estado 131
+    primitiva   ir ao estado 46
+    var         ir ao estado 47
+    referencia  ir ao estado 30
+
+
+Estado 103
+
+   98 expressao: expressao T_HIGHER . expressao
+
+    T_FLOAT       deslocar, e ir ao estado 33
+    T_INT         deslocar, e ir ao estado 34
+    T_BOOL        deslocar, e ir ao estado 35
+    T_VAR         deslocar, e ir ao estado 1
+    T_OPEN        deslocar, e ir ao estado 36
+    T_MINUS       deslocar, e ir ao estado 37
+    T_NOT         deslocar, e ir ao estado 38
+    T_CAST_INT    deslocar, e ir ao estado 39
+    T_CAST_FLOAT  deslocar, e ir ao estado 40
+    T_CAST_BOOL   deslocar, e ir ao estado 41
+    T_ADDR        deslocar, e ir ao estado 42
+    T_REF         deslocar, e ir ao estado 43
+
+    chamada     ir ao estado 44
+    expressao   ir ao estado 132
+    primitiva   ir ao estado 46
+    var         ir ao estado 47
+    referencia  ir ao estado 30
+
+
+Estado 104
+
+   99 expressao: expressao T_HIGH . expressao
+
+    T_FLOAT       deslocar, e ir ao estado 33
+    T_INT         deslocar, e ir ao estado 34
+    T_BOOL        deslocar, e ir ao estado 35
+    T_VAR         deslocar, e ir ao estado 1
+    T_OPEN        deslocar, e ir ao estado 36
+    T_MINUS       deslocar, e ir ao estado 37
+    T_NOT         deslocar, e ir ao estado 38
+    T_CAST_INT    deslocar, e ir ao estado 39
+    T_CAST_FLOAT  deslocar, e ir ao estado 40
+    T_CAST_BOOL   deslocar, e ir ao estado 41
+    T_ADDR        deslocar, e ir ao estado 42
+    T_REF         deslocar, e ir ao estado 43
+
+    chamada     ir ao estado 44
+    expressao   ir ao estado 133
+    primitiva   ir ao estado 46
+    var         ir ao estado 47
+    referencia  ir ao estado 30
+
+
+Estado 105
+
+  100 expressao: expressao T_LOWER . expressao
+
+    T_FLOAT       deslocar, e ir ao estado 33
+    T_INT         deslocar, e ir ao estado 34
+    T_BOOL        deslocar, e ir ao estado 35
+    T_VAR         deslocar, e ir ao estado 1
+    T_OPEN        deslocar, e ir ao estado 36
+    T_MINUS       deslocar, e ir ao estado 37
+    T_NOT         deslocar, e ir ao estado 38
+    T_CAST_INT    deslocar, e ir ao estado 39
+    T_CAST_FLOAT  deslocar, e ir ao estado 40
+    T_CAST_BOOL   deslocar, e ir ao estado 41
+    T_ADDR        deslocar, e ir ao estado 42
+    T_REF         deslocar, e ir ao estado 43
+
+    chamada     ir ao estado 44
+    expressao   ir ao estado 134
+    primitiva   ir ao estado 46
+    var         ir ao estado 47
+    referencia  ir ao estado 30
+
+
+Estado 106
+
+  101 expressao: expressao T_LOW . expressao
+
+    T_FLOAT       deslocar, e ir ao estado 33
+    T_INT         deslocar, e ir ao estado 34
+    T_BOOL        deslocar, e ir ao estado 35
+    T_VAR         deslocar, e ir ao estado 1
+    T_OPEN        deslocar, e ir ao estado 36
+    T_MINUS       deslocar, e ir ao estado 37
+    T_NOT         deslocar, e ir ao estado 38
+    T_CAST_INT    deslocar, e ir ao estado 39
+    T_CAST_FLOAT  deslocar, e ir ao estado 40
+    T_CAST_BOOL   deslocar, e ir ao estado 41
+    T_ADDR        deslocar, e ir ao estado 42
+    T_REF         deslocar, e ir ao estado 43
+
+    chamada     ir ao estado 44
+    expressao   ir ao estado 135
+    primitiva   ir ao estado 46
+    var         ir ao estado 47
+    referencia  ir ao estado 30
+
+
+Estado 107
+
+   50 seleciona: T_SWITCH T_OPEN expressao . T_CLOSE T_OPEN_KEY T_NL caso T_NL T_CLOSE_KEY
+   90 expressao: expressao . T_PLUS expressao
+   91          | expressao . T_MINUS expressao
+   92          | expressao . T_TIMES expressao
+   93          | expressao . T_DIV expressao
+   94          | expressao . T_AND expressao
+   95          | expressao . T_OR expressao
+   96          | expressao . T_EQUAL2 expressao
+   97          | expressao . T_DIF expressao
+   98          | expressao . T_HIGHER expressao
+   99          | expressao . T_HIGH expressao
+  100          | expressao . T_LOWER expressao
+  101          | expressao . T_LOW expressao
+
+    T_CLOSE   deslocar, e ir ao estado 136
+    T_PLUS    deslocar, e ir ao estado 95
+    T_MINUS   deslocar, e ir ao estado 96
+    T_TIMES   deslocar, e ir ao estado 97
+    T_DIV     deslocar, e ir ao estado 98
+    T_AND     deslocar, e ir ao estado 99
+    T_OR      deslocar, e ir ao estado 100
+    T_EQUAL2  deslocar, e ir ao estado 101
+    T_DIF     deslocar, e ir ao estado 102
+    T_HIGHER  deslocar, e ir ao estado 103
+    T_HIGH    deslocar, e ir ao estado 104
+    T_LOWER   deslocar, e ir ao estado 105
+    T_LOW     deslocar, e ir ao estado 106
+
+
+Estado 108
+
+   54 for_laco: T_FOR atrib_null T_COMMA . expressao T_COMMA atrib_null T_OPEN_KEY T_NL linhas_null T_CLOSE_KEY
+
+    T_FLOAT       deslocar, e ir ao estado 33
+    T_INT         deslocar, e ir ao estado 34
+    T_BOOL        deslocar, e ir ao estado 35
+    T_VAR         deslocar, e ir ao estado 1
+    T_OPEN        deslocar, e ir ao estado 36
+    T_MINUS       deslocar, e ir ao estado 37
+    T_NOT         deslocar, e ir ao estado 38
+    T_CAST_INT    deslocar, e ir ao estado 39
+    T_CAST_FLOAT  deslocar, e ir ao estado 40
+    T_CAST_BOOL   deslocar, e ir ao estado 41
+    T_ADDR        deslocar, e ir ao estado 42
+    T_REF         deslocar, e ir ao estado 43
+
+    chamada     ir ao estado 44
+    expressao   ir ao estado 137
+    primitiva   ir ao estado 46
+    var         ir ao estado 47
+    referencia  ir ao estado 30
+
+
+Estado 109
+
+   57 do_while_laco: T_DO T_OPEN_KEY T_NL . linhas T_CLOSE_KEY T_WHILE expressao
+
+    T_VAR         deslocar, e ir ao estado 1
+    T_TYPE_INT    deslocar, e ir ao estado 2
+    T_TYPE_FLOAT  deslocar, e ir ao estado 3
+    T_TYPE_BOOL   deslocar, e ir ao estado 4
+    T_NL          deslocar, e ir ao estado 5
+    T_IF          deslocar, e ir ao estado 6
+    T_SWITCH      deslocar, e ir ao estado 7
+    T_FOR         deslocar, e ir ao estado 8
+    T_DO          deslocar, e ir ao estado 9
+    T_WHILE       deslocar, e ir ao estado 10
+    T_REF         deslocar, e ir ao estado 11
+    T_CALC        deslocar, e ir ao estado 12
+
+    linhas         ir ao estado 138
+    linha          ir ao estado 15
+    atribuicao     ir ao estado 16
+    var_arranjo    ir ao estado 17
+    declaracao     ir ao estado 18
+    chamada        ir ao estado 19
+    dec_hashes     ir ao estado 20
+    condicao       ir ao estado 21
+    seleciona      ir ao estado 22
+    for_laco       ir ao estado 23
+    do_while_laco  ir ao estado 24
+    while_laco     ir ao estado 25
+    dec_funcao     ir ao estado 26
+    def_funcao     ir ao estado 27
+    tipo           ir ao estado 28
+    var            ir ao estado 29
+    referencia     ir ao estado 30
+    interpretacao  ir ao estado 31
+
+
+Estado 110
+
+   58 while_laco: T_WHILE expressao T_OPEN_KEY . T_NL linhas T_CLOSE_KEY
+
+    T_NL  deslocar, e ir ao estado 139
+
+
+Estado 111
+
+   17 atribuicao: var_arranjo T_EQUAL expressao .
+   90 expressao: expressao . T_PLUS expressao
+   91          | expressao . T_MINUS expressao
+   92          | expressao . T_TIMES expressao
+   93          | expressao . T_DIV expressao
+   94          | expressao . T_AND expressao
+   95          | expressao . T_OR expressao
+   96          | expressao . T_EQUAL2 expressao
+   97          | expressao . T_DIF expressao
+   98          | expressao . T_HIGHER expressao
+   99          | expressao . T_HIGH expressao
+  100          | expressao . T_LOWER expressao
+  101          | expressao . T_LOW expressao
+
+    T_PLUS    deslocar, e ir ao estado 95
+    T_MINUS   deslocar, e ir ao estado 96
+    T_TIMES   deslocar, e ir ao estado 97
+    T_DIV     deslocar, e ir ao estado 98
+    T_AND     deslocar, e ir ao estado 99
+    T_OR      deslocar, e ir ao estado 100
+    T_EQUAL2  deslocar, e ir ao estado 101
+    T_DIF     deslocar, e ir ao estado 102
+    T_HIGHER  deslocar, e ir ao estado 103
+    T_HIGH    deslocar, e ir ao estado 104
+    T_LOWER   deslocar, e ir ao estado 105
+    T_LOW     deslocar, e ir ao estado 106
+
+    $padrão  reduzir usando a regra 17 (atribuicao)
+
+
+Estado 112
+
+   28 dec_arranjo: T_VAR T_OPEN . expressao T_COMMA expressao T_CLOSE
+   30            | T_VAR T_OPEN . expressao T_CLOSE
+   36 chamada: T_VAR T_OPEN . arg_null T_CLOSE
+
+    T_FLOAT       deslocar, e ir ao estado 33
+    T_INT         deslocar, e ir ao estado 34
+    T_BOOL        deslocar, e ir ao estado 35
+    T_VAR         deslocar, e ir ao estado 1
+    T_OPEN        deslocar, e ir ao estado 36
+    T_MINUS       deslocar, e ir ao estado 37
+    T_NOT         deslocar, e ir ao estado 38
+    T_CAST_INT    deslocar, e ir ao estado 39
+    T_CAST_FLOAT  deslocar, e ir ao estado 40
+    T_CAST_BOOL   deslocar, e ir ao estado 41
+    T_ADDR        deslocar, e ir ao estado 42
+    T_REF         deslocar, e ir ao estado 43
+
+    $padrão  reduzir usando a regra 39 (arg_null)
+
+    chamada     ir ao estado 44
+    arg_null    ir ao estado 82
+    argumentos  ir ao estado 83
+    argumento   ir ao estado 84
+    expressao   ir ao estado 140
+    primitiva   ir ao estado 46
+    var         ir ao estado 47
+    referencia  ir ao estado 30
+
+
+Estado 113
+
+   62 dec_funcao: tipo T_OPEN T_CLOSE . T_FUN T_VAR T_OPEN param_null T_CLOSE
+   63           | tipo T_OPEN T_CLOSE . T_OPEN T_CLOSE T_FUN T_VAR T_OPEN param_null T_CLOSE
+   66 def_funcao: tipo T_OPEN T_CLOSE . T_FUN T_VAR T_OPEN param_null T_CLOSE T_OPEN_KEY T_NL linhas_funcao T_RET retorno T_NL T_CLOSE_KEY
+   67           | tipo T_OPEN T_CLOSE . T_OPEN T_CLOSE T_FUN T_VAR T_OPEN param_null T_CLOSE T_OPEN_KEY T_NL linhas_funcao T_RET retorno T_NL T_CLOSE_KEY
+
+    T_OPEN  deslocar, e ir ao estado 141
+    T_FUN   deslocar, e ir ao estado 142
+
+
+Estado 114
+
+   43 dec_hashes: tipo T_COLON tipo . hashes
+   64 dec_funcao: tipo T_COLON tipo . T_FUN T_VAR T_OPEN param_null T_CLOSE
+   68 def_funcao: tipo T_COLON tipo . T_FUN T_VAR T_OPEN param_null T_CLOSE T_OPEN_KEY T_NL linhas_funcao T_RET retorno T_NL T_CLOSE_KEY
+
+    T_VAR  deslocar, e ir ao estado 143
+    T_FUN  deslocar, e ir ao estado 144
+    T_REF  deslocar, e ir ao estado 11
+
+    hashes      ir ao estado 145
+    def_hash    ir ao estado 146
+    hash        ir ao estado 147
+    referencia  ir ao estado 148
+
+
+Estado 115
+
+   61 dec_funcao: tipo T_FUN T_VAR . T_OPEN param_null T_CLOSE
+   65 def_funcao: tipo T_FUN T_VAR . T_OPEN param_null T_CLOSE T_OPEN_KEY T_NL linhas_funcao T_RET retorno T_NL T_CLOSE_KEY
+
+    T_OPEN  deslocar, e ir ao estado 149
+
+
+Estado 116
+
+   22 variaveis: variaveis T_COMMA . variavel
+   24          | variaveis T_COMMA . def_arranjo
+
+    T_VAR  deslocar, e ir ao estado 68
+    T_REF  deslocar, e ir ao estado 11
+
+    atribuicao   ir ao estado 72
+    var_arranjo  ir ao estado 17
+    variavel     ir ao estado 150
+    def_arranjo  ir ao estado 151
+    dec_arranjo  ir ao estado 76
+    chamada      ir ao estado 50
+    var          ir ao estado 77
+    referencia   ir ao estado 78
+
+
+Estado 117
+
+   29 dec_arranjo: referencia T_VAR . T_OPEN expressao T_COMMA expressao T_CLOSE
+   31            | referencia T_VAR . T_OPEN expressao T_CLOSE
+   37 chamada: referencia T_VAR . T_OPEN arg_null T_CLOSE
+  111 var: referencia T_VAR .
+
+    T_OPEN  deslocar, e ir ao estado 152
+
+    $padrão  reduzir usando a regra 111 (var)
+
+
+Estado 118
+
+   37 chamada: referencia T_VAR T_OPEN . arg_null T_CLOSE
+
+    T_FLOAT       deslocar, e ir ao estado 33
+    T_INT         deslocar, e ir ao estado 34
+    T_BOOL        deslocar, e ir ao estado 35
+    T_VAR         deslocar, e ir ao estado 1
+    T_OPEN        deslocar, e ir ao estado 36
+    T_MINUS       deslocar, e ir ao estado 37
+    T_NOT         deslocar, e ir ao estado 38
+    T_CAST_INT    deslocar, e ir ao estado 39
+    T_CAST_FLOAT  deslocar, e ir ao estado 40
+    T_CAST_BOOL   deslocar, e ir ao estado 41
+    T_ADDR        deslocar, e ir ao estado 42
+    T_REF         deslocar, e ir ao estado 43
+
+    $padrão  reduzir usando a regra 39 (arg_null)
+
+    chamada     ir ao estado 44
+    arg_null    ir ao estado 153
+    argumentos  ir ao estado 83
+    argumento   ir ao estado 84
+    expressao   ir ao estado 85
+    primitiva   ir ao estado 46
+    var         ir ao estado 47
+    referencia  ir ao estado 30
+
+
+Estado 119
+
+   36 chamada: T_VAR T_OPEN arg_null T_CLOSE .
+
+    $padrão  reduzir usando a regra 36 (chamada)
+
+
+Estado 120
+
+   41 argumentos: argumento T_COMMA . argumentos
+
+    T_FLOAT       deslocar, e ir ao estado 33
+    T_INT         deslocar, e ir ao estado 34
+    T_BOOL        deslocar, e ir ao estado 35
+    T_VAR         deslocar, e ir ao estado 1
+    T_OPEN        deslocar, e ir ao estado 36
+    T_MINUS       deslocar, e ir ao estado 37
+    T_NOT         deslocar, e ir ao estado 38
+    T_CAST_INT    deslocar, e ir ao estado 39
+    T_CAST_FLOAT  deslocar, e ir ao estado 40
+    T_CAST_BOOL   deslocar, e ir ao estado 41
+    T_ADDR        deslocar, e ir ao estado 42
+    T_REF         deslocar, e ir ao estado 43
+
+    chamada     ir ao estado 44
+    argumentos  ir ao estado 154
+    argumento   ir ao estado 84
+    expressao   ir ao estado 85
+    primitiva   ir ao estado 46
+    var         ir ao estado 47
+    referencia  ir ao estado 30
+
+
+Estado 121
+
+   87 expressao: T_OPEN expressao T_CLOSE .
+
+    $padrão  reduzir usando a regra 87 (expressao)
+
+
+Estado 122
+
+  102 expressao: T_OPEN expressao T_ATRIB_ASK . expressao T_COLON expressao T_CLOSE
+
+    T_FLOAT       deslocar, e ir ao estado 33
+    T_INT         deslocar, e ir ao estado 34
+    T_BOOL        deslocar, e ir ao estado 35
+    T_VAR         deslocar, e ir ao estado 1
+    T_OPEN        deslocar, e ir ao estado 36
+    T_MINUS       deslocar, e ir ao estado 37
+    T_NOT         deslocar, e ir ao estado 38
+    T_CAST_INT    deslocar, e ir ao estado 39
+    T_CAST_FLOAT  deslocar, e ir ao estado 40
+    T_CAST_BOOL   deslocar, e ir ao estado 41
+    T_ADDR        deslocar, e ir ao estado 42
+    T_REF         deslocar, e ir ao estado 43
+
+    chamada     ir ao estado 44
+    expressao   ir ao estado 155
+    primitiva   ir ao estado 46
+    var         ir ao estado 47
+    referencia  ir ao estado 30
+
+
+Estado 123
+
+   47 condicao: T_IF expressao T_NL T_THEN . T_OPEN_KEY T_NL linhas_null T_CLOSE_KEY senao
+
+    T_OPEN_KEY  deslocar, e ir ao estado 156
+
+
+Estado 124
+
+   90 expressao: expressao . T_PLUS expressao
+   90          | expressao T_PLUS expressao .
+   91          | expressao . T_MINUS expressao
+   92          | expressao . T_TIMES expressao
+   93          | expressao . T_DIV expressao
+   94          | expressao . T_AND expressao
+   95          | expressao . T_OR expressao
+   96          | expressao . T_EQUAL2 expressao
+   97          | expressao . T_DIF expressao
+   98          | expressao . T_HIGHER expressao
+   99          | expressao . T_HIGH expressao
+  100          | expressao . T_LOWER expressao
+  101          | expressao . T_LOW expressao
+
+    T_TIMES  deslocar, e ir ao estado 97
+    T_DIV    deslocar, e ir ao estado 98
+
+    $padrão  reduzir usando a regra 90 (expressao)
+
+
+Estado 125
+
+   90 expressao: expressao . T_PLUS expressao
+   91          | expressao . T_MINUS expressao
+   91          | expressao T_MINUS expressao .
+   92          | expressao . T_TIMES expressao
+   93          | expressao . T_DIV expressao
+   94          | expressao . T_AND expressao
+   95          | expressao . T_OR expressao
+   96          | expressao . T_EQUAL2 expressao
+   97          | expressao . T_DIF expressao
+   98          | expressao . T_HIGHER expressao
+   99          | expressao . T_HIGH expressao
+  100          | expressao . T_LOWER expressao
+  101          | expressao . T_LOW expressao
+
+    T_TIMES  deslocar, e ir ao estado 97
+    T_DIV    deslocar, e ir ao estado 98
+
+    $padrão  reduzir usando a regra 91 (expressao)
+
+
+Estado 126
+
+   90 expressao: expressao . T_PLUS expressao
+   91          | expressao . T_MINUS expressao
+   92          | expressao . T_TIMES expressao
+   92          | expressao T_TIMES expressao .
+   93          | expressao . T_DIV expressao
+   94          | expressao . T_AND expressao
+   95          | expressao . T_OR expressao
+   96          | expressao . T_EQUAL2 expressao
+   97          | expressao . T_DIF expressao
+   98          | expressao . T_HIGHER expressao
+   99          | expressao . T_HIGH expressao
+  100          | expressao . T_LOWER expressao
+  101          | expressao . T_LOW expressao
+
+    $padrão  reduzir usando a regra 92 (expressao)
+
+
+Estado 127
+
+   90 expressao: expressao . T_PLUS expressao
+   91          | expressao . T_MINUS expressao
+   92          | expressao . T_TIMES expressao
+   93          | expressao . T_DIV expressao
+   93          | expressao T_DIV expressao .
+   94          | expressao . T_AND expressao
+   95          | expressao . T_OR expressao
+   96          | expressao . T_EQUAL2 expressao
+   97          | expressao . T_DIF expressao
+   98          | expressao . T_HIGHER expressao
+   99          | expressao . T_HIGH expressao
+  100          | expressao . T_LOWER expressao
+  101          | expressao . T_LOW expressao
+
+    T_TIMES  deslocar, e ir ao estado 97
+
+    $padrão  reduzir usando a regra 93 (expressao)
+
+
+Estado 128
+
+   90 expressao: expressao . T_PLUS expressao
+   91          | expressao . T_MINUS expressao
+   92          | expressao . T_TIMES expressao
+   93          | expressao . T_DIV expressao
+   94          | expressao . T_AND expressao
+   94          | expressao T_AND expressao .
+   95          | expressao . T_OR expressao
+   96          | expressao . T_EQUAL2 expressao
+   97          | expressao . T_DIF expressao
+   98          | expressao . T_HIGHER expressao
+   99          | expressao . T_HIGH expressao
+  100          | expressao . T_LOWER expressao
+  101          | expressao . T_LOW expressao
+
+    T_PLUS    deslocar, e ir ao estado 95
+    T_MINUS   deslocar, e ir ao estado 96
+    T_TIMES   deslocar, e ir ao estado 97
+    T_DIV     deslocar, e ir ao estado 98
+    T_EQUAL2  deslocar, e ir ao estado 101
+    T_DIF     deslocar, e ir ao estado 102
+    T_HIGHER  deslocar, e ir ao estado 103
+    T_HIGH    deslocar, e ir ao estado 104
+    T_LOWER   deslocar, e ir ao estado 105
+    T_LOW     deslocar, e ir ao estado 106
+
+    $padrão  reduzir usando a regra 94 (expressao)
+
+
+Estado 129
+
+   90 expressao: expressao . T_PLUS expressao
+   91          | expressao . T_MINUS expressao
+   92          | expressao . T_TIMES expressao
+   93          | expressao . T_DIV expressao
+   94          | expressao . T_AND expressao
+   95          | expressao . T_OR expressao
+   95          | expressao T_OR expressao .
+   96          | expressao . T_EQUAL2 expressao
+   97          | expressao . T_DIF expressao
+   98          | expressao . T_HIGHER expressao
+   99          | expressao . T_HIGH expressao
+  100          | expressao . T_LOWER expressao
+  101          | expressao . T_LOW expressao
+
+    T_PLUS    deslocar, e ir ao estado 95
+    T_MINUS   deslocar, e ir ao estado 96
+    T_TIMES   deslocar, e ir ao estado 97
+    T_DIV     deslocar, e ir ao estado 98
+    T_EQUAL2  deslocar, e ir ao estado 101
+    T_DIF     deslocar, e ir ao estado 102
+    T_HIGHER  deslocar, e ir ao estado 103
+    T_HIGH    deslocar, e ir ao estado 104
+    T_LOWER   deslocar, e ir ao estado 105
+    T_LOW     deslocar, e ir ao estado 106
+
+    $padrão  reduzir usando a regra 95 (expressao)
+
+
+Estado 130
+
+   90 expressao: expressao . T_PLUS expressao
+   91          | expressao . T_MINUS expressao
+   92          | expressao . T_TIMES expressao
+   93          | expressao . T_DIV expressao
+   94          | expressao . T_AND expressao
+   95          | expressao . T_OR expressao
+   96          | expressao . T_EQUAL2 expressao
+   96          | expressao T_EQUAL2 expressao .
+   97          | expressao . T_DIF expressao
+   98          | expressao . T_HIGHER expressao
+   99          | expressao . T_HIGH expressao
+  100          | expressao . T_LOWER expressao
+  101          | expressao . T_LOW expressao
+
+    T_PLUS   deslocar, e ir ao estado 95
+    T_MINUS  deslocar, e ir ao estado 96
+    T_TIMES  deslocar, e ir ao estado 97
+    T_DIV    deslocar, e ir ao estado 98
+
+    $padrão  reduzir usando a regra 96 (expressao)
+
+
+Estado 131
+
+   90 expressao: expressao . T_PLUS expressao
+   91          | expressao . T_MINUS expressao
+   92          | expressao . T_TIMES expressao
+   93          | expressao . T_DIV expressao
+   94          | expressao . T_AND expressao
+   95          | expressao . T_OR expressao
+   96          | expressao . T_EQUAL2 expressao
+   97          | expressao . T_DIF expressao
+   97          | expressao T_DIF expressao .
+   98          | expressao . T_HIGHER expressao
+   99          | expressao . T_HIGH expressao
+  100          | expressao . T_LOWER expressao
+  101          | expressao . T_LOW expressao
+
+    T_PLUS   deslocar, e ir ao estado 95
+    T_MINUS  deslocar, e ir ao estado 96
+    T_TIMES  deslocar, e ir ao estado 97
+    T_DIV    deslocar, e ir ao estado 98
+
+    $padrão  reduzir usando a regra 97 (expressao)
+
+
+Estado 132
+
+   90 expressao: expressao . T_PLUS expressao
+   91          | expressao . T_MINUS expressao
+   92          | expressao . T_TIMES expressao
+   93          | expressao . T_DIV expressao
+   94          | expressao . T_AND expressao
+   95          | expressao . T_OR expressao
+   96          | expressao . T_EQUAL2 expressao
+   97          | expressao . T_DIF expressao
+   98          | expressao . T_HIGHER expressao
+   98          | expressao T_HIGHER expressao .
+   99          | expressao . T_HIGH expressao
+  100          | expressao . T_LOWER expressao
+  101          | expressao . T_LOW expressao
+
+    T_PLUS   deslocar, e ir ao estado 95
+    T_MINUS  deslocar, e ir ao estado 96
+    T_TIMES  deslocar, e ir ao estado 97
+    T_DIV    deslocar, e ir ao estado 98
+
+    $padrão  reduzir usando a regra 98 (expressao)
+
+
+Estado 133
+
+   90 expressao: expressao . T_PLUS expressao
+   91          | expressao . T_MINUS expressao
+   92          | expressao . T_TIMES expressao
+   93          | expressao . T_DIV expressao
+   94          | expressao . T_AND expressao
+   95          | expressao . T_OR expressao
+   96          | expressao . T_EQUAL2 expressao
+   97          | expressao . T_DIF expressao
+   98          | expressao . T_HIGHER expressao
+   99          | expressao . T_HIGH expressao
+   99          | expressao T_HIGH expressao .
+  100          | expressao . T_LOWER expressao
+  101          | expressao . T_LOW expressao
+
+    T_PLUS   deslocar, e ir ao estado 95
+    T_MINUS  deslocar, e ir ao estado 96
+    T_TIMES  deslocar, e ir ao estado 97
+    T_DIV    deslocar, e ir ao estado 98
+
+    $padrão  reduzir usando a regra 99 (expressao)
+
+
+Estado 134
+
+   90 expressao: expressao . T_PLUS expressao
+   91          | expressao . T_MINUS expressao
+   92          | expressao . T_TIMES expressao
+   93          | expressao . T_DIV expressao
+   94          | expressao . T_AND expressao
+   95          | expressao . T_OR expressao
+   96          | expressao . T_EQUAL2 expressao
+   97          | expressao . T_DIF expressao
+   98          | expressao . T_HIGHER expressao
+   99          | expressao . T_HIGH expressao
+  100          | expressao . T_LOWER expressao
+  100          | expressao T_LOWER expressao .
+  101          | expressao . T_LOW expressao
+
+    T_PLUS   deslocar, e ir ao estado 95
+    T_MINUS  deslocar, e ir ao estado 96
+    T_TIMES  deslocar, e ir ao estado 97
+    T_DIV    deslocar, e ir ao estado 98
+
+    $padrão  reduzir usando a regra 100 (expressao)
+
+
+Estado 135
+
+   90 expressao: expressao . T_PLUS expressao
+   91          | expressao . T_MINUS expressao
+   92          | expressao . T_TIMES expressao
+   93          | expressao . T_DIV expressao
+   94          | expressao . T_AND expressao
+   95          | expressao . T_OR expressao
+   96          | expressao . T_EQUAL2 expressao
+   97          | expressao . T_DIF expressao
+   98          | expressao . T_HIGHER expressao
+   99          | expressao . T_HIGH expressao
+  100          | expressao . T_LOWER expressao
+  101          | expressao . T_LOW expressao
+  101          | expressao T_LOW expressao .
+
+    T_PLUS   deslocar, e ir ao estado 95
+    T_MINUS  deslocar, e ir ao estado 96
+    T_TIMES  deslocar, e ir ao estado 97
+    T_DIV    deslocar, e ir ao estado 98
+
+    $padrão  reduzir usando a regra 101 (expressao)
+
+
+Estado 136
+
+   50 seleciona: T_SWITCH T_OPEN expressao T_CLOSE . T_OPEN_KEY T_NL caso T_NL T_CLOSE_KEY
+
+    T_OPEN_KEY  deslocar, e ir ao estado 157
+
+
+Estado 137
+
+   54 for_laco: T_FOR atrib_null T_COMMA expressao . T_COMMA atrib_null T_OPEN_KEY T_NL linhas_null T_CLOSE_KEY
+   90 expressao: expressao . T_PLUS expressao
+   91          | expressao . T_MINUS expressao
+   92          | expressao . T_TIMES expressao
+   93          | expressao . T_DIV expressao
+   94          | expressao . T_AND expressao
+   95          | expressao . T_OR expressao
+   96          | expressao . T_EQUAL2 expressao
+   97          | expressao . T_DIF expressao
+   98          | expressao . T_HIGHER expressao
+   99          | expressao . T_HIGH expressao
+  100          | expressao . T_LOWER expressao
+  101          | expressao . T_LOW expressao
+
+    T_COMMA   deslocar, e ir ao estado 158
+    T_PLUS    deslocar, e ir ao estado 95
+    T_MINUS   deslocar, e ir ao estado 96
+    T_TIMES   deslocar, e ir ao estado 97
+    T_DIV     deslocar, e ir ao estado 98
+    T_AND     deslocar, e ir ao estado 99
+    T_OR      deslocar, e ir ao estado 100
+    T_EQUAL2  deslocar, e ir ao estado 101
+    T_DIF     deslocar, e ir ao estado 102
+    T_HIGHER  deslocar, e ir ao estado 103
+    T_HIGH    deslocar, e ir ao estado 104
+    T_LOWER   deslocar, e ir ao estado 105
+    T_LOW     deslocar, e ir ao estado 106
+
+
+Estado 138
+
+    3 linhas: linhas . linha
+   57 do_while_laco: T_DO T_OPEN_KEY T_NL linhas . T_CLOSE_KEY T_WHILE expressao
+
+    T_VAR         deslocar, e ir ao estado 1
+    T_TYPE_INT    deslocar, e ir ao estado 2
+    T_TYPE_FLOAT  deslocar, e ir ao estado 3
+    T_TYPE_BOOL   deslocar, e ir ao estado 4
+    T_NL          deslocar, e ir ao estado 5
+    T_CLOSE_KEY   deslocar, e ir ao estado 159
+    T_IF          deslocar, e ir ao estado 6
+    T_SWITCH      deslocar, e ir ao estado 7
+    T_FOR         deslocar, e ir ao estado 8
+    T_DO          deslocar, e ir ao estado 9
+    T_WHILE       deslocar, e ir ao estado 10
+    T_REF         deslocar, e ir ao estado 11
+    T_CALC        deslocar, e ir ao estado 12
+
+    linha          ir ao estado 56
+    atribuicao     ir ao estado 16
+    var_arranjo    ir ao estado 17
+    declaracao     ir ao estado 18
+    chamada        ir ao estado 19
+    dec_hashes     ir ao estado 20
+    condicao       ir ao estado 21
+    seleciona      ir ao estado 22
+    for_laco       ir ao estado 23
+    do_while_laco  ir ao estado 24
+    while_laco     ir ao estado 25
+    dec_funcao     ir ao estado 26
+    def_funcao     ir ao estado 27
+    tipo           ir ao estado 28
+    var            ir ao estado 29
+    referencia     ir ao estado 30
+    interpretacao  ir ao estado 31
+
+
+Estado 139
+
+   58 while_laco: T_WHILE expressao T_OPEN_KEY T_NL . linhas T_CLOSE_KEY
+
+    T_VAR         deslocar, e ir ao estado 1
+    T_TYPE_INT    deslocar, e ir ao estado 2
+    T_TYPE_FLOAT  deslocar, e ir ao estado 3
+    T_TYPE_BOOL   deslocar, e ir ao estado 4
+    T_NL          deslocar, e ir ao estado 5
+    T_IF          deslocar, e ir ao estado 6
+    T_SWITCH      deslocar, e ir ao estado 7
+    T_FOR         deslocar, e ir ao estado 8
+    T_DO          deslocar, e ir ao estado 9
+    T_WHILE       deslocar, e ir ao estado 10
+    T_REF         deslocar, e ir ao estado 11
+    T_CALC        deslocar, e ir ao estado 12
+
+    linhas         ir ao estado 160
+    linha          ir ao estado 15
+    atribuicao     ir ao estado 16
+    var_arranjo    ir ao estado 17
+    declaracao     ir ao estado 18
+    chamada        ir ao estado 19
+    dec_hashes     ir ao estado 20
+    condicao       ir ao estado 21
+    seleciona      ir ao estado 22
+    for_laco       ir ao estado 23
+    do_while_laco  ir ao estado 24
+    while_laco     ir ao estado 25
+    dec_funcao     ir ao estado 26
+    def_funcao     ir ao estado 27
+    tipo           ir ao estado 28
+    var            ir ao estado 29
+    referencia     ir ao estado 30
+    interpretacao  ir ao estado 31
+
+
+Estado 140
+
+   28 dec_arranjo: T_VAR T_OPEN expressao . T_COMMA expressao T_CLOSE
+   30            | T_VAR T_OPEN expressao . T_CLOSE
+   42 argumento: expressao .
+   90 expressao: expressao . T_PLUS expressao
+   91          | expressao . T_MINUS expressao
+   92          | expressao . T_TIMES expressao
+   93          | expressao . T_DIV expressao
+   94          | expressao . T_AND expressao
+   95          | expressao . T_OR expressao
+   96          | expressao . T_EQUAL2 expressao
+   97          | expressao . T_DIF expressao
+   98          | expressao . T_HIGHER expressao
+   99          | expressao . T_HIGH expressao
+  100          | expressao . T_LOWER expressao
+  101          | expressao . T_LOW expressao
+
+    T_CLOSE   deslocar, e ir ao estado 161
+    T_COMMA   deslocar, e ir ao estado 162
+    T_PLUS    deslocar, e ir ao estado 95
+    T_MINUS   deslocar, e ir ao estado 96
+    T_TIMES   deslocar, e ir ao estado 97
+    T_DIV     deslocar, e ir ao estado 98
+    T_AND     deslocar, e ir ao estado 99
+    T_OR      deslocar, e ir ao estado 100
+    T_EQUAL2  deslocar, e ir ao estado 101
+    T_DIF     deslocar, e ir ao estado 102
+    T_HIGHER  deslocar, e ir ao estado 103
+    T_HIGH    deslocar, e ir ao estado 104
+    T_LOWER   deslocar, e ir ao estado 105
+    T_LOW     deslocar, e ir ao estado 106
+
+    T_CLOSE  [reduzir usando a regra 42 (argumento)]
+    T_COMMA  [reduzir usando a regra 42 (argumento)]
+
+
+Estado 141
+
+   63 dec_funcao: tipo T_OPEN T_CLOSE T_OPEN . T_CLOSE T_FUN T_VAR T_OPEN param_null T_CLOSE
+   67 def_funcao: tipo T_OPEN T_CLOSE T_OPEN . T_CLOSE T_FUN T_VAR T_OPEN param_null T_CLOSE T_OPEN_KEY T_NL linhas_funcao T_RET retorno T_NL T_CLOSE_KEY
+
+    T_CLOSE  deslocar, e ir ao estado 163
+
+
+Estado 142
+
+   62 dec_funcao: tipo T_OPEN T_CLOSE T_FUN . T_VAR T_OPEN param_null T_CLOSE
+   66 def_funcao: tipo T_OPEN T_CLOSE T_FUN . T_VAR T_OPEN param_null T_CLOSE T_OPEN_KEY T_NL linhas_funcao T_RET retorno T_NL T_CLOSE_KEY
+
+    T_VAR  deslocar, e ir ao estado 164
+
+
+Estado 143
+
+  112 hash: T_VAR .
+
+    $padrão  reduzir usando a regra 112 (hash)
+
+
+Estado 144
+
+   64 dec_funcao: tipo T_COLON tipo T_FUN . T_VAR T_OPEN param_null T_CLOSE
+   68 def_funcao: tipo T_COLON tipo T_FUN . T_VAR T_OPEN param_null T_CLOSE T_OPEN_KEY T_NL linhas_funcao T_RET retorno T_NL T_CLOSE_KEY
+
+    T_VAR  deslocar, e ir ao estado 165
+
+
+Estado 145
+
+   43 dec_hashes: tipo T_COLON tipo hashes .
+   45 hashes: hashes . T_COMMA def_hash
+
+    T_COMMA  deslocar, e ir ao estado 166
+
+    $padrão  reduzir usando a regra 43 (dec_hashes)
+
+
+Estado 146
+
+   44 hashes: def_hash .
+
+    $padrão  reduzir usando a regra 44 (hashes)
+
+
+Estado 147
+
+   46 def_hash: hash .
+
+    $padrão  reduzir usando a regra 46 (def_hash)
+
+
+Estado 148
+
+  113 hash: referencia . T_VAR
+  115 referencia: referencia . T_REF
+
+    T_VAR  deslocar, e ir ao estado 167
+    T_REF  deslocar, e ir ao estado 80
+
+
+Estado 149
+
+   61 dec_funcao: tipo T_FUN T_VAR T_OPEN . param_null T_CLOSE
+   65 def_funcao: tipo T_FUN T_VAR T_OPEN . param_null T_CLOSE T_OPEN_KEY T_NL linhas_funcao T_RET retorno T_NL T_CLOSE_KEY
+
+    T_TYPE_INT    deslocar, e ir ao estado 2
+    T_TYPE_FLOAT  deslocar, e ir ao estado 3
+    T_TYPE_BOOL   deslocar, e ir ao estado 4
+
+    $padrão  reduzir usando a regra 72 (param_null)
+
+    param_null  ir ao estado 168
+    parametros  ir ao estado 169
+    parametro   ir ao estado 170
+    tipo        ir ao estado 171
+
+
+Estado 150
+
+   22 variaveis: variaveis T_COMMA variavel .
+
+    $padrão  reduzir usando a regra 22 (variaveis)
+
+
+Estado 151
+
+   24 variaveis: variaveis T_COMMA def_arranjo .
+
+    $padrão  reduzir usando a regra 24 (variaveis)
+
+
+Estado 152
+
+   29 dec_arranjo: referencia T_VAR T_OPEN . expressao T_COMMA expressao T_CLOSE
+   31            | referencia T_VAR T_OPEN . expressao T_CLOSE
+   37 chamada: referencia T_VAR T_OPEN . arg_null T_CLOSE
+
+    T_FLOAT       deslocar, e ir ao estado 33
+    T_INT         deslocar, e ir ao estado 34
+    T_BOOL        deslocar, e ir ao estado 35
+    T_VAR         deslocar, e ir ao estado 1
+    T_OPEN        deslocar, e ir ao estado 36
+    T_MINUS       deslocar, e ir ao estado 37
+    T_NOT         deslocar, e ir ao estado 38
+    T_CAST_INT    deslocar, e ir ao estado 39
+    T_CAST_FLOAT  deslocar, e ir ao estado 40
+    T_CAST_BOOL   deslocar, e ir ao estado 41
+    T_ADDR        deslocar, e ir ao estado 42
+    T_REF         deslocar, e ir ao estado 43
+
+    $padrão  reduzir usando a regra 39 (arg_null)
+
+    chamada     ir ao estado 44
+    arg_null    ir ao estado 153
+    argumentos  ir ao estado 83
+    argumento   ir ao estado 84
+    expressao   ir ao estado 172
+    primitiva   ir ao estado 46
+    var         ir ao estado 47
+    referencia  ir ao estado 30
+
+
+Estado 153
+
+   37 chamada: referencia T_VAR T_OPEN arg_null . T_CLOSE
+
+    T_CLOSE  deslocar, e ir ao estado 173
+
+
+Estado 154
+
+   41 argumentos: argumento T_COMMA argumentos .
+
+    $padrão  reduzir usando a regra 41 (argumentos)
+
+
+Estado 155
+
+   90 expressao: expressao . T_PLUS expressao
+   91          | expressao . T_MINUS expressao
+   92          | expressao . T_TIMES expressao
+   93          | expressao . T_DIV expressao
+   94          | expressao . T_AND expressao
+   95          | expressao . T_OR expressao
+   96          | expressao . T_EQUAL2 expressao
+   97          | expressao . T_DIF expressao
+   98          | expressao . T_HIGHER expressao
+   99          | expressao . T_HIGH expressao
+  100          | expressao . T_LOWER expressao
+  101          | expressao . T_LOW expressao
+  102          | T_OPEN expressao T_ATRIB_ASK expressao . T_COLON expressao T_CLOSE
+
+    T_COLON   deslocar, e ir ao estado 174
+    T_PLUS    deslocar, e ir ao estado 95
+    T_MINUS   deslocar, e ir ao estado 96
+    T_TIMES   deslocar, e ir ao estado 97
+    T_DIV     deslocar, e ir ao estado 98
+    T_AND     deslocar, e ir ao estado 99
+    T_OR      deslocar, e ir ao estado 100
+    T_EQUAL2  deslocar, e ir ao estado 101
+    T_DIF     deslocar, e ir ao estado 102
+    T_HIGHER  deslocar, e ir ao estado 103
+    T_HIGH    deslocar, e ir ao estado 104
+    T_LOWER   deslocar, e ir ao estado 105
+    T_LOW     deslocar, e ir ao estado 106
+
+
+Estado 156
+
+   47 condicao: T_IF expressao T_NL T_THEN T_OPEN_KEY . T_NL linhas_null T_CLOSE_KEY senao
+
+    T_NL  deslocar, e ir ao estado 175
+
+
+Estado 157
+
+   50 seleciona: T_SWITCH T_OPEN expressao T_CLOSE T_OPEN_KEY . T_NL caso T_NL T_CLOSE_KEY
+
+    T_NL  deslocar, e ir ao estado 176
+
+
+Estado 158
+
+   54 for_laco: T_FOR atrib_null T_COMMA expressao T_COMMA . atrib_null T_OPEN_KEY T_NL linhas_null T_CLOSE_KEY
+
+    T_VAR  deslocar, e ir ao estado 1
+    T_REF  deslocar, e ir ao estado 11
+
+    $padrão  reduzir usando a regra 60 (atrib_null)
+
+    atribuicao   ir ao estado 49
+    var_arranjo  ir ao estado 17
+    chamada      ir ao estado 50
+    atrib_null   ir ao estado 177
+    var          ir ao estado 29
+    referencia   ir ao estado 30
+
+
+Estado 159
+
+   57 do_while_laco: T_DO T_OPEN_KEY T_NL linhas T_CLOSE_KEY . T_WHILE expressao
+
+    T_WHILE  deslocar, e ir ao estado 178
+
+
+Estado 160
+
+    3 linhas: linhas . linha
+   58 while_laco: T_WHILE expressao T_OPEN_KEY T_NL linhas . T_CLOSE_KEY
+
+    T_VAR         deslocar, e ir ao estado 1
+    T_TYPE_INT    deslocar, e ir ao estado 2
+    T_TYPE_FLOAT  deslocar, e ir ao estado 3
+    T_TYPE_BOOL   deslocar, e ir ao estado 4
+    T_NL          deslocar, e ir ao estado 5
+    T_CLOSE_KEY   deslocar, e ir ao estado 179
+    T_IF          deslocar, e ir ao estado 6
+    T_SWITCH      deslocar, e ir ao estado 7
+    T_FOR         deslocar, e ir ao estado 8
+    T_DO          deslocar, e ir ao estado 9
+    T_WHILE       deslocar, e ir ao estado 10
+    T_REF         deslocar, e ir ao estado 11
+    T_CALC        deslocar, e ir ao estado 12
+
+    linha          ir ao estado 56
+    atribuicao     ir ao estado 16
+    var_arranjo    ir ao estado 17
+    declaracao     ir ao estado 18
+    chamada        ir ao estado 19
+    dec_hashes     ir ao estado 20
+    condicao       ir ao estado 21
+    seleciona      ir ao estado 22
+    for_laco       ir ao estado 23
+    do_while_laco  ir ao estado 24
+    while_laco     ir ao estado 25
+    dec_funcao     ir ao estado 26
+    def_funcao     ir ao estado 27
+    tipo           ir ao estado 28
+    var            ir ao estado 29
+    referencia     ir ao estado 30
+    interpretacao  ir ao estado 31
+
+
+Estado 161
+
+   30 dec_arranjo: T_VAR T_OPEN expressao T_CLOSE .
+
+    $padrão  reduzir usando a regra 30 (dec_arranjo)
+
+
+Estado 162
+
+   28 dec_arranjo: T_VAR T_OPEN expressao T_COMMA . expressao T_CLOSE
+
+    T_FLOAT       deslocar, e ir ao estado 33
+    T_INT         deslocar, e ir ao estado 34
+    T_BOOL        deslocar, e ir ao estado 35
+    T_VAR         deslocar, e ir ao estado 1
+    T_OPEN        deslocar, e ir ao estado 36
+    T_MINUS       deslocar, e ir ao estado 37
+    T_NOT         deslocar, e ir ao estado 38
+    T_CAST_INT    deslocar, e ir ao estado 39
+    T_CAST_FLOAT  deslocar, e ir ao estado 40
+    T_CAST_BOOL   deslocar, e ir ao estado 41
+    T_ADDR        deslocar, e ir ao estado 42
+    T_REF         deslocar, e ir ao estado 43
+
+    chamada     ir ao estado 44
+    expressao   ir ao estado 180
+    primitiva   ir ao estado 46
+    var         ir ao estado 47
+    referencia  ir ao estado 30
+
+
+Estado 163
+
+   63 dec_funcao: tipo T_OPEN T_CLOSE T_OPEN T_CLOSE . T_FUN T_VAR T_OPEN param_null T_CLOSE
+   67 def_funcao: tipo T_OPEN T_CLOSE T_OPEN T_CLOSE . T_FUN T_VAR T_OPEN param_null T_CLOSE T_OPEN_KEY T_NL linhas_funcao T_RET retorno T_NL T_CLOSE_KEY
+
+    T_FUN  deslocar, e ir ao estado 181
+
+
+Estado 164
+
+   62 dec_funcao: tipo T_OPEN T_CLOSE T_FUN T_VAR . T_OPEN param_null T_CLOSE
+   66 def_funcao: tipo T_OPEN T_CLOSE T_FUN T_VAR . T_OPEN param_null T_CLOSE T_OPEN_KEY T_NL linhas_funcao T_RET retorno T_NL T_CLOSE_KEY
+
+    T_OPEN  deslocar, e ir ao estado 182
+
+
+Estado 165
+
+   64 dec_funcao: tipo T_COLON tipo T_FUN T_VAR . T_OPEN param_null T_CLOSE
+   68 def_funcao: tipo T_COLON tipo T_FUN T_VAR . T_OPEN param_null T_CLOSE T_OPEN_KEY T_NL linhas_funcao T_RET retorno T_NL T_CLOSE_KEY
+
+    T_OPEN  deslocar, e ir ao estado 183
+
+
+Estado 166
+
+   45 hashes: hashes T_COMMA . def_hash
+
+    T_VAR  deslocar, e ir ao estado 143
+    T_REF  deslocar, e ir ao estado 11
+
+    def_hash    ir ao estado 184
+    hash        ir ao estado 147
+    referencia  ir ao estado 148
+
+
+Estado 167
+
+  113 hash: referencia T_VAR .
+
+    $padrão  reduzir usando a regra 113 (hash)
+
+
+Estado 168
+
+   61 dec_funcao: tipo T_FUN T_VAR T_OPEN param_null . T_CLOSE
+   65 def_funcao: tipo T_FUN T_VAR T_OPEN param_null . T_CLOSE T_OPEN_KEY T_NL linhas_funcao T_RET retorno T_NL T_CLOSE_KEY
+
+    T_CLOSE  deslocar, e ir ao estado 185
+
+
+Estado 169
+
+   71 param_null: parametros .
+
+    $padrão  reduzir usando a regra 71 (param_null)
+
+
+Estado 170
+
+   73 parametros: parametro .
+   74           | parametro . T_COMMA parametros
+
+    T_COMMA  deslocar, e ir ao estado 186
+
+    $padrão  reduzir usando a regra 73 (parametros)
+
+
+Estado 171
+
+   75 parametro: tipo . var
+   76          | tipo . arranjo
+   77          | tipo . arranjo_duplo
+   78          | tipo . T_COLON tipo hash
+
+    T_VAR    deslocar, e ir ao estado 187
+    T_COLON  deslocar, e ir ao estado 188
+    T_REF    deslocar, e ir ao estado 11
+
+    arranjo        ir ao estado 189
+    arranjo_duplo  ir ao estado 190
+    var            ir ao estado 191
+    referencia     ir ao estado 192
+
+
+Estado 172
+
+   29 dec_arranjo: referencia T_VAR T_OPEN expressao . T_COMMA expressao T_CLOSE
+   31            | referencia T_VAR T_OPEN expressao . T_CLOSE
+   42 argumento: expressao .
+   90 expressao: expressao . T_PLUS expressao
+   91          | expressao . T_MINUS expressao
+   92          | expressao . T_TIMES expressao
+   93          | expressao . T_DIV expressao
+   94          | expressao . T_AND expressao
+   95          | expressao . T_OR expressao
+   96          | expressao . T_EQUAL2 expressao
+   97          | expressao . T_DIF expressao
+   98          | expressao . T_HIGHER expressao
+   99          | expressao . T_HIGH expressao
+  100          | expressao . T_LOWER expressao
+  101          | expressao . T_LOW expressao
+
+    T_CLOSE   deslocar, e ir ao estado 193
+    T_COMMA   deslocar, e ir ao estado 194
+    T_PLUS    deslocar, e ir ao estado 95
+    T_MINUS   deslocar, e ir ao estado 96
+    T_TIMES   deslocar, e ir ao estado 97
+    T_DIV     deslocar, e ir ao estado 98
+    T_AND     deslocar, e ir ao estado 99
+    T_OR      deslocar, e ir ao estado 100
+    T_EQUAL2  deslocar, e ir ao estado 101
+    T_DIF     deslocar, e ir ao estado 102
+    T_HIGHER  deslocar, e ir ao estado 103
+    T_HIGH    deslocar, e ir ao estado 104
+    T_LOWER   deslocar, e ir ao estado 105
+    T_LOW     deslocar, e ir ao estado 106
+
+    T_CLOSE  [reduzir usando a regra 42 (argumento)]
+    T_COMMA  [reduzir usando a regra 42 (argumento)]
+
+
+Estado 173
+
+   37 chamada: referencia T_VAR T_OPEN arg_null T_CLOSE .
+
+    $padrão  reduzir usando a regra 37 (chamada)
+
+
+Estado 174
+
+  102 expressao: T_OPEN expressao T_ATRIB_ASK expressao T_COLON . expressao T_CLOSE
+
+    T_FLOAT       deslocar, e ir ao estado 33
+    T_INT         deslocar, e ir ao estado 34
+    T_BOOL        deslocar, e ir ao estado 35
+    T_VAR         deslocar, e ir ao estado 1
+    T_OPEN        deslocar, e ir ao estado 36
+    T_MINUS       deslocar, e ir ao estado 37
+    T_NOT         deslocar, e ir ao estado 38
+    T_CAST_INT    deslocar, e ir ao estado 39
+    T_CAST_FLOAT  deslocar, e ir ao estado 40
+    T_CAST_BOOL   deslocar, e ir ao estado 41
+    T_ADDR        deslocar, e ir ao estado 42
+    T_REF         deslocar, e ir ao estado 43
+
+    chamada     ir ao estado 44
+    expressao   ir ao estado 195
+    primitiva   ir ao estado 46
+    var         ir ao estado 47
+    referencia  ir ao estado 30
+
+
+Estado 175
+
+   47 condicao: T_IF expressao T_NL T_THEN T_OPEN_KEY T_NL . linhas_null T_CLOSE_KEY senao
+
+    T_VAR         deslocar, e ir ao estado 1
+    T_TYPE_INT    deslocar, e ir ao estado 2
+    T_TYPE_FLOAT  deslocar, e ir ao estado 3
+    T_TYPE_BOOL   deslocar, e ir ao estado 4
+    T_NL          deslocar, e ir ao estado 5
+    T_IF          deslocar, e ir ao estado 6
+    T_SWITCH      deslocar, e ir ao estado 7
+    T_FOR         deslocar, e ir ao estado 8
+    T_DO          deslocar, e ir ao estado 9
+    T_WHILE       deslocar, e ir ao estado 10
+    T_REF         deslocar, e ir ao estado 11
+    T_CALC        deslocar, e ir ao estado 12
+
+    $padrão  reduzir usando a regra 56 (linhas_null)
+
+    linhas         ir ao estado 196
+    linha          ir ao estado 15
+    atribuicao     ir ao estado 16
+    var_arranjo    ir ao estado 17
+    declaracao     ir ao estado 18
+    chamada        ir ao estado 19
+    dec_hashes     ir ao estado 20
+    condicao       ir ao estado 21
+    seleciona      ir ao estado 22
+    for_laco       ir ao estado 23
+    linhas_null    ir ao estado 197
+    do_while_laco  ir ao estado 24
+    while_laco     ir ao estado 25
+    dec_funcao     ir ao estado 26
+    def_funcao     ir ao estado 27
+    tipo           ir ao estado 28
+    var            ir ao estado 29
+    referencia     ir ao estado 30
+    interpretacao  ir ao estado 31
+
+
+Estado 176
+
+   50 seleciona: T_SWITCH T_OPEN expressao T_CLOSE T_OPEN_KEY T_NL . caso T_NL T_CLOSE_KEY
+
+    T_CASE     deslocar, e ir ao estado 198
+    T_DEFAULT  deslocar, e ir ao estado 199
+
+    caso  ir ao estado 200
+
+
+Estado 177
+
+   54 for_laco: T_FOR atrib_null T_COMMA expressao T_COMMA atrib_null . T_OPEN_KEY T_NL linhas_null T_CLOSE_KEY
+
+    T_OPEN_KEY  deslocar, e ir ao estado 201
+
+
+Estado 178
+
+   57 do_while_laco: T_DO T_OPEN_KEY T_NL linhas T_CLOSE_KEY T_WHILE . expressao
+
+    T_FLOAT       deslocar, e ir ao estado 33
+    T_INT         deslocar, e ir ao estado 34
+    T_BOOL        deslocar, e ir ao estado 35
+    T_VAR         deslocar, e ir ao estado 1
+    T_OPEN        deslocar, e ir ao estado 36
+    T_MINUS       deslocar, e ir ao estado 37
+    T_NOT         deslocar, e ir ao estado 38
+    T_CAST_INT    deslocar, e ir ao estado 39
+    T_CAST_FLOAT  deslocar, e ir ao estado 40
+    T_CAST_BOOL   deslocar, e ir ao estado 41
+    T_ADDR        deslocar, e ir ao estado 42
+    T_REF         deslocar, e ir ao estado 43
+
+    chamada     ir ao estado 44
+    expressao   ir ao estado 202
+    primitiva   ir ao estado 46
+    var         ir ao estado 47
+    referencia  ir ao estado 30
+
+
+Estado 179
+
+   58 while_laco: T_WHILE expressao T_OPEN_KEY T_NL linhas T_CLOSE_KEY .
+
+    $padrão  reduzir usando a regra 58 (while_laco)
+
+
+Estado 180
+
+   28 dec_arranjo: T_VAR T_OPEN expressao T_COMMA expressao . T_CLOSE
+   90 expressao: expressao . T_PLUS expressao
+   91          | expressao . T_MINUS expressao
+   92          | expressao . T_TIMES expressao
+   93          | expressao . T_DIV expressao
+   94          | expressao . T_AND expressao
+   95          | expressao . T_OR expressao
+   96          | expressao . T_EQUAL2 expressao
+   97          | expressao . T_DIF expressao
+   98          | expressao . T_HIGHER expressao
+   99          | expressao . T_HIGH expressao
+  100          | expressao . T_LOWER expressao
+  101          | expressao . T_LOW expressao
+
+    T_CLOSE   deslocar, e ir ao estado 203
+    T_PLUS    deslocar, e ir ao estado 95
+    T_MINUS   deslocar, e ir ao estado 96
+    T_TIMES   deslocar, e ir ao estado 97
+    T_DIV     deslocar, e ir ao estado 98
+    T_AND     deslocar, e ir ao estado 99
+    T_OR      deslocar, e ir ao estado 100
+    T_EQUAL2  deslocar, e ir ao estado 101
+    T_DIF     deslocar, e ir ao estado 102
+    T_HIGHER  deslocar, e ir ao estado 103
+    T_HIGH    deslocar, e ir ao estado 104
+    T_LOWER   deslocar, e ir ao estado 105
+    T_LOW     deslocar, e ir ao estado 106
+
+
+Estado 181
+
+   63 dec_funcao: tipo T_OPEN T_CLOSE T_OPEN T_CLOSE T_FUN . T_VAR T_OPEN param_null T_CLOSE
+   67 def_funcao: tipo T_OPEN T_CLOSE T_OPEN T_CLOSE T_FUN . T_VAR T_OPEN param_null T_CLOSE T_OPEN_KEY T_NL linhas_funcao T_RET retorno T_NL T_CLOSE_KEY
+
+    T_VAR  deslocar, e ir ao estado 204
+
+
+Estado 182
+
+   62 dec_funcao: tipo T_OPEN T_CLOSE T_FUN T_VAR T_OPEN . param_null T_CLOSE
+   66 def_funcao: tipo T_OPEN T_CLOSE T_FUN T_VAR T_OPEN . param_null T_CLOSE T_OPEN_KEY T_NL linhas_funcao T_RET retorno T_NL T_CLOSE_KEY
+
+    T_TYPE_INT    deslocar, e ir ao estado 2
+    T_TYPE_FLOAT  deslocar, e ir ao estado 3
+    T_TYPE_BOOL   deslocar, e ir ao estado 4
+
+    $padrão  reduzir usando a regra 72 (param_null)
+
+    param_null  ir ao estado 205
+    parametros  ir ao estado 169
+    parametro   ir ao estado 170
+    tipo        ir ao estado 171
+
+
+Estado 183
+
+   64 dec_funcao: tipo T_COLON tipo T_FUN T_VAR T_OPEN . param_null T_CLOSE
+   68 def_funcao: tipo T_COLON tipo T_FUN T_VAR T_OPEN . param_null T_CLOSE T_OPEN_KEY T_NL linhas_funcao T_RET retorno T_NL T_CLOSE_KEY
+
+    T_TYPE_INT    deslocar, e ir ao estado 2
+    T_TYPE_FLOAT  deslocar, e ir ao estado 3
+    T_TYPE_BOOL   deslocar, e ir ao estado 4
+
+    $padrão  reduzir usando a regra 72 (param_null)
+
+    param_null  ir ao estado 206
+    parametros  ir ao estado 169
+    parametro   ir ao estado 170
+    tipo        ir ao estado 171
+
+
+Estado 184
+
+   45 hashes: hashes T_COMMA def_hash .
+
+    $padrão  reduzir usando a regra 45 (hashes)
+
+
+Estado 185
+
+   61 dec_funcao: tipo T_FUN T_VAR T_OPEN param_null T_CLOSE .
+   65 def_funcao: tipo T_FUN T_VAR T_OPEN param_null T_CLOSE . T_OPEN_KEY T_NL linhas_funcao T_RET retorno T_NL T_CLOSE_KEY
+
+    T_OPEN_KEY  deslocar, e ir ao estado 207
+
+    $padrão  reduzir usando a regra 61 (dec_funcao)
+
+
+Estado 186
+
+   74 parametros: parametro T_COMMA . parametros
+
+    T_TYPE_INT    deslocar, e ir ao estado 2
+    T_TYPE_FLOAT  deslocar, e ir ao estado 3
+    T_TYPE_BOOL   deslocar, e ir ao estado 4
+
+    parametros  ir ao estado 208
+    parametro   ir ao estado 170
+    tipo        ir ao estado 171
+
+
+Estado 187
+
+   32 arranjo: T_VAR . T_OPEN expressao T_CLOSE
+   34 arranjo_duplo: T_VAR . T_OPEN expressao T_COMMA expressao T_CLOSE
+  110 var: T_VAR .
+
+    T_OPEN  deslocar, e ir ao estado 209
+
+    $padrão  reduzir usando a regra 110 (var)
+
+
+Estado 188
+
+   78 parametro: tipo T_COLON . tipo hash
+
+    T_TYPE_INT    deslocar, e ir ao estado 2
+    T_TYPE_FLOAT  deslocar, e ir ao estado 3
+    T_TYPE_BOOL   deslocar, e ir ao estado 4
+
+    tipo  ir ao estado 210
+
+
+Estado 189
+
+   76 parametro: tipo arranjo .
+
+    $padrão  reduzir usando a regra 76 (parametro)
+
+
+Estado 190
+
+   77 parametro: tipo arranjo_duplo .
+
+    $padrão  reduzir usando a regra 77 (parametro)
+
+
+Estado 191
+
+   75 parametro: tipo var .
+
+    $padrão  reduzir usando a regra 75 (parametro)
+
+
+Estado 192
+
+   33 arranjo: referencia . T_VAR T_OPEN expressao T_CLOSE
+   35 arranjo_duplo: referencia . T_VAR T_OPEN expressao T_COMMA expressao T_CLOSE
+  111 var: referencia . T_VAR
+  115 referencia: referencia . T_REF
+
+    T_VAR  deslocar, e ir ao estado 211
+    T_REF  deslocar, e ir ao estado 80
+
+
+Estado 193
+
+   31 dec_arranjo: referencia T_VAR T_OPEN expressao T_CLOSE .
+
+    $padrão  reduzir usando a regra 31 (dec_arranjo)
+
+
+Estado 194
+
+   29 dec_arranjo: referencia T_VAR T_OPEN expressao T_COMMA . expressao T_CLOSE
+
+    T_FLOAT       deslocar, e ir ao estado 33
+    T_INT         deslocar, e ir ao estado 34
+    T_BOOL        deslocar, e ir ao estado 35
+    T_VAR         deslocar, e ir ao estado 1
+    T_OPEN        deslocar, e ir ao estado 36
+    T_MINUS       deslocar, e ir ao estado 37
+    T_NOT         deslocar, e ir ao estado 38
+    T_CAST_INT    deslocar, e ir ao estado 39
+    T_CAST_FLOAT  deslocar, e ir ao estado 40
+    T_CAST_BOOL   deslocar, e ir ao estado 41
+    T_ADDR        deslocar, e ir ao estado 42
+    T_REF         deslocar, e ir ao estado 43
+
+    chamada     ir ao estado 44
+    expressao   ir ao estado 212
+    primitiva   ir ao estado 46
+    var         ir ao estado 47
+    referencia  ir ao estado 30
+
+
+Estado 195
+
+   90 expressao: expressao . T_PLUS expressao
+   91          | expressao . T_MINUS expressao
+   92          | expressao . T_TIMES expressao
+   93          | expressao . T_DIV expressao
+   94          | expressao . T_AND expressao
+   95          | expressao . T_OR expressao
+   96          | expressao . T_EQUAL2 expressao
+   97          | expressao . T_DIF expressao
+   98          | expressao . T_HIGHER expressao
+   99          | expressao . T_HIGH expressao
+  100          | expressao . T_LOWER expressao
+  101          | expressao . T_LOW expressao
+  102          | T_OPEN expressao T_ATRIB_ASK expressao T_COLON expressao . T_CLOSE
+
+    T_CLOSE   deslocar, e ir ao estado 213
+    T_PLUS    deslocar, e ir ao estado 95
+    T_MINUS   deslocar, e ir ao estado 96
+    T_TIMES   deslocar, e ir ao estado 97
+    T_DIV     deslocar, e ir ao estado 98
+    T_AND     deslocar, e ir ao estado 99
+    T_OR      deslocar, e ir ao estado 100
+    T_EQUAL2  deslocar, e ir ao estado 101
+    T_DIF     deslocar, e ir ao estado 102
+    T_HIGHER  deslocar, e ir ao estado 103
+    T_HIGH    deslocar, e ir ao estado 104
+    T_LOWER   deslocar, e ir ao estado 105
+    T_LOW     deslocar, e ir ao estado 106
+
+
+Estado 196
+
+    3 linhas: linhas . linha
+   55 linhas_null: linhas .
+
+    T_VAR         deslocar, e ir ao estado 1
+    T_TYPE_INT    deslocar, e ir ao estado 2
+    T_TYPE_FLOAT  deslocar, e ir ao estado 3
+    T_TYPE_BOOL   deslocar, e ir ao estado 4
+    T_NL          deslocar, e ir ao estado 5
+    T_IF          deslocar, e ir ao estado 6
+    T_SWITCH      deslocar, e ir ao estado 7
+    T_FOR         deslocar, e ir ao estado 8
+    T_DO          deslocar, e ir ao estado 9
+    T_WHILE       deslocar, e ir ao estado 10
+    T_REF         deslocar, e ir ao estado 11
+    T_CALC        deslocar, e ir ao estado 12
+
+    $padrão  reduzir usando a regra 55 (linhas_null)
+
+    linha          ir ao estado 56
+    atribuicao     ir ao estado 16
+    var_arranjo    ir ao estado 17
+    declaracao     ir ao estado 18
+    chamada        ir ao estado 19
+    dec_hashes     ir ao estado 20
+    condicao       ir ao estado 21
+    seleciona      ir ao estado 22
+    for_laco       ir ao estado 23
+    do_while_laco  ir ao estado 24
+    while_laco     ir ao estado 25
+    dec_funcao     ir ao estado 26
+    def_funcao     ir ao estado 27
+    tipo           ir ao estado 28
+    var            ir ao estado 29
+    referencia     ir ao estado 30
+    interpretacao  ir ao estado 31
+
+
+Estado 197
+
+   47 condicao: T_IF expressao T_NL T_THEN T_OPEN_KEY T_NL linhas_null . T_CLOSE_KEY senao
+
+    T_CLOSE_KEY  deslocar, e ir ao estado 214
+
+
+Estado 198
+
+   51 caso: T_CASE . expressao T_OPEN_KEY linhas_null T_CLOSE_KEY T_NL caso
+   52     | T_CASE . expressao T_NL caso
+
+    T_FLOAT       deslocar, e ir ao estado 33
+    T_INT         deslocar, e ir ao estado 34
+    T_BOOL        deslocar, e ir ao estado 35
+    T_VAR         deslocar, e ir ao estado 1
+    T_OPEN        deslocar, e ir ao estado 36
+    T_MINUS       deslocar, e ir ao estado 37
+    T_NOT         deslocar, e ir ao estado 38
+    T_CAST_INT    deslocar, e ir ao estado 39
+    T_CAST_FLOAT  deslocar, e ir ao estado 40
+    T_CAST_BOOL   deslocar, e ir ao estado 41
+    T_ADDR        deslocar, e ir ao estado 42
+    T_REF         deslocar, e ir ao estado 43
+
+    chamada     ir ao estado 44
+    expressao   ir ao estado 215
+    primitiva   ir ao estado 46
+    var         ir ao estado 47
+    referencia  ir ao estado 30
+
+
+Estado 199
+
+   53 caso: T_DEFAULT . T_OPEN_KEY linhas_null T_CLOSE_KEY
+
+    T_OPEN_KEY  deslocar, e ir ao estado 216
+
+
+Estado 200
+
+   50 seleciona: T_SWITCH T_OPEN expressao T_CLOSE T_OPEN_KEY T_NL caso . T_NL T_CLOSE_KEY
+
+    T_NL  deslocar, e ir ao estado 217
+
+
+Estado 201
+
+   54 for_laco: T_FOR atrib_null T_COMMA expressao T_COMMA atrib_null T_OPEN_KEY . T_NL linhas_null T_CLOSE_KEY
+
+    T_NL  deslocar, e ir ao estado 218
+
+
+Estado 202
+
+   57 do_while_laco: T_DO T_OPEN_KEY T_NL linhas T_CLOSE_KEY T_WHILE expressao .
+   90 expressao: expressao . T_PLUS expressao
+   91          | expressao . T_MINUS expressao
+   92          | expressao . T_TIMES expressao
+   93          | expressao . T_DIV expressao
+   94          | expressao . T_AND expressao
+   95          | expressao . T_OR expressao
+   96          | expressao . T_EQUAL2 expressao
+   97          | expressao . T_DIF expressao
+   98          | expressao . T_HIGHER expressao
+   99          | expressao . T_HIGH expressao
+  100          | expressao . T_LOWER expressao
+  101          | expressao . T_LOW expressao
+
+    T_PLUS    deslocar, e ir ao estado 95
+    T_MINUS   deslocar, e ir ao estado 96
+    T_TIMES   deslocar, e ir ao estado 97
+    T_DIV     deslocar, e ir ao estado 98
+    T_AND     deslocar, e ir ao estado 99
+    T_OR      deslocar, e ir ao estado 100
+    T_EQUAL2  deslocar, e ir ao estado 101
+    T_DIF     deslocar, e ir ao estado 102
+    T_HIGHER  deslocar, e ir ao estado 103
+    T_HIGH    deslocar, e ir ao estado 104
+    T_LOWER   deslocar, e ir ao estado 105
+    T_LOW     deslocar, e ir ao estado 106
+
+    $padrão  reduzir usando a regra 57 (do_while_laco)
+
+
+Estado 203
+
+   28 dec_arranjo: T_VAR T_OPEN expressao T_COMMA expressao T_CLOSE .
+
+    $padrão  reduzir usando a regra 28 (dec_arranjo)
+
+
+Estado 204
+
+   63 dec_funcao: tipo T_OPEN T_CLOSE T_OPEN T_CLOSE T_FUN T_VAR . T_OPEN param_null T_CLOSE
+   67 def_funcao: tipo T_OPEN T_CLOSE T_OPEN T_CLOSE T_FUN T_VAR . T_OPEN param_null T_CLOSE T_OPEN_KEY T_NL linhas_funcao T_RET retorno T_NL T_CLOSE_KEY
+
+    T_OPEN  deslocar, e ir ao estado 219
+
+
+Estado 205
+
+   62 dec_funcao: tipo T_OPEN T_CLOSE T_FUN T_VAR T_OPEN param_null . T_CLOSE
+   66 def_funcao: tipo T_OPEN T_CLOSE T_FUN T_VAR T_OPEN param_null . T_CLOSE T_OPEN_KEY T_NL linhas_funcao T_RET retorno T_NL T_CLOSE_KEY
+
+    T_CLOSE  deslocar, e ir ao estado 220
+
+
+Estado 206
+
+   64 dec_funcao: tipo T_COLON tipo T_FUN T_VAR T_OPEN param_null . T_CLOSE
+   68 def_funcao: tipo T_COLON tipo T_FUN T_VAR T_OPEN param_null . T_CLOSE T_OPEN_KEY T_NL linhas_funcao T_RET retorno T_NL T_CLOSE_KEY
+
+    T_CLOSE  deslocar, e ir ao estado 221
+
+
+Estado 207
+
+   65 def_funcao: tipo T_FUN T_VAR T_OPEN param_null T_CLOSE T_OPEN_KEY . T_NL linhas_funcao T_RET retorno T_NL T_CLOSE_KEY
+
+    T_NL  deslocar, e ir ao estado 222
+
+
+Estado 208
+
+   74 parametros: parametro T_COMMA parametros .
+
+    $padrão  reduzir usando a regra 74 (parametros)
+
+
+Estado 209
+
+   32 arranjo: T_VAR T_OPEN . expressao T_CLOSE
+   34 arranjo_duplo: T_VAR T_OPEN . expressao T_COMMA expressao T_CLOSE
+
+    T_FLOAT       deslocar, e ir ao estado 33
+    T_INT         deslocar, e ir ao estado 34
+    T_BOOL        deslocar, e ir ao estado 35
+    T_VAR         deslocar, e ir ao estado 1
+    T_OPEN        deslocar, e ir ao estado 36
+    T_MINUS       deslocar, e ir ao estado 37
+    T_NOT         deslocar, e ir ao estado 38
+    T_CAST_INT    deslocar, e ir ao estado 39
+    T_CAST_FLOAT  deslocar, e ir ao estado 40
+    T_CAST_BOOL   deslocar, e ir ao estado 41
+    T_ADDR        deslocar, e ir ao estado 42
+    T_REF         deslocar, e ir ao estado 43
+
+    chamada     ir ao estado 44
+    expressao   ir ao estado 223
+    primitiva   ir ao estado 46
+    var         ir ao estado 47
+    referencia  ir ao estado 30
+
+
+Estado 210
+
+   78 parametro: tipo T_COLON tipo . hash
+
+    T_VAR  deslocar, e ir ao estado 143
+    T_REF  deslocar, e ir ao estado 11
+
+    hash        ir ao estado 224
+    referencia  ir ao estado 148
+
+
+Estado 211
+
+   33 arranjo: referencia T_VAR . T_OPEN expressao T_CLOSE
+   35 arranjo_duplo: referencia T_VAR . T_OPEN expressao T_COMMA expressao T_CLOSE
+  111 var: referencia T_VAR .
+
+    T_OPEN  deslocar, e ir ao estado 225
+
+    $padrão  reduzir usando a regra 111 (var)
+
+
+Estado 212
+
+   29 dec_arranjo: referencia T_VAR T_OPEN expressao T_COMMA expressao . T_CLOSE
+   90 expressao: expressao . T_PLUS expressao
+   91          | expressao . T_MINUS expressao
+   92          | expressao . T_TIMES expressao
+   93          | expressao . T_DIV expressao
+   94          | expressao . T_AND expressao
+   95          | expressao . T_OR expressao
+   96          | expressao . T_EQUAL2 expressao
+   97          | expressao . T_DIF expressao
+   98          | expressao . T_HIGHER expressao
+   99          | expressao . T_HIGH expressao
+  100          | expressao . T_LOWER expressao
+  101          | expressao . T_LOW expressao
+
+    T_CLOSE   deslocar, e ir ao estado 226
+    T_PLUS    deslocar, e ir ao estado 95
+    T_MINUS   deslocar, e ir ao estado 96
+    T_TIMES   deslocar, e ir ao estado 97
+    T_DIV     deslocar, e ir ao estado 98
+    T_AND     deslocar, e ir ao estado 99
+    T_OR      deslocar, e ir ao estado 100
+    T_EQUAL2  deslocar, e ir ao estado 101
+    T_DIF     deslocar, e ir ao estado 102
+    T_HIGHER  deslocar, e ir ao estado 103
+    T_HIGH    deslocar, e ir ao estado 104
+    T_LOWER   deslocar, e ir ao estado 105
+    T_LOW     deslocar, e ir ao estado 106
+
+
+Estado 213
+
+  102 expressao: T_OPEN expressao T_ATRIB_ASK expressao T_COLON expressao T_CLOSE .
+
+    $padrão  reduzir usando a regra 102 (expressao)
+
+
+Estado 214
+
+   47 condicao: T_IF expressao T_NL T_THEN T_OPEN_KEY T_NL linhas_null T_CLOSE_KEY . senao
+
+    T_ELSE  deslocar, e ir ao estado 227
+
+    $padrão  reduzir usando a regra 49 (senao)
+
+    senao  ir ao estado 228
+
+
+Estado 215
+
+   51 caso: T_CASE expressao . T_OPEN_KEY linhas_null T_CLOSE_KEY T_NL caso
+   52     | T_CASE expressao . T_NL caso
+   90 expressao: expressao . T_PLUS expressao
+   91          | expressao . T_MINUS expressao
+   92          | expressao . T_TIMES expressao
+   93          | expressao . T_DIV expressao
+   94          | expressao . T_AND expressao
+   95          | expressao . T_OR expressao
+   96          | expressao . T_EQUAL2 expressao
+   97          | expressao . T_DIF expressao
+   98          | expressao . T_HIGHER expressao
+   99          | expressao . T_HIGH expressao
+  100          | expressao . T_LOWER expressao
+  101          | expressao . T_LOW expressao
+
+    T_NL        deslocar, e ir ao estado 229
+    T_OPEN_KEY  deslocar, e ir ao estado 230
+    T_PLUS      deslocar, e ir ao estado 95
+    T_MINUS     deslocar, e ir ao estado 96
+    T_TIMES     deslocar, e ir ao estado 97
+    T_DIV       deslocar, e ir ao estado 98
+    T_AND       deslocar, e ir ao estado 99
+    T_OR        deslocar, e ir ao estado 100
+    T_EQUAL2    deslocar, e ir ao estado 101
+    T_DIF       deslocar, e ir ao estado 102
+    T_HIGHER    deslocar, e ir ao estado 103
+    T_HIGH      deslocar, e ir ao estado 104
+    T_LOWER     deslocar, e ir ao estado 105
+    T_LOW       deslocar, e ir ao estado 106
+
+
+Estado 216
+
+   53 caso: T_DEFAULT T_OPEN_KEY . linhas_null T_CLOSE_KEY
+
+    T_VAR         deslocar, e ir ao estado 1
+    T_TYPE_INT    deslocar, e ir ao estado 2
+    T_TYPE_FLOAT  deslocar, e ir ao estado 3
+    T_TYPE_BOOL   deslocar, e ir ao estado 4
+    T_NL          deslocar, e ir ao estado 5
+    T_IF          deslocar, e ir ao estado 6
+    T_SWITCH      deslocar, e ir ao estado 7
+    T_FOR         deslocar, e ir ao estado 8
+    T_DO          deslocar, e ir ao estado 9
+    T_WHILE       deslocar, e ir ao estado 10
+    T_REF         deslocar, e ir ao estado 11
+    T_CALC        deslocar, e ir ao estado 12
+
+    $padrão  reduzir usando a regra 56 (linhas_null)
+
+    linhas         ir ao estado 196
+    linha          ir ao estado 15
+    atribuicao     ir ao estado 16
+    var_arranjo    ir ao estado 17
+    declaracao     ir ao estado 18
+    chamada        ir ao estado 19
+    dec_hashes     ir ao estado 20
+    condicao       ir ao estado 21
+    seleciona      ir ao estado 22
+    for_laco       ir ao estado 23
+    linhas_null    ir ao estado 231
+    do_while_laco  ir ao estado 24
+    while_laco     ir ao estado 25
+    dec_funcao     ir ao estado 26
+    def_funcao     ir ao estado 27
+    tipo           ir ao estado 28
+    var            ir ao estado 29
+    referencia     ir ao estado 30
+    interpretacao  ir ao estado 31
+
+
+Estado 217
+
+   50 seleciona: T_SWITCH T_OPEN expressao T_CLOSE T_OPEN_KEY T_NL caso T_NL . T_CLOSE_KEY
+
+    T_CLOSE_KEY  deslocar, e ir ao estado 232
+
+
+Estado 218
+
+   54 for_laco: T_FOR atrib_null T_COMMA expressao T_COMMA atrib_null T_OPEN_KEY T_NL . linhas_null T_CLOSE_KEY
+
+    T_VAR         deslocar, e ir ao estado 1
+    T_TYPE_INT    deslocar, e ir ao estado 2
+    T_TYPE_FLOAT  deslocar, e ir ao estado 3
+    T_TYPE_BOOL   deslocar, e ir ao estado 4
+    T_NL          deslocar, e ir ao estado 5
+    T_IF          deslocar, e ir ao estado 6
+    T_SWITCH      deslocar, e ir ao estado 7
+    T_FOR         deslocar, e ir ao estado 8
+    T_DO          deslocar, e ir ao estado 9
+    T_WHILE       deslocar, e ir ao estado 10
+    T_REF         deslocar, e ir ao estado 11
+    T_CALC        deslocar, e ir ao estado 12
+
+    $padrão  reduzir usando a regra 56 (linhas_null)
+
+    linhas         ir ao estado 196
+    linha          ir ao estado 15
+    atribuicao     ir ao estado 16
+    var_arranjo    ir ao estado 17
+    declaracao     ir ao estado 18
+    chamada        ir ao estado 19
+    dec_hashes     ir ao estado 20
+    condicao       ir ao estado 21
+    seleciona      ir ao estado 22
+    for_laco       ir ao estado 23
+    linhas_null    ir ao estado 233
+    do_while_laco  ir ao estado 24
+    while_laco     ir ao estado 25
+    dec_funcao     ir ao estado 26
+    def_funcao     ir ao estado 27
+    tipo           ir ao estado 28
+    var            ir ao estado 29
+    referencia     ir ao estado 30
+    interpretacao  ir ao estado 31
+
+
+Estado 219
+
+   63 dec_funcao: tipo T_OPEN T_CLOSE T_OPEN T_CLOSE T_FUN T_VAR T_OPEN . param_null T_CLOSE
+   67 def_funcao: tipo T_OPEN T_CLOSE T_OPEN T_CLOSE T_FUN T_VAR T_OPEN . param_null T_CLOSE T_OPEN_KEY T_NL linhas_funcao T_RET retorno T_NL T_CLOSE_KEY
+
+    T_TYPE_INT    deslocar, e ir ao estado 2
+    T_TYPE_FLOAT  deslocar, e ir ao estado 3
+    T_TYPE_BOOL   deslocar, e ir ao estado 4
+
+    $padrão  reduzir usando a regra 72 (param_null)
+
+    param_null  ir ao estado 234
+    parametros  ir ao estado 169
+    parametro   ir ao estado 170
+    tipo        ir ao estado 171
+
+
+Estado 220
+
+   62 dec_funcao: tipo T_OPEN T_CLOSE T_FUN T_VAR T_OPEN param_null T_CLOSE .
+   66 def_funcao: tipo T_OPEN T_CLOSE T_FUN T_VAR T_OPEN param_null T_CLOSE . T_OPEN_KEY T_NL linhas_funcao T_RET retorno T_NL T_CLOSE_KEY
+
+    T_OPEN_KEY  deslocar, e ir ao estado 235
+
+    $padrão  reduzir usando a regra 62 (dec_funcao)
+
+
+Estado 221
+
+   64 dec_funcao: tipo T_COLON tipo T_FUN T_VAR T_OPEN param_null T_CLOSE .
+   68 def_funcao: tipo T_COLON tipo T_FUN T_VAR T_OPEN param_null T_CLOSE . T_OPEN_KEY T_NL linhas_funcao T_RET retorno T_NL T_CLOSE_KEY
+
+    T_OPEN_KEY  deslocar, e ir ao estado 236
+
+    $padrão  reduzir usando a regra 64 (dec_funcao)
+
+
+Estado 222
+
+   65 def_funcao: tipo T_FUN T_VAR T_OPEN param_null T_CLOSE T_OPEN_KEY T_NL . linhas_funcao T_RET retorno T_NL T_CLOSE_KEY
+
+    T_VAR         deslocar, e ir ao estado 1
+    T_TYPE_INT    deslocar, e ir ao estado 2
+    T_TYPE_FLOAT  deslocar, e ir ao estado 3
+    T_TYPE_BOOL   deslocar, e ir ao estado 4
+    T_NL          deslocar, e ir ao estado 5
+    T_IF          deslocar, e ir ao estado 6
+    T_SWITCH      deslocar, e ir ao estado 7
+    T_FOR         deslocar, e ir ao estado 8
+    T_DO          deslocar, e ir ao estado 9
+    T_WHILE       deslocar, e ir ao estado 10
+    T_REF         deslocar, e ir ao estado 11
+    T_CALC        deslocar, e ir ao estado 12
+
+    $padrão  reduzir usando a regra 70 (linhas_funcao)
+
+    linhas         ir ao estado 237
+    linha          ir ao estado 15
+    atribuicao     ir ao estado 16
+    var_arranjo    ir ao estado 17
+    declaracao     ir ao estado 18
+    chamada        ir ao estado 19
+    dec_hashes     ir ao estado 20
+    condicao       ir ao estado 21
+    seleciona      ir ao estado 22
+    for_laco       ir ao estado 23
+    do_while_laco  ir ao estado 24
+    while_laco     ir ao estado 25
+    dec_funcao     ir ao estado 26
+    def_funcao     ir ao estado 27
+    linhas_funcao  ir ao estado 238
+    tipo           ir ao estado 28
+    var            ir ao estado 29
+    referencia     ir ao estado 30
+    interpretacao  ir ao estado 31
+
+
+Estado 223
+
+   32 arranjo: T_VAR T_OPEN expressao . T_CLOSE
+   34 arranjo_duplo: T_VAR T_OPEN expressao . T_COMMA expressao T_CLOSE
+   90 expressao: expressao . T_PLUS expressao
+   91          | expressao . T_MINUS expressao
+   92          | expressao . T_TIMES expressao
+   93          | expressao . T_DIV expressao
+   94          | expressao . T_AND expressao
+   95          | expressao . T_OR expressao
+   96          | expressao . T_EQUAL2 expressao
+   97          | expressao . T_DIF expressao
+   98          | expressao . T_HIGHER expressao
+   99          | expressao . T_HIGH expressao
+  100          | expressao . T_LOWER expressao
+  101          | expressao . T_LOW expressao
+
+    T_CLOSE   deslocar, e ir ao estado 239
+    T_COMMA   deslocar, e ir ao estado 240
+    T_PLUS    deslocar, e ir ao estado 95
+    T_MINUS   deslocar, e ir ao estado 96
+    T_TIMES   deslocar, e ir ao estado 97
+    T_DIV     deslocar, e ir ao estado 98
+    T_AND     deslocar, e ir ao estado 99
+    T_OR      deslocar, e ir ao estado 100
+    T_EQUAL2  deslocar, e ir ao estado 101
+    T_DIF     deslocar, e ir ao estado 102
+    T_HIGHER  deslocar, e ir ao estado 103
+    T_HIGH    deslocar, e ir ao estado 104
+    T_LOWER   deslocar, e ir ao estado 105
+    T_LOW     deslocar, e ir ao estado 106
+
+
+Estado 224
+
+   78 parametro: tipo T_COLON tipo hash .
+
+    $padrão  reduzir usando a regra 78 (parametro)
+
+
+Estado 225
+
+   33 arranjo: referencia T_VAR T_OPEN . expressao T_CLOSE
+   35 arranjo_duplo: referencia T_VAR T_OPEN . expressao T_COMMA expressao T_CLOSE
+
+    T_FLOAT       deslocar, e ir ao estado 33
+    T_INT         deslocar, e ir ao estado 34
+    T_BOOL        deslocar, e ir ao estado 35
+    T_VAR         deslocar, e ir ao estado 1
+    T_OPEN        deslocar, e ir ao estado 36
+    T_MINUS       deslocar, e ir ao estado 37
+    T_NOT         deslocar, e ir ao estado 38
+    T_CAST_INT    deslocar, e ir ao estado 39
+    T_CAST_FLOAT  deslocar, e ir ao estado 40
+    T_CAST_BOOL   deslocar, e ir ao estado 41
+    T_ADDR        deslocar, e ir ao estado 42
+    T_REF         deslocar, e ir ao estado 43
+
+    chamada     ir ao estado 44
+    expressao   ir ao estado 241
+    primitiva   ir ao estado 46
+    var         ir ao estado 47
+    referencia  ir ao estado 30
+
+
+Estado 226
+
+   29 dec_arranjo: referencia T_VAR T_OPEN expressao T_COMMA expressao T_CLOSE .
+
+    $padrão  reduzir usando a regra 29 (dec_arranjo)
+
+
+Estado 227
+
+   48 senao: T_ELSE . T_OPEN_KEY T_NL linhas_null T_CLOSE_KEY
+
+    T_OPEN_KEY  deslocar, e ir ao estado 242
+
+
+Estado 228
+
+   47 condicao: T_IF expressao T_NL T_THEN T_OPEN_KEY T_NL linhas_null T_CLOSE_KEY senao .
+
+    $padrão  reduzir usando a regra 47 (condicao)
+
+
+Estado 229
+
+   52 caso: T_CASE expressao T_NL . caso
+
+    T_CASE     deslocar, e ir ao estado 198
+    T_DEFAULT  deslocar, e ir ao estado 199
+
+    caso  ir ao estado 243
+
+
+Estado 230
+
+   51 caso: T_CASE expressao T_OPEN_KEY . linhas_null T_CLOSE_KEY T_NL caso
+
+    T_VAR         deslocar, e ir ao estado 1
+    T_TYPE_INT    deslocar, e ir ao estado 2
+    T_TYPE_FLOAT  deslocar, e ir ao estado 3
+    T_TYPE_BOOL   deslocar, e ir ao estado 4
+    T_NL          deslocar, e ir ao estado 5
+    T_IF          deslocar, e ir ao estado 6
+    T_SWITCH      deslocar, e ir ao estado 7
+    T_FOR         deslocar, e ir ao estado 8
+    T_DO          deslocar, e ir ao estado 9
+    T_WHILE       deslocar, e ir ao estado 10
+    T_REF         deslocar, e ir ao estado 11
+    T_CALC        deslocar, e ir ao estado 12
+
+    $padrão  reduzir usando a regra 56 (linhas_null)
+
+    linhas         ir ao estado 196
+    linha          ir ao estado 15
+    atribuicao     ir ao estado 16
+    var_arranjo    ir ao estado 17
+    declaracao     ir ao estado 18
+    chamada        ir ao estado 19
+    dec_hashes     ir ao estado 20
+    condicao       ir ao estado 21
+    seleciona      ir ao estado 22
+    for_laco       ir ao estado 23
+    linhas_null    ir ao estado 244
+    do_while_laco  ir ao estado 24
+    while_laco     ir ao estado 25
+    dec_funcao     ir ao estado 26
+    def_funcao     ir ao estado 27
+    tipo           ir ao estado 28
+    var            ir ao estado 29
+    referencia     ir ao estado 30
+    interpretacao  ir ao estado 31
+
+
+Estado 231
+
+   53 caso: T_DEFAULT T_OPEN_KEY linhas_null . T_CLOSE_KEY
+
+    T_CLOSE_KEY  deslocar, e ir ao estado 245
+
+
+Estado 232
+
+   50 seleciona: T_SWITCH T_OPEN expressao T_CLOSE T_OPEN_KEY T_NL caso T_NL T_CLOSE_KEY .
+
+    $padrão  reduzir usando a regra 50 (seleciona)
+
+
+Estado 233
+
+   54 for_laco: T_FOR atrib_null T_COMMA expressao T_COMMA atrib_null T_OPEN_KEY T_NL linhas_null . T_CLOSE_KEY
+
+    T_CLOSE_KEY  deslocar, e ir ao estado 246
+
+
+Estado 234
+
+   63 dec_funcao: tipo T_OPEN T_CLOSE T_OPEN T_CLOSE T_FUN T_VAR T_OPEN param_null . T_CLOSE
+   67 def_funcao: tipo T_OPEN T_CLOSE T_OPEN T_CLOSE T_FUN T_VAR T_OPEN param_null . T_CLOSE T_OPEN_KEY T_NL linhas_funcao T_RET retorno T_NL T_CLOSE_KEY
+
+    T_CLOSE  deslocar, e ir ao estado 247
+
+
+Estado 235
+
+   66 def_funcao: tipo T_OPEN T_CLOSE T_FUN T_VAR T_OPEN param_null T_CLOSE T_OPEN_KEY . T_NL linhas_funcao T_RET retorno T_NL T_CLOSE_KEY
+
+    T_NL  deslocar, e ir ao estado 248
+
+
+Estado 236
+
+   68 def_funcao: tipo T_COLON tipo T_FUN T_VAR T_OPEN param_null T_CLOSE T_OPEN_KEY . T_NL linhas_funcao T_RET retorno T_NL T_CLOSE_KEY
+
+    T_NL  deslocar, e ir ao estado 249
+
+
+Estado 237
+
+    3 linhas: linhas . linha
+   69 linhas_funcao: linhas .
+
+    T_VAR         deslocar, e ir ao estado 1
+    T_TYPE_INT    deslocar, e ir ao estado 2
+    T_TYPE_FLOAT  deslocar, e ir ao estado 3
+    T_TYPE_BOOL   deslocar, e ir ao estado 4
+    T_NL          deslocar, e ir ao estado 5
+    T_IF          deslocar, e ir ao estado 6
+    T_SWITCH      deslocar, e ir ao estado 7
+    T_FOR         deslocar, e ir ao estado 8
+    T_DO          deslocar, e ir ao estado 9
+    T_WHILE       deslocar, e ir ao estado 10
+    T_REF         deslocar, e ir ao estado 11
+    T_CALC        deslocar, e ir ao estado 12
+
+    $padrão  reduzir usando a regra 69 (linhas_funcao)
+
+    linha          ir ao estado 56
+    atribuicao     ir ao estado 16
+    var_arranjo    ir ao estado 17
+    declaracao     ir ao estado 18
+    chamada        ir ao estado 19
+    dec_hashes     ir ao estado 20
+    condicao       ir ao estado 21
+    seleciona      ir ao estado 22
+    for_laco       ir ao estado 23
+    do_while_laco  ir ao estado 24
+    while_laco     ir ao estado 25
+    dec_funcao     ir ao estado 26
+    def_funcao     ir ao estado 27
+    tipo           ir ao estado 28
+    var            ir ao estado 29
+    referencia     ir ao estado 30
+    interpretacao  ir ao estado 31
+
+
+Estado 238
+
+   65 def_funcao: tipo T_FUN T_VAR T_OPEN param_null T_CLOSE T_OPEN_KEY T_NL linhas_funcao . T_RET retorno T_NL T_CLOSE_KEY
+
+    T_RET  deslocar, e ir ao estado 250
+
+
+Estado 239
+
+   32 arranjo: T_VAR T_OPEN expressao T_CLOSE .
+
+    $padrão  reduzir usando a regra 32 (arranjo)
+
+
+Estado 240
+
+   34 arranjo_duplo: T_VAR T_OPEN expressao T_COMMA . expressao T_CLOSE
+
+    T_FLOAT       deslocar, e ir ao estado 33
+    T_INT         deslocar, e ir ao estado 34
+    T_BOOL        deslocar, e ir ao estado 35
+    T_VAR         deslocar, e ir ao estado 1
+    T_OPEN        deslocar, e ir ao estado 36
+    T_MINUS       deslocar, e ir ao estado 37
+    T_NOT         deslocar, e ir ao estado 38
+    T_CAST_INT    deslocar, e ir ao estado 39
+    T_CAST_FLOAT  deslocar, e ir ao estado 40
+    T_CAST_BOOL   deslocar, e ir ao estado 41
+    T_ADDR        deslocar, e ir ao estado 42
+    T_REF         deslocar, e ir ao estado 43
+
+    chamada     ir ao estado 44
+    expressao   ir ao estado 251
+    primitiva   ir ao estado 46
+    var         ir ao estado 47
+    referencia  ir ao estado 30
+
+
+Estado 241
+
+   33 arranjo: referencia T_VAR T_OPEN expressao . T_CLOSE
+   35 arranjo_duplo: referencia T_VAR T_OPEN expressao . T_COMMA expressao T_CLOSE
+   90 expressao: expressao . T_PLUS expressao
+   91          | expressao . T_MINUS expressao
+   92          | expressao . T_TIMES expressao
+   93          | expressao . T_DIV expressao
+   94          | expressao . T_AND expressao
+   95          | expressao . T_OR expressao
+   96          | expressao . T_EQUAL2 expressao
+   97          | expressao . T_DIF expressao
+   98          | expressao . T_HIGHER expressao
+   99          | expressao . T_HIGH expressao
+  100          | expressao . T_LOWER expressao
+  101          | expressao . T_LOW expressao
+
+    T_CLOSE   deslocar, e ir ao estado 252
+    T_COMMA   deslocar, e ir ao estado 253
+    T_PLUS    deslocar, e ir ao estado 95
+    T_MINUS   deslocar, e ir ao estado 96
+    T_TIMES   deslocar, e ir ao estado 97
+    T_DIV     deslocar, e ir ao estado 98
+    T_AND     deslocar, e ir ao estado 99
+    T_OR      deslocar, e ir ao estado 100
+    T_EQUAL2  deslocar, e ir ao estado 101
+    T_DIF     deslocar, e ir ao estado 102
+    T_HIGHER  deslocar, e ir ao estado 103
+    T_HIGH    deslocar, e ir ao estado 104
+    T_LOWER   deslocar, e ir ao estado 105
+    T_LOW     deslocar, e ir ao estado 106
+
+
+Estado 242
+
+   48 senao: T_ELSE T_OPEN_KEY . T_NL linhas_null T_CLOSE_KEY
+
+    T_NL  deslocar, e ir ao estado 254
+
+
+Estado 243
+
+   52 caso: T_CASE expressao T_NL caso .
+
+    $padrão  reduzir usando a regra 52 (caso)
+
+
+Estado 244
+
+   51 caso: T_CASE expressao T_OPEN_KEY linhas_null . T_CLOSE_KEY T_NL caso
+
+    T_CLOSE_KEY  deslocar, e ir ao estado 255
+
+
+Estado 245
+
+   53 caso: T_DEFAULT T_OPEN_KEY linhas_null T_CLOSE_KEY .
+
+    $padrão  reduzir usando a regra 53 (caso)
+
+
+Estado 246
+
+   54 for_laco: T_FOR atrib_null T_COMMA expressao T_COMMA atrib_null T_OPEN_KEY T_NL linhas_null T_CLOSE_KEY .
+
+    $padrão  reduzir usando a regra 54 (for_laco)
+
+
+Estado 247
+
+   63 dec_funcao: tipo T_OPEN T_CLOSE T_OPEN T_CLOSE T_FUN T_VAR T_OPEN param_null T_CLOSE .
+   67 def_funcao: tipo T_OPEN T_CLOSE T_OPEN T_CLOSE T_FUN T_VAR T_OPEN param_null T_CLOSE . T_OPEN_KEY T_NL linhas_funcao T_RET retorno T_NL T_CLOSE_KEY
+
+    T_OPEN_KEY  deslocar, e ir ao estado 256
+
+    $padrão  reduzir usando a regra 63 (dec_funcao)
+
+
+Estado 248
+
+   66 def_funcao: tipo T_OPEN T_CLOSE T_FUN T_VAR T_OPEN param_null T_CLOSE T_OPEN_KEY T_NL . linhas_funcao T_RET retorno T_NL T_CLOSE_KEY
+
+    T_VAR         deslocar, e ir ao estado 1
+    T_TYPE_INT    deslocar, e ir ao estado 2
+    T_TYPE_FLOAT  deslocar, e ir ao estado 3
+    T_TYPE_BOOL   deslocar, e ir ao estado 4
+    T_NL          deslocar, e ir ao estado 5
+    T_IF          deslocar, e ir ao estado 6
+    T_SWITCH      deslocar, e ir ao estado 7
+    T_FOR         deslocar, e ir ao estado 8
+    T_DO          deslocar, e ir ao estado 9
+    T_WHILE       deslocar, e ir ao estado 10
+    T_REF         deslocar, e ir ao estado 11
+    T_CALC        deslocar, e ir ao estado 12
+
+    $padrão  reduzir usando a regra 70 (linhas_funcao)
+
+    linhas         ir ao estado 237
+    linha          ir ao estado 15
+    atribuicao     ir ao estado 16
+    var_arranjo    ir ao estado 17
+    declaracao     ir ao estado 18
+    chamada        ir ao estado 19
+    dec_hashes     ir ao estado 20
+    condicao       ir ao estado 21
+    seleciona      ir ao estado 22
+    for_laco       ir ao estado 23
+    do_while_laco  ir ao estado 24
+    while_laco     ir ao estado 25
+    dec_funcao     ir ao estado 26
+    def_funcao     ir ao estado 27
+    linhas_funcao  ir ao estado 257
+    tipo           ir ao estado 28
+    var            ir ao estado 29
+    referencia     ir ao estado 30
+    interpretacao  ir ao estado 31
+
+
+Estado 249
+
+   68 def_funcao: tipo T_COLON tipo T_FUN T_VAR T_OPEN param_null T_CLOSE T_OPEN_KEY T_NL . linhas_funcao T_RET retorno T_NL T_CLOSE_KEY
+
+    T_VAR         deslocar, e ir ao estado 1
+    T_TYPE_INT    deslocar, e ir ao estado 2
+    T_TYPE_FLOAT  deslocar, e ir ao estado 3
+    T_TYPE_BOOL   deslocar, e ir ao estado 4
+    T_NL          deslocar, e ir ao estado 5
+    T_IF          deslocar, e ir ao estado 6
+    T_SWITCH      deslocar, e ir ao estado 7
+    T_FOR         deslocar, e ir ao estado 8
+    T_DO          deslocar, e ir ao estado 9
+    T_WHILE       deslocar, e ir ao estado 10
+    T_REF         deslocar, e ir ao estado 11
+    T_CALC        deslocar, e ir ao estado 12
+
+    $padrão  reduzir usando a regra 70 (linhas_funcao)
+
+    linhas         ir ao estado 237
+    linha          ir ao estado 15
+    atribuicao     ir ao estado 16
+    var_arranjo    ir ao estado 17
+    declaracao     ir ao estado 18
+    chamada        ir ao estado 19
+    dec_hashes     ir ao estado 20
+    condicao       ir ao estado 21
+    seleciona      ir ao estado 22
+    for_laco       ir ao estado 23
+    do_while_laco  ir ao estado 24
+    while_laco     ir ao estado 25
+    dec_funcao     ir ao estado 26
+    def_funcao     ir ao estado 27
+    linhas_funcao  ir ao estado 258
+    tipo           ir ao estado 28
+    var            ir ao estado 29
+    referencia     ir ao estado 30
+    interpretacao  ir ao estado 31
+
+
+Estado 250
+
+   65 def_funcao: tipo T_FUN T_VAR T_OPEN param_null T_CLOSE T_OPEN_KEY T_NL linhas_funcao T_RET . retorno T_NL T_CLOSE_KEY
+
+    T_FLOAT       deslocar, e ir ao estado 33
+    T_INT         deslocar, e ir ao estado 34
+    T_BOOL        deslocar, e ir ao estado 35
+    T_VAR         deslocar, e ir ao estado 1
+    T_OPEN        deslocar, e ir ao estado 36
+    T_MINUS       deslocar, e ir ao estado 37
+    T_NOT         deslocar, e ir ao estado 38
+    T_CAST_INT    deslocar, e ir ao estado 39
+    T_CAST_FLOAT  deslocar, e ir ao estado 40
+    T_CAST_BOOL   deslocar, e ir ao estado 41
+    T_ADDR        deslocar, e ir ao estado 42
+    T_REF         deslocar, e ir ao estado 43
+
+    chamada     ir ao estado 44
+    retorno     ir ao estado 259
+    expressao   ir ao estado 260
+    primitiva   ir ao estado 46
+    var         ir ao estado 47
+    referencia  ir ao estado 30
+
+
+Estado 251
+
+   34 arranjo_duplo: T_VAR T_OPEN expressao T_COMMA expressao . T_CLOSE
+   90 expressao: expressao . T_PLUS expressao
+   91          | expressao . T_MINUS expressao
+   92          | expressao . T_TIMES expressao
+   93          | expressao . T_DIV expressao
+   94          | expressao . T_AND expressao
+   95          | expressao . T_OR expressao
+   96          | expressao . T_EQUAL2 expressao
+   97          | expressao . T_DIF expressao
+   98          | expressao . T_HIGHER expressao
+   99          | expressao . T_HIGH expressao
+  100          | expressao . T_LOWER expressao
+  101          | expressao . T_LOW expressao
+
+    T_CLOSE   deslocar, e ir ao estado 261
+    T_PLUS    deslocar, e ir ao estado 95
+    T_MINUS   deslocar, e ir ao estado 96
+    T_TIMES   deslocar, e ir ao estado 97
+    T_DIV     deslocar, e ir ao estado 98
+    T_AND     deslocar, e ir ao estado 99
+    T_OR      deslocar, e ir ao estado 100
+    T_EQUAL2  deslocar, e ir ao estado 101
+    T_DIF     deslocar, e ir ao estado 102
+    T_HIGHER  deslocar, e ir ao estado 103
+    T_HIGH    deslocar, e ir ao estado 104
+    T_LOWER   deslocar, e ir ao estado 105
+    T_LOW     deslocar, e ir ao estado 106
+
+
+Estado 252
+
+   33 arranjo: referencia T_VAR T_OPEN expressao T_CLOSE .
+
+    $padrão  reduzir usando a regra 33 (arranjo)
+
+
+Estado 253
+
+   35 arranjo_duplo: referencia T_VAR T_OPEN expressao T_COMMA . expressao T_CLOSE
+
+    T_FLOAT       deslocar, e ir ao estado 33
+    T_INT         deslocar, e ir ao estado 34
+    T_BOOL        deslocar, e ir ao estado 35
+    T_VAR         deslocar, e ir ao estado 1
+    T_OPEN        deslocar, e ir ao estado 36
+    T_MINUS       deslocar, e ir ao estado 37
+    T_NOT         deslocar, e ir ao estado 38
+    T_CAST_INT    deslocar, e ir ao estado 39
+    T_CAST_FLOAT  deslocar, e ir ao estado 40
+    T_CAST_BOOL   deslocar, e ir ao estado 41
+    T_ADDR        deslocar, e ir ao estado 42
+    T_REF         deslocar, e ir ao estado 43
+
+    chamada     ir ao estado 44
+    expressao   ir ao estado 262
+    primitiva   ir ao estado 46
+    var         ir ao estado 47
+    referencia  ir ao estado 30
+
+
+Estado 254
+
+   48 senao: T_ELSE T_OPEN_KEY T_NL . linhas_null T_CLOSE_KEY
+
+    T_VAR         deslocar, e ir ao estado 1
+    T_TYPE_INT    deslocar, e ir ao estado 2
+    T_TYPE_FLOAT  deslocar, e ir ao estado 3
+    T_TYPE_BOOL   deslocar, e ir ao estado 4
+    T_NL          deslocar, e ir ao estado 5
+    T_IF          deslocar, e ir ao estado 6
+    T_SWITCH      deslocar, e ir ao estado 7
+    T_FOR         deslocar, e ir ao estado 8
+    T_DO          deslocar, e ir ao estado 9
+    T_WHILE       deslocar, e ir ao estado 10
+    T_REF         deslocar, e ir ao estado 11
+    T_CALC        deslocar, e ir ao estado 12
+
+    $padrão  reduzir usando a regra 56 (linhas_null)
+
+    linhas         ir ao estado 196
+    linha          ir ao estado 15
+    atribuicao     ir ao estado 16
+    var_arranjo    ir ao estado 17
+    declaracao     ir ao estado 18
+    chamada        ir ao estado 19
+    dec_hashes     ir ao estado 20
+    condicao       ir ao estado 21
+    seleciona      ir ao estado 22
+    for_laco       ir ao estado 23
+    linhas_null    ir ao estado 263
+    do_while_laco  ir ao estado 24
+    while_laco     ir ao estado 25
+    dec_funcao     ir ao estado 26
+    def_funcao     ir ao estado 27
+    tipo           ir ao estado 28
+    var            ir ao estado 29
+    referencia     ir ao estado 30
+    interpretacao  ir ao estado 31
+
+
+Estado 255
+
+   51 caso: T_CASE expressao T_OPEN_KEY linhas_null T_CLOSE_KEY . T_NL caso
+
+    T_NL  deslocar, e ir ao estado 264
+
+
+Estado 256
+
+   67 def_funcao: tipo T_OPEN T_CLOSE T_OPEN T_CLOSE T_FUN T_VAR T_OPEN param_null T_CLOSE T_OPEN_KEY . T_NL linhas_funcao T_RET retorno T_NL T_CLOSE_KEY
+
+    T_NL  deslocar, e ir ao estado 265
+
+
+Estado 257
+
+   66 def_funcao: tipo T_OPEN T_CLOSE T_FUN T_VAR T_OPEN param_null T_CLOSE T_OPEN_KEY T_NL linhas_funcao . T_RET retorno T_NL T_CLOSE_KEY
+
+    T_RET  deslocar, e ir ao estado 266
+
+
+Estado 258
+
+   68 def_funcao: tipo T_COLON tipo T_FUN T_VAR T_OPEN param_null T_CLOSE T_OPEN_KEY T_NL linhas_funcao . T_RET retorno T_NL T_CLOSE_KEY
+
+    T_RET  deslocar, e ir ao estado 267
+
+
+Estado 259
+
+   65 def_funcao: tipo T_FUN T_VAR T_OPEN param_null T_CLOSE T_OPEN_KEY T_NL linhas_funcao T_RET retorno . T_NL T_CLOSE_KEY
+
+    T_NL  deslocar, e ir ao estado 268
+
+
+Estado 260
+
+   79 retorno: expressao .
+   90 expressao: expressao . T_PLUS expressao
+   91          | expressao . T_MINUS expressao
+   92          | expressao . T_TIMES expressao
+   93          | expressao . T_DIV expressao
+   94          | expressao . T_AND expressao
+   95          | expressao . T_OR expressao
+   96          | expressao . T_EQUAL2 expressao
+   97          | expressao . T_DIF expressao
+   98          | expressao . T_HIGHER expressao
+   99          | expressao . T_HIGH expressao
+  100          | expressao . T_LOWER expressao
+  101          | expressao . T_LOW expressao
+
+    T_PLUS    deslocar, e ir ao estado 95
+    T_MINUS   deslocar, e ir ao estado 96
+    T_TIMES   deslocar, e ir ao estado 97
+    T_DIV     deslocar, e ir ao estado 98
+    T_AND     deslocar, e ir ao estado 99
+    T_OR      deslocar, e ir ao estado 100
+    T_EQUAL2  deslocar, e ir ao estado 101
+    T_DIF     deslocar, e ir ao estado 102
+    T_HIGHER  deslocar, e ir ao estado 103
+    T_HIGH    deslocar, e ir ao estado 104
+    T_LOWER   deslocar, e ir ao estado 105
+    T_LOW     deslocar, e ir ao estado 106
+
+    $padrão  reduzir usando a regra 79 (retorno)
+
+
+Estado 261
+
+   34 arranjo_duplo: T_VAR T_OPEN expressao T_COMMA expressao T_CLOSE .
+
+    $padrão  reduzir usando a regra 34 (arranjo_duplo)
+
+
+Estado 262
+
+   35 arranjo_duplo: referencia T_VAR T_OPEN expressao T_COMMA expressao . T_CLOSE
+   90 expressao: expressao . T_PLUS expressao
+   91          | expressao . T_MINUS expressao
+   92          | expressao . T_TIMES expressao
+   93          | expressao . T_DIV expressao
+   94          | expressao . T_AND expressao
+   95          | expressao . T_OR expressao
+   96          | expressao . T_EQUAL2 expressao
+   97          | expressao . T_DIF expressao
+   98          | expressao . T_HIGHER expressao
+   99          | expressao . T_HIGH expressao
+  100          | expressao . T_LOWER expressao
+  101          | expressao . T_LOW expressao
+
+    T_CLOSE   deslocar, e ir ao estado 269
+    T_PLUS    deslocar, e ir ao estado 95
+    T_MINUS   deslocar, e ir ao estado 96
+    T_TIMES   deslocar, e ir ao estado 97
+    T_DIV     deslocar, e ir ao estado 98
+    T_AND     deslocar, e ir ao estado 99
+    T_OR      deslocar, e ir ao estado 100
+    T_EQUAL2  deslocar, e ir ao estado 101
+    T_DIF     deslocar, e ir ao estado 102
+    T_HIGHER  deslocar, e ir ao estado 103
+    T_HIGH    deslocar, e ir ao estado 104
+    T_LOWER   deslocar, e ir ao estado 105
+    T_LOW     deslocar, e ir ao estado 106
+
+
+Estado 263
+
+   48 senao: T_ELSE T_OPEN_KEY T_NL linhas_null . T_CLOSE_KEY
+
+    T_CLOSE_KEY  deslocar, e ir ao estado 270
+
+
+Estado 264
+
+   51 caso: T_CASE expressao T_OPEN_KEY linhas_null T_CLOSE_KEY T_NL . caso
+
+    T_CASE     deslocar, e ir ao estado 198
+    T_DEFAULT  deslocar, e ir ao estado 199
+
+    caso  ir ao estado 271
+
+
+Estado 265
+
+   67 def_funcao: tipo T_OPEN T_CLOSE T_OPEN T_CLOSE T_FUN T_VAR T_OPEN param_null T_CLOSE T_OPEN_KEY T_NL . linhas_funcao T_RET retorno T_NL T_CLOSE_KEY
+
+    T_VAR         deslocar, e ir ao estado 1
+    T_TYPE_INT    deslocar, e ir ao estado 2
+    T_TYPE_FLOAT  deslocar, e ir ao estado 3
+    T_TYPE_BOOL   deslocar, e ir ao estado 4
+    T_NL          deslocar, e ir ao estado 5
+    T_IF          deslocar, e ir ao estado 6
+    T_SWITCH      deslocar, e ir ao estado 7
+    T_FOR         deslocar, e ir ao estado 8
+    T_DO          deslocar, e ir ao estado 9
+    T_WHILE       deslocar, e ir ao estado 10
+    T_REF         deslocar, e ir ao estado 11
+    T_CALC        deslocar, e ir ao estado 12
+
+    $padrão  reduzir usando a regra 70 (linhas_funcao)
+
+    linhas         ir ao estado 237
+    linha          ir ao estado 15
+    atribuicao     ir ao estado 16
+    var_arranjo    ir ao estado 17
+    declaracao     ir ao estado 18
+    chamada        ir ao estado 19
+    dec_hashes     ir ao estado 20
+    condicao       ir ao estado 21
+    seleciona      ir ao estado 22
+    for_laco       ir ao estado 23
+    do_while_laco  ir ao estado 24
+    while_laco     ir ao estado 25
+    dec_funcao     ir ao estado 26
+    def_funcao     ir ao estado 27
+    linhas_funcao  ir ao estado 272
+    tipo           ir ao estado 28
+    var            ir ao estado 29
+    referencia     ir ao estado 30
+    interpretacao  ir ao estado 31
+
+
+Estado 266
+
+   66 def_funcao: tipo T_OPEN T_CLOSE T_FUN T_VAR T_OPEN param_null T_CLOSE T_OPEN_KEY T_NL linhas_funcao T_RET . retorno T_NL T_CLOSE_KEY
+
+    T_FLOAT       deslocar, e ir ao estado 33
+    T_INT         deslocar, e ir ao estado 34
+    T_BOOL        deslocar, e ir ao estado 35
+    T_VAR         deslocar, e ir ao estado 1
+    T_OPEN        deslocar, e ir ao estado 36
+    T_MINUS       deslocar, e ir ao estado 37
+    T_NOT         deslocar, e ir ao estado 38
+    T_CAST_INT    deslocar, e ir ao estado 39
+    T_CAST_FLOAT  deslocar, e ir ao estado 40
+    T_CAST_BOOL   deslocar, e ir ao estado 41
+    T_ADDR        deslocar, e ir ao estado 42
+    T_REF         deslocar, e ir ao estado 43
+
+    chamada     ir ao estado 44
+    retorno     ir ao estado 273
+    expressao   ir ao estado 260
+    primitiva   ir ao estado 46
+    var         ir ao estado 47
+    referencia  ir ao estado 30
+
+
+Estado 267
+
+   68 def_funcao: tipo T_COLON tipo T_FUN T_VAR T_OPEN param_null T_CLOSE T_OPEN_KEY T_NL linhas_funcao T_RET . retorno T_NL T_CLOSE_KEY
+
+    T_FLOAT       deslocar, e ir ao estado 33
+    T_INT         deslocar, e ir ao estado 34
+    T_BOOL        deslocar, e ir ao estado 35
+    T_VAR         deslocar, e ir ao estado 1
+    T_OPEN        deslocar, e ir ao estado 36
+    T_MINUS       deslocar, e ir ao estado 37
+    T_NOT         deslocar, e ir ao estado 38
+    T_CAST_INT    deslocar, e ir ao estado 39
+    T_CAST_FLOAT  deslocar, e ir ao estado 40
+    T_CAST_BOOL   deslocar, e ir ao estado 41
+    T_ADDR        deslocar, e ir ao estado 42
+    T_REF         deslocar, e ir ao estado 43
+
+    chamada     ir ao estado 44
+    retorno     ir ao estado 274
+    expressao   ir ao estado 260
+    primitiva   ir ao estado 46
+    var         ir ao estado 47
+    referencia  ir ao estado 30
+
+
+Estado 268
+
+   65 def_funcao: tipo T_FUN T_VAR T_OPEN param_null T_CLOSE T_OPEN_KEY T_NL linhas_funcao T_RET retorno T_NL . T_CLOSE_KEY
+
+    T_CLOSE_KEY  deslocar, e ir ao estado 275
+
+
+Estado 269
+
+   35 arranjo_duplo: referencia T_VAR T_OPEN expressao T_COMMA expressao T_CLOSE .
+
+    $padrão  reduzir usando a regra 35 (arranjo_duplo)
+
+
+Estado 270
+
+   48 senao: T_ELSE T_OPEN_KEY T_NL linhas_null T_CLOSE_KEY .
+
+    $padrão  reduzir usando a regra 48 (senao)
+
+
+Estado 271
+
+   51 caso: T_CASE expressao T_OPEN_KEY linhas_null T_CLOSE_KEY T_NL caso .
+
+    $padrão  reduzir usando a regra 51 (caso)
+
+
+Estado 272
+
+   67 def_funcao: tipo T_OPEN T_CLOSE T_OPEN T_CLOSE T_FUN T_VAR T_OPEN param_null T_CLOSE T_OPEN_KEY T_NL linhas_funcao . T_RET retorno T_NL T_CLOSE_KEY
+
+    T_RET  deslocar, e ir ao estado 276
+
+
+Estado 273
+
+   66 def_funcao: tipo T_OPEN T_CLOSE T_FUN T_VAR T_OPEN param_null T_CLOSE T_OPEN_KEY T_NL linhas_funcao T_RET retorno . T_NL T_CLOSE_KEY
+
+    T_NL  deslocar, e ir ao estado 277
+
+
+Estado 274
+
+   68 def_funcao: tipo T_COLON tipo T_FUN T_VAR T_OPEN param_null T_CLOSE T_OPEN_KEY T_NL linhas_funcao T_RET retorno . T_NL T_CLOSE_KEY
+
+    T_NL  deslocar, e ir ao estado 278
+
+
+Estado 275
+
+   65 def_funcao: tipo T_FUN T_VAR T_OPEN param_null T_CLOSE T_OPEN_KEY T_NL linhas_funcao T_RET retorno T_NL T_CLOSE_KEY .
+
+    $padrão  reduzir usando a regra 65 (def_funcao)
+
+
+Estado 276
+
+   67 def_funcao: tipo T_OPEN T_CLOSE T_OPEN T_CLOSE T_FUN T_VAR T_OPEN param_null T_CLOSE T_OPEN_KEY T_NL linhas_funcao T_RET . retorno T_NL T_CLOSE_KEY
+
+    T_FLOAT       deslocar, e ir ao estado 33
+    T_INT         deslocar, e ir ao estado 34
+    T_BOOL        deslocar, e ir ao estado 35
+    T_VAR         deslocar, e ir ao estado 1
+    T_OPEN        deslocar, e ir ao estado 36
+    T_MINUS       deslocar, e ir ao estado 37
+    T_NOT         deslocar, e ir ao estado 38
+    T_CAST_INT    deslocar, e ir ao estado 39
+    T_CAST_FLOAT  deslocar, e ir ao estado 40
+    T_CAST_BOOL   deslocar, e ir ao estado 41
+    T_ADDR        deslocar, e ir ao estado 42
+    T_REF         deslocar, e ir ao estado 43
+
+    chamada     ir ao estado 44
+    retorno     ir ao estado 279
+    expressao   ir ao estado 260
+    primitiva   ir ao estado 46
+    var         ir ao estado 47
+    referencia  ir ao estado 30
+
+
+Estado 277
+
+   66 def_funcao: tipo T_OPEN T_CLOSE T_FUN T_VAR T_OPEN param_null T_CLOSE T_OPEN_KEY T_NL linhas_funcao T_RET retorno T_NL . T_CLOSE_KEY
+
+    T_CLOSE_KEY  deslocar, e ir ao estado 280
+
+
+Estado 278
+
+   68 def_funcao: tipo T_COLON tipo T_FUN T_VAR T_OPEN param_null T_CLOSE T_OPEN_KEY T_NL linhas_funcao T_RET retorno T_NL . T_CLOSE_KEY
+
+    T_CLOSE_KEY  deslocar, e ir ao estado 281
+
+
+Estado 279
+
+   67 def_funcao: tipo T_OPEN T_CLOSE T_OPEN T_CLOSE T_FUN T_VAR T_OPEN param_null T_CLOSE T_OPEN_KEY T_NL linhas_funcao T_RET retorno . T_NL T_CLOSE_KEY
+
+    T_NL  deslocar, e ir ao estado 282
+
+
+Estado 280
+
+   66 def_funcao: tipo T_OPEN T_CLOSE T_FUN T_VAR T_OPEN param_null T_CLOSE T_OPEN_KEY T_NL linhas_funcao T_RET retorno T_NL T_CLOSE_KEY .
+
+    $padrão  reduzir usando a regra 66 (def_funcao)
+
+
+Estado 281
+
+   68 def_funcao: tipo T_COLON tipo T_FUN T_VAR T_OPEN param_null T_CLOSE T_OPEN_KEY T_NL linhas_funcao T_RET retorno T_NL T_CLOSE_KEY .
+
+    $padrão  reduzir usando a regra 68 (def_funcao)
+
+
+Estado 282
+
+   67 def_funcao: tipo T_OPEN T_CLOSE T_OPEN T_CLOSE T_FUN T_VAR T_OPEN param_null T_CLOSE T_OPEN_KEY T_NL linhas_funcao T_RET retorno T_NL . T_CLOSE_KEY
+
+    T_CLOSE_KEY  deslocar, e ir ao estado 283
+
+
+Estado 283
+
+   67 def_funcao: tipo T_OPEN T_CLOSE T_OPEN T_CLOSE T_FUN T_VAR T_OPEN param_null T_CLOSE T_OPEN_KEY T_NL linhas_funcao T_RET retorno T_NL T_CLOSE_KEY .
+
+    $padrão  reduzir usando a regra 67 (def_funcao)

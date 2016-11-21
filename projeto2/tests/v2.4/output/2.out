@@ -1,11 +1,10 @@
-int var: a = 0
-int fun: fibonacci (params: int p)
-  = a + a 1
+int fun: fatorial (params: int p)
   int var: r = 1
   if: > p 1
   then:
-    = r + fibonacci[1 params] - p 1 fibonacci[1 params] - p 2
+    = r * fatorial[1 params] - p 1 p
   ret r
-$ R: 3
-$ R: a = 9
+$ R: 5040
+$ R: 720
+$ R: 120
 
