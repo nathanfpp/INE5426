@@ -159,6 +159,7 @@ compare_test:
 	diff tests/v2.2/expected/2.ex tests/v2.2/output/2.out
 	diff tests/v2.2/expected/3.ex tests/v2.2/output/3.out
 	diff tests/v2.2/expected/4.ex tests/v2.2/output/4.out
+	diff tests/v2.2/expected/5.ex tests/v2.2/output/5.out
 	diff tests/v2.3/expected/1.ex tests/v2.3/output/1.out
 	diff tests/v2.3/expected/2.ex tests/v2.3/output/2.out
 	diff tests/v2.3/expected/3.ex tests/v2.3/output/3.out

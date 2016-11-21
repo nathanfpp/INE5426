@@ -180,12 +180,19 @@ Tipo Chamada::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool 
                   // O tipo usado como índice é válido? parametros = tamanho
                     Tipo recebido = ((Parametro*)parametros)->parametro->analisar(tabelaDeSimbolos,linha, analisador);
                     Tipo chave = h->tipoDeChave;
-                    if(chave != recebido) {
+		    if (chave == Tipo::real && recebido == Tipo::inteiro){   
+			  //faço uma coerção
+			(((Parametro*)parametros)->parametro) = new OperacaoUnaria(Tipo::opUnaria, Tipo::conversao_float, 									((Parametro*)((Parametro*)parametros)->parametro));
+			((OperacaoUnaria*)((Parametro*)parametros)->parametro)->analisar(tabelaDeSimbolos,linha, analisador);
+			
+		    }
+                    else if (chave != recebido) {
                         std::cerr << "[Line " << linha << "] semantic error: key operator expects ";
                         std::cerr << imprimirTipoPorExtenso(chave) << " but received " << imprimirTipoPorExtenso(recebido) << "\n";
+
                     }
 		   
- 		    else if(analisador && read_hash){ //se eu estiver na condição de leitura do hash para leitura.
+ 		    if(analisador && read_hash){ //se eu estiver na condição de leitura do hash para leitura.
 
 		     // chave pela qual quero ler
 		     int chave_i = ((Parametro*)((Parametro*)parametros)->parametro)->inteiro;	
@@ -195,7 +202,6 @@ Tipo Chamada::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool 
 		     switch (h->tipoDeHash(tabelaDeSimbolos)){
 		     //associo leitura da chave pelo tipo hash, se chave não existir um erro é emitido.
 			    case hash_bb:
-
 				if(h->bool_bool.find(chave_b) != h->bool_bool.end())   
 			    	boolean = h->bool_bool[chave_b];
 				else std::cerr << "[Line " << linha << "] $ interpreter error: the key doesn't exist"<< "\n";
