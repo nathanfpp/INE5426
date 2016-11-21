@@ -158,9 +158,9 @@ Tipo OperacaoBinaria::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linh
 		case Tipo::hash: {
                      Hash *h = (Hash*) tabelaDeSimbolos->recuperar(esquerda->id, linha, true);
 		     int chave_i = ((Parametro*)((Chamada*)esquerda)->parametros)->parametro->inteiro;
-		     bool chave_b = ((Parametro*)((Chamada*)esquerda)->parametros)->parametro->real;
-		     double chave_r = ((Parametro*)((Chamada*)esquerda)->parametros)->parametro->boolean;
-		     switch (h->tipoDeHash(tabelaDeSimbolos)){
+		     bool chave_b = ((Parametro*)((Chamada*)esquerda)->parametros)->parametro->boolean;
+		     double chave_r = ((Parametro*)((Chamada*)esquerda)->parametros)->parametro->real;
+		     switch (tabelaDeSimbolos->tipoDeHash(h->tipoDeChave, h->tipoDeVariavel)){
 		    
 			    case hash_bb:
 			    h->bool_bool[chave_b] = direita->boolean;

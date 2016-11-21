@@ -1537,6 +1537,17 @@ Estado 91
   100          | expressao . T_LOWER expressao
   101          | expressao . T_LOW expressao
 
+    T_PLUS    deslocar, e ir ao estado 95
+    T_MINUS   deslocar, e ir ao estado 96
+    T_TIMES   deslocar, e ir ao estado 97
+    T_DIV     deslocar, e ir ao estado 98
+    T_EQUAL2  deslocar, e ir ao estado 101
+    T_DIF     deslocar, e ir ao estado 102
+    T_HIGHER  deslocar, e ir ao estado 103
+    T_HIGH    deslocar, e ir ao estado 104
+    T_LOWER   deslocar, e ir ao estado 105
+    T_LOW     deslocar, e ir ao estado 106
+
     $padrão  reduzir usando a regra 86 (expressao)
 
 

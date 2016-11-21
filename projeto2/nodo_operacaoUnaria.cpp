@@ -41,7 +41,7 @@ Tipo OperacaoUnaria::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha
 
           // Retorna o tipo do filho
             return d;
-
+	break;
       // Operação Inversão (Negação Lógica) recebe "bool" e devolve "bool"
         case Tipo::inversao:
             if( d != Tipo::boolean) {
@@ -54,7 +54,7 @@ Tipo OperacaoUnaria::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha
           // A inversão só retorna boolean
 	    tipoDoRetorno = Tipo::boolean;
             return Tipo::boolean;
-
+	break;
       // Conversões retornam o tipo convertido, independente da entrada
         case Tipo::conversao_int:
             switch(d) {
@@ -68,7 +68,7 @@ Tipo OperacaoUnaria::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha
             } 
 	    tipoDoRetorno = Tipo::inteiro;
             return Tipo::inteiro;
-
+	break;
         case Tipo::conversao_float:
             switch(d) {
                 case Tipo::inteiro:
@@ -81,7 +81,7 @@ Tipo OperacaoUnaria::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha
             }
 	    tipoDoRetorno = Tipo::real;
             return Tipo::real;   
-
+	break;
         case Tipo::conversao_bool:
             switch(d) {
                 case Tipo::inteiro:
@@ -94,14 +94,14 @@ Tipo OperacaoUnaria::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha
             }
 	    tipoDoRetorno = Tipo::boolean;
             return Tipo::boolean;
-
+	break;
       // Parênteses apenas retornam o tipo contido
         case Tipo::parenteses:
             boolean = filho->boolean;
             inteiro = filho->inteiro;
             real    = filho->real;
             return d;
-
+	break;
       // Endereco de variavel retorna um tipo endereco
         case Tipo::endereco:
             if (filho->id == "") {
@@ -109,7 +109,7 @@ Tipo OperacaoUnaria::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha
             }
 	    tipoDoRetorno = Tipo::endereco;
             return Tipo::endereco;
-
+	break;
       // Referencia de variavel retorna o tipo dela
         case Tipo::referencia:  
             if (filho->id == "" || (filho->id != "" && d_ponteiros == 0)) { //estou referenciando um valor ou uma variavel sem ponteiro ?
@@ -117,7 +117,7 @@ Tipo OperacaoUnaria::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha
             }
             this->ponteiros++;
             return d;
-
+	break;
   // Condicao booleana para uma atribuicao
         case Tipo::condicao_atribuicao:
             if (d != Tipo::boolean) {
@@ -125,9 +125,9 @@ Tipo OperacaoUnaria::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha
             }
 	    boolean = filho->boolean;
             return Tipo::boolean;
-
+	break;
       // Por padrão, retorna o tipo do nodo
-        default:  return Tipo::nulo;
+        default:  return Tipo::nulo; break;
     }
 }
 

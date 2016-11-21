@@ -1,15 +1,15 @@
 float : float a
 int : float b
-bool : int c
-c(false) = 1
-$c(false)
 a(10.0) = 1.001
 $a(10.0)+0.9
 b(33) = [float] 22 * a(10.0) + 8
-$ b(33) + 0
+$ b(33)
+$ a(10.0)
 $ 22 * a(10.0) + 8
 $ 22 * 1.1 + 8
 a([float]10) = 2
 int i = 5
-$a([float]i + [float]i) + 0.0 + b(33)
+float v = [float]i + [float]i
+$a(v)
+$a(10.0)
 

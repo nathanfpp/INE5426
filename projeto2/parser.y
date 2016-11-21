@@ -80,14 +80,14 @@ extern void yyerror(const char* s, ...);
 
 // %left, %right, %nonassoc
 // Precedência de operadores matemáticos, os últimos listados possuem maior procedência.
-%left T_AND T_OR T_ATRIB_ASK T_CAST_INT
+%left T_AND T_OR T_ATRIB_ASK T_CAST_INT T_CAST_BOOL
 %left T_EQUAL2 T_DIF T_HIGHER T_HIGH T_LOWER T_LOW
 %left T_PLUS T_MINUS
 %left T_DIV
 %left T_TIMES
 %left T_OPEN T_CLOSE 
 %left T_NOT UMINUS // UMINUS: http://www.gnu.org/software/bison/manual/html_node/Contextual-Precedence.html
-%left T_CAST_FLOAT T_CAST_BOOL T_REF T_ADDR T_COLON
+%left T_REF T_ADDR T_COLON T_CAST_FLOAT 
 
 
 // %start

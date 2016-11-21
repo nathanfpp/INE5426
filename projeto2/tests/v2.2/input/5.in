@@ -1,0 +1,14 @@
+int : int a
+float : int b
+a([int]10.0) = [int]1.001
+$a([int]10.0)+[int]0.9
+b([float]33) = [int] 22.46 * a([int]10.0) + 8
+$ b(33.0)
+$ 22 * a([int] 10.0) + 8
+a([int]10) = 2
+float f = 5
+int v = [int]f + [int]f
+$a(v)
+$a(10)
+$a([int] 10.0)
+

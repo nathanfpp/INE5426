@@ -288,10 +288,7 @@ class ArranjoDuplo : public Arranjo {
 
 class Hash : public Variavel {
     public:
-        std::vector<int> inteiro_a;
-        std::vector<bool> boolean_a;
-        std::vector<double> real_a;
-	std::map<int, int> int_int;
+ 	std::map<int, int> int_int;
 	std::map<int, bool> int_bool;
 	std::map<int, double> int_real;
 	std::map<bool, bool> bool_bool;
