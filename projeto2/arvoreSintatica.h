@@ -250,7 +250,6 @@ class DefinicaoDeFuncao : public Funcao {
     DefinicaoDeFuncao(Tipo t, Tipo d, atributo_nodo an, Nodo *p, Bloco *c, Nodo *r) : Funcao(t,d,an,p), corpo(c), retorno(r) { definida = false; };
     Tipo analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool analisador);
     Tipo executar(AST::TabelaDeSimbolos *tabelaDeSimbolos, Parametro *valores, int linha, bool analisador);
-    Tipo executarRecursao(AST::TabelaDeSimbolos *tabelaDeSimbolos, Parametro *valores, int linha, bool analisador);
     void imprimir(int espaco, bool novaLinha);
     int contarParametros();
 };
@@ -353,7 +352,6 @@ class Interpretador : public Nodo {
 
 class TabelaDeSimbolos {
     public:
-	std::string id = ""; //usado para identificar funcoes recursivas
         std::map<std::string, AST::Nodo*> simbolos;
         std::vector<atributo_nodo*> parametros;
         TabelaDeSimbolos *anterior, *proximo;
