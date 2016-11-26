@@ -1,0 +1,16 @@
+int fun divisaoRec(int p, int q)
+int fun divisaoRec(int p, int q) {
+  int r = 1
+  if p < q
+  then {
+    r = 0    
+  } else {
+    r = divisaoRec(p-q, q) + 1
+  }
+  ret r
+}
+$divisaoRec(18,3)
+$divisaoRec(49,7)
+$divisaoRec(8,1)
+$divisaoRec(81,3)
+

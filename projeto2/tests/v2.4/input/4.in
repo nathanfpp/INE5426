@@ -10,5 +10,7 @@ int fun fibonacci(int p) {
   ret r
 }
 $fibonacci(4)
+$fibonacci(5)
+$fibonacci(6)
 $a
 

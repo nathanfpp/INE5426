@@ -7,8 +7,14 @@ Tipo OperacaoBinaria::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linh
   // Os tipos dos filhos à esquerda e à direita da OperacaoBinaria
     Tipo e, d;
     e = esquerda->analisar(tabelaDeSimbolos, linha, analisador);
+// Armazena os valores da esquerda que são destruidos em caso de funcao recursiva
+    bool esquerda_boolean = esquerda->boolean;
+    int esquerda_inteiro = esquerda->inteiro;
+    double esquerda_real = esquerda->real;
+
     d = direita->analisar(tabelaDeSimbolos, linha, analisador); 
     tipoDoRetorno = e;
+
 
 // Arranjos e Hashes, quando o operando é a variável em si e não seus itens, devem apresentar erro
    if(esquerda->tipo == Tipo::variavel) {
@@ -87,6 +93,11 @@ Tipo OperacaoBinaria::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linh
   // Tenho que capturar os ponteiros dos filhos da direita e esquerda também
     int e_ponteiros = esquerda->recuperarPonteiros(tabelaDeSimbolos, linha);
     int d_ponteiros = direita->recuperarPonteiros(tabelaDeSimbolos, linha);
+
+  // Gambiarra para conservar os valores originais que são danificados pela recursão
+    esquerda->boolean = esquerda_boolean;
+    esquerda->inteiro = esquerda_inteiro;
+    esquerda->real = esquerda_real;
 
   // Operações Binárias possuem comportamentos diferentes
     switch(operacao) {

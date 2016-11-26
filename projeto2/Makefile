@@ -93,7 +93,8 @@ test:
 	./${OUTPUT} < tests/v2.4/input/2.in > tests/v2.4/output/2.out
 	./${OUTPUT} < tests/v2.4/input/3.in > tests/v2.4/output/3.out
 	./${OUTPUT} < tests/v2.4/input/4.in > tests/v2.4/output/4.out
-
+	./${OUTPUT} < tests/v2.4/input/5.in > tests/v2.4/output/5.out
+	./${OUTPUT} < tests/v2.4/input/6.in > tests/v2.4/output/6.out
 
 
 compare_test:
@@ -166,6 +167,8 @@ compare_test:
 	diff tests/v2.4/expected/1.ex tests/v2.4/output/1.out
 	diff tests/v2.4/expected/2.ex tests/v2.4/output/2.out
 	diff tests/v2.4/expected/3.ex tests/v2.4/output/3.out
+	diff tests/v2.4/expected/4.ex tests/v2.4/output/4.out
+	diff tests/v2.4/expected/5.ex tests/v2.4/output/5.out
 
 ##Testes de erro
 

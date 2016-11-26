@@ -1,0 +1,20 @@
+int fun sum(int vector(10), int tamanho) {
+  int r = 1
+  if tamanho > 0
+  then {
+    r = vector(tamanho-1) + sum(vector, tamanho-1)
+  } else {
+    r = 0
+  }
+  ret r
+}
+
+int a(10)
+int b(10)
+int i
+for i = 0, i < 10 , i = i + 1 {
+a(i) = i
+b(i) = i*i
+}
+$sum(a,10)
+$sum(b,10)
