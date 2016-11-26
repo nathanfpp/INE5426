@@ -10,4 +10,5 @@ int fun: soma (params: int c)
   then:
     = r + c somatorio[1 params] - c 1
   ret r
+$ R: 15
 

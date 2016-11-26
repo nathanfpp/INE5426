@@ -3,7 +3,7 @@ int fun fatorial(int p) {
   int r = 1
   if p > 1
   then {
-    r = fatorial(p-1) * p
+    r = p * fatorial(p-1)
   }
   ret r
 }

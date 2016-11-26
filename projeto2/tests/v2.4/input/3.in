@@ -18,3 +18,4 @@ int fun soma(int c) {
   }
   ret r
 }
+$somatorio(4)

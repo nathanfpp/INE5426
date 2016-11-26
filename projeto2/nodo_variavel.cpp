@@ -30,13 +30,21 @@ Tipo Variavel::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool
     return tipoDeVariavel;
 }
 
+
 Tipo Variavel::obterTipoDaTabela(TabelaDeSimbolos *tabelaDeSimbolos) {
     Variavel *v = ((Variavel*) tabelaDeSimbolos->recuperar(id, -1, true));
     if(v != NULL) {
+//
+    tipoDeVariavel = v->tipoDeVariavel;
+        boolean = v->boolean;
+        inteiro = v->inteiro;
+        real = v->real;
+//
         return v->tipo;
     }
     return Tipo::nulo;
 }
+
 
 
 int Variavel::recuperarPonteiros(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha) {

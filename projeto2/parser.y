@@ -87,7 +87,7 @@ extern void yyerror(const char* s, ...);
 %left T_TIMES
 %left T_OPEN T_CLOSE 
 %left T_NOT UMINUS // UMINUS: http://www.gnu.org/software/bison/manual/html_node/Contextual-Precedence.html
-%left T_REF T_ADDR T_COLON T_CAST_FLOAT 
+%left T_REF T_ADDR T_COLON T_CAST_FLOAT
 
 
 // %start
@@ -163,6 +163,7 @@ variavel:
 
 def_arranjo:
              dec_arranjo { $$ = new AST::DefinicaoDeArranjo( AST::Tipo::definicao_arranjo, $1, NULL , NULL ); }
+
            ;
 
 dec_arranjo:
@@ -174,7 +175,35 @@ dec_arranjo:
                { $$ = new AST::Arranjo( AST::Tipo::arranjo, AST::Tipo::nulo ,$1, $3,0 ); }
            | referencia T_VAR T_OPEN expressao T_CLOSE  
                { $$ = new AST::Arranjo( AST::Tipo::arranjo, AST::Tipo::nulo ,$2, $4, $1 ); }           
+      ;
+  
+
+/*
+dec_arranjo:
+            chamada {   AST::atributo_nodo val;
+			val.valor = new char[$1->id.size() + 1];
+			std::copy($1->id.begin(), $1->id.end(), val.valor);
+			val.valor[$1->id.size()] = '\0';
+			$$ = NULL;
+			if( ((AST::Parametro*)((AST::Chamada*)$1)->parametros) != NULL && ((AST::Parametro*)((AST::Parametro*)((AST::Chamada*)$1)->parametros)->proximo) != NULL )
+	              { $$ = new AST::ArranjoDuplo( AST::Tipo::arranjo_duplo, AST::Tipo::nulo ,val, ((AST::Parametro*)((AST::Chamada*)$1)->parametros)->parametro, ((AST::Parametro*)((AST::Parametro*)((AST::Chamada*)$1)->parametros)->proximo)->parametro, 0); }
+			else if (((AST::Parametro*)((AST::Chamada*)$1)->parametros) != NULL)
+	              { $$ = new AST::Arranjo( AST::Tipo::arranjo, AST::Tipo::nulo ,val, ((AST::Parametro*)((AST::Chamada*)$1)->parametros)->parametro, 0); }
+		  }
+
+	  | referencia chamada {  
+			AST::atributo_nodo val;
+			val.valor = new char[$2->id.size() + 1];
+			std::copy($2->id.begin(), $2->id.end(), val.valor);
+			val.valor[$2->id.size()] = '\0';
+			$$ = NULL;
+			if( ((AST::Parametro*)((AST::Chamada*)$2)->parametros) != NULL && ((AST::Parametro*)((AST::Parametro*)((AST::Chamada*)$2)->parametros)->proximo) != NULL )
+	              { $$ = new AST::ArranjoDuplo( AST::Tipo::arranjo_duplo, AST::Tipo::nulo ,val, ((AST::Parametro*)((AST::Chamada*)$2)->parametros)->parametro, ((AST::Parametro*)((AST::Parametro*)((AST::Chamada*)$2)->parametros)->proximo)->parametro, $1); }
+			else if (((AST::Parametro*)((AST::Chamada*)$2)->parametros) != NULL)
+	              { $$ = new AST::Arranjo( AST::Tipo::arranjo, AST::Tipo::nulo ,val, ((AST::Parametro*)((AST::Chamada*)$2)->parametros)->parametro, $1); }
+			     }
            ;
+*/
 
 arranjo:
          T_VAR T_OPEN expressao T_CLOSE  
