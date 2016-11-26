@@ -138,8 +138,10 @@ atribuicao:
           ;
 
 var_arranjo:
-             var     { $$ = $1; }
-           | chamada { $$ = $1; ((AST::Chamada*)$$)->read_hash = false; }
+             var     		{ $$ = $1; }
+           | chamada 		{ $$ = $1; ((AST::Chamada*)$$)->read_hash = false; }
+           | referencia var     { $$ = $2; ((AST::Variavel*)$$)->ponteiros = $1;}
+           | referencia chamada { $$ = $2; ((AST::Chamada*)$$)->read_hash = false; ((AST::Chamada*)$$)->ponteiros = $1;}
            ;
 
 declaracao:
@@ -154,8 +156,9 @@ variaveis:
          ;
 
 variavel:
-          atribuicao  { $$ = new AST::Definicao( AST::Tipo::definicao   , ((AST::Variavel*)$1->esquerda) , $1->direita , NULL ); }
-        | var         { $$ = new AST::Definicao( AST::Tipo::definicao   , ((AST::Variavel*)$1)           , NULL        , NULL ); }
+          atribuicao  	     { $$ = new AST::Definicao( AST::Tipo::definicao   , ((AST::Variavel*)$1->esquerda) , $1->direita , NULL ); }
+        | var         	     { $$ = new AST::Definicao( AST::Tipo::definicao   , ((AST::Variavel*)$1)           , NULL        , NULL ); }
+        | referencia var     { ((AST::Variavel*)$2)->ponteiros = $1; $$ = new AST::Definicao( AST::Tipo::definicao   , ((AST::Variavel*)$2)           , NULL        , NULL );}
         ;
 
 def_arranjo:
@@ -190,8 +193,7 @@ arranjo_duplo:
 chamada:
           T_VAR T_OPEN arg_null T_CLOSE 
           {  $$ = new AST::Chamada ( AST::Tipo::nulo , AST::Tipo::chamada , $1 , $3 , NULL, 0);}
-        | referencia T_VAR T_OPEN arg_null T_CLOSE 
-          {  $$ = new AST::Chamada ( AST::Tipo::nulo , AST::Tipo::chamada , $2 , $4 , NULL, $1);}
+
         ;
 
 arg_null :
@@ -320,6 +322,8 @@ parametros:
 
 parametro:
            tipo var                { $$ = new AST::Parametro( AST::Tipo::parametro, $1, AST::Tipo::nulo, $2, NULL );  }
+	 |
+           tipo referencia var     { ((AST::Variavel*)$3)->ponteiros = $2; $$ = new AST::Parametro( AST::Tipo::parametro, $1, AST::Tipo::nulo, $3, NULL );  }
 	 | tipo arranjo            { $$ = new AST::Parametro( AST::Tipo::parametro, $1, AST::Tipo::nulo, $2, NULL );  }
          | tipo arranjo_duplo      { $$ = new AST::Parametro( AST::Tipo::parametro, $1, AST::Tipo::nulo, $2, NULL );  }
          | tipo T_COLON tipo hash  { $$ = new AST::Parametro( AST::Tipo::parametro, $3, $1             , $4, NULL );  }
@@ -370,7 +374,6 @@ primitiva:
 
 var:
      T_VAR            { $$ = new AST::Variavel( AST::Tipo::variavel, AST::Tipo::nulo , $1, 0 ); }
-   | referencia T_VAR { $$ = new AST::Variavel( AST::Tipo::variavel, AST::Tipo::nulo, $2, $1 ); }
    ;
 
 hash:
