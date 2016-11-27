@@ -79,9 +79,17 @@ Tipo OperacaoBinaria::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linh
 
             } else {
 		    std::cerr << "[Line " << linha << "] semantic error: arrays or hashes can only be part of a simple attribution" <<"\n";
+
             }
             return Tipo::nulo;
         }
+    }
+    
+    else if (esquerda->tipo == Tipo::funcao_cha){
+	if (analisador && (e == Tipo::arranjo_2_f ||e == Tipo::arranjo_2_i || e == Tipo::arranjo_2_b || e == Tipo::arranjo_f ||e == Tipo::arranjo_i || e == Tipo::arranjo_b || e == hash_bb || e == hash_bi ||  e == hash_bf ||  e == hash_ib ||  e == hash_ii ||  e == hash_if ||  e == hash_fb ||  e == hash_fi || e == hash_ff )){
+	       std::cerr << "[Line " << linha << "] semantic error: arrays or hashes can only be part of a simple attribution" <<"\n";
+               return Tipo::nulo;
+	}
     }
 
   // Se um dos tipos for nulo não tem porque seguir adiante

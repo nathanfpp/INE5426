@@ -967,131 +967,133 @@ YY_RULE_SETUP
 case 25:
 YY_RULE_SETUP
 #line 48 "scanner.l"
-{ yylval.valores.valor = strdup(yytext);  if(strcmp(yytext,"true") != 0) yylval.valores.b = false; 
-                                                              else yylval.valores.b = true;              return T_BOOL;   } //
+{ yylval.valores.valor = strdup(yytext);  if(strcmp(yytext,"true") != 0) 
+								  yylval.valores.b = false; 
+                                                              else
+								  yylval.valores.b = true;            return T_BOOL;      } //
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 50 "scanner.l"
+#line 52 "scanner.l"
 { yylval.valores.valor = strdup(yytext);  					      return T_VAR;       } //
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 52 "scanner.l"
+#line 54 "scanner.l"
 { return T_PLUS ; } //
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 53 "scanner.l"
+#line 55 "scanner.l"
 { return T_MINUS; } // Operadores
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 54 "scanner.l"
+#line 56 "scanner.l"
 { return T_TIMES; } // Aritméticos
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 55 "scanner.l"
+#line 57 "scanner.l"
 { return T_DIV;   } //
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 57 "scanner.l"
+#line 59 "scanner.l"
 { return T_NOT; } // 
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 58 "scanner.l"
+#line 60 "scanner.l"
 { return T_AND; } // Operadores Lógicos
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 59 "scanner.l"
+#line 61 "scanner.l"
 { return T_OR;  } // 
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 61 "scanner.l"
+#line 63 "scanner.l"
 { return T_EQUAL2; } //
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 62 "scanner.l"
+#line 64 "scanner.l"
 { return T_DIF;    } //
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 63 "scanner.l"
+#line 65 "scanner.l"
 { return T_HIGHER; } // Tokens de
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 64 "scanner.l"
+#line 66 "scanner.l"
 { return T_HIGH;   } // Comparadores
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 65 "scanner.l"
+#line 67 "scanner.l"
 { return T_LOWER;  } //
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 66 "scanner.l"
+#line 68 "scanner.l"
 { return T_LOW;    } //
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 68 "scanner.l"
+#line 70 "scanner.l"
 { return T_OPEN;      }
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 69 "scanner.l"
+#line 71 "scanner.l"
 { return T_CLOSE;     }
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 70 "scanner.l"
+#line 72 "scanner.l"
 { return T_OPEN_KEY;  }
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 71 "scanner.l"
+#line 73 "scanner.l"
 { return T_CLOSE_KEY; }
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 72 "scanner.l"
+#line 74 "scanner.l"
 { return T_EQUAL;     }
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 73 "scanner.l"
+#line 75 "scanner.l"
 { return T_COMMA;     }
 	YY_BREAK
 case 46:
 /* rule 46 can match eol */
 YY_RULE_SETUP
-#line 75 "scanner.l"
+#line 77 "scanner.l"
 { return T_NL; }
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 77 "scanner.l"
+#line 79 "scanner.l"
 { return T_CALC; }
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 79 "scanner.l"
+#line 81 "scanner.l"
 { yyerror("lexical error: unknown symbol %s\n", strdup(yytext));} 
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 81 "scanner.l"
+#line 83 "scanner.l"
 YY_FATAL_ERROR( "flex scanner jammed" );
 	YY_BREAK
-#line 1095 "scanner.cpp"
+#line 1097 "scanner.cpp"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2060,7 +2062,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 81 "scanner.l"
+#line 83 "scanner.l"
 
 
 

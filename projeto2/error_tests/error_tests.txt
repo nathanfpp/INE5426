@@ -100,7 +100,7 @@
    2: ok
    3: ok
    4: ok
-   5: não, aprovação sobre estudo
+   5: ok
 
   v2.2: interpreta hash
 
