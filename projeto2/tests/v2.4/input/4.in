@@ -5,7 +5,7 @@ int fun fibonacci(int p) {
   int r = 1
   if p > 1
   then {
-    r = fibonacci(p-1) + fibonacci(p-2)    
+    r = fibonacci(p-2) + fibonacci(p-1)    
   }
   ret r
 }

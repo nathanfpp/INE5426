@@ -61,8 +61,6 @@ Tipo Chamada::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool 
  	                  inteiro = ((Retorno*)((DefinicaoDeFuncao*)f)->retorno)->retorno->inteiro;
         	          real    = ((Retorno*)((DefinicaoDeFuncao*)f)->retorno)->retorno->real;
 
-                          //std::cerr << "@Chamada : inteiro : " << inteiro << "\n";
-
                         //se retorno for uma estrutra de dados.
 		        retornoEstruturaDados = ((Retorno*)((DefinicaoDeFuncao*)f)->retorno)->retorno; 
 		
@@ -75,7 +73,6 @@ Tipo Chamada::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool 
                 }
 
               // Retorna o tipo da variável retornada pela função
-                //tabelaDeSimbolos->modificar(this, this->id); 
                 return tipoDoRetorno;
             }
 

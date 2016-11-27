@@ -178,6 +178,8 @@ void Nodo::imprimirTipo(Tipo t) {
         case Tipo::inteiro:          	   std::cout << "int";          break;
         case Tipo::real:             	   std::cout << "float";        break;
         case Tipo::boolean:          	   std::cout << "bool";         break;
+        case Tipo::arranjo:                std::cout << "array";
+        case Tipo::arranjo_duplo:          std::cout << "double array";
         case Tipo::hash:                   std::cout << "hash:";        break;
         case Tipo::arranjo_b:              std::cout << "bool array";   break;
         case Tipo::arranjo_i:              std::cout << "int array";    break;

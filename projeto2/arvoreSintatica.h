@@ -78,7 +78,6 @@ class Nodo {
 
 class Variavel : public Nodo {
     public:
-	bool parametro = false;
         Tipo tipoDeVariavel;
 	int ponteiros;  //0 nao é referenciado, > 1 n referencias
 	bool ponteiroEsqAtribuicao = false;

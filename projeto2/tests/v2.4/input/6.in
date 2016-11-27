@@ -1,5 +1,8 @@
+int count = 0
+int fun sum(int vector(10), int tamanho)
 int fun sum(int vector(10), int tamanho) {
   int r = 1
+  count = count + 1
   if tamanho > 0
   then {
     r = vector(tamanho-1) + sum(vector, tamanho-1)
@@ -18,3 +21,4 @@ b(i) = i*i
 }
 $sum(a,10)
 $sum(b,10)
+$count

@@ -7,12 +7,12 @@ Tipo Funcao::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool a
   // Conta a quantidade de parâmetros: se não houver parâmetros a quantidade é 0
     contarParametros();
 
-  // Analisa parâmetros
+  // Analisa parametros
     if(parametros != NULL) {
         parametros->analisar(tabelaDeSimbolos, linha, analisador);
     }
 
-  // Adiciona-se a função à tabela de funções, caso já não tenha sido definida anteriormente
+  // Adiciona-se a funcao a� tabela de simbolos, caso ja nao tenha sido definida anteriormente
     definida = false;
     Funcao *f = ((Funcao*) tabelaDeSimbolos->recuperar(id, -1, false));
     if(f == NULL) {

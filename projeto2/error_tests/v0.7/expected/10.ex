@@ -7,9 +7,9 @@ integer double array fun: f1 (params: )
 integer double array fun: f2 (params: )
   int var: a
   ret a
-integer double array fun: f3 (params: integer double array [index][index] a 10 10)
+integer double array fun: f3 (params: int [index][index] a 10 10)
   ret a
-integer double array fun: f4 (params: int array [index] a 10)
+integer double array fun: f4 (params: int [index] a 10)
   ret a
 integer double array fun: f5 (params: int a)
   ret a

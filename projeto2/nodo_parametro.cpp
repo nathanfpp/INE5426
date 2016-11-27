@@ -9,6 +9,8 @@ Tipo Parametro::analisar(TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool ana
     if(parametro != NULL) {
         switch(parametro->tipo) {
             case Tipo::variavel:
+            case Tipo::arranjo:
+            case Tipo::arranjo_duplo:
                 ((Variavel*)parametro)->tipoDeVariavel = tipoDoParametro; 
                 break;
             case Tipo::hash:
@@ -107,14 +109,15 @@ void Parametro::comparar(TabelaDeSimbolos *tabelaDeSimbolos, Parametro *comparad
         }
 
       // Ajusta o tipoDoParametro caso se trate de um arranjo ou arrranjo duplo
+	Tipo tipoDoParametroAjustado = tipoDoParametro;
         if(parametro->tipo == Tipo::arranjo) {
-            tipoDoParametro = tabelaDeSimbolos->tipoDeArranjo(((Variavel*)parametro)->tipoDeVariavel);
+            tipoDoParametroAjustado = tabelaDeSimbolos->tipoDeArranjo(((Variavel*)parametro)->tipoDeVariavel);
         } else if (parametro->tipo == Tipo::arranjo_duplo) {
-            tipoDoParametro = tabelaDeSimbolos->tipoDeArranjoDuplo(((Variavel*)parametro)->tipoDeVariavel);
+            tipoDoParametroAjustado = tabelaDeSimbolos->tipoDeArranjoDuplo(((Variavel*)parametro)->tipoDeVariavel);
         }
 
       // Se os parâmetros forem do mesmo tipo
-        if(tipoDoParametro == tipoComparado) {
+        if(tipoDoParametroAjustado == tipoComparado) {
     
           // Caso se trate de um parâmetro, não um argumento de uma chamada de função...
             if(definicao) {
@@ -136,7 +139,7 @@ void Parametro::comparar(TabelaDeSimbolos *tabelaDeSimbolos, Parametro *comparad
         else {
             std::string id = ((Variavel*) parametro)->id;
             std::cerr << "[Line " << linha << "] semantic error: parameter " << id;
-            std::cerr << " expected " << imprimirTipoPorExtenso(tipoDoParametro);
+            std::cerr << " expected " << imprimirTipoPorExtenso(tipoDoParametroAjustado);
             std::cerr << " but received " << imprimirTipoPorExtenso(tipoComparado) << "\n";              
         }   
     }
@@ -145,7 +148,7 @@ void Parametro::comparar(TabelaDeSimbolos *tabelaDeSimbolos, Parametro *comparad
   // Se os parâmetros atuais forem igual e os próximos forem nulos, então todos os Parâmetro são iguais
     if(proximo != NULL && comparado->proximo != NULL) {           
       // Caso contrário, compara os próximos parâmetros
-        ((Parametro*)proximo)->comparar(tabelaDeSimbolos, ((Parametro*)comparado->proximo), linha, definicao, analisador);
+        ((Parametro*)proximo)->comparar(tabelaDeSimbolos, ((Parametro*)((Parametro*)comparado->proximo)), linha, definicao, analisador);
     }
 }
 
@@ -153,7 +156,6 @@ void Parametro::comparar(TabelaDeSimbolos *tabelaDeSimbolos, Parametro *comparad
 void Parametro::acrescentarAoEscopo(TabelaDeSimbolos *tabelaDeSimbolos, int linha) {
   // Enquanto houver parametros acrescento-os recursivamente ao escopo
     if(parametro != NULL) {
-	((Variavel*)parametro)->parametro = true;
         ((Variavel*)parametro)->tipoDeVariavel = tipoDoParametro; 
         if(parametro->tipo == Tipo::hash) { // Hashes por ter um tipo chave, tem tratamento diferencial
             ((Hash*)parametro)->tipoDeChave = tipoReserva;
@@ -172,9 +174,9 @@ void Parametro::acrescentarComValoresAoEscopo(TabelaDeSimbolos *tabelaDeSimbolos
   // Enquanto houver parametros acrescento-os recursivamente ao escopo e copiando os seus valores
 
     if(parametro != NULL && valores != NULL) {
-	((Variavel*)parametro)->parametro = true;
+	valores->parametro->analisar(tabelaDeSimbolos, linha, true);
         ((Variavel*)parametro)->tipoDeVariavel = tipoDoParametro; //copio o tipo do parametro
-        if(parametro->tipo == Tipo::hash) { //recebe tipo chave e copia de valores para hash
+        if(parametro->tipo == Tipo::hash && valores->parametro->tipo == Tipo::hash) { //recebe tipo chave e copia de valores para hash
             ((Hash*)parametro)->tipoDeChave = tipoReserva;
             
            if (((Hash*)(valores->parametro))->int_int.size() > 0)
@@ -199,7 +201,7 @@ void Parametro::acrescentarComValoresAoEscopo(TabelaDeSimbolos *tabelaDeSimbolos
            
         }
 
-	if(parametro->tipo == Tipo::arranjo){ // copia valores de arranjo simples
+	if(parametro->tipo == Tipo::arranjo && valores->parametro->tipo == Tipo::arranjo){ // copia valores de arranjo simples
 	
 	 memcpy(((Arranjo*)parametro)->inteiro_a, ((Arranjo*)valores->parametro)->inteiro_a, ((Arranjo*)valores->parametro)->tamanho->inteiro*sizeof(int));   
          memcpy(((Arranjo*)parametro)->boolean_a, ((Arranjo*)valores->parametro)->real_a, ((Arranjo*)valores->parametro)->tamanho->inteiro*sizeof(bool));
@@ -207,7 +209,7 @@ void Parametro::acrescentarComValoresAoEscopo(TabelaDeSimbolos *tabelaDeSimbolos
            
 	}
 
-	if(parametro->tipo == Tipo::arranjo_duplo){ // copia valores de arranjo duplo
+	if(parametro->tipo == Tipo::arranjo_duplo && valores->parametro->tipo == Tipo::arranjo_duplo){ // copia valores de arranjo duplo
 
 	memcpy(((Arranjo*)parametro)->inteiro_a, ((Arranjo*)valores->parametro)->inteiro_a, ((Arranjo*)valores->parametro)->tamanho->inteiro*((ArranjoDuplo*)valores->parametro)->tamanho2->inteiro*sizeof(int));
 	memcpy(((Arranjo*)parametro)->boolean_a, ((Arranjo*)valores->parametro)->real_a, ((Arranjo*)valores->parametro)->tamanho->inteiro*((ArranjoDuplo*)valores->parametro)->tamanho2->inteiro*sizeof(bool));
@@ -259,9 +261,9 @@ int Parametro::contar() { //conta o numero de parametros.
 void Parametro::ajustarPonteiroImpressao(Parametro *p) {
 
 	if(((Variavel*)(p->parametro))->ponteiros > 0)    
-	((Variavel*)(p->parametro))->ponteiroParametro = true; //insiro no parametro uma flag para impressao, caso seja um ponteiro.
+	    ((Variavel*)(p->parametro))->ponteiroParametro = true; //insiro no parametro uma flag para impressao, caso seja um ponteiro.
 	if ( ((Parametro*)(p->proximo)) != NULL) //navego recursivamente entre os parametros.
-	p->ajustarPonteiroImpressao(((Parametro*)(p->proximo)));	
+	    p->ajustarPonteiroImpressao(((Parametro*)(p->proximo)));	
 }    
 
 

@@ -1,4 +1,4 @@
-int fun: f1 (params: int array [index] b 10)
+int fun: f1 (params: int [index] b 10)
   ret [index] b 7
 int array: a (size: 10)
 = [index] a 0 0

@@ -1,4 +1,4 @@
-int array fun: f1 (params: int array [index] b 10)
+int array fun: f1 (params: int [index] b 10)
   int var: i, j = 0
   for: = i 0, < i 10, = i + i 1
   do:

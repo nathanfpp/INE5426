@@ -1,4 +1,4 @@
-float double array fun: f1 (params: float double array [index][index] c 10 10)
+float double array fun: f1 (params: float [index][index] c 10 10)
   ret [index][index] c 10 10
 float array: a (size: 10, 10)
 float array: b (size: 10, 10)
