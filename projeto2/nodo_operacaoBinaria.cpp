@@ -16,8 +16,8 @@ Tipo OperacaoBinaria::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linh
     tipoDoRetorno = e;
 
 
-// Arranjos e Hashes, quando o operando é a variável em si e não seus itens, devem apresentar erro
-   if(esquerda->tipo == Tipo::variavel) {
+// Arranjos e Hashes, quando o operando é a variável em si e não seus itens, devem apresentar erro caso a atribuicao nao seja simples e seus tipos diferentes.
+   if(esquerda->tipo == Tipo::variavel && (e == Tipo::arranjo_2_f ||e == Tipo::arranjo_2_i || e == Tipo::arranjo_2_b || e == Tipo::arranjo_f ||e == Tipo::arranjo_i || e == Tipo::arranjo_b || e == hash_bb || e == hash_bi ||  e == hash_bf ||  e == hash_ib ||  e == hash_ii ||  e == hash_if ||  e == hash_fb ||  e == hash_fi || e == hash_ff )) { //todas essas condicoes acima sao necessarias
         Tipo tipoDeVariavel_e = ((Variavel*)esquerda)->obterTipoDaTabela(tabelaDeSimbolos);
         Tipo tipoDeVariavel_d = ((Variavel*)direita)->obterTipoDaTabela(tabelaDeSimbolos);
         if(tipoDeVariavel_e == Tipo::arranjo || tipoDeVariavel_e == Tipo::arranjo_duplo || tipoDeVariavel_e == Tipo::hash
@@ -35,6 +35,7 @@ Tipo OperacaoBinaria::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linh
 		       else{
  			  direita = tabelaDeSimbolos->recuperar(direita->id, linha, true);
 			}
+
 			if(tipoDeVariavel_e == Tipo::arranjo){
 			 memcpy(((Arranjo*)esquerda)->inteiro_a, ((Arranjo*)direita)->inteiro_a, ((Arranjo*)direita)->tamanho->inteiro*sizeof(int));   
                          memcpy(((Arranjo*)esquerda)->boolean_a, ((Arranjo*)direita)->real_a, ((Arranjo*)direita)->tamanho->inteiro*sizeof(bool));

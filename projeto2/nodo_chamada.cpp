@@ -55,7 +55,7 @@ Tipo Chamada::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool 
                           ((Parametro*)parametros)->recuperarEstruturaDeDados(tabelaDeSimbolos,((Parametro*)parametros),linha);
 			 }
 
-			//executo chamada de função ou uma chamada recursiva se o id do escopo == id da chamada
+			//executo chamada de função normal ou recursiva
                           ((DefinicaoDeFuncao*)f)->executar(tabelaDeSimbolos, ((Parametro*)parametros), linha, analisador);
 		          boolean = ((Retorno*)((DefinicaoDeFuncao*)f)->retorno)->retorno->boolean;
  	                  inteiro = ((Retorno*)((DefinicaoDeFuncao*)f)->retorno)->retorno->inteiro;

@@ -5,7 +5,7 @@ int fun sum(int vector(10), int tamanho) {
   count = count + 1
   if tamanho > 0
   then {
-    r = vector(tamanho-1) + sum(vector, tamanho-1)
+    r = vector(tamanho-1) + sum(vector,tamanho-1)
   } else {
     r = 0
   }
