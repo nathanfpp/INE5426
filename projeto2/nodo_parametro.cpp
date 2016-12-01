@@ -105,7 +105,6 @@ void Parametro::comparar(TabelaDeSimbolos *tabelaDeSimbolos, Parametro *comparad
         else {
             // Nodo *n = tabelaDeSimbolos->recuperar(comparado->parametro->id, linha, true);
             tipoComparado = comparado->parametro->analisar(tabelaDeSimbolos, linha, analisador);
-//std::cout << "@parametro : " << imprimirTipoPorExtenso(tipoComparado) << "\n";
         }
 
       // Ajusta o tipoDoParametro caso se trate de um arranjo ou arrranjo duplo

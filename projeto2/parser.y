@@ -167,16 +167,18 @@ def_arranjo:
            ;
 
 dec_arranjo:
-             T_VAR T_OPEN expressao T_COMMA expressao T_CLOSE
-              { $$ = new AST::ArranjoDuplo( AST::Tipo::arranjo_duplo, AST::Tipo::nulo ,$1, $3, $5, 0 ); }
-           | referencia T_VAR T_OPEN expressao T_COMMA expressao T_CLOSE  
-               { $$ = new AST::ArranjoDuplo( AST::Tipo::arranjo_duplo, AST::Tipo::nulo ,$2, $4, $6, $1 ); }
-           |  T_VAR T_OPEN expressao T_CLOSE  
-               { $$ = new AST::Arranjo( AST::Tipo::arranjo, AST::Tipo::nulo ,$1, $3,0 ); }
-           | referencia T_VAR T_OPEN expressao T_CLOSE  
-               { $$ = new AST::Arranjo( AST::Tipo::arranjo, AST::Tipo::nulo ,$2, $4, $1 ); }           
+             T_VAR T_OPEN T_INT T_COMMA T_INT T_CLOSE
+              { $$ = new AST::ArranjoDuplo( AST::Tipo::arranjo_duplo, AST::Tipo::nulo ,$1, new AST::Inteiro($3), new AST::Inteiro($5), 0 ); }
+           | referencia T_VAR T_OPEN T_INT T_COMMA T_INT T_CLOSE  
+              { $$ = new AST::ArranjoDuplo( AST::Tipo::arranjo_duplo, AST::Tipo::nulo ,$2, new AST::Inteiro($4), new AST::Inteiro($6), $1 ); }
+           | T_VAR T_OPEN T_INT T_CLOSE  
+              { $$ = new AST::Arranjo( AST::Tipo::arranjo, AST::Tipo::nulo ,$1, new AST::Inteiro($3),0 ); }
+           | referencia T_VAR T_OPEN T_INT T_CLOSE  
+              { $$ = new AST::Arranjo( AST::Tipo::arranjo, AST::Tipo::nulo ,$2, new AST::Inteiro($4), $1 ); }           
       ;
   
+
+//isso abaixo remove os 4 warnings, mas apresenta problemas nos "error_tests:" v0.8/4, v1.3/4 e 1.3/6, além de permitir coisas indevidas como int (qualquer expressao ou nada) = qualquer expressao, sem apresentar erro sintático.
 
 /*
 dec_arranjo:

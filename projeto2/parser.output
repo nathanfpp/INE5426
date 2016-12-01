@@ -45,10 +45,10 @@ Gramática
 
    30 def_arranjo: dec_arranjo
 
-   31 dec_arranjo: T_VAR T_OPEN expressao T_COMMA expressao T_CLOSE
-   32            | referencia T_VAR T_OPEN expressao T_COMMA expressao T_CLOSE
-   33            | T_VAR T_OPEN expressao T_CLOSE
-   34            | referencia T_VAR T_OPEN expressao T_CLOSE
+   31 dec_arranjo: T_VAR T_OPEN T_INT T_COMMA T_INT T_CLOSE
+   32            | referencia T_VAR T_OPEN T_INT T_COMMA T_INT T_CLOSE
+   33            | T_VAR T_OPEN T_INT T_CLOSE
+   34            | referencia T_VAR T_OPEN T_INT T_CLOSE
 
    35 arranjo: T_VAR T_OPEN expressao T_CLOSE
    36        | referencia T_VAR T_OPEN expressao T_CLOSE
@@ -172,7 +172,7 @@ Terminais, com as regras onde eles aparecem
 $end (0) 0
 error (256)
 T_FLOAT (258) 112
-T_INT (259) 111
+T_INT (259) 31 32 33 34 111
 T_BOOL (260) 110
 T_VAR (261) 31 32 33 34 35 36 37 38 39 63 64 65 66 67 68 69 70 113
     114 115
@@ -300,9 +300,9 @@ retorno (85)
     à esquerda: 82, à direita: 67 68 69 70
 expressao (86)
     à esquerda: 83 84 85 86 87 88 89 90 91 92 93 94 95 96 97 98 99
-    100 101 102 103 104 105, à direita: 17 31 32 33 34 35 36 37 38
-    44 49 52 53 54 56 59 60 82 85 86 87 88 89 90 91 92 93 94 95 96
-    97 98 99 100 101 102 103 104 105 118
+    100 101 102 103 104 105, à direita: 17 35 36 37 38 44 49 52 53
+    54 56 59 60 82 85 86 87 88 89 90 91 92 93 94 95 96 97 98 99 100
+    101 102 103 104 105 118
 tipo (87)
     à esquerda: 106 107 108, à direita: 22 45 63 64 65 66 67 68 69
     70 77 78 79 80 81
@@ -1207,8 +1207,8 @@ Estado 67
 
 Estado 68
 
-   31 dec_arranjo: T_VAR . T_OPEN expressao T_COMMA expressao T_CLOSE
-   33            | T_VAR . T_OPEN expressao T_CLOSE
+   31 dec_arranjo: T_VAR . T_OPEN T_INT T_COMMA T_INT T_CLOSE
+   33            | T_VAR . T_OPEN T_INT T_CLOSE
    39 chamada: T_VAR . T_OPEN arg_null T_CLOSE
   113 var: T_VAR .
 
@@ -1301,8 +1301,8 @@ Estado 78
    20 var_arranjo: referencia . var
    21            | referencia . chamada
    29 variavel: referencia . var
-   32 dec_arranjo: referencia . T_VAR T_OPEN expressao T_COMMA expressao T_CLOSE
-   34            | referencia . T_VAR T_OPEN expressao T_CLOSE
+   32 dec_arranjo: referencia . T_VAR T_OPEN T_INT T_COMMA T_INT T_CLOSE
+   34            | referencia . T_VAR T_OPEN T_INT T_CLOSE
   117 referencia: referencia . T_REF
 
     T_VAR  deslocar, e ir ao estado 118
@@ -1999,12 +1999,12 @@ Estado 112
 
 Estado 113
 
-   31 dec_arranjo: T_VAR T_OPEN . expressao T_COMMA expressao T_CLOSE
-   33            | T_VAR T_OPEN . expressao T_CLOSE
+   31 dec_arranjo: T_VAR T_OPEN . T_INT T_COMMA T_INT T_CLOSE
+   33            | T_VAR T_OPEN . T_INT T_CLOSE
    39 chamada: T_VAR T_OPEN . arg_null T_CLOSE
 
     T_FLOAT       deslocar, e ir ao estado 33
-    T_INT         deslocar, e ir ao estado 34
+    T_INT         deslocar, e ir ao estado 141
     T_BOOL        deslocar, e ir ao estado 35
     T_VAR         deslocar, e ir ao estado 1
     T_OPEN        deslocar, e ir ao estado 36
@@ -2022,7 +2022,7 @@ Estado 113
     arg_null    ir ao estado 83
     argumentos  ir ao estado 84
     argumento   ir ao estado 85
-    expressao   ir ao estado 141
+    expressao   ir ao estado 86
     primitiva   ir ao estado 46
     var         ir ao estado 47
 
@@ -2082,8 +2082,8 @@ Estado 117
 
 Estado 118
 
-   32 dec_arranjo: referencia T_VAR . T_OPEN expressao T_COMMA expressao T_CLOSE
-   34            | referencia T_VAR . T_OPEN expressao T_CLOSE
+   32 dec_arranjo: referencia T_VAR . T_OPEN T_INT T_COMMA T_INT T_CLOSE
+   34            | referencia T_VAR . T_OPEN T_INT T_CLOSE
    39 chamada: T_VAR . T_OPEN arg_null T_CLOSE
   113 var: T_VAR .
 
@@ -2573,39 +2573,16 @@ Estado 140
 
 Estado 141
 
-   31 dec_arranjo: T_VAR T_OPEN expressao . T_COMMA expressao T_CLOSE
-   33            | T_VAR T_OPEN expressao . T_CLOSE
-   44 argumento: expressao .
-   93 expressao: expressao . T_PLUS expressao
-   94          | expressao . T_MINUS expressao
-   95          | expressao . T_TIMES expressao
-   96          | expressao . T_DIV expressao
-   97          | expressao . T_AND expressao
-   98          | expressao . T_OR expressao
-   99          | expressao . T_EQUAL2 expressao
-  100          | expressao . T_DIF expressao
-  101          | expressao . T_HIGHER expressao
-  102          | expressao . T_HIGH expressao
-  103          | expressao . T_LOWER expressao
-  104          | expressao . T_LOW expressao
+   31 dec_arranjo: T_VAR T_OPEN T_INT . T_COMMA T_INT T_CLOSE
+   33            | T_VAR T_OPEN T_INT . T_CLOSE
+  111 primitiva: T_INT .
 
-    T_CLOSE   deslocar, e ir ao estado 161
-    T_COMMA   deslocar, e ir ao estado 162
-    T_PLUS    deslocar, e ir ao estado 96
-    T_MINUS   deslocar, e ir ao estado 97
-    T_TIMES   deslocar, e ir ao estado 98
-    T_DIV     deslocar, e ir ao estado 99
-    T_AND     deslocar, e ir ao estado 100
-    T_OR      deslocar, e ir ao estado 101
-    T_EQUAL2  deslocar, e ir ao estado 102
-    T_DIF     deslocar, e ir ao estado 103
-    T_HIGHER  deslocar, e ir ao estado 104
-    T_HIGH    deslocar, e ir ao estado 105
-    T_LOWER   deslocar, e ir ao estado 106
-    T_LOW     deslocar, e ir ao estado 107
+    T_CLOSE  deslocar, e ir ao estado 161
+    T_COMMA  deslocar, e ir ao estado 162
 
-    T_CLOSE  [reduzir usando a regra 44 (argumento)]
-    T_COMMA  [reduzir usando a regra 44 (argumento)]
+    T_CLOSE   [reduzir usando a regra 111 (primitiva)]
+    T_COMMA   [reduzir usando a regra 111 (primitiva)]
+    $padrão  reduzir usando a regra 111 (primitiva)
 
 
 Estado 142
@@ -2705,12 +2682,12 @@ Estado 152
 
 Estado 153
 
-   32 dec_arranjo: referencia T_VAR T_OPEN . expressao T_COMMA expressao T_CLOSE
-   34            | referencia T_VAR T_OPEN . expressao T_CLOSE
+   32 dec_arranjo: referencia T_VAR T_OPEN . T_INT T_COMMA T_INT T_CLOSE
+   34            | referencia T_VAR T_OPEN . T_INT T_CLOSE
    39 chamada: T_VAR T_OPEN . arg_null T_CLOSE
 
     T_FLOAT       deslocar, e ir ao estado 33
-    T_INT         deslocar, e ir ao estado 34
+    T_INT         deslocar, e ir ao estado 172
     T_BOOL        deslocar, e ir ao estado 35
     T_VAR         deslocar, e ir ao estado 1
     T_OPEN        deslocar, e ir ao estado 36
@@ -2728,7 +2705,7 @@ Estado 153
     arg_null    ir ao estado 83
     argumentos  ir ao estado 84
     argumento   ir ao estado 85
-    expressao   ir ao estado 172
+    expressao   ir ao estado 86
     primitiva   ir ao estado 46
     var         ir ao estado 47
 
@@ -2849,32 +2826,16 @@ Estado 160
 
 Estado 161
 
-   33 dec_arranjo: T_VAR T_OPEN expressao T_CLOSE .
+   33 dec_arranjo: T_VAR T_OPEN T_INT T_CLOSE .
 
     $padrão  reduzir usando a regra 33 (dec_arranjo)
 
 
 Estado 162
 
-   31 dec_arranjo: T_VAR T_OPEN expressao T_COMMA . expressao T_CLOSE
+   31 dec_arranjo: T_VAR T_OPEN T_INT T_COMMA . T_INT T_CLOSE
 
-    T_FLOAT       deslocar, e ir ao estado 33
-    T_INT         deslocar, e ir ao estado 34
-    T_BOOL        deslocar, e ir ao estado 35
-    T_VAR         deslocar, e ir ao estado 1
-    T_OPEN        deslocar, e ir ao estado 36
-    T_MINUS       deslocar, e ir ao estado 37
-    T_NOT         deslocar, e ir ao estado 38
-    T_CAST_INT    deslocar, e ir ao estado 39
-    T_CAST_FLOAT  deslocar, e ir ao estado 40
-    T_CAST_BOOL   deslocar, e ir ao estado 41
-    T_ADDR        deslocar, e ir ao estado 42
-    T_REF         deslocar, e ir ao estado 43
-
-    chamada    ir ao estado 44
-    expressao  ir ao estado 179
-    primitiva  ir ao estado 46
-    var        ir ao estado 47
+    T_INT  deslocar, e ir ao estado 179
 
 
 Estado 163
@@ -2965,39 +2926,16 @@ Estado 171
 
 Estado 172
 
-   32 dec_arranjo: referencia T_VAR T_OPEN expressao . T_COMMA expressao T_CLOSE
-   34            | referencia T_VAR T_OPEN expressao . T_CLOSE
-   44 argumento: expressao .
-   93 expressao: expressao . T_PLUS expressao
-   94          | expressao . T_MINUS expressao
-   95          | expressao . T_TIMES expressao
-   96          | expressao . T_DIV expressao
-   97          | expressao . T_AND expressao
-   98          | expressao . T_OR expressao
-   99          | expressao . T_EQUAL2 expressao
-  100          | expressao . T_DIF expressao
-  101          | expressao . T_HIGHER expressao
-  102          | expressao . T_HIGH expressao
-  103          | expressao . T_LOWER expressao
-  104          | expressao . T_LOW expressao
+   32 dec_arranjo: referencia T_VAR T_OPEN T_INT . T_COMMA T_INT T_CLOSE
+   34            | referencia T_VAR T_OPEN T_INT . T_CLOSE
+  111 primitiva: T_INT .
 
-    T_CLOSE   deslocar, e ir ao estado 192
-    T_COMMA   deslocar, e ir ao estado 193
-    T_PLUS    deslocar, e ir ao estado 96
-    T_MINUS   deslocar, e ir ao estado 97
-    T_TIMES   deslocar, e ir ao estado 98
-    T_DIV     deslocar, e ir ao estado 99
-    T_AND     deslocar, e ir ao estado 100
-    T_OR      deslocar, e ir ao estado 101
-    T_EQUAL2  deslocar, e ir ao estado 102
-    T_DIF     deslocar, e ir ao estado 103
-    T_HIGHER  deslocar, e ir ao estado 104
-    T_HIGH    deslocar, e ir ao estado 105
-    T_LOWER   deslocar, e ir ao estado 106
-    T_LOW     deslocar, e ir ao estado 107
+    T_CLOSE  deslocar, e ir ao estado 192
+    T_COMMA  deslocar, e ir ao estado 193
 
-    T_CLOSE  [reduzir usando a regra 44 (argumento)]
-    T_COMMA  [reduzir usando a regra 44 (argumento)]
+    T_CLOSE   [reduzir usando a regra 111 (primitiva)]
+    T_COMMA   [reduzir usando a regra 111 (primitiva)]
+    $padrão  reduzir usando a regra 111 (primitiva)
 
 
 Estado 173
@@ -3112,33 +3050,9 @@ Estado 178
 
 Estado 179
 
-   31 dec_arranjo: T_VAR T_OPEN expressao T_COMMA expressao . T_CLOSE
-   93 expressao: expressao . T_PLUS expressao
-   94          | expressao . T_MINUS expressao
-   95          | expressao . T_TIMES expressao
-   96          | expressao . T_DIV expressao
-   97          | expressao . T_AND expressao
-   98          | expressao . T_OR expressao
-   99          | expressao . T_EQUAL2 expressao
-  100          | expressao . T_DIF expressao
-  101          | expressao . T_HIGHER expressao
-  102          | expressao . T_HIGH expressao
-  103          | expressao . T_LOWER expressao
-  104          | expressao . T_LOW expressao
+   31 dec_arranjo: T_VAR T_OPEN T_INT T_COMMA T_INT . T_CLOSE
 
-    T_CLOSE   deslocar, e ir ao estado 202
-    T_PLUS    deslocar, e ir ao estado 96
-    T_MINUS   deslocar, e ir ao estado 97
-    T_TIMES   deslocar, e ir ao estado 98
-    T_DIV     deslocar, e ir ao estado 99
-    T_AND     deslocar, e ir ao estado 100
-    T_OR      deslocar, e ir ao estado 101
-    T_EQUAL2  deslocar, e ir ao estado 102
-    T_DIF     deslocar, e ir ao estado 103
-    T_HIGHER  deslocar, e ir ao estado 104
-    T_HIGH    deslocar, e ir ao estado 105
-    T_LOWER   deslocar, e ir ao estado 106
-    T_LOW     deslocar, e ir ao estado 107
+    T_CLOSE  deslocar, e ir ao estado 202
 
 
 Estado 180
@@ -3271,32 +3185,16 @@ Estado 191
 
 Estado 192
 
-   34 dec_arranjo: referencia T_VAR T_OPEN expressao T_CLOSE .
+   34 dec_arranjo: referencia T_VAR T_OPEN T_INT T_CLOSE .
 
     $padrão  reduzir usando a regra 34 (dec_arranjo)
 
 
 Estado 193
 
-   32 dec_arranjo: referencia T_VAR T_OPEN expressao T_COMMA . expressao T_CLOSE
+   32 dec_arranjo: referencia T_VAR T_OPEN T_INT T_COMMA . T_INT T_CLOSE
 
-    T_FLOAT       deslocar, e ir ao estado 33
-    T_INT         deslocar, e ir ao estado 34
-    T_BOOL        deslocar, e ir ao estado 35
-    T_VAR         deslocar, e ir ao estado 1
-    T_OPEN        deslocar, e ir ao estado 36
-    T_MINUS       deslocar, e ir ao estado 37
-    T_NOT         deslocar, e ir ao estado 38
-    T_CAST_INT    deslocar, e ir ao estado 39
-    T_CAST_FLOAT  deslocar, e ir ao estado 40
-    T_CAST_BOOL   deslocar, e ir ao estado 41
-    T_ADDR        deslocar, e ir ao estado 42
-    T_REF         deslocar, e ir ao estado 43
-
-    chamada    ir ao estado 44
-    expressao  ir ao estado 212
-    primitiva  ir ao estado 46
-    var        ir ao estado 47
+    T_INT  deslocar, e ir ao estado 212
 
 
 Estado 194
@@ -3455,7 +3353,7 @@ Estado 201
 
 Estado 202
 
-   31 dec_arranjo: T_VAR T_OPEN expressao T_COMMA expressao T_CLOSE .
+   31 dec_arranjo: T_VAR T_OPEN T_INT T_COMMA T_INT T_CLOSE .
 
     $padrão  reduzir usando a regra 31 (dec_arranjo)
 
@@ -3553,33 +3451,9 @@ Estado 211
 
 Estado 212
 
-   32 dec_arranjo: referencia T_VAR T_OPEN expressao T_COMMA expressao . T_CLOSE
-   93 expressao: expressao . T_PLUS expressao
-   94          | expressao . T_MINUS expressao
-   95          | expressao . T_TIMES expressao
-   96          | expressao . T_DIV expressao
-   97          | expressao . T_AND expressao
-   98          | expressao . T_OR expressao
-   99          | expressao . T_EQUAL2 expressao
-  100          | expressao . T_DIF expressao
-  101          | expressao . T_HIGHER expressao
-  102          | expressao . T_HIGH expressao
-  103          | expressao . T_LOWER expressao
-  104          | expressao . T_LOW expressao
+   32 dec_arranjo: referencia T_VAR T_OPEN T_INT T_COMMA T_INT . T_CLOSE
 
-    T_CLOSE   deslocar, e ir ao estado 226
-    T_PLUS    deslocar, e ir ao estado 96
-    T_MINUS   deslocar, e ir ao estado 97
-    T_TIMES   deslocar, e ir ao estado 98
-    T_DIV     deslocar, e ir ao estado 99
-    T_AND     deslocar, e ir ao estado 100
-    T_OR      deslocar, e ir ao estado 101
-    T_EQUAL2  deslocar, e ir ao estado 102
-    T_DIF     deslocar, e ir ao estado 103
-    T_HIGHER  deslocar, e ir ao estado 104
-    T_HIGH    deslocar, e ir ao estado 105
-    T_LOWER   deslocar, e ir ao estado 106
-    T_LOW     deslocar, e ir ao estado 107
+    T_CLOSE  deslocar, e ir ao estado 226
 
 
 Estado 213
@@ -3863,7 +3737,7 @@ Estado 225
 
 Estado 226
 
-   32 dec_arranjo: referencia T_VAR T_OPEN expressao T_COMMA expressao T_CLOSE .
+   32 dec_arranjo: referencia T_VAR T_OPEN T_INT T_COMMA T_INT T_CLOSE .
 
     $padrão  reduzir usando a regra 32 (dec_arranjo)
 
