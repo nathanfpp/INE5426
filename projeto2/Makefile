@@ -169,6 +169,7 @@ compare_test:
 	diff tests/v2.4/expected/3.ex tests/v2.4/output/3.out
 	diff tests/v2.4/expected/4.ex tests/v2.4/output/4.out
 	diff tests/v2.4/expected/5.ex tests/v2.4/output/5.out
+	diff tests/v2.4/expected/6.ex tests/v2.4/output/6.out
 
 ##Testes de erro
 
