@@ -15,7 +15,6 @@ extern void yyerror(const char* s, ...);
 // Declaração de Variáveis Globais
 %code {
     AST::Bloco *arvoreSintatica;
-    AST::Tipo ultimoTipo;
     AST::TabelaDeSimbolos *escopoPrincipal = new AST::TabelaDeSimbolos();
     bool analisador = false;
 }
@@ -29,9 +28,6 @@ extern void yyerror(const char* s, ...);
     AST::atributo_nodo valores;
     AST::Nodo *nodo;
     AST::Variavel *variavel;
-    //AST::Inteiro *inteiro;
-    //AST::Real *real;
-    //AST::Boolean *boolean;
     AST::Declaracao *declaracao;
     AST::Definicao *definicao;
     AST::DefinicaoDeArranjo *definicaoDeArranjo;
@@ -80,6 +76,8 @@ extern void yyerror(const char* s, ...);
 
 // %left, %right, %nonassoc
 // Precedência de operadores matemáticos, os últimos listados possuem maior procedência.
+%left T_INT T_BOOL T_VAR T_FLOAT
+%left T_COMMA
 %left T_AND T_OR T_ATRIB_ASK T_CAST_INT T_CAST_BOOL
 %left T_EQUAL2 T_DIF T_HIGHER T_HIGH T_LOWER T_LOW
 %left T_PLUS T_MINUS
@@ -176,36 +174,7 @@ dec_arranjo:
            | referencia T_VAR T_OPEN T_INT T_CLOSE  
               { $$ = new AST::Arranjo( AST::Tipo::arranjo, AST::Tipo::nulo ,$2, new AST::Inteiro($4), $1 ); }           
       ;
-  
-
-//isso abaixo remove os 4 warnings, mas apresenta problemas nos "error_tests:" v0.8/4, v1.3/4 e 1.3/6, além de permitir coisas indevidas como int (qualquer expressao ou nada) = qualquer expressao, sem apresentar erro sintático.
-
-/*
-dec_arranjo:
-            chamada {   AST::atributo_nodo val;
-			val.valor = new char[$1->id.size() + 1];
-			std::copy($1->id.begin(), $1->id.end(), val.valor);
-			val.valor[$1->id.size()] = '\0';
-			$$ = NULL;
-			if( ((AST::Parametro*)((AST::Chamada*)$1)->parametros) != NULL && ((AST::Parametro*)((AST::Parametro*)((AST::Chamada*)$1)->parametros)->proximo) != NULL )
-	              { $$ = new AST::ArranjoDuplo( AST::Tipo::arranjo_duplo, AST::Tipo::nulo ,val, ((AST::Parametro*)((AST::Chamada*)$1)->parametros)->parametro, ((AST::Parametro*)((AST::Parametro*)((AST::Chamada*)$1)->parametros)->proximo)->parametro, 0); }
-			else if (((AST::Parametro*)((AST::Chamada*)$1)->parametros) != NULL)
-	              { $$ = new AST::Arranjo( AST::Tipo::arranjo, AST::Tipo::nulo ,val, ((AST::Parametro*)((AST::Chamada*)$1)->parametros)->parametro, 0); }
-		  }
-
-	  | referencia chamada {  
-			AST::atributo_nodo val;
-			val.valor = new char[$2->id.size() + 1];
-			std::copy($2->id.begin(), $2->id.end(), val.valor);
-			val.valor[$2->id.size()] = '\0';
-			$$ = NULL;
-			if( ((AST::Parametro*)((AST::Chamada*)$2)->parametros) != NULL && ((AST::Parametro*)((AST::Parametro*)((AST::Chamada*)$2)->parametros)->proximo) != NULL )
-	              { $$ = new AST::ArranjoDuplo( AST::Tipo::arranjo_duplo, AST::Tipo::nulo ,val, ((AST::Parametro*)((AST::Chamada*)$2)->parametros)->parametro, ((AST::Parametro*)((AST::Parametro*)((AST::Chamada*)$2)->parametros)->proximo)->parametro, $1); }
-			else if (((AST::Parametro*)((AST::Chamada*)$2)->parametros) != NULL)
-	              { $$ = new AST::Arranjo( AST::Tipo::arranjo, AST::Tipo::nulo ,val, ((AST::Parametro*)((AST::Chamada*)$2)->parametros)->parametro, $1); }
-			     }
-           ;
-*/
+ 
 
 arranjo:
          T_VAR T_OPEN expressao T_CLOSE  
@@ -391,9 +360,9 @@ expressao:
          ; 
 
 tipo:
-       T_TYPE_INT    { $$ = AST::Tipo::inteiro;  ultimoTipo = $1; }
-     | T_TYPE_FLOAT  { $$ = AST::Tipo::real;     ultimoTipo = $1; }
-     | T_TYPE_BOOL   { $$ = AST::Tipo::boolean;  ultimoTipo = $1; }
+       T_TYPE_INT    { $$ = AST::Tipo::inteiro;  }
+     | T_TYPE_FLOAT  { $$ = AST::Tipo::real;     }
+     | T_TYPE_BOOL   { $$ = AST::Tipo::boolean;  }
      ;
 
 primitiva:

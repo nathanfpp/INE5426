@@ -107,14 +107,11 @@ extern int yydebug;
 typedef union YYSTYPE YYSTYPE;
 union YYSTYPE
 {
-#line 28 "parser.y" /* yacc.c:1909  */
+#line 27 "parser.y" /* yacc.c:1909  */
 
     AST::atributo_nodo valores;
     AST::Nodo *nodo;
     AST::Variavel *variavel;
-    //AST::Inteiro *inteiro;
-    //AST::Real *real;
-    //AST::Boolean *boolean;
     AST::Declaracao *declaracao;
     AST::Definicao *definicao;
     AST::DefinicaoDeArranjo *definicaoDeArranjo;
@@ -130,7 +127,7 @@ union YYSTYPE
     AST::Tipo tipo;
     int num_ref;
 
-#line 134 "parser.h" /* yacc.c:1909  */
+#line 131 "parser.h" /* yacc.c:1909  */
 };
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1
