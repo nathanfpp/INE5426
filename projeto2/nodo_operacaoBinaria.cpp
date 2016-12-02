@@ -48,30 +48,30 @@ Tipo OperacaoBinaria::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linh
 			 memcpy(((Arranjo*)esquerda)->inteiro_a, ((Arranjo*)direita)->inteiro_a, ((Arranjo*)direita)->tamanho->inteiro*((ArranjoDuplo*)direita)->tamanho2->inteiro*sizeof(int));
 			 memcpy(((Arranjo*)esquerda)->boolean_a, ((Arranjo*)direita)->real_a, ((Arranjo*)direita)->tamanho->inteiro*((ArranjoDuplo*)direita)->tamanho2->inteiro*sizeof(bool));
  			 memcpy(((Arranjo*)esquerda)->real_a, ((Arranjo*)direita)->real_a, ((Arranjo*)direita)->tamanho->inteiro*((ArranjoDuplo*)direita)->tamanho2->inteiro*sizeof(double));
-			  tabelaDeSimbolos->modificar(esquerda, esquerda->id); 
-			   return e;
+			 tabelaDeSimbolos->modificar(esquerda, esquerda->id); 
+			 return e;
 			}
 
-
 			if(tipoDeVariavel_e == Tipo::hash){
+
 			   if (((Hash*)direita)->int_int.size() > 0)
-		     	   ((Hash*)esquerda)->int_int.insert(((Hash*) direita)->int_int.begin(),((Hash*) direita)->int_int.end());
+		     	   	((Hash*)esquerda)->int_int = ((Hash*) direita)->int_int;
 			   if (((Hash*)direita)->int_bool.size() > 0)
-			   ((Hash*)esquerda)->int_bool.insert(((Hash*) direita)->int_bool.begin(),((Hash*) direita)->int_bool.end());
+		     	   	((Hash*)esquerda)->int_bool = ((Hash*) direita)->int_bool;
 			   if (((Hash*)direita)->int_real.size() > 0)
-			   ((Hash*)esquerda)->int_real.insert(((Hash*) direita)->int_real.begin(),((Hash*) direita)->int_real.end());
+		     	   	((Hash*)esquerda)->int_real = ((Hash*) direita)->int_real;
 			   if (((Hash*)direita)->bool_bool.size() > 0)
-		   	   ((Hash*)esquerda)->bool_bool.insert(((Hash*) direita)->bool_bool.begin(),((Hash*) direita)->bool_bool.end());
+		     	   	((Hash*)esquerda)->bool_bool = ((Hash*) direita)->bool_bool;
 			   if (((Hash*)direita)->bool_int.size() > 0)
-			   ((Hash*)esquerda)->bool_int.insert(((Hash*) direita)->bool_int.begin(),((Hash*) direita)->bool_int.end());
+		     	   	((Hash*)esquerda)->bool_int = ((Hash*) direita)->bool_int;
 			   if (((Hash*)direita)->bool_real.size() > 0)
-			   ((Hash*)esquerda)->bool_real.insert(((Hash*) direita)->bool_real.begin(),((Hash*) direita)->bool_real.end());
+		     	   	((Hash*)esquerda)->bool_real = ((Hash*) direita)->bool_real;
 			   if (((Hash*)direita)->real_real.size() > 0)
-		   	   ((Hash*)esquerda)->real_real.insert(((Hash*) direita)->real_int.begin(),((Hash*) direita)->real_int.end());
+		     	   	((Hash*)esquerda)->real_real = ((Hash*) direita)->real_real;
 			   if (((Hash*)direita)->real_int.size() > 0)
-			   ((Hash*)esquerda)->real_int.insert(((Hash*) direita)->real_bool.begin(),((Hash*) direita)->real_bool.end());
+		     	   	((Hash*)esquerda)->real_int = ((Hash*) direita)->real_int;
 			   if (((Hash*)direita)->real_bool.size() > 0)
-			   ((Hash*)esquerda)->real_bool.insert(((Hash*) direita)->real_real.begin(),((Hash*) direita)->real_real.end());
+		     	   	((Hash*)esquerda)->real_bool = ((Hash*) direita)->real_bool;
                            tabelaDeSimbolos->modificar(esquerda, esquerda->id); 
 			   return e;
 			}
