@@ -1,2 +1,3 @@
-int i
+int i = 99
+int ref d = i
 i = addr true

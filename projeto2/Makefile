@@ -6,7 +6,6 @@ PARAM=-std=c++11 -fcxx-exceptions -Wno-deprecated-register -Wall
 OUTPUT=lukacompiler
 
 all: $(OUTPUT) scanner.cpp parser.h test compare_test error_test compare_error_test
-
 $(OUTPUT): parser.h scanner.cpp main.cpp
 	${CC} -o ${OUTPUT} *.cpp ${PARAM}
 
@@ -95,6 +94,11 @@ test:
 	./${OUTPUT} < tests/v2.4/input/4.in > tests/v2.4/output/4.out
 	./${OUTPUT} < tests/v2.4/input/5.in > tests/v2.4/output/5.out
 	./${OUTPUT} < tests/v2.4/input/6.in > tests/v2.4/output/6.out
+
+	./${OUTPUT} < custom_tests/1.in > custom_tests/1.out 2> custom_tests/1.out_err
+	./${OUTPUT} < custom_tests/2.in > custom_tests/2.out 2> custom_tests/2.out_err
+	./${OUTPUT} < custom_tests/3.in > custom_tests/3.out 2> custom_tests/3.out_err
+
 
 
 compare_test:
@@ -396,6 +400,3 @@ compare_error_test:
 	diff error_tests/v2.3/expected/2.ex_err error_tests/v2.3/output/2.out_err 
 	diff error_tests/v2.3/expected/3.ex     error_tests/v2.3/output/3.out  
 	diff error_tests/v2.3/expected/3.ex_err error_tests/v2.3/output/3.out_err 
-
-
-

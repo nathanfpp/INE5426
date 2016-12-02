@@ -4,7 +4,8 @@ int fun: d (params: int y)
   ret 4
 int array: a (size: 10)
 int var: i = 0
-int ref var: [ref] mypointer = 0, aa
+int ref var: hispointer
+int ref var: [ref] mypointer = hispointer, aa
 = aa [ref] mypointer
 int var: w
 int ref ref ref var: b
