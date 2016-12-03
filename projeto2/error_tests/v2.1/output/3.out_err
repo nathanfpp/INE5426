@@ -1,2 +1,2 @@
 [Line 3] semantic error: arrays or hashes can only be part of a simple attribution
-[Line 3] semantic error: operation attribution expected integer array but received null
+[Line 3] semantic error: attribution operation expected integer array but received null

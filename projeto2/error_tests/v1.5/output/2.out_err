@@ -1,4 +1,4 @@
-[Line 4] semantic error: operation switch expected integer but received bool
-[Line 4] semantic error: operation switch expected integer but received bool
-[Line 4] semantic error: operation switch expected integer but received float
-[Line 4] semantic error: operation switch expected integer but received bool
+[Line 4] semantic error: switch operation expected integer but received bool
+[Line 4] semantic error: switch operation expected integer but received bool
+[Line 4] semantic error: switch operation expected integer but received float
+[Line 4] semantic error: switch operation expected integer but received bool

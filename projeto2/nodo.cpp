@@ -70,8 +70,6 @@ bool Nodo::coercao(OperacaoBinaria *coagido, Tipo e, Tipo d, Tipo operacao ,int 
 
     }
 
-//std::cout << coagido->esquerda->inteiro << " " << imprimirTipoPorExtenso(operacao) << " " << coagido->direita->inteiro << "\n";
-
   // A operação deve ser executada?
     if(analisador) {
 
@@ -272,7 +270,7 @@ std::string Nodo::imprimirTipoPorExtenso(Tipo t) {
         case Tipo::endereco:               return "address";
         case Tipo::referencia: 		   return "reference";
         case Tipo::condicao_atribuicao:    return "? ";   
-        case Tipo::atribuicao_condicional: return ": ";
+        case Tipo::atribuicao_condicional: return "\":\" ";
         case Tipo::arranjo:                return "array";
         case Tipo::arranjo_duplo:          return "double array";
         case Tipo::parametro:              return "parameter";
@@ -286,7 +284,7 @@ std::string Nodo::imprimirTipoPorExtenso(Tipo t) {
 
 
 void Nodo::imprimirErroDeOperacao(Tipo operacao, Tipo esperava, Tipo recebeu, int linha) {
-    std::cerr << "[Line " << linha << "] semantic error:" << " operation " << imprimirTipoPorExtenso(operacao);
+    std::cerr << "[Line " << linha << "] semantic error: " << imprimirTipoPorExtenso(operacao) << " operation";
     std::cerr << " expected " << imprimirTipoPorExtenso(esperava);
     std::cerr << " but received " <<  imprimirTipoPorExtenso(recebeu);
     std::cerr << "\n";

@@ -1,5 +1,5 @@
-[Line 3] semantic error: operation addition expected integer but received address
-[Line 5] semantic error: operation addition expected integer but received address
-[Line 5] semantic error: operation attribution expected bool but received address
-[Line 6] semantic error: operation attribution expected bool but received address
-[Line 7] semantic error: operation or expected bool but received address
+[Line 3] semantic error: addition operation expected integer but received address
+[Line 5] semantic error: addition operation expected integer but received address
+[Line 5] semantic error: attribution operation expected bool but received address
+[Line 6] semantic error: attribution operation expected bool but received address
+[Line 7] semantic error: or operation expected bool but received address

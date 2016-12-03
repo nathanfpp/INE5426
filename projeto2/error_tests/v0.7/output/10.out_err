@@ -2,15 +2,15 @@
 [Line 3] semantic error: return of function f2 expected integer double array but received integer
 [Line 5] semantic error: return of function f4 expected integer double array but received integer array
 [Line 6] semantic error: return of function f5 expected integer double array but received integer
-[Line 14] semantic error: operation attribution expected integer array but received integer double array
-[Line 15] semantic error: operation attribution expected integer array but received integer double array
-[Line 16] semantic error: operation attribution expected integer array but received integer double array
-[Line 17] semantic error: operation attribution expected integer array but received integer double array
-[Line 18] semantic error: operation attribution expected integer array but received integer double array
-[Line 19] semantic error: operation attribution expected integer array but received integer double array
-[Line 20] semantic error: operation attribution expected integer but received integer double array
-[Line 21] semantic error: operation attribution expected integer but received integer double array
-[Line 22] semantic error: operation attribution expected integer but received integer double array
-[Line 23] semantic error: operation attribution expected integer but received integer double array
-[Line 24] semantic error: operation attribution expected integer but received integer double array
-[Line 25] semantic error: operation attribution expected integer but received integer double array
+[Line 14] semantic error: attribution operation expected integer array but received integer double array
+[Line 15] semantic error: attribution operation expected integer array but received integer double array
+[Line 16] semantic error: attribution operation expected integer array but received integer double array
+[Line 17] semantic error: attribution operation expected integer array but received integer double array
+[Line 18] semantic error: attribution operation expected integer array but received integer double array
+[Line 19] semantic error: attribution operation expected integer array but received integer double array
+[Line 20] semantic error: attribution operation expected integer but received integer double array
+[Line 21] semantic error: attribution operation expected integer but received integer double array
+[Line 22] semantic error: attribution operation expected integer but received integer double array
+[Line 23] semantic error: attribution operation expected integer but received integer double array
+[Line 24] semantic error: attribution operation expected integer but received integer double array
+[Line 25] semantic error: attribution operation expected integer but received integer double array

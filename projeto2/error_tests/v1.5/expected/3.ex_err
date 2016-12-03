@@ -1,1 +1,1 @@
-[Line 4] semantic error: operation switch expected bool but received integer
+[Line 4] semantic error: switch operation expected bool but received integer

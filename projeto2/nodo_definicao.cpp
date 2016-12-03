@@ -15,7 +15,7 @@ Tipo Definicao::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, boo
         Tipo tipoDoValor = valor->analisar(tabelaDeSimbolos, linha, analisador); // anteriormente após a coerção
 
         // Verifico se a definicao contem ponteiros e se contém erro semantico
-	if (variavel->ponteiros > 0 && valor->tipo == Tipo::variavel && ((Variavel*)valor)->recuperarPonteiros(tabelaDeSimbolos, linha) == 0)
+	if (variavel->ponteiros > 0 && (valor->tipo == Tipo::variavel && ((Variavel*)valor)->recuperarPonteiros(tabelaDeSimbolos, linha) > 0 && tipoDeVariavel == tipoDoValor) == false )
 	     std::cerr << "[Line " << linha << "] semantic error: attribution operation expects "<<imprimirTipoPorExtenso(tipoDeVariavel)<<" pointer but received "<<imprimirTipoPorExtenso(tipoDoValor) <<"\n";
           
 	if((variavel->ponteiros > 0 && tipoDoValor == Tipo::endereco)==false)

@@ -1,1 +1,1 @@
-[Line 3] semantic error: operation attribution expected int:int but received bool:int
+[Line 3] semantic error: attribution operation expected int:int but received bool:int
