@@ -1,5 +1,6 @@
-// Função retornando tipo errado : a(0) é detectado como variávei "a"
 // Adaptado de https://github.com/llpilla/compiler_examples/blob/master/simple_ast/ast.h
+// Trabalhando arranjos 2D como 1D http://stackoverflow.com/questions/936687/how-do-i-declare-a-2d-array-in-c-using-new
+
 
 #ifndef ARVORESINTATICA_H
 #define ARVORESINTATICA_H
