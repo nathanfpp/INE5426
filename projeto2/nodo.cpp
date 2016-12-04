@@ -2,6 +2,7 @@
 
 using namespace AST;
 
+
 bool Nodo::coercaoDaDefinicao(Definicao *coagido, Tipo esperado, Tipo recebido, int linha) {
 
   // Caso o tipo recebido seja nulo, a coerção é ignorada e retorna-se true
@@ -36,7 +37,10 @@ bool Nodo::coercaoDaDefinicao(Definicao *coagido, Tipo esperado, Tipo recebido, 
 
 bool Nodo::coercao(OperacaoBinaria *coagido, Tipo e, Tipo d, Tipo operacao ,int linha, bool analisador) {
 
+  // A princípio a operação que chamou a coerção é realizada sobre inteiros  
     bool operando_inteiros = true; 
+
+  // Ocorreu coerção?
     bool ocorreu = false;
 
   // A operação realizada é sobre inteiros?
@@ -73,7 +77,7 @@ bool Nodo::coercao(OperacaoBinaria *coagido, Tipo e, Tipo d, Tipo operacao ,int 
   // A operação deve ser executada?
     if(analisador) {
 
-      //A operação é realizada com inteiros?
+      // A operação é realizada com inteiros?
         if (operando_inteiros) {
             switch(operacao) {
                 case Tipo::adicao:
@@ -155,9 +159,6 @@ bool Nodo::coercao(OperacaoBinaria *coagido, Tipo e, Tipo d, Tipo operacao ,int 
             }
         }
     }
-
-//4 std::cerr << "@Nodo::coercao : " << coagido->id << " = " << coagido->esquerda->id << " " << imprimirTipoPorExtenso(operacao) << " " << coagido->direita->id << "\n";
-//5 std::cerr << "               : " << coagido->inteiro << " = " << coagido->esquerda->inteiro << " " << imprimirTipoPorExtenso(operacao) << " " << coagido->direita->inteiro << "\n";
 
   // Se não ocorreu coerção, retorna-se false
     return ocorreu;  
@@ -290,3 +291,4 @@ void Nodo::imprimirErroDeOperacao(Tipo operacao, Tipo esperava, Tipo recebeu, in
     std::cerr << "\n";
 
 }
+

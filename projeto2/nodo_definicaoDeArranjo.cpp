@@ -1,7 +1,7 @@
 #include "arvoreSintatica.h"
 
-
 using namespace AST;
+
 
 Tipo DefinicaoDeArranjo::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool analisador) {
 
@@ -11,7 +11,7 @@ Tipo DefinicaoDeArranjo::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int l
   // O tipo da próxima Definição que caso não exista será Tipo::nulo
     Tipo tipoDoProximo = Tipo::nulo;
 
-  // Verifico se a declaracao do primeiro indice do arranjo duplo ou indice do arranjo simples é válida
+  // Verifica-se se a declaracao do primeiro indice do arranjo duplo ou indice do arranjo simples é válida
     Tipo indice1 =  ((Arranjo*)variavel)->tamanho->analisar(tabelaDeSimbolos, linha, analisador);
     if(indice1 != Tipo::inteiro) {
         std::cerr << "[Line " << linha << "] semantic error: index operator expects integer but received ";
@@ -34,7 +34,7 @@ Tipo DefinicaoDeArranjo::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int l
         tipo = Tipo::nulo;
     }
 
-  // Se outra Variável foi declarada, atribui o tipo da Declaração e inicia sua análise 
+  // Se outra Variável foi declarada, atribui-se o tipo da Declaração e inicia sua análise 
     if(proxima != NULL) {
         proxima->tipoDeVariavel = tipoDeVariavel;
 	proxima->variavel->ponteiros = variavel->ponteiros;
@@ -62,13 +62,11 @@ void DefinicaoDeArranjo::imprimir(int espaco, bool imprimirArray) {
         if(imprimirArray && variavel->ponteiros == 0) {
             std::cout << " array: ";
         }
-
         else if(imprimirArray && variavel->ponteiros > 0) {
     	for(int i = 0; i < variavel->ponteiros; i++)
           	  std::cout << " ref";
             std::cout << " array: ";
         }
-
         variavel->imprimir(0, true);
     }
     if(proxima != NULL) {

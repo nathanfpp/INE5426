@@ -2,6 +2,7 @@
 
 using namespace AST;
 
+
 Tipo DeclaracaoDeHash::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool analisador) {
 
   // Atribui o tipoDeVariavel da Declaração à primeira variável da declaração
@@ -37,3 +38,4 @@ void DeclaracaoDeHash::imprimir(int espaco, bool novaLinha) {
         std::cout << "\n";
     }
 }
+

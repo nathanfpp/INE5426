@@ -2,6 +2,7 @@
 
 using namespace AST;
 
+
 Tipo Bloco::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool analisador) {
 
   // Tipo encontrado após cada linha
@@ -10,11 +11,10 @@ Tipo Bloco::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool an
   // Tipo do retorno encontrado
     Tipo retorno = Tipo::bloco;  
 
-  // Verificar os Tipos de todas as linhas do Bloco   
-    for (Nodo *l : linhas) {    
+  // Analisa-se todas as linhas do bloco, só podendo haver um retorno  
+    for (Nodo *l : linhas) {     
         if(l != NULL) {
             linha++;
-//if(l->tipo == Tipo::retorno) std::cerr << "@bloco:retorno ";
             analise = l->analisar(tabelaDeSimbolos, linha, analisador);
             if(l->tipo == Tipo::retorno) {
                 if(retorno == Tipo::bloco) {
@@ -34,7 +34,6 @@ Tipo Bloco::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool an
 
   // Desempilha-se este escopo, removendo seu endereçamento da tabela de símbolos ...
   // ... sendo o ponteiro para o escopo guardado apenas no Nodo::Bloco
-
     if(tabelaDeSimbolos->escopoPrincipal()) {
         tabelaDeSimbolos->retornarEscopo(linha);
     }
@@ -56,3 +55,4 @@ void Bloco::imprimir(int espaco, bool novaLinha) {
 void Bloco::novaLinha(Nodo *linha) {
     linhas.push_back(linha);
 }
+

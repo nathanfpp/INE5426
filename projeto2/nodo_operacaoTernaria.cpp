@@ -1,7 +1,7 @@
 #include "arvoreSintatica.h"
 
-
 using namespace AST;
+
 
 Tipo OperacaoTernaria::analisar(AST::TabelaDeSimbolos *tabelaSimbolos, int linha, bool analisador) {  
 
@@ -32,3 +32,4 @@ void OperacaoTernaria::imprimir(int espaco, bool novaLinha) {
     esquerda->imprimir(0, false);
     direita->imprimir(0, false);
 }
+

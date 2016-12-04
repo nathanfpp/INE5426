@@ -7,43 +7,51 @@ Tipo OperacaoBinaria::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linh
   // Os tipos dos filhos à esquerda e à direita da OperacaoBinaria
     Tipo e, d;
     e = esquerda->analisar(tabelaDeSimbolos, linha, analisador);
-// Armazena os valores da esquerda que são destruidos em caso de funcao recursiva
+
+  // Armazena-se os valores da esquerda que são destruidos no caso de funcao recursiva
     bool esquerda_boolean = esquerda->boolean;
     int esquerda_inteiro = esquerda->inteiro;
     double esquerda_real = esquerda->real;
 
+  // Analisa-se o filho à direita da OperacaoBinaria
     d = direita->analisar(tabelaDeSimbolos, linha, analisador); 
     tipoDoRetorno = e;
 
 
 // Arranjos e Hashes, quando o operando é a variável em si e não seus itens, devem apresentar erro caso a atribuicao nao seja simples e seus tipos diferentes.
-   if(e == Tipo::arranjo_2_f ||e == Tipo::arranjo_2_i || e == Tipo::arranjo_2_b || e == Tipo::arranjo_f ||e == Tipo::arranjo_i || e == Tipo::arranjo_b || e == hash_bb || e == hash_bi ||  e == hash_bf ||  e == hash_ib ||  e == hash_ii ||  e == hash_if ||  e == hash_fb ||  e == hash_fi || e == hash_ff || d == Tipo::arranjo_2_f ||d == Tipo::arranjo_2_i || d == Tipo::arranjo_2_b || d == Tipo::arranjo_f ||d == Tipo::arranjo_i || d == Tipo::arranjo_b || d == hash_bb || d == hash_bi ||  d == hash_bf ||  d == hash_ib ||  d == hash_ii ||  d == hash_if ||  d == hash_fb ||  d == hash_fi || d == hash_ff ) { //todas essas condicoes acima sao necessarias
+   if(e == Tipo::arranjo_2_f ||e == Tipo::arranjo_2_i || e == Tipo::arranjo_2_b || e == Tipo::arranjo_f ||e == Tipo::arranjo_i || e == Tipo::arranjo_b || e == hash_bb || e == hash_bi ||  e == hash_bf ||  e == hash_ib ||  e == hash_ii ||  e == hash_if ||  e == hash_fb ||  e == hash_fi || e == hash_ff || d == Tipo::arranjo_2_f ||d == Tipo::arranjo_2_i || d == Tipo::arranjo_2_b || d == Tipo::arranjo_f ||d == Tipo::arranjo_i || d == Tipo::arranjo_b || d == hash_bb || d == hash_bi ||  d == hash_bf ||  d == hash_ib ||  d == hash_ii ||  d == hash_if ||  d == hash_fb ||  d == hash_fi || d == hash_ff ) { 
+        Tipo tipoDeVariavel_e = ((Variavel*)esquerda)->obterTipoDaTabela(tabelaDeSimbolos);
 
-            Tipo tipoDeVariavel_e = ((Variavel*)esquerda)->obterTipoDaTabela(tabelaDeSimbolos);
+          // Caso esta OperacaoBinaria seja uma atribuição
+            if(operacao == Tipo::atribuicao) {
 
-            if(operacao == Tipo::atribuicao) { //se for uma atribuicao segue em frente.
-                if(e != d) { //se mesmo numa atribuição os tipos forem diferentes, dá erro.
+              // Se o tipo da direita e o da esquerda forem diferentes, erro
+                if(e != d) {
                     imprimirErroDeOperacao(operacao, e, d, linha);
                 }
-		else if(analisador && (tipoDeVariavel_e == Tipo::arranjo || tipoDeVariavel_e == Tipo::arranjo_duplo 
-			|| tipoDeVariavel_e == Tipo::hash)){ //se os tipos forem iguais recupero os nodos das estruturas de dados e trato as atribuições.
- 			  esquerda = tabelaDeSimbolos->recuperar(esquerda->id, linha, true);
-		       if(direita->tipo == Tipo::funcao_cha){ //caso o nodo direita seja um retorno de uma função, recupero a sua ED
- 			   direita = ((Retorno*)((Chamada*)direita)->retornoEstruturaDados);
-		       }
-		       else{ //se não, é apenas um nodo arranjo, arranjo duplo ou hash
- 			  direita = tabelaDeSimbolos->recuperar(direita->id, linha, true);
-			}
 
-			if(tipoDeVariavel_e == Tipo::arranjo){ //trato a atribuição para arranjos simples
+              // Caso esteja-se interpretando E o tipo da esquerda for um arranjo/arranjoDuplo/hash
+		else if(analisador && (tipoDeVariavel_e == Tipo::arranjo || tipoDeVariavel_e == Tipo::arranjo_duplo || tipoDeVariavel_e == Tipo::hash)) { 
+                  // Recupera-se o filho da esquerda e o da direita da tabela de símbolos
+ 	            esquerda = tabelaDeSimbolos->recuperar(esquerda->id, linha, true);
+		    if(direita->tipo == Tipo::funcao_cha){
+ 		        direita = ((Retorno*)((Chamada*)direita)->retornoEstruturaDados);
+		    }
+		    else {
+ 	                direita = tabelaDeSimbolos->recuperar(direita->id, linha, true);
+		    }
+
+                  // Copia-se os valores do arranjo simples, e atualiza-se a variável na tabela
+		    if(tipoDeVariavel_e == Tipo::arranjo){
 			 memcpy(((Arranjo*)esquerda)->inteiro_a, ((Arranjo*)direita)->inteiro_a, ((Arranjo*)direita)->tamanho->inteiro*sizeof(int));   
                          memcpy(((Arranjo*)esquerda)->boolean_a, ((Arranjo*)direita)->real_a, ((Arranjo*)direita)->tamanho->inteiro*sizeof(bool));
  			 memcpy(((Arranjo*)esquerda)->real_a, ((Arranjo*)direita)->real_a, ((Arranjo*)direita)->tamanho->inteiro*sizeof(double));
 			  tabelaDeSimbolos->modificar(esquerda, esquerda->id); 
 			   return e;
-			}
+		    }
 
-			if(tipoDeVariavel_e == Tipo::arranjo_duplo){ //trato a atribuição para arranjos duplos
+                  // Copia-se os valores do arranjo duplo, e atualiza-se a variável na tabela
+			if(tipoDeVariavel_e == Tipo::arranjo_duplo){
 			 memcpy(((Arranjo*)esquerda)->inteiro_a, ((Arranjo*)direita)->inteiro_a, ((Arranjo*)direita)->tamanho->inteiro*((ArranjoDuplo*)direita)->tamanho2->inteiro*sizeof(int));
 			 memcpy(((Arranjo*)esquerda)->boolean_a, ((Arranjo*)direita)->real_a, ((Arranjo*)direita)->tamanho->inteiro*((ArranjoDuplo*)direita)->tamanho2->inteiro*sizeof(bool));
  			 memcpy(((Arranjo*)esquerda)->real_a, ((Arranjo*)direita)->real_a, ((Arranjo*)direita)->tamanho->inteiro*((ArranjoDuplo*)direita)->tamanho2->inteiro*sizeof(double));
@@ -51,7 +59,7 @@ Tipo OperacaoBinaria::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linh
 			 return e;
 			}
 
-			if(tipoDeVariavel_e == Tipo::hash){ //trato a atribuição para hashes
+			if(tipoDeVariavel_e == Tipo::hash){
 
 			   if (((Hash*)direita)->int_int.size() > 0)
 		     	   	((Hash*)esquerda)->int_int = ((Hash*) direita)->int_int;
@@ -73,17 +81,16 @@ Tipo OperacaoBinaria::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linh
 		     	   	((Hash*)esquerda)->real_bool = ((Hash*) direita)->real_bool;
                            tabelaDeSimbolos->modificar(esquerda, esquerda->id); 
 			   return e;
-			}
-			
+			}			
 		}
+            }
 
-            } else { //se a operação não for atribuição, já gera um erro
-		    std::cerr << "[Line " << linha << "] semantic error: arrays or hashes can only be part of a simple attribution" <<"\n";
-
+          // Caso contrário, tentou-se atribuirum arranjo ou hash à outro arranjo ou hash
+            else {
+	        std::cerr << "[Line " << linha << "] semantic error: arrays or hashes can only be part of a simple attribution" <<"\n";
             }
             return Tipo::nulo;
     }
-    
 
 
   // Se um dos tipos for nulo não tem porque seguir adiante
@@ -113,19 +120,22 @@ Tipo OperacaoBinaria::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linh
                 return Tipo::nulo;
             }
 
+          // Os tipos são válidos?
 	    if((e == Tipo::inteiro && (d != Tipo::inteiro && d != Tipo::endereco))
 		|| (e == Tipo::boolean && (d != Tipo::boolean && d != Tipo::endereco))
 		|| (e == Tipo::real && d == Tipo::boolean)) {
             	imprimirErroDeOperacao(operacao, e, d, linha);
             }
 
-            else { //não faz sentido realizar coercao, se há erro acima
+          // Caso não ocorra erro, realiza-se a operação e a coerção
+            else {
                 coercao(this, e, d, operacao, linha, analisador);
 		if(e == Tipo::real || d == Tipo::real) {
                    tipoDoRetorno = Tipo::real;
                 }
             } 
 
+          // 
 	    if(e_ponteiros > 0 && d_ponteiros == 0 && d!=Tipo::endereco) { 
 		std::cerr << "[Line " << linha << "] semantic error: attribution operation expects "<<imprimirTipoPorExtenso(e)<<" pointer but received "<<imprimirTipoPorExtenso(d) <<"\n";
             }

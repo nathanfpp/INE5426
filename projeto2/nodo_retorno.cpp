@@ -1,7 +1,7 @@
 #include "arvoreSintatica.h"
 
-
 using namespace AST;
+
 
 Tipo Retorno::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool analisador) {
     //std::cerr << "r "; 
@@ -9,9 +9,9 @@ Tipo Retorno::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool 
     boolean = retorno->boolean;
     inteiro = retorno->inteiro;
     real    = retorno->real;
-  //5  std::cerr << "@Retorno : analisar : " << inteiro << "\n";
     return analise;
 }
+
 
 void Retorno::imprimir(int espaco, bool novaLinha) {
     imprimirEspaco(espaco);

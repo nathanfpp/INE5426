@@ -1,11 +1,11 @@
 #include "arvoreSintatica.h"
 
-
 using namespace AST;
+
 
 Tipo Parametro::analisar(TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool analisador) {
 
-  // Tipos de parâmetros diferentes possuem tratamento diferenciado
+  // O Hash possui tratamento diferente das demais variáveis
     if(parametro != NULL) {
         switch(parametro->tipo) {
             case Tipo::variavel:
@@ -18,7 +18,6 @@ Tipo Parametro::analisar(TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool ana
                 ((Hash*)parametro)->tipoDeChave = tipoReserva;
                 break;
 	   default: break;
-
         }
     }
 
@@ -36,6 +35,7 @@ void Parametro::comparar(TabelaDeSimbolos *tabelaDeSimbolos, Parametro *comparad
 
   // Se o tipoReserva não for nulo, ele representa a chave do parâmetro de HASH //
     if(tipoReserva != Tipo::nulo) {
+
       // Definição de Função acrescenta os parâmetros à tabela de símbolos
         if(definicao) {
             Tipo tipoValor = comparado->tipoDoParametro;
@@ -58,6 +58,7 @@ void Parametro::comparar(TabelaDeSimbolos *tabelaDeSimbolos, Parametro *comparad
 			        std::cerr << " expected to be called " << nomeEsperado << " but was named " << nomeRecebido << "\n"; 
 			    }            
 		    }
+
 		  // Se os Valores forem de tipos diferentes
 		    else {              
 			std::cerr << "[Line " << linha << "] semantic error: hash parameter " << parametro->id;
@@ -65,6 +66,7 @@ void Parametro::comparar(TabelaDeSimbolos *tabelaDeSimbolos, Parametro *comparad
 			std::cerr << " but received " << imprimirTipoPorExtenso(tipoValor) << "\n";              
 		    }
 		}
+
 	       // Se as Chaves forem de tipos diferentes
 		else {
 		    std::cerr << "[Line " << linha << "] semantic error: hash parameter " << parametro->id;
@@ -74,20 +76,17 @@ void Parametro::comparar(TabelaDeSimbolos *tabelaDeSimbolos, Parametro *comparad
         }
 
       // Chamada de Função: argumentos (qualquer expressao ou até mesmo um hash simples) vs Parametro (hash)
-       else {
-	    //Recupera nodo se for variavel
+        else {
+	  //Recupera nodo se for variavel
 	    Tipo tipoArgumento = comparado->parametro->analisar(tabelaDeSimbolos, linha, analisador); 
 	    Tipo tipoParametroAjustado = tabelaDeSimbolos->tipoDeHash(tipoReserva, tipoDoParametro);//chave,valor->retorna tipo chave_Valor
 	    if(tipoParametroAjustado != tipoArgumento) {
 	     //Parametro recebido é alguma coisa qualquer, menos um hash
-		std::cerr <<"[Line " << linha << "]"<<" semantic error: expected hash "<<imprimirTipoPorExtenso(tipoParametroAjustado);
+	        std::cerr <<"[Line " << linha << "]"<<" semantic error: expected hash "<<imprimirTipoPorExtenso(tipoParametroAjustado);
                 std::cerr << " but received " << imprimirTipoPorExtenso(tipoArgumento) << "\n";              			
 	    }
-
-        }
-	 
+        }	 
     }
-
 
 // Variáveis Simples
     else {
@@ -143,16 +142,17 @@ void Parametro::comparar(TabelaDeSimbolos *tabelaDeSimbolos, Parametro *comparad
         }   
     }
 
-
   // Se os parâmetros atuais forem igual e os próximos forem nulos, então todos os Parâmetro são iguais
     if(proximo != NULL && comparado->proximo != NULL) {           
-      // Caso contrário, compara os próximos parâmetros
+
+      // Caso contrário, compara-se os próximos parâmetros
         ((Parametro*)proximo)->comparar(tabelaDeSimbolos, ((Parametro*)((Parametro*)comparado->proximo)), linha, definicao, analisador);
     }
 }
 
 
 void Parametro::acrescentarAoEscopo(TabelaDeSimbolos *tabelaDeSimbolos, int linha) {
+
   // Enquanto houver parametros acrescento-os recursivamente ao escopo
     if(parametro != NULL) {
         ((Variavel*)parametro)->tipoDeVariavel = tipoDoParametro; 
@@ -170,12 +170,16 @@ void Parametro::acrescentarAoEscopo(TabelaDeSimbolos *tabelaDeSimbolos, int linh
 void Parametro::acrescentarComValoresAoEscopo(TabelaDeSimbolos *tabelaDeSimbolos, Parametro *valores, int linha) {
 
   // Semelhante ao método acima só que para o interpretador.
-  // Enquanto houver parametros acrescento-os recursivamente ao escopo e copiando os seus valores
+  // Enquanto houver parametros acrescento-os recursivamente ao escopo copiando os seus valores
 
     if(parametro != NULL && valores != NULL) {
 	valores->parametro->analisar(tabelaDeSimbolos, linha, true);
-        ((Variavel*)parametro)->tipoDeVariavel = tipoDoParametro; //copio o tipo do parametro
-        if(parametro->tipo == Tipo::hash && valores->parametro->tipo == Tipo::hash) { //recebe tipo chave e copia de valores para hash
+
+      // Copia-se o tipo do parâmetro
+        ((Variavel*)parametro)->tipoDeVariavel = tipoDoParametro;
+
+// Hash
+        if(parametro->tipo == Tipo::hash && valores->parametro->tipo == Tipo::hash) {
             ((Hash*)parametro)->tipoDeChave = tipoReserva;
             
            if (((Hash*)(valores->parametro))->int_int.size() > 0)
@@ -199,6 +203,7 @@ void Parametro::acrescentarComValoresAoEscopo(TabelaDeSimbolos *tabelaDeSimbolos
            
         }
 
+// Arranjo
 	if(parametro->tipo == Tipo::arranjo && valores->parametro->tipo == Tipo::arranjo){ // copia valores de arranjo simples
 	
 	 memcpy(((Arranjo*)parametro)->inteiro_a, ((Arranjo*)valores->parametro)->inteiro_a, ((Arranjo*)valores->parametro)->tamanho->inteiro*sizeof(int));   
@@ -207,6 +212,7 @@ void Parametro::acrescentarComValoresAoEscopo(TabelaDeSimbolos *tabelaDeSimbolos
            
 	}
 
+// Arranjo Duplo
 	if(parametro->tipo == Tipo::arranjo_duplo && valores->parametro->tipo == Tipo::arranjo_duplo){ // copia valores de arranjo duplo
 
 	memcpy(((Arranjo*)parametro)->inteiro_a, ((Arranjo*)valores->parametro)->inteiro_a, ((Arranjo*)valores->parametro)->tamanho->inteiro*((ArranjoDuplo*)valores->parametro)->tamanho2->inteiro*sizeof(int));
@@ -215,15 +221,16 @@ void Parametro::acrescentarComValoresAoEscopo(TabelaDeSimbolos *tabelaDeSimbolos
 	
 	}
 	
-	// tratamento default, copio valores booleanos, inteiros e floats.
-
+// Default
         parametro->boolean = valores->parametro->boolean;
         parametro->inteiro = valores->parametro->inteiro;
         parametro->real    = valores->parametro->real;   
         tabelaDeSimbolos->adicionar(parametro, linha, variavel);
 
     }
-    if(proximo != NULL) { //navego recursivamente para o proximo parametro se houver
+
+  // Caso exista um próximo parâmetro, prossegue-se acrescentando
+    if(proximo != NULL) {
         return ((Parametro*)proximo)->acrescentarComValoresAoEscopo(tabelaDeSimbolos, ((Parametro*)valores->proximo), linha);
     }
 }
@@ -231,8 +238,7 @@ void Parametro::acrescentarComValoresAoEscopo(TabelaDeSimbolos *tabelaDeSimbolos
 
 void Parametro::recuperarEstruturaDeDados(TabelaDeSimbolos *tabelaDeSimbolos, Parametro *p, int linha){
 
-     // Quando estou interpretando o codigo preciso recuperar a estrutura de dados passada por parametro e armazenar no mesmo. 
-
+   // Recupera-se a estrutura de dados passada como parâmetro 
      if (p->parametro->tipo == Tipo::variavel){
 	 Nodo *ed = tabelaDeSimbolos->recuperar(p->parametro->id, linha, true);
 	 if (ed != NULL){
@@ -242,12 +248,14 @@ void Parametro::recuperarEstruturaDeDados(TabelaDeSimbolos *tabelaDeSimbolos, Pa
          }
      }
     
-     if ( ((Parametro*)(p->proximo)) != NULL) //navego recursivamente a cada parametro, enquanto houver um proximo
+  // Se houverem mais parâmetros, segue-se recuperando as estruturas de dados
+     if ( ((Parametro*)(p->proximo)) != NULL)
 	p->recuperarEstruturaDeDados(tabelaDeSimbolos, ((Parametro*)(p->proximo)), linha);	
 }
 
 
-int Parametro::contar() { //conta o numero de parametros.
+int Parametro::contar() {
+  // Conta a quantidade de parâmetros
     if(proximo == NULL) {
         return 1;
     } else {
@@ -255,62 +263,64 @@ int Parametro::contar() { //conta o numero de parametros.
     }    
 }
 
+
 void Parametro::ajustarPonteiroImpressao(Parametro *p) {
+    if(((Variavel*)(p->parametro))->ponteiros > 0)    
+      // Ativa uma flag para impressão do parâmetro caso seja um ponteiro
+        ((Variavel*)(p->parametro))->ponteiroParametro = true;
 
-	if(((Variavel*)(p->parametro))->ponteiros > 0)    
-	    ((Variavel*)(p->parametro))->ponteiroParametro = true; //insiro no parametro uma flag para impressao, caso seja um ponteiro.
-	if ( ((Parametro*)(p->proximo)) != NULL) //navego recursivamente entre os parametros.
-	    p->ajustarPonteiroImpressao(((Parametro*)(p->proximo)));	
+  // Segue-se para o próximo, caso exista
+    if ( ((Parametro*)(p->proximo)) != NULL)
+        p->ajustarPonteiroImpressao(((Parametro*)(p->proximo)));	
 }    
-
 
 
 void Parametro::imprimir(int espaco, bool naoArgumento) {
     imprimirEspaco(espaco);
     if(naoArgumento) { 
 
-	if (parametro->tipo == hash){ // tratamento especial para impressao, caso tipo do parametro seja um hash
-	Tipo tipoHashImpressao = Tipo::nulo;
-	 switch(tipoReserva) {
-        case Tipo::boolean:
-            switch(tipoDoParametro) {
-                case Tipo::boolean: tipoHashImpressao = Tipo::hash_bb; break;
-                case Tipo::inteiro: tipoHashImpressao = Tipo::hash_bi; break;
-                case Tipo::real:    tipoHashImpressao = Tipo::hash_bf; break;
+      // Tratamento especial para impressao do parâmetro Hash
+	if (parametro->tipo == hash) {
+	    Tipo tipoHashImpressao = Tipo::nulo;
+            switch(tipoReserva) {
+                case Tipo::boolean:
+                    switch(tipoDoParametro) {
+                        case Tipo::boolean: tipoHashImpressao = Tipo::hash_bb; break;
+                        case Tipo::inteiro: tipoHashImpressao = Tipo::hash_bi; break;
+                        case Tipo::real:    tipoHashImpressao = Tipo::hash_bf; break;
+                        default: break;
+                    } break;
+                case AST::Tipo::inteiro:
+                    switch(tipoDoParametro) {
+                        case Tipo::boolean: tipoHashImpressao = Tipo::hash_ib; break;
+                        case Tipo::inteiro: tipoHashImpressao = Tipo::hash_ii; break;
+                        case Tipo::real:    tipoHashImpressao = Tipo::hash_if; break;
+                        default: break;
+                    } break;
+                case AST::Tipo::real:
+                    switch(tipoDoParametro) {
+                        case Tipo::boolean: tipoHashImpressao = Tipo::hash_fb; break;
+                        case Tipo::inteiro: tipoHashImpressao = Tipo::hash_fi; break;
+                        case Tipo::real:    tipoHashImpressao = Tipo::hash_ff; break;
+                        default: break;
+                    } break;
                 default: break;
-            } break;
-        case AST::Tipo::inteiro:
-            switch(tipoDoParametro) {
-                case Tipo::boolean: tipoHashImpressao = Tipo::hash_ib; break;
-                case Tipo::inteiro: tipoHashImpressao = Tipo::hash_ii; break;
-                case Tipo::real:    tipoHashImpressao = Tipo::hash_if; break;
-                default: break;
-            } break;
-        case AST::Tipo::real:
-            switch(tipoDoParametro) {
-                case Tipo::boolean: tipoHashImpressao = Tipo::hash_fb; break;
-                case Tipo::inteiro: tipoHashImpressao = Tipo::hash_fi; break;
-                case Tipo::real:    tipoHashImpressao = Tipo::hash_ff; break;
-                default: break;
-            } break;
-        default: break;
-    }
-	
-        imprimirTipo(tipoHashImpressao);
+            }	
+            imprimirTipo(tipoHashImpressao);
+        }
 
-    }
-	else  //impressao default para tipos inteiros, booleanos, floats e arranjos
-        imprimirTipo(tipoDoParametro);
+      // Impressão default para tipos inteiros, booleanos, floats e arranjos
+        else
+            imprimirTipo(tipoDoParametro);
     }
     
     std::cout << " ";
     parametro->imprimir(0,false);
-    if(proximo != NULL) { //Se houver um proximo parametro, ele será imprimimido.
+    if(proximo != NULL) {
        if(naoArgumento) {
            std::cout << ", ";
        }
        proximo->imprimir(espaco, naoArgumento);
     }
 }
-
 

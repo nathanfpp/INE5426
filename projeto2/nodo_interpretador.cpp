@@ -1,12 +1,9 @@
 #include "arvoreSintatica.h"
 
-
 using namespace AST;
 
+
 Tipo Interpretador::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool analisador) {
-
-//6 std::cerr << "\n @ ========== @ ========== @ ========== @ ========== @ ========== @ ========== @ ========== @ ========== \n\n";
-
     if (analisador) {
         raiz->analisar(tabelaDeSimbolos, linha, true);
     }
@@ -76,3 +73,4 @@ void Interpretador::imprimir(int espaco, bool novaLinha) {
   // Término
     std::cout << "\n";    
 }
+

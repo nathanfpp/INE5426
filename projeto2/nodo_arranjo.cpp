@@ -2,6 +2,7 @@
 
 using namespace AST;
 
+
 Tipo Arranjo::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool analisador) {
 
   // O tipo usado como índice é válido?
@@ -14,7 +15,8 @@ Tipo Arranjo::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool 
   // O arranjo foi declarado?
     Arranjo *v = ((Arranjo*) tabelaDeSimbolos->recuperar(id, linha, true));
     if(v != NULL) {
-/*
+
+/* Cópia dos valores dos arranjos. Não utilizado.
 	memcpy(inteiro_a, v->inteiro_a,sizeof(v->inteiro_a));
 	memcpy(boolean_a, v->boolean_a,sizeof(v->boolean_a));
 	memcpy(real_a, v->real_a,sizeof((v->real_a));
@@ -24,8 +26,13 @@ Tipo Arranjo::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool 
         inteiro = v->inteiro;
         real = v->real;        
 */
+
+      // Retorna-se ao tipo da variável da tabela
         return v->tipoDeVariavel;
-    } else {
+    }
+
+  // Caso contrário, erro semântico
+    else {
         std::cerr << "[Line " << linha << "] semantic error: undeclared variable " << id << "\n";
     }
 
@@ -57,3 +64,4 @@ void Arranjo::imprimir(int espaco, bool declaracao) {
         }
     }
 }
+

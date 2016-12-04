@@ -4,69 +4,70 @@ using namespace AST;
 
 Tipo Condicao::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool analisador) {
 
-  if(tipo == Tipo::condicao){
+  // Caso a Condição seja um "if"
+    if(tipo == Tipo::condicao) {
 
-  // O teste de uma Condição deve ser Booleano
-    Tipo esperado = teste->analisar(tabelaDeSimbolos, linha, analisador);
-    if(esperado != Tipo::boolean) {
-        imprimirErroDeOperacao(Tipo::teste, Tipo::boolean, esperado, linha);
-    }   
+      // O teste de uma Condição deve ser Booleano
+        Tipo esperado = teste->analisar(tabelaDeSimbolos, linha, analisador);
+        if(esperado != Tipo::boolean) {
+            imprimirErroDeOperacao(Tipo::teste, Tipo::boolean, esperado, linha);
+        }   
 
-  // Caso "se" não seja nulo, cria um escopo próprio e é avaliado
-    if(se != NULL) {
-        TabelaDeSimbolos *novoEscopo = tabelaDeSimbolos->novoEscopo(tabelaDeSimbolos);
+      // Caso "se" não seja nulo, cria um escopo próprio e é avaliado
+        if(se != NULL) {
+            TabelaDeSimbolos *novoEscopo = tabelaDeSimbolos->novoEscopo(tabelaDeSimbolos);
 
-      // Caso a condição seja verdadeira e o código esteja sendo executado, o bloco "then" também é executado
-        if(analisador && teste->boolean) {
-            se->analisar(novoEscopo, linha, true);
+          // Caso a condição seja verdadeira e o código esteja sendo executado, o bloco "then" também é executado
+            if(analisador && teste->boolean) {
+                se->analisar(novoEscopo, linha, true);
+            }
+
+          // Caso contrário, o bloco "then" é apenas analisado
+            else if (!analisador){
+                se->analisar(novoEscopo, linha, false);
+            }
+
+            novoEscopo->retornarEscopo(linha);
         }
 
-      // Caso contrário, o bloco "then" é apenas analisado
-        else if (!analisador){
-            se->analisar(novoEscopo, linha, false);
-        }
+      // Caso "senão" não seja nulo, cria um escopo próprio e é avaliado
+        if(senao != NULL) {
+            TabelaDeSimbolos *novoEscopo = tabelaDeSimbolos->novoEscopo(tabelaDeSimbolos);
 
-        novoEscopo->retornarEscopo(linha);
+          // Caso a condição seja falsa e o código esteja sendo executado, o bloco "else" também é executado
+            if(analisador && !teste->boolean) {
+                senao->analisar(novoEscopo, linha, true);
+            }
+
+          // Caso contrário, o bloco "else" é apenas analisado
+            else if (!analisador){
+                senao->analisar(novoEscopo, linha, false);
+            }
+
+            novoEscopo->retornarEscopo(linha);  
+        }
     }
 
-  // Caso "senão" não seja nulo, cria um escopo próprio e é avaliado
-    if(senao != NULL) {
-        TabelaDeSimbolos *novoEscopo = tabelaDeSimbolos->novoEscopo(tabelaDeSimbolos);
+  // Caso a condição pertença a um "switch"
+    else if (tipo == Tipo::caso) {
+        teste->analisar(tabelaDeSimbolos, linha, analisador);
 
-      // Caso a condição seja falsa e o código esteja sendo executado, o bloco "else" também é executado
-        if(analisador && !teste->boolean) {
-            senao->analisar(novoEscopo, linha, true);
-        }
-
-      // Caso contrário, o bloco "else" é apenas analisado
-        else if (!analisador){
-            senao->analisar(novoEscopo, linha, false);
-        }
-        novoEscopo->retornarEscopo(linha);  
-    }
-
- }
-
- else if (tipo == Tipo::caso){ //trato caso de um switch
-
-    teste->analisar(tabelaDeSimbolos, linha, analisador); //retorno tipo do teste no nodo teste.
-    	if(se != NULL) { //nodo "se" é o corpo do caso que possui escopo próprio.
+      // Se o switch possuir um corpo, ele recebe um novoEscopo e é analisado
+    	if(se != NULL) {
     	    TabelaDeSimbolos *novoEscopo = tabelaDeSimbolos->novoEscopo(tabelaDeSimbolos);
     	    se->analisar(novoEscopo, linha, analisador);
     	    novoEscopo->retornarEscopo(linha);
     	}
     }
 
- else if (tipo == Tipo::padrao){ //trato caso default que não possui teste.
-
+  // Caso default
+    else if (tipo == Tipo::padrao){ //trato caso default que não possui teste.
         if(se != NULL) {
     	    TabelaDeSimbolos *novoEscopo = tabelaDeSimbolos->novoEscopo(tabelaDeSimbolos);
     	    se->analisar(novoEscopo, linha, analisador);
     	    novoEscopo->retornarEscopo(linha);
     	}
-
- }
-
+    }
 
   // Retorna o tipo do nodo
     return tipo;

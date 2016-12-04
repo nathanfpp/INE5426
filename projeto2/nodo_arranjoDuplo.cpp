@@ -1,7 +1,7 @@
 #include "arvoreSintatica.h"
 
-
 using namespace AST;
+
 
 Tipo ArranjoDuplo::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool analisador) {
 
@@ -20,9 +20,9 @@ Tipo ArranjoDuplo::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, 
     }
 
   // O arranjo foi declarado?
-
     ArranjoDuplo *v = ((ArranjoDuplo*) tabelaDeSimbolos->recuperar(id, linha, true));
     if(v != NULL) {
+
 /*
 	memcpy(inteiro_d, v->inteiro_d,sizeof(v->inteiro_d));
 	memcpy(boolean_d, v->boolean_d,sizeof(v->boolean_d));
@@ -34,8 +34,13 @@ Tipo ArranjoDuplo::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, 
         inteiro = v->inteiro;
         real = v->real;     
 */
+
+      // Retorna-se o tipoDeVariavel encontrado na tabela
         return v->tipoDeVariavel;
-    } else {
+    }
+
+  // Caso contrário, erro semântico
+    else {
         std::cerr << "[Line " << linha << "] semantic error: undeclared variable " << id << "\n";
     }
 
@@ -76,3 +81,4 @@ void ArranjoDuplo::imprimir(int espaco, bool declaracao) {
         }
     }
 }
+

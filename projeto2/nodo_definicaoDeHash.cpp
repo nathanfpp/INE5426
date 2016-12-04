@@ -1,7 +1,7 @@
 #include "arvoreSintatica.h"
 
-
 using namespace AST;
+
 
 Tipo DefinicaoDeHash::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool analisador) {
 
@@ -19,7 +19,6 @@ Tipo DefinicaoDeHash::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linh
       // Porém, caso a variável já tenha sido declarada, além da impressão do erro, a definição é marcada
         tipo = Tipo::nulo;
     }
-
 
   // Se outra Variável foi declarada, atribui o tipo da Declaração e inicia sua análise 
     if(proxima != NULL) {

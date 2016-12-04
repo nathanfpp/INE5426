@@ -1,11 +1,12 @@
 #include "arvoreSintatica.h"
 
-
 using namespace AST;
+
 
 Tipo Hash::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool analisador) {
     return tabelaDeSimbolos->tipoDeHash(tipoDeVariavel, tipoDeChave);
 }
+
 
 Tipo Hash::tipoDeHash(AST::TabelaDeSimbolos *tabelaDeSimbolos) {
     return tabelaDeSimbolos->tipoDeHash(tipoDeChave, tipoDeVariavel);
@@ -18,3 +19,4 @@ void Hash::imprimir(int espaco, bool declaracao) {
     }
     std::cout << id << "";
 }
+

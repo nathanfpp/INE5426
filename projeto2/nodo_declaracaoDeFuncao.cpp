@@ -2,17 +2,18 @@
 
 using namespace AST;
 
+
 Tipo Funcao::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool analisador) {
 
-  // Conta a quantidade de parÃ¢metros: se nÃ£o houver parÃ¢metros a quantidade Ã© 0
+  // Conta-se a quantidade de parâmetros
     contarParametros();
 
-  // Analisa parametros
+  // Analisa-se parametros
     if(parametros != NULL) {
         parametros->analisar(tabelaDeSimbolos, linha, analisador);
     }
 
-  // Adiciona-se a funcao a  tabela de simbolos, caso ja nao tenha sido definida anteriormente
+  // Adiciona-se a funcao a  tabela de simbolos, caso não tenha sido definida anteriormente
     definida = false;
     Funcao *f = ((Funcao*) tabelaDeSimbolos->recuperar(id, -1, false));
     if(f == NULL) {
@@ -25,7 +26,6 @@ Tipo Funcao::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool a
     return tipo;
 
 }
-
 
 
 int Funcao::contarParametros() {

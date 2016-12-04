@@ -8,6 +8,7 @@
 
 using namespace AST;
 
+
 TabelaDeSimbolos* TabelaDeSimbolos::novoEscopo(TabelaDeSimbolos *a) {
 
   // Cria o novo escopo, ajustando os ponteiros de *anterior e *proximo
@@ -20,7 +21,6 @@ TabelaDeSimbolos* TabelaDeSimbolos::novoEscopo(TabelaDeSimbolos *a) {
 
 
 bool TabelaDeSimbolos::retornarEscopo(int linha) {
-
 
  // Procura-se entre as funções declaradas...
     typedef std::map<std::string, Nodo*>::iterator it;
@@ -115,6 +115,7 @@ Nodo* TabelaDeSimbolos::recuperar(std::string simbolo, int linha, bool variavel)
     return NULL;
 }
 
+
 void TabelaDeSimbolos::modificar(Nodo *novoValor, std::string simbolo) {
 
   // Variável ou Função encontrada no escopo atual
@@ -131,9 +132,11 @@ void TabelaDeSimbolos::modificar(Nodo *novoValor, std::string simbolo) {
     }
 }
 
+
 void TabelaDeSimbolos::remover(std::string simbolo) {
     simbolos.erase(simbolo);
 }
+
 
 Tipo TabelaDeSimbolos::tipoDeArranjo(Tipo tipo) {
     Tipo array = Tipo::nulo;
@@ -157,6 +160,7 @@ Tipo TabelaDeSimbolos::tipoDeArranjoDuplo(Tipo tipo) {
     }
     return array;
 }
+
 
 Tipo TabelaDeSimbolos::tipoDeHash(Tipo chave, Tipo valor) {
     Tipo tipo = Tipo::nulo;
@@ -186,3 +190,4 @@ Tipo TabelaDeSimbolos::tipoDeHash(Tipo chave, Tipo valor) {
     }
     return tipo;
 }
+

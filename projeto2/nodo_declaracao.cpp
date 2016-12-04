@@ -1,7 +1,7 @@
 #include "arvoreSintatica.h"
 
-
 using namespace AST;
+
 
 Tipo Declaracao::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool analisador) {
 
@@ -28,7 +28,7 @@ Tipo Declaracao::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bo
 
 void Declaracao::imprimir(int espaco, bool novaLinha) {
 
-  // Imprime apenas se a declaração for válida
+  // Imprime-se apenas se a declaração for válida
     if(tipo == Tipo::declaracao) {
         imprimirEspaco(espaco);
         imprimirTipo(tipoDeVariavel);

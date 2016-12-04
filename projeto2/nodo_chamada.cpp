@@ -4,9 +4,10 @@ using namespace AST;
 
 Tipo Chamada::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool analisador) {
 
-  // Caso a função/arranjo/hash não tenha sido definida/declarada, ocorre um erro semântico
+  // Busca-se a função/arranjp/hash na tabela de símbolos
     Nodo *n = tabelaDeSimbolos->recuperar(id, -1, false);
 
+  // A função/arranjo/hash já foi definida/declarada?
     if(n != NULL) {
 
       // Uma chamada pode ser...
@@ -50,12 +51,12 @@ Tipo Chamada::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool 
                 if(analisador) { //Entro na interpretação
                     if(f->definida) {
                         
-			/* se parametro for uma de estrutura de dados completa, preciso recuperar ela e atualizar o parametro.*/
+	              // Se os parâmetros não foram nulos, eles podem ser comparados
 			if(parametros != NULL){
                           ((Parametro*)parametros)->recuperarEstruturaDeDados(tabelaDeSimbolos,((Parametro*)parametros),linha);
 			 }
 
-			//executo chamada de função normal ou recursiva
+			// Executa-se a chamada de função normal ou recursiva
                           ((DefinicaoDeFuncao*)f)->executar(tabelaDeSimbolos, ((Parametro*)parametros), linha, analisador);
 		          boolean = ((Retorno*)((DefinicaoDeFuncao*)f)->retorno)->retorno->boolean;
  	                  inteiro = ((Retorno*)((DefinicaoDeFuncao*)f)->retorno)->retorno->inteiro;
@@ -82,7 +83,7 @@ Tipo Chamada::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool 
               // Define o tipo desta Chamada como ArranjoDuplo
                 tipo = Tipo::arranjo_duplo;
 		
-              // Recupera o Arranjo 
+              // Recupera o Arranjo Duplo
                 ArranjoDuplo *d = ((ArranjoDuplo*) n);
 
               // Caso a quantidade de "parâmetros" do arranjo duplo seja diferente de 2, erro!
@@ -99,17 +100,22 @@ Tipo Chamada::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool 
                         std::cerr << "[Line " << linha << "] semantic error: index operator expects integer but received " << imprimirTipoPorExtenso(indice2) << "\n";
                     }
 		
-		     else if (analisador){ //Interpreto a leitura de um item de arranjo passada por parametro
-		        //pego indices do arranjo
+                   // Interpreta-se a leitura de um item de arranjo passada como parametro
+		     else if (analisador) {
+		        
+                      // Recupera-se os índices do arranjo
 			int i = (((Parametro*)parametros)->parametro)->inteiro; 
 			int j = (((Parametro*)((Parametro*)parametros)->proximo)->parametro)->inteiro;
 
+                         // Os índices são >= 0 e <= os tamanhos do arranjos?
 			   if(i >= 0 && i < d->tamanho->inteiro && j >= 0 && j < d->tamanho2->inteiro ){
                                inteiro = d->inteiro_a[i*d->tamanho2->inteiro + j];
 			       boolean = d->boolean_a[i*d->tamanho2->inteiro + j];
 			       real = d->real_a[i*d->tamanho2->inteiro + j];
 			      }
-			   else { //se um dos indices < 0 ou > tamanho
+
+                         // Caso contrário, um dos índices está fora dos limites
+			   else {
 	                      std::cerr << "[Line " << linha << "] $ interpreter error: index-out of bounds"<< "\n";
                       	      inteiro = 0;
                               boolean = false;
@@ -143,22 +149,28 @@ Tipo Chamada::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool 
                       std::cerr << "[Line " << linha << "] semantic error: index operator expects integer but received " << imprimirTipoPorExtenso(indice) << "\n";
 
                     }
-                    else if (analisador){ //Interpreto a leitura de um item de arranjo passada por parametro
-		        //pego indices do arranjo
-			int i = ((Parametro*)((Parametro*)parametros)->parametro)->inteiro; //não é com o parametro o problema
+
+                  // Interpreta-se a leitura de um item de arranjo passada como parametro
+                    else if (analisador) {
+
+		      // Coleta-se o índice do arranjo
+			int i = ((Parametro*)((Parametro*)parametros)->parametro)->inteiro;
+
+                      // O valor do índice é >= 0 e <= do que o tamanho do arranjo?
 		 	if(i>= 0 && i <= a->tamanho->inteiro){
                            inteiro = a->inteiro_a[i];
 			   boolean = a->boolean_a[i];
 			   real = a->real_a[i];
 			}
-			else{ //se indice < 0 ou > tamanho
+
+                      // Caso contrário, o índice está fora dos limites
+			else {
 	                   std::cerr << "[Line " << linha << "] $ interpreter error: index-out of bounds"<< "\n";
                       	   inteiro = 0;
                            boolean = false;
                            real = 0.0;
 			}
 		    }
-
                 }
 
               // Retorna o tipo da variável do arranjo
@@ -184,76 +196,81 @@ Tipo Chamada::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool 
                   // O tipo usado como índice é válido? parametros = tamanho
                     Tipo recebido = ((Parametro*)parametros)->parametro->analisar(tabelaDeSimbolos,linha, analisador);
                     Tipo chave = h->tipoDeChave;
+
+                  // É possível realizar uma coerção para a chave do Hash?
 		    if (chave == Tipo::real && recebido == Tipo::inteiro){   
 			  //faço uma coerção
 			(((Parametro*)parametros)->parametro) = new OperacaoUnaria(Tipo::opUnaria, Tipo::conversao_float, 									((Parametro*)((Parametro*)parametros)->parametro));
 			((OperacaoUnaria*)((Parametro*)parametros)->parametro)->analisar(tabelaDeSimbolos,linha, analisador);
 			
 		    }
+
+                  // Caso o tipo recebido seja diferente do esperado, ocorre um erro semântica
                     else if (chave != recebido) {
                         std::cerr << "[Line " << linha << "] semantic error: key operator expects ";
                         std::cerr << imprimirTipoPorExtenso(chave) << " but received " << imprimirTipoPorExtenso(recebido) << "\n";
 
                     }
 		   
- 		    if(analisador && read_hash){ //se eu estiver na condição de leitura do hash para leitura.
+                  // Caso esteja-se realizando a análise e o Hash exija leitura...
+ 		    if(analisador && read_hash) {
 
-		     // chave pela qual quero ler
+		   // Coleta-se todas as possíveis chaves do Hash
 		     int chave_i = ((Parametro*)((Parametro*)parametros)->parametro)->inteiro;	
 		     bool chave_b = ((Parametro*)((Parametro*)parametros)->parametro)->boolean;
 		     double chave_r = ((Parametro*)((Parametro*)parametros)->parametro)->real;
 
-		     switch (h->tipoDeHash(tabelaDeSimbolos)){
-		     //associo leitura da chave pelo tipo hash, se chave não existir um erro é emitido.
+                   // Busca-se o tipo de Hash na tabela, e caso a chave não exista, um erro é imprimido
+		     switch (h->tipoDeHash(tabelaDeSimbolos)) {
 			    inteiro = 0;
                             boolean = false;
                             real = 0.0;
 			    case hash_bb:
 				if(h->bool_bool.find(chave_b) != h->bool_bool.end())   
-			    	boolean = h->bool_bool[chave_b];
+			    	    boolean = h->bool_bool[chave_b];
 				else std::cerr << "[Line " << linha << "] $ interpreter error: the key doesn't exist"<< "\n";
 			    break;
 			    
 			    case hash_bf:
 				if(h->bool_real.find(chave_b) != h->bool_real.end())   
-			  	real = h->bool_real[chave_b];
+			  	    real = h->bool_real[chave_b];
 				else std::cerr << "[Line " << linha << "] $ interpreter error: the key doesn't exist"<< "\n";
 			    break;
 
 			    case hash_bi:
 				if(h->bool_int.find(chave_b) != h->bool_int.end())   
-			  	inteiro = h->bool_int[chave_b];
+			  	    inteiro = h->bool_int[chave_b];
 				else std::cerr << "[Line " << linha << "] $ interpreter error: the key doesn't exist"<< "\n";
 			    break;
 
 			    case hash_ib:
 				if(h->int_bool.find(chave_i) != h->int_bool.end())   
-			  	boolean = h->int_bool[chave_i];
+			  	    boolean = h->int_bool[chave_i];
 				else std::cerr << "[Line " << linha << "] $ interpreter error: the key doesn't exist"<< "\n";
 			    break;
 			    
 			    case hash_if:
 				if(h->int_real.find(chave_i) != h->int_real.end())   
-			    	real = h->int_real[chave_i];
+			    	    real = h->int_real[chave_i];
 				else std::cerr << "[Line " << linha << "] $ interpreter error: the key doesn't exist"<< "\n";
 			    break;
 
 			    case hash_ii:
 				if(h->int_int.find(chave_i) != h->int_int.end())   
-			    	inteiro = h->int_int[chave_i];
+			    	    inteiro = h->int_int[chave_i];
 				else std::cerr << "[Line " << linha << "] $ interpreter error: the key doesn't exist"<< "\n";
 			    break;
 
 			    case hash_fb:
 				if(h->real_bool.find(chave_r) != h->real_bool.end())   
-			    	boolean = h->real_bool[chave_r];
+			    	    boolean = h->real_bool[chave_r];
 				else
 				std::cerr << "[Line " << linha << "] $ interpreter error: the key doesn't exist"<< "\n";
 			    break;
 			    
 			    case hash_ff:
 				if(h->real_real.find(chave_r) != h->real_real.end())   
-			    	real = h->real_real[chave_r];
+			    	    real = h->real_real[chave_r];
 				else
 				std::cerr << "[Line " << linha << "] $ interpreter error: the key doesn't exist"<< "\n";
 
@@ -261,7 +278,7 @@ Tipo Chamada::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool 
 
 			    case hash_fi:
 				if(h->real_int.find(chave_r) != h->real_int.end())   
-			    	inteiro = h->real_int[chave_r];
+			    	    inteiro = h->real_int[chave_r];
 				else
 				std::cerr << "[Line " << linha << "] $ interpreter error: the key doesn't exist"<< "\n";
 			    break;
@@ -270,8 +287,6 @@ Tipo Chamada::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool 
 
 			  }
 		       }
-
-
                 }                     
 
               // Retorna o "tipo da variável", o valor do hash
@@ -283,14 +298,14 @@ Tipo Chamada::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool 
             default:
                 break;
         }
-    }
-    
+    }    
 
   // A Chamada de Função ou Arranjo não foi declarada
     std::cerr << "[Line " << linha << "] semantic error: undeclared array, function or hash " << id << "\n";
 
     return tipo;
 }
+
 
 void Chamada::imprimir(int espaco, bool novaLinha) {
 
@@ -338,7 +353,7 @@ void Chamada::imprimir(int espaco, bool novaLinha) {
                 parametros->imprimir(0, false);
             }
            break;
-break;
+    break;
     }
 };
 

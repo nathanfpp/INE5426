@@ -1,11 +1,11 @@
 #include "arvoreSintatica.h"
 
-
 using namespace AST;
+
 
 Tipo Variavel::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool analisador) {
 
-  // Busca a variável na tabela de símbolos 
+  // Busca-se a variável na tabela de símbolos 
     Variavel *v = ((Variavel*) tabelaDeSimbolos->recuperar(id, linha, true));
 
   // Caso a variável seja encontrada, ela pode ser de diferentes tipos
@@ -35,7 +35,7 @@ Tipo Variavel::obterTipoDaTabela(TabelaDeSimbolos *tabelaDeSimbolos) {
     Variavel *v = ((Variavel*) tabelaDeSimbolos->recuperar(id, -1, true));
     if(v != NULL) {
 //
-    tipoDeVariavel = v->tipoDeVariavel;
+        tipoDeVariavel = v->tipoDeVariavel;
         boolean = v->boolean;
         inteiro = v->inteiro;
         real = v->real;
@@ -44,7 +44,6 @@ Tipo Variavel::obterTipoDaTabela(TabelaDeSimbolos *tabelaDeSimbolos) {
     }
     return Tipo::nulo;
 }
-
 
 
 int Variavel::recuperarPonteiros(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha) {
@@ -101,3 +100,4 @@ void Variavel::imprimir(int espaco, bool analisador) {
         std::cout << id << "";
     }
 }
+

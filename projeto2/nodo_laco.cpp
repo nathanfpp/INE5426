@@ -1,10 +1,9 @@
 #include "arvoreSintatica.h"
 
-
 using namespace AST;
 
-Tipo Laco::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool analisador) {
 
+Tipo Laco::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool analisador) {
 
   // Analisa-se a inicialização do Laço, caso ela exista
     if(inicializacao != NULL) {
@@ -17,72 +16,73 @@ Tipo Laco::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool ana
         imprimirErroDeOperacao(Tipo::teste, Tipo::boolean, esperado, linha);
     }
 
-  // Analisa-se a iteração do Laço, caso ela exista
-  if(tipo == Tipo::for_laco){
-    if(iteracao != NULL) { 
-       // Caso o código esteja sendo executado, e a condição do teste for verdadeira, ocorre uma iteração
-         if(analisador) { //SE EU CRIO UM NOVO ESCOPO NÃO FUNCIONA
-             while(teste->boolean) {
-	         TabelaDeSimbolos *novoEscopo;
-		 if(laco != NULL){
-		    novoEscopo = tabelaDeSimbolos->novoEscopo(tabelaDeSimbolos);
-        	    laco->analisar(novoEscopo, linha, analisador);
-	            novoEscopo->retornarEscopo(linha);
-		}
-           iteracao->analisar(tabelaDeSimbolos, linha, true);
-           teste->analisar(tabelaDeSimbolos, linha, true);
-             }
- 
-        }
+  // Caso o laço seja um "for"
+    if(tipo == Tipo::for_laco){
+        if(iteracao != NULL) { 
+          // Caso o código esteja sendo executado, e a condição do teste for verdadeira, ocorre uma iteração
+            if(analisador) { //SE EU CRIO UM NOVO ESCOPO NÃO FUNCIONA
+                while(teste->boolean) {
+	            TabelaDeSimbolos *novoEscopo;
+		    if(laco != NULL){
+		        novoEscopo = tabelaDeSimbolos->novoEscopo(tabelaDeSimbolos);
+        	        laco->analisar(novoEscopo, linha, analisador);
+	                 novoEscopo->retornarEscopo(linha);
+		    }
+                    iteracao->analisar(tabelaDeSimbolos, linha, true);
+                    teste->analisar(tabelaDeSimbolos, linha, true);
+                } 
+            }
 
-      // Caso contrário, a iteração é analisada apenas uma vez
-        else {
-            iteracao->analisar(tabelaDeSimbolos, linha, false);
+          // Caso contrário, a iteração é analisada apenas uma vez
+            else {
+                iteracao->analisar(tabelaDeSimbolos, linha, false);
+            }
         }
-     }
-   }
+    }
+
+  // Caso o laço seja um "while"
     else if(tipo == Tipo::while_laco){
-         if(analisador) {
-	      while(teste->boolean) {
-	         TabelaDeSimbolos *novoEscopo;
-		 if(laco != NULL){
+        if(analisador) {
+	    while(teste->boolean) {
+	        TabelaDeSimbolos *novoEscopo;
+		if(laco != NULL){
 		    novoEscopo = tabelaDeSimbolos->novoEscopo(tabelaDeSimbolos);
         	    laco->analisar(novoEscopo, linha, analisador);
 	            novoEscopo->retornarEscopo(linha);
 		}
-                 teste->analisar(tabelaDeSimbolos, linha, true);
-             }
-       }
-  }
-
-  else if(tipo == Tipo::do_while_laco){
-         if(analisador) {
-	     do{
-	         TabelaDeSimbolos *novoEscopo;
-		 if(laco != NULL){
-		    novoEscopo = tabelaDeSimbolos->novoEscopo(tabelaDeSimbolos);
-        	    laco->analisar(novoEscopo, linha, analisador);
-	            novoEscopo->retornarEscopo(linha);
-		}
-                 teste->analisar(tabelaDeSimbolos, linha, true);
-       	     } while(teste->boolean);
+                teste->analisar(tabelaDeSimbolos, linha, true);
+            }
         }
-  }
+    }
 
+  // Caso o laço seja um "do while"
+    else if(tipo == Tipo::do_while_laco){
+        if(analisador) {
+	    do {
+	        TabelaDeSimbolos *novoEscopo;
+		if(laco != NULL){
+		    novoEscopo = tabelaDeSimbolos->novoEscopo(tabelaDeSimbolos);
+        	    laco->analisar(novoEscopo, linha, analisador);
+	            novoEscopo->retornarEscopo(linha);
+		}
+                teste->analisar(tabelaDeSimbolos, linha, true);
+       	    } while(teste->boolean);
+        }
+    }
 
   // Se o conteúdo do laço não for vazio, também deve ser verificado
-  if(!analisador){
-    TabelaDeSimbolos *novoEscopo;
-    if(laco != NULL) {
-        novoEscopo = tabelaDeSimbolos->novoEscopo(tabelaDeSimbolos);
-        laco->analisar(novoEscopo, linha, analisador);
-        novoEscopo->retornarEscopo(linha);
+    if(!analisador){
+        TabelaDeSimbolos *novoEscopo;
+        if(laco != NULL) {
+            novoEscopo = tabelaDeSimbolos->novoEscopo(tabelaDeSimbolos);
+            laco->analisar(novoEscopo, linha, analisador);
+            novoEscopo->retornarEscopo(linha);
+        }
     }
-  }
-  // Retorna o tipo do nodo
+
+  // Retorna-se o tipo do nodo
     return tipo;
 }
-
 
 
 void Laco::imprimir(int espaco, bool novaLinha) {
@@ -130,3 +130,4 @@ void Laco::imprimir(int espaco, bool novaLinha) {
         default: break;
     }    
 }
+

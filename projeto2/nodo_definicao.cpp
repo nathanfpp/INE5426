@@ -14,7 +14,7 @@ Tipo Definicao::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, boo
     if(valor != NULL) {
         Tipo tipoDoValor = valor->analisar(tabelaDeSimbolos, linha, analisador); // anteriormente após a coerção
 
-        // Verifico se a definicao contem ponteiros e se contém erro semantico
+        // Se a definicao contem ponteiros, e se estes ponteiros causam erro semantico
 	if (variavel->ponteiros > 0 && (valor->tipo == Tipo::variavel && ((Variavel*)valor)->recuperarPonteiros(tabelaDeSimbolos, linha) > 0 && tipoDeVariavel == tipoDoValor) == false )
 	     std::cerr << "[Line " << linha << "] semantic error: attribution operation expects "<<imprimirTipoPorExtenso(tipoDeVariavel)<<" pointer but received "<<imprimirTipoPorExtenso(tipoDoValor) <<"\n";
           
@@ -22,13 +22,17 @@ Tipo Definicao::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, boo
              coercaoDaDefinicao(this, tipoDeVariavel, tipoDoValor, linha);        
         variavel->boolean = valor->boolean; variavel->inteiro = valor->inteiro; variavel->real = valor->real;
         boolean = valor->boolean; inteiro = valor->inteiro; real = valor->real;
-    } else {
+    }
+
+  // Caso contrário, valores default são atribuidos
+     else {
         variavel->boolean = false; variavel->inteiro = 0; variavel->real = 0.0;
         boolean = false; inteiro = 0; real = 0.0;
     }
 
   // Salva a Variável na Tabela de Símbolos
     if(!tabelaDeSimbolos->adicionar(variavel, linha, true)) {
+
       // Porém, caso a variável já tenha sido declarada, além da impressão do erro, a definição é marcada
         tipo = Tipo::nulo;
     }
@@ -57,7 +61,9 @@ Tipo Definicao::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, boo
 
 void Definicao::imprimir(int espaco, bool imprimir) {
 
-    if(tipo == definicao){
+  // Se o tipo da Definição não for definicao, ele é inválida e não deve ser imprimida
+    if(tipo == definicao) {
+
       // Caso esta seja a primeira definição após a declaração, ela imprime "var:"
         if(imprimir) {
             for(int i = 0; i < variavel->ponteiros; i++)

@@ -1,6 +1,0 @@
-int var: i
-int:int hash: d
-= [key] d i 8
-= i -u [key] d i
-$ R: i = -8
-

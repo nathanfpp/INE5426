@@ -1,7 +1,7 @@
 #include "arvoreSintatica.h"
 
-
 using namespace AST;
+
 
 Tipo OperacaoUnaria::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool analisador) {
  
@@ -13,15 +13,14 @@ Tipo OperacaoUnaria::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha
   if (d == Tipo::nulo)
 	return d;
 
-// Arranjos e Hashes, quando o operando é a variável em si e não seus itens, deve dar erro.
+  // Arranjos e Hashes, quando o operando é a variável em si e não seus itens, deve dar erro.
     if(filho->tipo == Tipo::variavel){
         Tipo tipoDeVariavel = ((Variavel*)filho)->obterTipoDaTabela(tabelaDeSimbolos);
         if(tipoDeVariavel == Tipo::arranjo || tipoDeVariavel == Tipo::arranjo_duplo || tipoDeVariavel == Tipo::hash) {
               std::cerr << "[Line " << linha << "] semantic error: arrays or hashes can only be part of a simple attribution" <<"\n";
-              return Tipo::nulo;
-            }
-
+            return Tipo::nulo;
         }
+    }
 
   // Tenho que capturar os ponteiros do filho também
     int d_ponteiros = filho->recuperarPonteiros(tabelaDeSimbolos, linha);
@@ -42,6 +41,7 @@ Tipo OperacaoUnaria::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha
           // Retorna o tipo do filho
             return d;
 	break;
+
       // Operação Inversão (Negação Lógica) recebe "bool" e devolve "bool"
         case Tipo::inversao:
             if( d != Tipo::boolean) {
@@ -55,6 +55,7 @@ Tipo OperacaoUnaria::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha
 	    tipoDoRetorno = Tipo::boolean;
             return Tipo::boolean;
 	break;
+
       // Conversões retornam o tipo convertido, independente da entrada
         case Tipo::conversao_int:
             switch(d) {
@@ -95,6 +96,7 @@ Tipo OperacaoUnaria::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha
 	    tipoDoRetorno = Tipo::boolean;
             return Tipo::boolean;
 	break;
+
       // Parênteses apenas retornam o tipo contido
         case Tipo::parenteses:
             boolean = filho->boolean;
@@ -102,6 +104,7 @@ Tipo OperacaoUnaria::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha
             real    = filho->real;
             return d;
 	break;
+
       // Endereco de variavel retorna um tipo endereco
         case Tipo::endereco:
             if (filho->id == "") {
@@ -110,14 +113,17 @@ Tipo OperacaoUnaria::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha
 	    tipoDoRetorno = Tipo::endereco;
             return Tipo::endereco;
 	break;
+
       // Referencia de variavel retorna o tipo dela
         case Tipo::referencia:  
-            if (filho->id == "" || (filho->id != "" && d_ponteiros == 0)) { //estou referenciando um valor ou uma variavel sem ponteiro ?
+          // Estou referenciando um valor ou uma variavel sem ponteiro?
+            if (filho->id == "" || (filho->id != "" && d_ponteiros == 0)) {
                 std::cerr<<"[Line " << linha << "] semantic error: reference operation expects a pointer\n";
             }
             this->ponteiros++;
             return d;
 	break;
+
   // Condicao booleana para uma atribuicao
         case Tipo::condicao_atribuicao:
             if (d != Tipo::boolean) {
@@ -126,7 +132,8 @@ Tipo OperacaoUnaria::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha
 	    boolean = filho->boolean;
             return Tipo::boolean;
 	break;
-      // Por padrão, retorna o tipo do nodo
+
+  // Por padrão, retorna o tipo do nodo
         default:  return Tipo::nulo; break;
     }
 }
