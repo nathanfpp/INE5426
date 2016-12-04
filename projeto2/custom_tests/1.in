@@ -1,5 +1,0 @@
-int i 
-int:int d
-d(i) = 8
-i = - d(i)
-$i

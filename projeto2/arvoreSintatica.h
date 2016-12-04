@@ -1,4 +1,3 @@
-// Função retornando tipo errado : a(0) é detectado como variávei "a"
 // Adaptado de https://github.com/llpilla/compiler_examples/blob/master/simple_ast/ast.h
 
 #ifndef ARVORESINTATICA_H

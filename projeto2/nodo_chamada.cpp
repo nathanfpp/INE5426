@@ -111,6 +111,9 @@ Tipo Chamada::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool 
 			      }
 			   else { //se um dos indices < 0 ou > tamanho
 	                      std::cerr << "[Line " << linha << "] $ interpreter error: index-out of bounds"<< "\n";
+                      	      inteiro = 0;
+                              boolean = false;
+                              real = 0.0;
 			   }
 			}
 	           }
@@ -138,6 +141,7 @@ Tipo Chamada::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool 
                     Tipo indice = (((Parametro*)parametros)->parametro)->analisar(tabelaDeSimbolos, linha, analisador);
                     if(indice != Tipo::inteiro) {
                       std::cerr << "[Line " << linha << "] semantic error: index operator expects integer but received " << imprimirTipoPorExtenso(indice) << "\n";
+
                     }
                     else if (analisador){ //Interpreto a leitura de um item de arranjo passada por parametro
 		        //pego indices do arranjo
@@ -149,6 +153,9 @@ Tipo Chamada::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool 
 			}
 			else{ //se indice < 0 ou > tamanho
 	                   std::cerr << "[Line " << linha << "] $ interpreter error: index-out of bounds"<< "\n";
+                      	   inteiro = 0;
+                           boolean = false;
+                           real = 0.0;
 			}
 		    }
 
@@ -198,6 +205,9 @@ Tipo Chamada::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int linha, bool 
 
 		     switch (h->tipoDeHash(tabelaDeSimbolos)){
 		     //associo leitura da chave pelo tipo hash, se chave não existir um erro é emitido.
+			    inteiro = 0;
+                            boolean = false;
+                            real = 0.0;
 			    case hash_bb:
 				if(h->bool_bool.find(chave_b) != h->bool_bool.end())   
 			    	boolean = h->bool_bool[chave_b];

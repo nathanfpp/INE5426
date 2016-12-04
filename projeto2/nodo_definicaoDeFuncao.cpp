@@ -12,10 +12,10 @@ Tipo DefinicaoDeFuncao::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int li
   // Definição ou Chamada de Função
     TabelaDeSimbolos *novoEscopo = tabelaDeSimbolos->novoEscopo(tabelaDeSimbolos);
 
-// Caso a função já tenha sido declarada, deve-se comparar os parâmetros da definição com a declaração //
+// Caso a função já tenha sido declarada, deve-se comparar os parÃ¢metros da definiÃ§Ã£o com a declaraÃ§Ã£o //
     Funcao *f = ((Funcao*) tabelaDeSimbolos->recuperar(id, -1, false));
 
-// Definição de Função após Declaração
+// Definição de Função após declaração
     if(f != NULL) {
 
     // Caso a função já tenha sido DEFINIDA anterioremente, imprime-se um erro
@@ -35,7 +35,7 @@ Tipo DefinicaoDeFuncao::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int li
             std::cerr << " but received " << imprimirTipoPorExtenso(tipoDoRetorno) << "\n";
         }
 
-      // Obtem a quantidade de parametros da Funcao encontrada na Tabela de Símbolos
+      // Obtem a quantidade de parametros da Funcao encontrada na Tabela de SÃ­mbolos
         int quantidadeEsperada = f->contarParametros();
 
       // Se a quantidade de parametros for diferente, ocorre um erro semantico
@@ -50,7 +50,7 @@ Tipo DefinicaoDeFuncao::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int li
             ((Parametro*)f->parametros)->comparar(novoEscopo, ((Parametro*)parametros), linha, true, analisador);
         }
 
-      // Instancia o tipo a ser retornado pela função
+      // Instancia o tipo a ser retornado pela funÃ§Ã£o
         Tipo tipoRetornado;
 
       // Se o corpo da Funcao nao for nulo, ele deve ser analisado
@@ -61,24 +61,24 @@ Tipo DefinicaoDeFuncao::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int li
 	    tipoRetornado = retorno->analisar(novoEscopo, linha, false);
 	}
 
-      // Compara o retorno do bloco com o tipo do retorno da Função
+      // Compara o retorno do bloco com o tipo do retorno da FunÃ§Ã£o
         if(tipoDoRetorno != tipoRetornado) {
             std::cerr << "[Line " << linha << "] semantic error: return of function " << id;
             std::cerr << " expected " << imprimirTipoPorExtenso(tipoDoRetorno);
             std::cerr << " but received " << imprimirTipoPorExtenso(tipoRetornado) << "\n";
         }
 
-      // Atribui o tipo da funcao definida a� declaracao ou chamada
+      // Atribui o tipo da funcao definida a  declaracao ou chamada
         tipoDoRetorno = f->tipoDoRetorno;
 
       // Retorna ao escopo anterior a Funcao
         novoEscopo->retornarEscopo(linha);    
     
-      // Substitui a declaração pela definicao na tabela de símbolos
+      // Substitui a declaração pela definicao na tabela de sÃ­mbolos
         tabelaDeSimbolos->remover(id);
         tabelaDeSimbolos->adicionar(this, linha, false);
 
-      // Retorna o tipo da variável retornada pela função
+      // Retorna o tipo da variável retornada pela funÃ§Ã£o
         return tipoDoRetorno;
     }
 
@@ -88,7 +88,7 @@ Tipo DefinicaoDeFuncao::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int li
         ((Parametro*) parametros)->acrescentarAoEscopo(novoEscopo, linha);
     }
 
-  // Se o corpo da Função não for nulo, ele deve ser analisado
+  // Se o corpo da função não for nulo, ele deve ser analisado
     Tipo tipoRetornado;
     if(corpo != NULL) {                  
         tipoRetornado = corpo->analisar(novoEscopo, linha, false);
@@ -98,17 +98,17 @@ Tipo DefinicaoDeFuncao::analisar(AST::TabelaDeSimbolos *tabelaDeSimbolos, int li
      }
 
         
-  // Compara o retorno do bloco com o tipo do retorno da Função
+  // Compara o retorno do bloco com o tipo do retorno da função
     if(tipoDoRetorno != tipoRetornado) {
         std::cerr << "[Line " << linha << "] semantic error: return of function " << id;
         std::cerr << " expected " << imprimirTipoPorExtenso(tipoDoRetorno);
         std::cerr << " but received " << imprimirTipoPorExtenso(tipoRetornado) << "\n";
     }
 
-   // Retorna ao escopo anterior a Função
+   // Retorna ao escopo anterior a função
     novoEscopo->retornarEscopo(linha);    
 
-  // Adiciona a função à tabela de símbolos
+  // Adiciona a função tabela de símbolos
     tabelaDeSimbolos->adicionar(this, linha, false);
     return tipo;    
 };
@@ -122,7 +122,7 @@ Tipo DefinicaoDeFuncao::executar(AST::TabelaDeSimbolos *tabelaDeSimbolos, Parame
       // Cria um novo escopo para a execucao da funcao
         TabelaDeSimbolos *novoEscopo = tabelaDeSimbolos->novoEscopo(tabelaDeSimbolos);
 
-      // Acrescenta os valores dos parametros a� chamada da funcao
+      // Acrescenta os valores dos parametros a  chamada da funcao
         if(parametros != NULL) {
             ((Parametro*)parametros)->acrescentarComValoresAoEscopo(novoEscopo, valores, linha);
         }
@@ -145,12 +145,8 @@ Tipo DefinicaoDeFuncao::executar(AST::TabelaDeSimbolos *tabelaDeSimbolos, Parame
         inteiro = retorno->inteiro;
         real    = retorno->real;             
 
-//std::cerr << "@DefinicaoDeFuncao::executar : retorno->inteiro " << retorno->inteiro << "\n";
-
-
-      // Retorna ao escopo anterior a Função
+      // Retorna ao escopo anterior a função
         novoEscopo->retornarEscopo(linha);
-
     }
 
  // Retorna o tipo da variável retornada pela função
